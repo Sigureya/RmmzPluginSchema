@@ -24,9 +24,32 @@ const mockParson: Type_Struct<Parson> = {
       },
     },
   },
-  default: {
-    name: "John",
-    age: 30,
+};
+
+interface Home {
+  name: string;
+  address: string;
+  family: Parson[];
+}
+const mockHome: Omit<Type_Struct<Home>, "default"> = {
+  type: "struct",
+  struct: {
+    structName: "Home",
+    params: {
+      name: {
+        type: "string",
+        default: "Home",
+      },
+      address: {
+        type: "string",
+        default: "123",
+      },
+      family: {
+        type: "struct[]",
+        struct: mockParson.struct,
+        default: [],
+      },
+    },
   },
 };
 const mockNumber: NumberArg = {
