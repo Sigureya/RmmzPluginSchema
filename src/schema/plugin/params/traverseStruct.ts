@@ -3,7 +3,7 @@ import type {
   HasStruct,
   StructBase,
   Type_Struct,
-} from "./structBase";
+} from "./types/structBase";
 
 const hasStruct = (ant: AnnotationTypes) => {
   return ant.type === "struct" || ant.type === "struct[]";

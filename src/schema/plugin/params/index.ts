@@ -1,3 +1,3 @@
-export * from "./primitive";
-export * from "./struct";
-export * from "./structBase";
+export * from "./types";
+export * from "./types/struct";
+export * from "./types/structBase";
