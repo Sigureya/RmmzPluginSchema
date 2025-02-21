@@ -4,15 +4,29 @@
     "earcut": "^2.2.4",
     "eslint": "^9.1.0"
   },
-  "main": "index.ts",
+  "main": "dist/rpg-data-tools.cjs.js",
+  "module": "dist/rpg-data-tools.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/RmmzPluginSchema.cjs.js",
+      "import": "./dist/rRmmzPluginSchema.es.js"
+    }
+  },
   "files": [
-    "src"
+    "dist"
   ],
-  "types": "./src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Sigureya/RpgMakerSchema"
-  },  "devDependencies": {
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "eslint": "^8.57.1",
@@ -21,5 +35,4 @@
     "vite-plugin-dts": "^4.5.0",
     "vitest": "^2.1.9"
   }
-
 }
