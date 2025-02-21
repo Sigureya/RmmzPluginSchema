@@ -40,7 +40,7 @@ export const maxDepth = (obj: AnnotationTypes): number => {
     ? traverseStruct(
         obj,
         (s, acc) => {
-          return Math.max(acc, hasStruct(s) ? 1 : 0);
+          return hasStruct(s) ? acc + 1 : acc;
         },
         1
       )

@@ -22,8 +22,9 @@ export type AnnotationTypes =
   | Primitive_Strings
   | Primitive_StringsArray;
 
-export interface HasStruct extends AnnotationBase {
+export interface HasStruct extends Omit<AnnotationBase, "default"> {
   struct: StructBase;
+  default?: unknown;
 }
 
 export interface Type_StructArray<
@@ -41,5 +42,5 @@ export interface Type_Struct<
 > extends HasStruct {
   type: "struct";
   struct: StructAnnotation;
-  default: T;
+  default?: T;
 }
