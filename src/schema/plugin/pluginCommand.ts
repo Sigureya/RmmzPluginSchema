@@ -1,4 +1,4 @@
-import type { Parameter, ParameterBase } from "./plugin/";
+import type { Parameter, ParameterBase } from "./params";
 
 export interface PluginCommandBase {
   commandName: string;
