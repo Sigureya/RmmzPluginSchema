@@ -2,13 +2,13 @@ import { BooleanAnnotation } from "./boolean";
 import { Primitive_Numbers, Primitive_NumbersArray } from "./numbers";
 import { Primitive_Strings, Primitive_StringsArray } from "./strings";
 
-export type Primitive<T extends boolean | number | string> = boolean extends T
+export type Primitive<T extends boolean | number | string> = T extends boolean
   ? BooleanAnnotation
   : T extends number
   ? Primitive_Numbers
   : T extends string
   ? Primitive_Strings
-  : never;
+  : never
 {
 }
 
