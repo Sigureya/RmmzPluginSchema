@@ -1,9 +1,9 @@
-import type{
+import type {
   Actor,
   Armor,
   ComboAnnotation,
-   MultilineString,
-    StringArg,
+  MultilineString,
+  StringArg,
   Class,
   CommonEvent,
   Item,
