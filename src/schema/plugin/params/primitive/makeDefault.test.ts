@@ -15,7 +15,7 @@ describe("number", () => {
   };
   test("default", () => {
     const result: string = makeDefaultPrimitive(mockNumber);
-    expect(result).toMatchInlineSnapshot("@default 123");
+    expect(result).toBe("@default 123");
   });
   test("base", () => {
     const result = baseAnnotion(mockNumber);
