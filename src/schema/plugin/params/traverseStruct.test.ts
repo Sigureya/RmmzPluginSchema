@@ -1,8 +1,8 @@
 import { test, expect, describe } from "vitest";
 
 import { maxDepth } from "./traverseStruct";
-import type { NumberArg } from "./primitive";
-import type { Type_Struct } from "./structBase";
+import type { NumberArg } from "./types";
+import type { Type_Struct } from "./types/structBase";
 
 interface Parson {
   name: string;

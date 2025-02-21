@@ -1,5 +1,5 @@
 import { test, expect, describe } from "vitest";
-import type { NumberArg } from "./types";
+import type { NumberArg } from "./primitive";
 import { baseAnnotion, makeDefaultPrimitive } from "./makeDefault";
 
 const xxxx = <T>(

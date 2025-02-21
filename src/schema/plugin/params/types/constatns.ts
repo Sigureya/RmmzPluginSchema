@@ -14,7 +14,7 @@ import type {
   Switch,
   Troop,
   Weapon,
-} from "./types";
+} from "./primitive";
 
 export const ANNOTATION_STRING: StringArg = {
   type: "string",

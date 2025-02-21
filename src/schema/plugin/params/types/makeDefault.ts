@@ -3,7 +3,7 @@ import type {
   BooleanAnnotation,
   Primitive_Numbers,
   Primitive_Strings,
-} from "./types";
+} from "./primitive";
 
 const ddd = <T>(data: T, key: string & keyof T) => {
   const value = data[key];
