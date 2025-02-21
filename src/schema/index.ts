@@ -1,5 +1,4 @@
-export * from "./struct";
-export * from "./primitive";
+export * from "./plugin/params/struct";
 export * from "./pluginCommand";
-export * from "./structBase";
+export * from "./plugin/params/structBase";
 export * from "./pluginParam";
