@@ -50,7 +50,7 @@ export interface HasStruct extends Omit<AnnotationBase, "default"> {
 
 export interface Type_StructArray<
   Array extends object[],
-  ArrayAnnotation extends StructBase = StructBase
+  ArrayAnnotation extends StructBase = Struct<Array[number]>
 > extends HasStruct {
   type: "struct[]";
   struct: ArrayAnnotation;
