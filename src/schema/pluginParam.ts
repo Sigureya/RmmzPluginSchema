@@ -1,5 +1,5 @@
-import { ParameterBase } from "./structBase";
-import { Parameter } from "./struct";
+import type { ParameterBase } from "./structBase";
+import type { Parameter } from "./struct";
 
 export interface PluginBase {
   help: string;

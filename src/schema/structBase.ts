@@ -1,4 +1,4 @@
-import {
+import type {
   AnnotationBase,
   Primitive_Numbers,
   Primitive_Strings,
@@ -6,11 +6,13 @@ import {
   Primitive_NumbersArray,
   Primitive_StringsArray,
 } from "./primitive";
+
 export interface StructBase {
   structName: string;
   params: ParameterBase;
 }
 export interface ParameterBase extends Record<string, AnnotationTypes> {}
+
 export type AnnotationTypes =
   | Type_StructArray<object[]>
   | Type_Struct<object>
