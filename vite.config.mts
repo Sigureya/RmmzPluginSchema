@@ -16,8 +16,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "RmmzSchema", // グローバル変数名
-      fileName: (format) => `RmmzSchema.${format}.js`, // 出力ファイル名
+      name: "RmmzPluginSchema", // グローバル変数名
+      fileName: (format) => `RmmzPluginSchema.${format}.js`, // 出力ファイル名
     },
 
     rollupOptions: {
