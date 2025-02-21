@@ -14,14 +14,14 @@ import type {
   Switch,
   Troop,
   Weapon,
-} from "./primitive";
+} from "./types";
 
-const ANNOTATION_STRING: StringArg = {
+export const ANNOTATION_STRING: StringArg = {
   type: "string",
   default: "",
 } as const;
 
-const ANNOTATION_MULTILINE_STRING: MultilineString = {
+export const ANNOTATION_MULTILINE_STRING: MultilineString = {
   type: "multiline_string",
   default: "",
 } as const;
