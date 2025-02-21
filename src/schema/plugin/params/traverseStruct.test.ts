@@ -61,8 +61,12 @@ describe("maxDepth", () => {
     const result: number = maxDepth(mockNumber);
     expect(result).toBe(0);
   });
-  test("struct", () => {
+  test("struct-parson", () => {
     const result: number = maxDepth(mockParson);
     expect(result).toBe(1);
+  });
+  test("struct-home", () => {
+    const result: number = maxDepth(mockHome);
+    expect(result).toBe(2);
   });
 });
