@@ -2,7 +2,7 @@ import type {
   AnnotationBase,
   Primitive_Numbers,
   Primitive_Strings,
-  BooleanAnnotation,
+  BooleanArg,
   Primitive_NumbersArray,
   Primitive_StringsArray,
   Primitive,
@@ -37,7 +37,7 @@ export type ParamType<T> = T extends number | string | boolean
 export type AnnotationTypes =
   | Type_StructArray<object[]>
   | Type_Struct<object>
-  | BooleanAnnotation
+  | BooleanArg
   | Primitive_Numbers
   | Primitive_NumbersArray
   | Primitive_Strings
