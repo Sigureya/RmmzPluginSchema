@@ -1,4 +1,4 @@
-import type { Parameter, ParameterBase } from "./params";
+import type { StructParameters, ParameterBase } from "./params";
 
 export interface PluginCommandBase {
   commandName: string;
@@ -9,5 +9,5 @@ export interface PluginCommandBase {
 
 export interface PluginCommand<ArgType extends object>
   extends PluginCommandBase {
-  args: Parameter<ArgType>;
+  args: StructParameters<ArgType>;
 }
