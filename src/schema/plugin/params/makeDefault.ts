@@ -1,5 +1,11 @@
 import type * as Types from "./types/";
 
+export const makeDefaultJSON = <T extends Types.AnnotationTypes>(
+  ant: T
+): string => {
+  return JSON.stringify(makeDefault(ant), null, 0);
+};
+
 export const makeDefault = <T extends Types.AnnotationTypes>(
   ant: T
 ): NonNullable<T["default"]> => {
