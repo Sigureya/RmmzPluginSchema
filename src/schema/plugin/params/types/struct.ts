@@ -1,5 +1,28 @@
-import type { Primitive, PrimitiveArray } from "./primitive";
-import type { StructBase, Type_StructArray, Type_Struct } from "./structBase";
+import type {
+  AnnotationBase,
+  Primitive_Numbers,
+  Primitive_Strings,
+  BooleanAnnotation,
+  Primitive_NumbersArray,
+  Primitive_StringsArray,
+  Primitive,
+  PrimitiveArray,
+} from "./primitive";
+
+export interface StructBase {
+  structName: string;
+  params: ParameterBase;
+}
+export interface ParameterBase extends Record<string, AnnotationTypes> {}
+
+export interface Struct<T extends object> extends StructBase {
+  structName: string;
+  params: StructParameters<T>;
+}
+
+export type StructParameters<T> = {
+  [Key in keyof T]: ParamType<T[Key]>;
+};
 
 export type ParamType<T> = T extends number | string | boolean
   ? Primitive<T>
@@ -11,11 +34,34 @@ export type ParamType<T> = T extends number | string | boolean
   ? Type_Struct<T, Struct<T>>
   : never;
 
-export interface Struct<T extends object> extends StructBase {
-  structName: string;
-  params: {
-    [Key in keyof T]: ParamType<T[Key]>;
-  };
+export type AnnotationTypes =
+  | Type_StructArray<object[]>
+  | Type_Struct<object>
+  | BooleanAnnotation
+  | Primitive_Numbers
+  | Primitive_NumbersArray
+  | Primitive_Strings
+  | Primitive_StringsArray;
+
+export interface HasStruct extends Omit<AnnotationBase, "default"> {
+  struct: StructBase;
+  default?: unknown;
 }
 
-export type Parameter<T extends object> = Struct<T>["params"];
+export interface Type_StructArray<
+  Array extends object[],
+  ArrayAnnotation extends StructBase = Struct<Array[number]>
+> extends HasStruct {
+  type: "struct[]";
+  struct: ArrayAnnotation;
+  default: Array;
+}
+
+export interface Type_Struct<
+  T extends object,
+  StructAnnotation extends StructBase = Struct<T>
+> extends HasStruct {
+  type: "struct";
+  struct: StructAnnotation;
+  default?: T;
+}
