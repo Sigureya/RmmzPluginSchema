@@ -1,15 +1,26 @@
-import type { AnnotationTypes } from "./types/";
+import type { AnnotationTypes, StructBase } from "./types/";
 
 export const maxDepth = (obj: AnnotationTypes): number => {
-  return hasStruct(obj)
-    ? traverseStruct(
-        obj,
-        (s, acc) => {
-          return hasStruct(s) ? acc + 1 : acc;
-        },
-        1
-      )
-    : 0;
+  return traverseStruct(
+    obj,
+    (s, acc) => {
+      return hasStruct(s) ? acc + 1 : acc;
+    },
+    0
+  );
+};
+
+export const flatStruct = (annotation: AnnotationTypes): Set<StructBase> => {
+  return traverseStruct(
+    annotation,
+    (s, acc) => {
+      if (hasStruct(s) && !acc.has(s.struct)) {
+        acc.add(s.struct);
+      }
+      return acc;
+    },
+    new Set()
+  );
 };
 
 export const traverseStruct = <Result>(
@@ -17,7 +28,8 @@ export const traverseStruct = <Result>(
   callback: (structName: AnnotationTypes, acc: Result, depth: number) => Result,
   initialValue: Result
 ) => {
-  return traverseHelper(obj, callback, initialValue);
+  const x = callback(obj, initialValue, 0);
+  return traverseHelper(obj, callback, x);
 };
 
 const hasStruct = (ant: AnnotationTypes) => {
