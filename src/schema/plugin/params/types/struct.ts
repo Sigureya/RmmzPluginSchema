@@ -21,7 +21,7 @@ export interface Struct<T extends object> extends StructBase {
 }
 
 export type StructParameters<T> = {
-  [Key in keyof T]: ParamType<T[Key]>;
+  [Key in Extract<keyof T, string>]: ParamType<T[Key]>;
 };
 
 export type ParamType<T> = T extends number | string | boolean
