@@ -32,7 +32,7 @@ const createMockParson = (): Types.Type_Struct<Parson> => ({
   },
 });
 
-const mockParson2: Types.Type_Struct<Parson> = {
+const createMockParson2 = (): Types.Type_Struct<Parson> => ({
   default: { name: "aaa", age: 17 },
   type: "struct",
   struct: {
@@ -48,7 +48,7 @@ const mockParson2: Types.Type_Struct<Parson> = {
       },
     },
   },
-};
+});
 
 const createMockHome = (): Types.Type_Struct<Home> => ({
   type: "struct",
@@ -93,9 +93,10 @@ describe("makeDefault", () => {
       expect(parson).toEqual(expected);
     });
     test("parson2", () => {
-      const parson: Parson = makeDefault(mockParson2);
+      const mock = createMockParson2();
+      const parson: Parson = makeDefault(mock);
       const expected: Parson = { name: "aaa", age: 17 };
-      expect(mockParson2.default).toEqual(expected);
+      expect(mock.default).toEqual(expected);
       expect(parson).toEqual(expected);
     });
 
@@ -126,6 +127,40 @@ describe("makeDefault", () => {
       };
       const result: number[] = makeDefault(mockNumberArray);
       expect(result).toEqual([1, 2, 3]);
+    });
+    test("string", () => {
+      const mockString: Types.Primitive_Strings = {
+        default: "test",
+        type: "string",
+      };
+      const result: string = makeDefault(mockString);
+      expect(result).toBe("test");
+    });
+    test("stringArray", () => {
+      const mockStringArray: Types.Primitive_StringsArray = {
+        default: ["a", "b", "c"],
+        type: "string[]",
+      };
+      const result: string[] = makeDefault(mockStringArray);
+      expect(result).toEqual(["a", "b", "c"]);
+    });
+    test("boolean", () => {
+      const mockBoolean: Types.BooleanArg = {
+        default: true,
+        type: "boolean",
+      };
+      const result: boolean = makeDefault(mockBoolean);
+      expect(result).toBe(true);
+    });
+    test("boolean2", () => {
+      const mockBoolean: Types.BooleanArg = {
+        default: false,
+        type: "boolean",
+        on: "on",
+        off: "off",
+      };
+      const result: boolean = makeDefault(mockBoolean);
+      expect(result).toBe(false);
     });
   });
 });
