@@ -3,7 +3,8 @@ import {
   baseAnnotion,
   numberArgAnnotations,
   selectAnnotations,
-} from "./makeType";
+  typeAnnotation,
+} from "./makeAnnotation";
 import type { NumberArg, Primitive_NumbersArray } from "./types";
 
 describe("number", () => {
@@ -13,9 +14,13 @@ describe("number", () => {
       text: "test text",
       type: "number",
     };
+    test("type", () => {
+      const result = typeAnnotation(mockNumber);
+      expect(result).toEqual("@type number");
+    });
     test("base", () => {
       const result = baseAnnotion(mockNumber);
-      expect(result).toEqual(["@type number", "@text test text"]);
+      expect(result).toEqual(["@text test text"]);
     });
     test("numberArg", () => {
       const result = numberArgAnnotations(mockNumber);
@@ -26,13 +31,14 @@ describe("number", () => {
     const mockNumber: NumberArg = {
       default: 123,
       type: "number",
+      parent: "grand",
       min: 1,
       max: 4,
       digit: 2,
     };
     test("base", () => {
       const result = baseAnnotion(mockNumber);
-      expect(result).toEqual(["@type number"]);
+      expect(result).toEqual(["@parent grand"]);
     });
     test("numberArg", () => {
       const result = numberArgAnnotations(mockNumber);
@@ -49,7 +55,7 @@ describe("number", () => {
     };
     test("", () => {
       const result = baseAnnotion(mockNumberArray);
-      expect(result).toEqual(["@type number[]"]);
+      expect(result).toEqual([]);
     });
     test("", () => {
       const result = numberArgAnnotations(mockNumberArray);
@@ -66,8 +72,8 @@ describe("select", () => {
     ],
   };
   test("base", () => {
-    const result = baseAnnotion(mockSelect);
-    expect(result).toEqual(["@type select"]);
+    const result = typeAnnotation(mockSelect);
+    expect(result).toEqual("@type select");
   });
   test("select", () => {
     const result = selectAnnotations(mockSelect);

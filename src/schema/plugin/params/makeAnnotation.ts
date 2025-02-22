@@ -13,8 +13,12 @@ export const makeAnnotion = <T>(
   return key.map((k) => create(ant, k)).filter((s) => s !== undefined);
 };
 
+export const typeAnnotation = (type: Pick<Primitve.AnnotationBase, "type">) => {
+  return `@type ${type.type}` as const;
+};
+
 export const baseAnnotion = (ant: Omit<Primitve.AnnotationBase, "default">) => {
-  return makeAnnotion(ant, ["type", "text", "desc", "parent"]);
+  return makeAnnotion(ant, ["text", "desc", "parent"]);
 };
 
 export const numberArgAnnotations = (
