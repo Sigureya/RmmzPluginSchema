@@ -33,10 +33,21 @@ export const booleanArgAnnotations = (
   return makeAnnotion(bool, ["on", "off"]);
 };
 
-export const selectAnnotations = <T extends number | string>(
-  select: OmitBaseParams<Primitve.Select<T>>
+export const selectAnnotations = (
+  select: OmitBaseParams<Primitve.Select<number | string>>
 ) => {
   return select.options.flatMap(
     (s) => [`@option ${s.option}`, `@value ${s.value}`] as const
   );
+};
+export const comboAnnotations = (
+  combo: OmitBaseParams<Primitve.ComboAnnotation>
+) => {
+  return combo.options.map((s: string) => `@option ${s}` as const);
+};
+
+export const fileAnnotations = (
+  file: OmitBaseParams<Primitve.FilePathAnnotation>
+) => {
+  return makeAnnotion(file, ["dir"]);
 };
