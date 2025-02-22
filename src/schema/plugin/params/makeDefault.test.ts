@@ -1,6 +1,6 @@
 import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
-import { makeDefault, makeDefaultJSON } from "./makeDefault";
+import { makeDefault, makeDefaultValue } from "./makeDefault";
 
 interface Parson {
   name: string;
@@ -91,7 +91,7 @@ describe("makeDefault", () => {
       expect(mockParson.default).toBeUndefined();
       const expected: Parson = { name: "John", age: 30 };
       expect(parson).toEqual(expected);
-      const json = makeDefaultJSON(mockParson);
+      const json = makeDefaultValue(mockParson);
       expect(json).toBe('{"name":"John","age":30}');
     });
     test("parson2", () => {
@@ -145,7 +145,7 @@ describe("makeDefault", () => {
       };
       const result: string[] = makeDefault(mockStringArray);
       expect(result).toEqual(["a", "b", "c"]);
-      const json = makeDefaultJSON(mockStringArray);
+      const json = makeDefaultValue(mockStringArray);
       expect(json).toBe('["a","b","c"]');
     });
     test("boolean", () => {
@@ -165,7 +165,7 @@ describe("makeDefault", () => {
       };
       const result: boolean = makeDefault(mockBoolean);
       expect(result).toBe(false);
-      const json = makeDefaultJSON(mockBoolean);
+      const json = makeDefaultValue(mockBoolean);
       expect(json).toBe("false");
     });
   });
