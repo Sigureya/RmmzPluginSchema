@@ -10,7 +10,7 @@ export const maxDepth = (obj: AnnotationTypes): number => {
   );
 };
 
-export const flatStruct = (annotation: AnnotationTypes): Set<StructBase> => {
+export const flatStructs = (annotation: AnnotationTypes): Set<StructBase> => {
   return traverseStruct(
     annotation,
     (s, acc) => {
@@ -46,7 +46,7 @@ const traverseHelper = <Result>(
     throw new Error("Max depth exceeded");
   }
   if (!hasStruct(annotation)) {
-    return fn(annotation, result, depth);
+    return result;
   }
   let acc: Result = result;
   for (const p in annotation.struct.params) {
