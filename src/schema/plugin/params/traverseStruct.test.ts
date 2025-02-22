@@ -1,6 +1,6 @@
 import { test, expect, describe } from "vitest";
 
-import { maxDepth } from "./traverseStruct";
+import { maxDepth, flatStructs } from "./traverseStruct";
 import type { NumberArg, Type_Struct } from "./types";
 
 interface Parson {
@@ -67,5 +67,23 @@ describe("maxDepth", () => {
   test("struct-home", () => {
     const result: number = maxDepth(mockHome);
     expect(result).toBe(2);
+  });
+});
+
+describe("flatStruct", () => {
+  test("number", () => {
+    const result = flatStructs(mockNumber);
+    expect(result.size).toBe(0);
+  });
+  test("struct-parson", () => {
+    const result = flatStructs(mockParson);
+    expect(result.size).toBe(1);
+    expect(result).toContain(mockParson.struct);
+  });
+  test("struct-home", () => {
+    const result = flatStructs(mockHome);
+    expect(result.size).toBe(2);
+    expect(result).toContain(mockParson.struct);
+    expect(result).toContain(mockHome.struct);
   });
 });

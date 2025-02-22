@@ -1,9 +1,9 @@
-import type { BooleanAnnotation } from "./boolean";
+import type { BooleanArg } from "./boolean";
 import type { Primitive_Numbers, Primitive_NumbersArray } from "./numbers";
 import type { Primitive_Strings, Primitive_StringsArray } from "./strings";
 
 export type Primitive<T extends boolean | number | string> = T extends boolean
-  ? BooleanAnnotation
+  ? BooleanArg
   : T extends number
   ? Primitive_Numbers
   : T extends string

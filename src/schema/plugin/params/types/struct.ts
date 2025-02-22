@@ -2,7 +2,7 @@ import type {
   AnnotationBase,
   Primitive_Numbers,
   Primitive_Strings,
-  BooleanAnnotation,
+  BooleanArg,
   Primitive_NumbersArray,
   Primitive_StringsArray,
   Primitive,
@@ -21,7 +21,7 @@ export interface Struct<T extends object> extends StructBase {
 }
 
 export type StructParameters<T> = {
-  [Key in keyof T]: ParamType<T[Key]>;
+  [Key in Extract<keyof T, string>]: ParamType<T[Key]>;
 };
 
 export type ParamType<T> = T extends number | string | boolean
@@ -37,7 +37,7 @@ export type ParamType<T> = T extends number | string | boolean
 export type AnnotationTypes =
   | Type_StructArray<object[]>
   | Type_Struct<object>
-  | BooleanAnnotation
+  | BooleanArg
   | Primitive_Numbers
   | Primitive_NumbersArray
   | Primitive_Strings
