@@ -3,7 +3,7 @@ import type * as Types from "./types/";
 export const makeDefault = <T extends Types.AnnotationTypes>(
   ant: T
 ): NonNullable<T["default"]> => {
-  return makeDefaultHelper(ant);
+  return ant.default === undefined ? makeDefaultHelper(ant) : ant.default;
 };
 
 const makeDefaultHelper = (ant: Types.AnnotationTypes, depth = 0) => {

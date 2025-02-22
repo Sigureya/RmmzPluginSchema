@@ -53,6 +53,24 @@ const mockParson: Type_Struct<Parson> = {
   },
 };
 
+const mockParson2: Type_Struct<Parson> = {
+  default: { name: "aaa", age: 17 },
+  type: "struct",
+  struct: {
+    structName: "Parson",
+    params: {
+      name: {
+        type: "string",
+        default: "John",
+      },
+      age: {
+        type: "number",
+        default: 30,
+      },
+    },
+  },
+};
+
 const mockHome: Type_Struct<Home> = {
   type: "struct",
   struct: {
@@ -89,9 +107,17 @@ const mockHome: Type_Struct<Home> = {
 describe("makeDefault struct", () => {
   test("parson", () => {
     const parson: Parson = makeDefault(mockParson);
+    expect(mockParson.default).toBeUndefined();
     const expected: Parson = { name: "John", age: 30 };
     expect(parson).toEqual(expected);
   });
+  test("parson2", () => {
+    const parson: Parson = makeDefault(mockParson2);
+    const expected: Parson = { name: "aaa", age: 17 };
+    expect(mockParson2.default).toEqual(expected);
+    expect(parson).toEqual(expected);
+  });
+
   test("home", () => {
     const home = makeDefault(mockHome);
     const expected: Home = {
