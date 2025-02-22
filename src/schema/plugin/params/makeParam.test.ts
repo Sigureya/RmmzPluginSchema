@@ -7,6 +7,7 @@ import type {
   ParamTexts,
   Select,
   StringArg,
+  ToArrayAnnotation,
 } from "./types";
 import * as Make from "./makeAnnotation";
 
@@ -19,9 +20,11 @@ describe("makeParam", () => {
         on: "on01",
         off: "off02",
       };
-      const result = makeParam("bool", ant);
+      const result: ParamTexts = makeParam("bool", ant);
       expect(result.name).toBe("@param bool");
       expect(result.type).toBe("@type boolean");
+      expect(result.default).toBe("@default true");
+      expect(result.other).toEqual(["@on on01", "@off off02"]);
     });
   });
   describe("number", () => {
@@ -33,20 +36,35 @@ describe("makeParam", () => {
         max: 10,
         digit: 2,
       };
-      const result = makeParam("num", ant);
+      const result: ParamTexts = makeParam("num", ant);
       expect(result.name).toBe("@param num");
       expect(result.type).toBe("@type number");
+      expect(result.default).toBe("@default 5");
+      expect(result.other).toEqual(["@min 1", "@max 10", "@digit 2"]);
+    });
+  });
+  describe("number array", () => {
+    test("generates a valid ParamTexts object for a number array argument", () => {
+      const ant: ToArrayAnnotation<NumberArg> = {
+        type: "number[]",
+        default: [1, 2, 3],
+      };
+      const result: ParamTexts = makeParam("numArray", ant);
+      expect(result.name).toBe("@param numArray");
+      expect(result.type).toBe("@type number[]");
+      expect(result.default).toBe("@default [1,2,3]");
     });
   });
   describe("string", () => {
     test("generates a valid ParamTexts object for a string argument", () => {
       const ant: StringArg = {
         type: "string",
-        default: "ggg",
+        default: "abc",
       };
-      const result = makeParam("str", ant);
+      const result: ParamTexts = makeParam("str", ant);
       expect(result.name).toBe("@param str");
       expect(result.type).toBe("@type string");
+      expect(result.default).toBe("@default abc");
     });
   });
 });
@@ -68,21 +86,15 @@ describe("uniqueAnnotations", () => {
     test("matches Make.booleanArgAnnotations output", () => {
       expect(result).toEqual(Make.booleanArgAnnotations(ant));
     });
-  });
-  describe("boolean undefined", () => {
-    const ant: BooleanArg = {
-      type: "boolean",
-      default: true,
-      on: undefined,
-      off: undefined,
-    };
-    const result = uniqueAnnotations(ant);
-
-    test("generates correct boolean annotations", () => {
+    test("correctly generates annotations for an undefined boolean argument", () => {
+      const ant: BooleanArg = {
+        type: "boolean",
+        default: true,
+        on: undefined,
+        off: undefined,
+      };
+      const result = uniqueAnnotations(ant);
       expect(result).toEqual([]);
-    });
-
-    test("matches Make.booleanArgAnnotations output", () => {
       expect(result).toEqual(Make.booleanArgAnnotations(ant));
     });
   });

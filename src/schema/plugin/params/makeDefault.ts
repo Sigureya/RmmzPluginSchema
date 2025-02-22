@@ -1,9 +1,10 @@
 import type * as Types from "./types/";
 
-export const makeDefaultJSON = <T extends Types.AnnotationTypes>(
+export const makeDefaultValue = <T extends Types.AnnotationTypes>(
   ant: T
 ): string => {
-  return JSON.stringify(makeDefault(ant), null, 0);
+  const value = makeDefault(ant);
+  return typeof value === "string" ? value : JSON.stringify(value, null, 0);
 };
 
 export const makeDefault = <T extends Types.AnnotationTypes>(
