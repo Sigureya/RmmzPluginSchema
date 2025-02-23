@@ -10,7 +10,7 @@
   "exports": {
     ".": {
       "require": "./dist/RmmzPluginSchema.cjs.js",
-      "import": "./dist/rRmmzPluginSchema.es.js"
+      "import": "./dist/RmmzPluginSchema.es.js"
     }
   },
   "files": [
