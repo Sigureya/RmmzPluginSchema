@@ -14,6 +14,7 @@ export const mapping = <T>(
       return mapper.number(annotation);
     case "string":
     case "multiline_string":
+    case "multiline_string[]":
     case "string[]":
       return mapper.string(annotation);
     case "boolean":
