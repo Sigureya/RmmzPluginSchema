@@ -2,6 +2,17 @@
   "compilerOptions": {
     "paths": {
       "@schema": ["./packages/schema/src/index.ts"]
-    }
+    },
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "lib": ["ESNext"]
   }
 }
