@@ -1,13 +1,13 @@
 {
-  "name": "@sigureya/rpg-schema",
+  "name": "@sigureya/ts-morph-tools",
   "version": "0.1.0",
-  "description": "RPGツクールMZのスキーマライブラリ",
-  "main": "dist/rpg-schema.cjs.js",
-  "module": "dist/rpg-schema.es.js",
+  "description": "ソースコードをアノテーションに変換",
+  "main": "dist/ts-morph-tools.cjs.js",
+  "module": "dist/ts-morph-tools.es.js",
   "types": "dist/index.d.ts",
   "exports": {
-    "import": "./dist/rpg-schema.es.js",
-    "require": "./dist/rpg-schema.cjs.js"
+    "import": "./dist/ts-morph-tools.es.js",
+    "require": "./dist/ts-morph-tools.cjs.js"
   },
   "files": [
     "dist"
