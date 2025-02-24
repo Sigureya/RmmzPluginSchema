@@ -12,5 +12,9 @@ export default defineConfig({
     },
     sourcemap: true,
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["src/**/*.test.ts"], // 型定義生成からテストコードを除外
+    }),
+  ],
 });

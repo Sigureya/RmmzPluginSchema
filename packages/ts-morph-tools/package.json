@@ -1,14 +1,10 @@
 {
-  "name": "@sigureya/ts-morph-tools",
+  "name": "@rmmz-annotation/ts-morph-tools",
   "version": "0.1.0",
   "description": "RPGツクールMZのアノテーションツール",
   "main": "dist/ts-morph-tools.cjs.js",
   "module": "dist/ts-morph-tools.es.js",
   "types": "dist/index.d.ts",
-  "exports": {
-    "import": "./dist/ts-morph-tools.es.js",
-    "require": "./dist/ts-morph-tools.cjs.js"
-  },
   "files": [
     "dist"
   ],

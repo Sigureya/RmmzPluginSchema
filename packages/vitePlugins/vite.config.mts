@@ -13,7 +13,7 @@ export default defineConfig({
     },
     sourcemap: true,
     rollupOptions: {
-      external: ["vite"], // 依存関係を外部モジュールとして扱う
+      external: ["vite", "@rmmz-annotation/schema"], // 依存関係を外部モジュールとして扱う
       output: {
         globals: {
           vite: "Vite",
@@ -26,5 +26,9 @@ export default defineConfig({
       "@rmmz-annotation/schema": path.resolve(__dirname, "../schema/src"),
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["src/**/*.test.ts"], // 型定義生成からテストコードを除外
+    }),
+  ],
 });

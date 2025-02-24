@@ -13,13 +13,19 @@ export default defineConfig({
     },
     sourcemap: true,
     rollupOptions: {
-      external: [ "@rmmz-annotation/schema"], // 依存関係を外部モジュールとして扱う
+      external: ["ts-morph", "@rmmz-annotation/schema"], // 依存関係を外部モジュールとして扱う
     },
   },
+
   resolve: {
+    external: ["perf_hooks"],
     alias: {
       "@rmmz-annotation/schema": path.resolve(__dirname, "../schema/src"),
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["src/**/*.test.ts"], // 型定義生成からテストコードを除外
+    }),
+  ],
 });
