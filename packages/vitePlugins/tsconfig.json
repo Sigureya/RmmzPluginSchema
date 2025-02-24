@@ -5,7 +5,10 @@
     "rootDir": "src",
     "declaration": true,
     "declarationDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "paths": {
+      "@rmmz-annotation/schema": ["../schema/src/index.ts"]
+    }
   },
   "include": ["src"],
 
