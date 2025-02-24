@@ -170,3 +170,19 @@ describe("makeDefault", () => {
     });
   });
 });
+describe("makeDefault with Dictionary", () => {
+  const dic: Types.Dictionary = {
+    on: "enabled",
+    off: "disabled",
+  };
+  describe("string", () => {
+    test("string", () => {
+      const mockString: Types.Primitive_Strings = {
+        default: "test",
+        type: "string",
+      };
+      const result: string = makeDefaultValue(mockString, dic);
+      expect(result).toBe("test");
+    });
+  });
+});
