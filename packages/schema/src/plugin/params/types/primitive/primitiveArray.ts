@@ -9,13 +9,8 @@ type ValueType<
   ? Array<T["default"]>
   : T[Key];
 
-export type ToArrayAnnotation<T extends AnnotationBase> =
-  T[keyof T] extends undefined
-    ? {
-        [K in keyof T]?: T[K];
-      }
-    : {
-        [K in keyof T]: ValueType<T, K>;
-      };
+export type ToArrayAnnotation<T extends AnnotationBase> = {
+  [K in keyof T]: ValueType<T, K>;
+};
 // Omit<T,"type"|"default">ではダメです。
 // 型ごとの個別パラメータが無視されてしまう
