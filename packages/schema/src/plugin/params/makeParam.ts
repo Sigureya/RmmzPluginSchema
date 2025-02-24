@@ -11,7 +11,10 @@ import {
 import type { AnnotationTypes, ParamTexts } from "./types";
 import { mapping } from "./mapping";
 
-export const uniqueAnnotations = (ant: AnnotationTypes) => {
+export const uniqueAnnotations = (
+  ant: AnnotationTypes,
+  dic: Record<string, string>
+) => {
   return mapping<`@${string} ${string}`[]>(ant, {
     boolean: (b) => booleanArgAnnotations(b),
     number: (num) => numberArgAnnotations(num),
@@ -27,10 +30,11 @@ export const uniqueAnnotations = (ant: AnnotationTypes) => {
 export const makeParam = (
   name: string,
   ant: AnnotationTypes,
-  mode: "@param" | "@arg" = "@param"
+  mode: "@param" | "@arg" = "@param",
+  dic: Record<string, string> = {}
 ): ParamTexts => {
   return {
-    other: uniqueAnnotations(ant),
+    other: uniqueAnnotations(ant, dic),
     default: `@default ${makeDefaultValue(ant)}`,
     name: `${mode} ${name}`,
     type: typeAnnotation(ant),
