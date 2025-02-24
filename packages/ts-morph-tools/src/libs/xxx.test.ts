@@ -1,13 +1,12 @@
 import { Project, ts } from "ts-morph";
 import { describe, expect, test } from "vitest";
-// import type { NumberArg } from "../../../schema/src";
-// import type { NumberArg } from "@sigureya/schema";
+import type { NumberArg } from "@rmmz-annotation/schema";
 
 describe("", () => {
-  const ant = {
+  const ant: NumberArg = {
     type: "number",
     default: 42,
-  } as const;
+  };
   const project = new Project();
   const sourceFile = project.createSourceFile(
     "test.ts",

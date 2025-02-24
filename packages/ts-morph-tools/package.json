@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "ts-morph": "^18.0.0",
-    "@sigureya/schema": "workspace:*"
+    "@rmmz-annotation/schema": "workspace:*"
   },
   "devDependencies": {
     "vite": "^6.0.11",
