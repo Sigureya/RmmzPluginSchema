@@ -1,1 +1,1 @@
-export type Dictionary = Record<string, unknown>;
+export type Dictionary = Record<string, string>;
