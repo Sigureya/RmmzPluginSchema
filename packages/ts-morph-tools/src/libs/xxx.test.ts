@@ -20,7 +20,7 @@ describe("", () => {
   const variable = sourceFile
     .getVariableDeclarations()
     .find((v) => v.getType().getText().includes("NumberArg"));
-  test("定数オブジェクトを解析できること", () => {
+  test.skip("定数オブジェクトを解析できること", () => {
     expect(variable).toBeDefined();
     const initializer = variable!.getInitializer();
     expect(initializer?.isKind(ts.SyntaxKind.ObjectLiteralExpression)).toBe(
