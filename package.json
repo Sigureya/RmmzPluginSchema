@@ -15,7 +15,6 @@
   },
   "scripts": {
     "build": "pnpm -r run build",
-    "postbuild": "eslint --fix \"*.d.ts\"",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "format": "prettier --write .",
