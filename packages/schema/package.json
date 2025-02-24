@@ -1,13 +1,15 @@
 {
-  "name": "@sigureya/rpg-schema",
+  "name": "@rmmz-annotation/schema",
   "version": "0.1.0",
-  "description": "RPGツクールMZのスキーマライブラリ",
-  "main": "dist/rpg-schema.cjs.js",
-  "module": "dist/rpg-schema.es.js",
+  "description": "アノテーションの構造定義",
+  "main": "dist/schema.cjs.js",
+  "module": "dist/schema.es.js",
   "types": "dist/index.d.ts",
   "exports": {
-    "import": "./dist/rpg-schema.es.js",
-    "require": "./dist/rpg-schema.cjs.js"
+    ".": {
+      "import": "./dist/schema.es.js",
+      "require": "./dist/schema.cjs.js"
+    }
   },
   "files": [
     "dist"
@@ -15,7 +17,6 @@
   "scripts": {
     "build": "vite build"
   },
-  "dependencies": {},
   "devDependencies": {
     "vite": "^6.0.11",
     "vite-plugin-dts": "^4.5.0",

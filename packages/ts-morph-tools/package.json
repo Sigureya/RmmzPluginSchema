@@ -16,7 +16,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "ts-morph": "^18.0.0"
+    "ts-morph": "^18.0.0",
+    "@rmmz-annotation/schema": "workspace:*"
   },
   "devDependencies": {
     "vite": "^6.0.11",

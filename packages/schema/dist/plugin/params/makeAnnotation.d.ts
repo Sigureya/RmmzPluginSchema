@@ -1,0 +1,11 @@
+import type * as Primitve from "./types/primitive";
+type OmitBaseParams<T> = Omit<T, keyof Primitve.AnnotationBase>;
+export declare const makeAnnotion: <T>(ant: T, key: ReadonlyArray<string & keyof typeof ant>) => `@${string & keyof T} ${string}`[];
+export declare const typeAnnotation: (type: Pick<Primitve.AnnotationBase, "type">) => `@type ${string}`;
+export declare const baseAnnotion: (ant: Omit<Primitve.AnnotationBase, "default">) => (`@type ${string}` | `@desc ${string}` | `@text ${string}` | `@parent ${string}`)[];
+export declare const numberArgAnnotations: (num: OmitBaseParams<Primitve.NumberArg>) => (`@min ${string}` | `@max ${string}` | `@digit ${string}`)[];
+export declare const booleanArgAnnotations: (bool: OmitBaseParams<Primitve.BooleanArg>) => (`@on ${string}` | `@off ${string}`)[];
+export declare const selectAnnotations: (select: OmitBaseParams<Primitve.Select<number | string>>) => (`@option ${string}` | `@value ${string}` | `@value ${number}`)[];
+export declare const comboAnnotations: (combo: OmitBaseParams<Primitve.ComboAnnotation>) => `@option ${string}`[];
+export declare const fileAnnotations: (file: OmitBaseParams<Primitve.FilePathAnnotation>) => `@dir ${string}`[];
+export {};

@@ -1,7 +1,4 @@
 {
-  "compilerOptions": {
-    "paths": {
-      "@schema": ["./packages/schema/src/index.ts"]
-    }
-  }
+  "files": [],
+  "references": [{ "path": "packages/schema" }]
 }
