@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-
+import path from "path";
+declare const __dirname: string;
 export default defineConfig({
   build: {
     outDir: "./dist",
@@ -18,6 +19,11 @@ export default defineConfig({
           vite: "Vite",
         },
       },
+    },
+  },
+  resolve: {
+    alias: {
+      "@rmmz-annotation/schema": path.resolve(__dirname, "../schema/src"),
     },
   },
   plugins: [dts()],
