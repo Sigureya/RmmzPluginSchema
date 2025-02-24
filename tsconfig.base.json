@@ -14,6 +14,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "lib": ["ESNext"]
-  },
-  "exclude": ["**/*.test.ts"]
+  }
 }
