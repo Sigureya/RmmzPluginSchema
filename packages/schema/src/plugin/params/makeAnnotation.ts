@@ -13,6 +13,26 @@ export const makeAnnotion = <T>(
 ) => {
   return key.map((k) => create(ant, k)).filter((s) => s !== undefined);
 };
+const LIST = ["on", "off", "desc", "text"] as const;
+
+export const dicEX = (key: string, dic: Dictionary): string => {
+  const value = dic[key];
+  return value === undefined ? key : value;
+};
+
+const makeAnnotationEx = <T>(
+  ant: T,
+  key: ReadonlyArray<string & keyof typeof ant>,
+  dic: Dictionary
+) => {
+  return key.map((k) => create(ant, k)).filter((s) => s !== undefined);
+};
+export const booleanArgAnnotations = (
+  bool: OmitBaseParams<Primitve.BooleanArg>,
+  dic: Dictionary = {}
+) => {
+  return makeAnnotion(bool, ["on", "off"]);
+};
 
 export const typeAnnotation = (type: Pick<Primitve.AnnotationBase, "type">) => {
   return `@type ${type.type}` as const;
@@ -31,19 +51,12 @@ export const numberArgAnnotations = (
   return makeAnnotion(num, ["min", "max", "digit"]);
 };
 
-export const booleanArgAnnotations = (
-  bool: OmitBaseParams<Primitve.BooleanArg>,
-  dic: Dictionary = {}
-) => {
-  return makeAnnotion(bool, ["on", "off"]);
-};
-
 export const selectAnnotations = (
   select: OmitBaseParams<Primitve.Select<number | string>>,
   dic: Dictionary = {}
 ) => {
   return select.options.flatMap(
-    (s) => [`@option ${s.option}`, `@value ${s.value}`] as const
+    (s) => [`@option ${dicEX(s.option, dic)}`, `@value ${s.value}`] as const
   );
 };
 export const comboAnnotations = (
