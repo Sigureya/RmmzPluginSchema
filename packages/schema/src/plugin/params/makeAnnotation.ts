@@ -1,4 +1,5 @@
 import type * as Primitve from "./types/primitive";
+import type { Dictionary } from "./types/";
 type OmitBaseParams<T> = Omit<T, keyof Primitve.AnnotationBase>;
 
 const create = <T>(data: T, key: string & keyof T) => {
@@ -17,7 +18,10 @@ export const typeAnnotation = (type: Pick<Primitve.AnnotationBase, "type">) => {
   return `@type ${type.type}` as const;
 };
 
-export const baseAnnotion = (ant: Omit<Primitve.AnnotationBase, "default">) => {
+export const baseAnnotion = (
+  ant: Omit<Primitve.AnnotationBase, "default">,
+  dic: Dictionary = {}
+) => {
   return makeAnnotion(ant, ["text", "desc", "parent"]);
 };
 
@@ -28,13 +32,15 @@ export const numberArgAnnotations = (
 };
 
 export const booleanArgAnnotations = (
-  bool: OmitBaseParams<Primitve.BooleanArg>
+  bool: OmitBaseParams<Primitve.BooleanArg>,
+  dic: Dictionary = {}
 ) => {
   return makeAnnotion(bool, ["on", "off"]);
 };
 
 export const selectAnnotations = (
-  select: OmitBaseParams<Primitve.Select<number | string>>
+  select: OmitBaseParams<Primitve.Select<number | string>>,
+  dic: Dictionary = {}
 ) => {
   return select.options.flatMap(
     (s) => [`@option ${s.option}`, `@value ${s.value}`] as const
