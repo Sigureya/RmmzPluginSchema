@@ -1,6 +1,18 @@
-import type { Plugin } from "vite";
+import type { Plugin, Rollup } from "vite";
 import type { Struct } from "@rmmz-annotation/schema";
 import { buildAnnotation, correctErros } from "@rmmz-annotation/schema";
+
+const makeError = (): Rollup.RollupError => {
+  return {
+    message: "test",
+    plugin: "test",
+    loc: {
+      file: "test",
+      line: 1,
+      column: 1,
+    },
+  };
+};
 
 export const rmmzAnnotation = (s: Struct<object>[]): Plugin => {
   return {

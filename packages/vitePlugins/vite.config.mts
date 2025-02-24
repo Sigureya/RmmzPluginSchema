@@ -26,5 +26,9 @@ export default defineConfig({
       "@rmmz-annotation/schema": path.resolve(__dirname, "../schema/src"),
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ["src/**/*.test.ts"], // 型定義生成からテストコードを除外
+    }),
+  ],
 });

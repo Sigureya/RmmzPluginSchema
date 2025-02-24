@@ -15,5 +15,5 @@
     "skipLibCheck": true,
     "lib": ["ESNext"]
   },
-  "exclude": ["**/*.test.ts"]
+  "include": ["**/*.ts"]
 }
