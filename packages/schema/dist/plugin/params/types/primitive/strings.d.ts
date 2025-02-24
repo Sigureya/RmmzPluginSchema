@@ -1,6 +1,6 @@
-import { AnnotationBase } from './annotationBase';
-import { ToArrayAnnotation } from './primitiveArray';
-import { Select } from './select';
+import type { AnnotationBase } from './annotationBase';
+import type { ToArrayAnnotation } from './primitiveArray';
+import type { Select } from './select';
 export interface StringArg extends AnnotationBase {
     type: "string";
     default: string;

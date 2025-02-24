@@ -1,4 +1,4 @@
-import { AnnotationBase } from './annotationBase';
+import type { AnnotationBase } from './annotationBase';
 interface ValuePair<T> {
     option: string;
     value: T;
