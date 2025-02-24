@@ -1,21 +1,23 @@
 {
-  "name": "@sigureya/ts-morph-tools",
+  "name": "@rmmz-annotation/schema",
   "version": "0.1.0",
-  "description": "ソースコードをアノテーションに変換",
-  "main": "dist/ts-morph-tools.cjs.js",
-  "module": "dist/ts-morph-tools.es.js",
+  "description": "アノテーションの構造定義",
+  "main": "dist/schema.cjs.js",
+  "module": "dist/schema.es.js",
   "types": "dist/index.d.ts",
   "exports": {
-    "import": "./dist/ts-morph-tools.es.js",
-    "require": "./dist/ts-morph-tools.cjs.js"
+    ".": {
+      "import": "./dist/schema.es.js",
+      "require": "./dist/schema.cjs.js"
+    }
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "postbuild": "eslint --fix \"dist/**/*.d.ts\""
   },
-  "dependencies": {},
   "devDependencies": {
     "vite": "^6.0.11",
     "vite-plugin-dts": "^4.5.0",
