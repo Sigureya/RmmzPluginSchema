@@ -1,6 +1,5 @@
 import type * as Primitve from "./types/primitive";
-import type { Dictionary } from "./types/";
-type OmitBaseParams<T> = Omit<T, keyof Primitve.AnnotationBase>;
+import type { Dictionary, OmitBaseParams } from "./types/";
 
 const create = <T>(data: T, key: string & keyof T) => {
   const value = data[key];
@@ -20,20 +19,24 @@ export const dicEX = (key: string, dic: Dictionary): string => {
   return value === undefined ? key : value;
 };
 
-const makeAnnotationEx = <T>(
-  ant: T,
-  key: ReadonlyArray<string & keyof typeof ant>,
-  dic: Dictionary
-) => {
-  return key.map((k) => create(ant, k)).filter((s) => s !== undefined);
-};
 export const booleanArgAnnotations = (
   bool: OmitBaseParams<Primitve.BooleanArg>,
   dic: Dictionary = {}
-) => {
-  return makeAnnotion(bool, ["on", "off"]);
+): `@${"on" | "off"} ${string}`[] => {
+  return [
+    formatBooleanAnnotation(bool, "on", dic),
+    formatBooleanAnnotation(bool, "off", dic),
+  ].filter((s) => s !== undefined);
 };
 
+export const formatBooleanAnnotation = <K extends "on" | "off">(
+  bool: OmitBaseParams<Primitve.BooleanArg>,
+  key: K,
+  dic: Dictionary = {}
+): `@${K} ${string}` | undefined => {
+  const value = bool[key];
+  return value ? (`@${key} ${dicEX(value, dic)}` as const) : undefined;
+};
 export const typeAnnotation = (type: Pick<Primitve.AnnotationBase, "type">) => {
   return `@type ${type.type}` as const;
 };
