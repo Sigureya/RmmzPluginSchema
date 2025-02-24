@@ -8,17 +8,12 @@ export default defineConfig({
     lib: {
       entry: "src/index.ts",
       name: "ts-morph-tools",
-      fileName: (format) => `vitePlugins.${format}.js`,
+      fileName: (format) => `tsMorph.${format}.js`,
       formats: ["es", "cjs"],
     },
     sourcemap: true,
     rollupOptions: {
-      external: ["vite", "@rmmz-annotation/schema"], // 依存関係を外部モジュールとして扱う
-      output: {
-        globals: {
-          vite: "Vite",
-        },
-      },
+      external: [ "@rmmz-annotation/schema"], // 依存関係を外部モジュールとして扱う
     },
   },
   resolve: {
