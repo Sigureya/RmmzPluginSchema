@@ -13,7 +13,7 @@ export default defineConfig({
     },
     sourcemap: true,
     rollupOptions: {
-      external: ["vite", "@rmmz-annotation/schema"], // 依存関係を外部モジュールとして扱う
+      external: ["vite"], // 依存関係を外部モジュールとして扱う
       output: {
         globals: {
           vite: "Vite",
