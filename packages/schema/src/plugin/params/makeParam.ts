@@ -11,7 +11,10 @@ import {
 import type { AnnotationTypes, Dictionary, ParamTexts } from "./types";
 import { mapping } from "./mapping";
 
-export const uniqueAnnotations = (ant: AnnotationTypes, dic: Dictionary) => {
+export const uniqueAnnotations = (
+  ant: AnnotationTypes,
+  dic: Dictionary = {}
+) => {
   return mapping<`@${string} ${string}`[]>(ant, {
     boolean: (b) => booleanArgAnnotations(b, dic),
     number: (num) => numberArgAnnotations(num),
