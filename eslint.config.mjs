@@ -24,6 +24,7 @@ export default [
           prefer: "type-imports",
         },
       ],
+      "spaced-comment": "error",
     },
   },
 ];
