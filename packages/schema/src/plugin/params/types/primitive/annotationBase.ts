@@ -5,3 +5,4 @@ export interface AnnotationBase<T = unknown> {
   parent?: string;
   default: T;
 }
+export type OmitBaseParams<T> = Omit<T, keyof AnnotationBase>;
