@@ -3,8 +3,9 @@ import tsParser from "@typescript-eslint/parser";
 
 export default [
   {
-    ignores: ["**/*.d.ts"], // d.ts ファイルを無視
-
+    ignores: ["**/*.d.ts", "**/*.js"], // d.ts ファイルを無視
+  },
+  {
     files: ["**/*.ts"],
     languageOptions: {
       parser: tsParser,
