@@ -1,4 +1,4 @@
-import type { AnnotationBase } from './annotationBase';
+import { AnnotationBase } from './annotationBase';
 export interface BooleanArg extends AnnotationBase {
     default: boolean;
     type: "boolean";

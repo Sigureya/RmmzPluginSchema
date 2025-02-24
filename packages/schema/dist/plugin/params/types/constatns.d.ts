@@ -1,4 +1,4 @@
-import type { Actor, Armor, ComboAnnotation, MultilineString, StringArg, Class, CommonEvent, Item, NumberArg, NumberSelect, Skill, State, Switch, Troop, Weapon } from './primitive';
+import { Actor, Armor, ComboAnnotation, MultilineString, StringArg, Class, CommonEvent, Item, NumberArg, NumberSelect, Skill, State, Switch, Troop, Weapon } from './primitive';
 export declare const ANNOTATION_STRING: StringArg;
 export declare const ANNOTATION_MULTILINE_STRING: MultilineString;
 export declare const ANNOTATION_NUMBER: NumberArg;

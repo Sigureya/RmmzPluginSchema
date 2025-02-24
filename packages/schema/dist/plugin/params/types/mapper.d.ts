@@ -1,5 +1,5 @@
-import type { AnnotationBase, BooleanArg, ComboAnnotation, DataIndexArg, FilePathAnnotation, MultilineString, NumberArg, NumberSelect, StringArg, StringSelect, ToArrayAnnotation } from './primitive';
-import type { HasStruct } from './struct';
+import { AnnotationBase, BooleanArg, ComboAnnotation, DataIndexArg, FilePathAnnotation, MultilineString, NumberArg, NumberSelect, StringArg, StringSelect, ToArrayAnnotation } from './primitive';
+import { HasStruct } from './struct';
 type Dispatch<T, Param extends AnnotationBase> = (param: Omit<Param | ToArrayAnnotation<Param>, "default">) => T;
 export interface AnnotationMapper<T> {
     number: Dispatch<T, NumberArg>;

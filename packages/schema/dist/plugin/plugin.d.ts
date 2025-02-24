@@ -1,4 +1,4 @@
-import type { ParameterBase, StructParameters } from './params';
+import { ParameterBase, StructParameters } from './params';
 export interface PluginBase {
     help: string;
     base: string[];

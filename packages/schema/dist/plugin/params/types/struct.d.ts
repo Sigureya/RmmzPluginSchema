@@ -1,4 +1,4 @@
-import type { AnnotationBase, Primitive_Numbers, Primitive_Strings, BooleanArg, Primitive_NumbersArray, Primitive_StringsArray, Primitive, PrimitiveArray } from './primitive';
+import { AnnotationBase, Primitive_Numbers, Primitive_Strings, BooleanArg, Primitive_NumbersArray, Primitive_StringsArray, Primitive, PrimitiveArray } from './primitive';
 export interface StructBase {
     structName: string;
     params: ParameterBase;
