@@ -15,8 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build",
-    "postbuild": "eslint --fix \"dist/**/*.d.ts\""
+    "build": "vite build"
   },
   "devDependencies": {
     "vite": "^6.0.11",
