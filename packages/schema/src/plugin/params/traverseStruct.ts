@@ -1,6 +1,6 @@
 import type {
   AnnotationPrimitiveTypes,
-  BaseStruct,
+  StructInterface,
   StructArray,
   StructBase,
   StructComplete,
@@ -47,7 +47,10 @@ export const traverseStruct = <
 };
 
 const hasStruct = (
-  ant: AnnotationPrimitiveTypes | BaseStruct<object> | StructArray<object[]>
+  ant:
+    | AnnotationPrimitiveTypes
+    | StructInterface<object>
+    | StructArray<object[]>
 ) => {
   return ant.type === "struct" || ant.type === "struct[]";
 };
