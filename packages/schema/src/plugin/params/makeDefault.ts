@@ -1,4 +1,4 @@
-import { dicEX } from "./makeAnnotation";
+import { lookupDictionary } from "./makeAnnotation";
 import type * as Types from "./types/";
 
 // const isNotTextType = (annotation: Types.AnnotationTypes) => {
@@ -19,7 +19,7 @@ export const makeDefaultValue = (
   }
   const value = makeDefault(annotation);
   return typeof value === "string"
-    ? dicEX(value, dic)
+    ? lookupDictionary(value, dic)
     : JSON.stringify(value, null, 0);
 };
 
