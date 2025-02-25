@@ -2,7 +2,7 @@ import type {
   AnnotationPrimitiveTypes,
   BaseStruct,
   StructArray,
-  StructBase2,
+  StructBase,
   StructComplete,
   StructWithParams,
 } from "./types/";
@@ -21,7 +21,7 @@ export const maxDepth = (
 
 export const flatStructs = (
   annotation: AnnotationPrimitiveTypes | Omit<StructComplete, "default">
-): Set<StructBase2> => {
+): Set<StructBase> => {
   return traverseStruct(
     annotation,
     (s, acc) => {
@@ -30,7 +30,7 @@ export const flatStructs = (
       }
       return acc;
     },
-    new Set<StructBase2>()
+    new Set<StructBase>()
   );
 };
 

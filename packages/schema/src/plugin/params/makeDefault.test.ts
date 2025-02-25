@@ -2,7 +2,7 @@ import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
 import { makeDefaultStruct, makeDefaultValue } from "./makeDefault";
 import type { DefaultValueType } from "./types/metaTypes/metaTypes";
-import type { Struct } from "./types/struct2";
+import type { Struct } from "./types/";
 
 interface Parson {
   name: string;
