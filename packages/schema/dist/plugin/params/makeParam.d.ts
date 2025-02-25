@@ -1,3 +1,5 @@
-import { AnnotationTypes, ParamTexts } from './types';
-export declare const uniqueAnnotations: (ant: AnnotationTypes, dic: Record<string, string>) => `@${string} ${string}`[];
-export declare const makeParam: (name: string, ant: AnnotationTypes, mode?: "@param" | "@arg", dic?: Record<string, string>) => ParamTexts;
+import { AnnotationPrimitiveTypes, Dictionary, ParamTexts } from './types';
+import { StructComplete } from './types/struct2';
+export declare const uniqueAnnotations: (ant: AnnotationPrimitiveTypes | StructComplete, dic?: Dictionary) => `@${string} ${string}`[];
+export declare const makeParam: (name: string, ant: AnnotationPrimitiveTypes | StructComplete, mode?: "@param" | "@arg", dic?: Dictionary) => ParamTexts;
+export declare const joinAnntations: (paramTexts: ParamTexts) => string[];

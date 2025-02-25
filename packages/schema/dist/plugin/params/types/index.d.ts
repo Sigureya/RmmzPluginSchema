@@ -3,3 +3,5 @@ export * from './constatns';
 export * from './mapper';
 export * from './param';
 export * from './struct';
+export * from './struct2';
+export * from './dictionary';

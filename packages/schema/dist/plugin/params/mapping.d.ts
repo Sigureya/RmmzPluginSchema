@@ -1,3 +1,4 @@
-import { AnnotationTypes } from './types';
+import { AnnotationPrimitiveTypes } from './types';
 import { AnnotationMapper } from './types/mapper';
-export declare const mapping: <T>(annotation: AnnotationTypes, mapper: AnnotationMapper<T>) => T;
+import { StructComplete } from './types/struct2';
+export declare const mapping: <T>(annotation: AnnotationPrimitiveTypes | StructComplete, mapper: AnnotationMapper<T>) => T;
