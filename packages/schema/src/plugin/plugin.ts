@@ -1,13 +1,13 @@
-import type { ParameterBase, StructParameters } from "./params";
+import type { ParameterBase2, StructParameters2 } from "./params";
 
 export interface PluginBase {
   help: string;
   base: string[];
   orderAfter: string[];
   orderBefore: string[];
-  params: ParameterBase;
+  params: ParameterBase2;
 }
 
 export interface Plugin<Params extends object> extends PluginBase {
-  params: StructParameters<Params>;
+  params: StructParameters2<Params>;
 }

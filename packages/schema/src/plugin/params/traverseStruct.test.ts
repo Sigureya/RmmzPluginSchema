@@ -1,14 +1,14 @@
 import { test, expect, describe } from "vitest";
 
 import { maxDepth, flatStructs } from "./traverseStruct";
-import type { NumberArg, Type_Struct } from "./types";
+import type { NumberArg, Struct } from "./types";
 
 interface Parson {
   name: string;
   age: number;
 }
 
-const mockParson: Type_Struct<Parson> = {
+const mockParson: Struct<Parson> = {
   type: "struct",
   struct: {
     structName: "Parson",
@@ -30,7 +30,7 @@ interface Home {
   address: string;
   family: Parson[];
 }
-const mockHome: Omit<Type_Struct<Home>, "default"> = {
+const mockHome: Struct<Home> = {
   type: "struct",
   struct: {
     structName: "Home",

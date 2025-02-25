@@ -32,7 +32,7 @@ const stringify = <T>(value: Exclude<T, string>): string => {
 
 const lookUp = (
   ant: Exclude<
-    Extract<Types.AnnotationTypes, { default: string }>,
+    Extract<Types.AnnotationPrimitiveTypes, { default: string }>,
     Types.FilePathAnnotation
   >,
   dic: Types.Dictionary

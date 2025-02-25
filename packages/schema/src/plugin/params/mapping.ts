@@ -1,8 +1,9 @@
+import type { AnnotationPrimitiveTypes } from "./types";
 import type { AnnotationMapper } from "./types/mapper";
-import type { AnnotationTypes2, StructComplete } from "./types/struct2";
+import type { StructComplete } from "./types/struct2";
 
 export const mapping = <T>(
-  annotation: AnnotationTypes2,
+  annotation: AnnotationPrimitiveTypes | StructComplete,
   mapper: AnnotationMapper<T>
 ) => {
   switch (annotation.type) {
@@ -19,9 +20,9 @@ export const mapping = <T>(
       return mapper.string(annotation);
     case "boolean":
       return mapper.boolean(annotation);
-    // case "struct":
-    // case "struct[]":
-    //   return mapper.struct(annotation);
+    case "struct":
+      // case "struct[]":
+      return mapper.struct(annotation);
     case "select":
     case "select[]":
       return mapper.select(annotation);

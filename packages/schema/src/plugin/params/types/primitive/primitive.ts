@@ -15,3 +15,10 @@ export type PrimitiveArray<T extends number[] | string[]> = T extends number[]
   : T extends string[]
   ? Primitive_StringsArray
   : never;
+
+export type AnnotationPrimitiveTypes =
+  | BooleanArg
+  | Primitive_Numbers
+  | Primitive_NumbersArray
+  | Primitive_Strings
+  | Primitive_StringsArray;

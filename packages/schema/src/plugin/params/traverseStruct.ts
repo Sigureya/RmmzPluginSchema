@@ -19,7 +19,7 @@ export const maxDepth = (
 };
 
 export const flatStructs = (
-  annotation: AnnotationPrimitiveTypes | StructComplete
+  annotation: AnnotationPrimitiveTypes | Omit<StructComplete, "default">
 ): Set<StructBase2> => {
   return traverseStruct(
     annotation,
@@ -35,7 +35,7 @@ export const flatStructs = (
 
 export const traverseStruct = <
   Result,
-  Ant extends AnnotationTypes | StructWithParams
+  Ant extends AnnotationPrimitiveTypes | StructWithParams
 >(
   obj: Ant,
   callback: (structName: Ant, acc: Result, depth: number) => Result,
@@ -49,8 +49,11 @@ const hasStruct = (ant: AnnotationTypes | BaseStruct<object>) => {
   return ant.type === "struct" || ant.type === "struct[]";
 };
 
-const traverseHelper = <Result, Ant extends AnnotationTypes | StructWithParams>(
-  annotation: AnnotationTypes | StructWithParams,
+const traverseHelper = <
+  Result,
+  Ant extends AnnotationPrimitiveTypes | StructWithParams
+>(
+  annotation: Ant,
   fn: (annotation: Ant, value: Result, depth: number) => Result,
   result: Result,
   depth: number = 0

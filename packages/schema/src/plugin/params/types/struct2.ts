@@ -1,6 +1,5 @@
 import type { StructNode_Error } from "./errors";
 import type {
-  AnnotationBase,
   AnnotationBaseTexts,
   BooleanArg,
   Primitive,
@@ -9,10 +8,20 @@ import type {
   Primitive_Strings,
   Primitive_StringsArray,
   PrimitiveArray,
+  AnnotationPrimitiveTypes,
 } from "./primitive";
-import type { AnnotationPrimitiveTypes, AnnotationTypes } from "./struct";
+import type { AnnotationTypes } from "./struct";
+export interface StructBase2 {
+  structName: string;
+  params: ParameterBase2;
+}
+export interface ParameterBase2
+  extends Record<
+    string,
+    AnnotationTypes | AnnotationPrimitiveTypes | StructUnion
+  > {}
 
-export interface StructRoot<T extends object>
+export interface Struct<T extends object>
   extends NodeItem_Struct<T, T, "root"> {}
 
 type StructUnion =
@@ -20,29 +29,19 @@ type StructUnion =
   | NodeItem_Struct<object, object, string>
   | NodeItem_TypelessStruct<object>;
 
-export interface StructBase2 {
-  structName: string;
-  params: ParameterBase2;
-}
-
-interface ParameterBase2
-  extends Record<
-    string,
-    AnnotationTypes | AnnotationPrimitiveTypes | StructUnion
-  > {}
-
 interface StructType2<
   T extends object,
   KnowTypes extends object,
   Path extends string = ""
 > {
   structName: string;
-  params: StructParameters2<T, KnowTypes, Path>;
+  params: StructParametersNode<T, KnowTypes, Path>;
 }
-type StructParameters2<
+
+type StructParametersNode<
   T extends object,
   KnowTypes extends object,
-  Path extends string = ""
+  Path extends string
 > = {
   [Key in Extract<keyof T, string>]: ParamType2<
     T[Key],
@@ -50,6 +49,11 @@ type StructParameters2<
     `${Path}.${Key}`
   >;
 };
+export type StructParameters2<T extends object> = StructParametersNode<
+  T,
+  T,
+  "root"
+>;
 
 export type AnnotationTypes2 =
   | BooleanArg
@@ -102,10 +106,11 @@ export interface NodeItem_Struct<
   default?: T;
 }
 
-export type StructUnion2<T extends object> =
+export type StructUnion2<T extends object = object> =
   | StructWithName<T>
   | StructWithParams<T>
-  | StructWithDefault<T>;
+  | StructWithDefault<T>
+  | StructComplete<T>;
 
 export interface BaseStruct<T extends object> extends AnnotationBaseTexts {
   type: "struct";
@@ -143,24 +148,11 @@ export interface StructWithParams<T extends object = object>
   };
   default?: T;
 }
-interface StructWithDefault<T extends object> extends BaseStruct<T> {
+export interface StructWithDefault<T extends object> extends BaseStruct<T> {
   default: T;
 }
 
 export interface NodeItem_TypelessStruct<T extends object = object> {
   type: "struct";
   default: T;
-}
-
-interface Parson {
-  name: string;
-  age: number;
-}
-interface Home {
-  name: string;
-  address: {
-    street: string;
-    city: string;
-  };
-  family: Parson[];
 }
