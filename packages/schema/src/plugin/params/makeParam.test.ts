@@ -1,5 +1,5 @@
 import { test, expect, describe } from "vitest";
-import { makeParam, uniqueAnnotations } from "./makeParam";
+import { makeParam, uniqueAnnotations, joinAnntations } from "./makeParam";
 import type {
   BooleanArg,
   FilePathAnnotation,
@@ -10,6 +10,20 @@ import type {
   ToArrayAnnotation,
 } from "./types";
 import * as Make from "./makeAnnotation";
+
+describe("joinAnntations", () => {
+  test("", () => {
+    const paramTexts: ParamTexts = {
+      name: "@param name",
+      type: "@type string",
+      default: "@default abc",
+      base: [],
+      other: [],
+    };
+    const result = joinAnntations(paramTexts);
+    expect(result).toBe("\n@param name\n@type string\n@default abc");
+  });
+});
 
 describe("makeParam", () => {
   describe("boolean", () => {

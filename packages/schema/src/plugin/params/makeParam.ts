@@ -42,3 +42,14 @@ export const makeParam = (
     base: baseAnnotions(ant, dic),
   };
 };
+
+export const joinAnntations = (paramTexts: ParamTexts): string => {
+  return [
+    "",
+    paramTexts.name,
+    paramTexts.type,
+    paramTexts.default,
+    ...paramTexts.base,
+    ...paramTexts.other,
+  ].join("\n");
+};
