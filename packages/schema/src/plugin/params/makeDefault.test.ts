@@ -60,11 +60,12 @@ const createMockHome = (
             },
           },
         },
+        default: home.address,
       },
       family: {
         type: "struct[]",
         struct: createMockParson().struct,
-        default: [],
+        default: home.family,
       },
     },
   },
