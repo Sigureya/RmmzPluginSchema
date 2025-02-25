@@ -1,27 +1,28 @@
 import { makeDefaultValue } from "./makeDefault";
 import {
-  baseAnnotion,
-  booleanArgAnnotations,
+  baseAnnotions,
+  booleanAnnotations,
   comboAnnotations,
   fileAnnotations,
-  numberArgAnnotations,
+  numberAnnotations,
   selectAnnotations,
   typeAnnotation,
 } from "./makeAnnotation";
-import type { AnnotationTypes, ParamTexts } from "./types";
+import type { AnnotationTypes, Dictionary, ParamTexts } from "./types";
 import { mapping } from "./mapping";
+import { EMPTY_DICTINARY } from "./constants";
 
 export const uniqueAnnotations = (
   ant: AnnotationTypes,
-  dic: Record<string, string>
+  dic: Dictionary = EMPTY_DICTINARY
 ) => {
   return mapping<`@${string} ${string}`[]>(ant, {
-    boolean: (b) => booleanArgAnnotations(b),
-    number: (num) => numberArgAnnotations(num),
+    boolean: (b) => booleanAnnotations(b, dic),
+    number: (num) => numberAnnotations(num),
     file: (f) => fileAnnotations(f),
     string: () => [],
     struct: () => [],
-    select: (s) => selectAnnotations(s),
+    select: (s) => selectAnnotations(s, dic),
     combo: (c) => comboAnnotations(c),
     dataIndex: () => [],
   });
@@ -31,13 +32,24 @@ export const makeParam = (
   name: string,
   ant: AnnotationTypes,
   mode: "@param" | "@arg" = "@param",
-  dic: Record<string, string> = {}
+  dic: Dictionary = EMPTY_DICTINARY
 ): ParamTexts => {
   return {
     other: uniqueAnnotations(ant, dic),
     default: `@default ${makeDefaultValue(ant)}`,
     name: `${mode} ${name}`,
     type: typeAnnotation(ant),
-    base: baseAnnotion(ant),
+    base: baseAnnotions(ant, dic),
   };
+};
+
+export const joinAnntations = (paramTexts: ParamTexts): string[] => {
+  return [
+    "",
+    paramTexts.name,
+    paramTexts.type,
+    paramTexts.default,
+    ...paramTexts.base,
+    ...paramTexts.other,
+  ];
 };

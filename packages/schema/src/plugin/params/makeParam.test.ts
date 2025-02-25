@@ -1,5 +1,5 @@
 import { test, expect, describe } from "vitest";
-import { makeParam, uniqueAnnotations } from "./makeParam";
+import { makeParam, uniqueAnnotations, joinAnntations } from "./makeParam";
 import type {
   BooleanArg,
   FilePathAnnotation,
@@ -10,6 +10,20 @@ import type {
   ToArrayAnnotation,
 } from "./types";
 import * as Make from "./makeAnnotation";
+
+describe("joinAnntations", () => {
+  test("", () => {
+    const paramTexts: ParamTexts = {
+      name: "@param name",
+      type: "@type string",
+      default: "@default abc",
+      base: [],
+      other: [],
+    };
+    const result: string[] = joinAnntations(paramTexts);
+    expect(result).toEqual(["", "@param name", "@type string", "@default abc"]);
+  });
+});
 
 describe("makeParam", () => {
   describe("boolean", () => {
@@ -84,7 +98,7 @@ describe("uniqueAnnotations", () => {
     });
 
     test("matches Make.booleanArgAnnotations output", () => {
-      expect(result).toEqual(Make.booleanArgAnnotations(ant));
+      expect(result).toEqual(Make.booleanAnnotations(ant));
     });
     test("correctly generates annotations for an undefined boolean argument", () => {
       const ant: BooleanArg = {
@@ -95,7 +109,7 @@ describe("uniqueAnnotations", () => {
       };
       const result = uniqueAnnotations(ant);
       expect(result).toEqual([]);
-      expect(result).toEqual(Make.booleanArgAnnotations(ant));
+      expect(result).toEqual(Make.booleanAnnotations(ant));
     });
   });
 
@@ -114,7 +128,7 @@ describe("uniqueAnnotations", () => {
     });
 
     test("matches Make.numberArgAnnotations output", () => {
-      expect(result).toEqual(Make.numberArgAnnotations(ant));
+      expect(result).toEqual(Make.numberAnnotations(ant));
     });
   });
   describe("number undefined", () => {
@@ -130,7 +144,7 @@ describe("uniqueAnnotations", () => {
       expect(result).toEqual([]);
     });
     test("matches Make.numberArgAnnotations output", () => {
-      expect(result).toEqual(Make.numberArgAnnotations(ant));
+      expect(result).toEqual(Make.numberAnnotations(ant));
     });
   });
 
@@ -146,7 +160,7 @@ describe("uniqueAnnotations", () => {
     });
 
     test("matches Make.baseAnnotion output", () => {
-      expect(result).toEqual(Make.baseAnnotion(ant));
+      expect(result).toEqual(Make.baseAnnotions(ant));
     });
   });
 
