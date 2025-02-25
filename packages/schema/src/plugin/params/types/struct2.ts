@@ -9,7 +9,7 @@ import type {
   Primitive_StringsArray,
   PrimitiveArray,
 } from "./primitive";
-import type { AnnotationTypes } from "./struct";
+import type { AnnotationPrimitiveTypes, AnnotationTypes } from "./struct";
 
 interface StructRoot<T extends object> extends StructType2<T, T, "root"> {}
 
@@ -23,13 +23,16 @@ interface StructName {
   params?: ParameterBase2;
 }
 
-interface StructBase2 {
+export interface StructBase2 {
   structName: string;
   params: ParameterBase2;
 }
 
 interface ParameterBase2
-  extends Record<string, AnnotationTypes | StructUnion> {}
+  extends Record<
+    string,
+    AnnotationTypes | AnnotationPrimitiveTypes | StructUnion
+  > {}
 
 interface StructType2<
   T extends object,
