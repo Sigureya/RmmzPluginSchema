@@ -44,7 +44,7 @@ const lookUp = (
   return lookupDictionary(ant.default, dic);
 };
 export const makeDefaultStruct = <T extends object>(
-  annotation: Types.Type_Struct<T>
+  annotation: BaseStruct<T>
 ): T => {
   return annotation.default === undefined
     ? (makeDefaultHelper(annotation, () => undefined) as T)
@@ -63,13 +63,10 @@ const makeDefaultHelper = <T extends object>(
   if (ant.default !== undefined) {
     return ant.default;
   }
-  if (ant.type !== "struct") {
+  if (ant.type !== "struct" || ant.struct === undefined) {
     throw new Error(`unknown type:${ant.type}`, {
       cause: ant,
     });
-  }
-  if (ant.struct === undefined) {
-    throw new Error("struct is undefined");
   }
   // 処理方法の関係上、名前引きの方が速い
   if (ant.struct.structName !== undefined) {
