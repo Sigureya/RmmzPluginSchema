@@ -32,7 +32,7 @@ interface StructType<
   params: StructParametersNode<T, KnowTypes, Path>;
 }
 
-export type StructParameters2<T extends object> = StructParametersNode<
+export type StructParameters<T extends object> = StructParametersNode<
   T,
   T,
   "root"
