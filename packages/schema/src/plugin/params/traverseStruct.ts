@@ -1,12 +1,13 @@
+import type { AnnotationPrimitiveTypes, AnnotationTypes } from "./types/";
 import type {
-  AnnotationPrimitiveTypes,
-  AnnotationTypes,
-  StructBase,
-} from "./types/";
-import type { BaseStruct, StructWithParams } from "./types/struct2";
+  BaseStruct,
+  StructBase2,
+  StructComplete,
+  StructWithParams,
+} from "./types/struct2";
 
 export const maxDepth = (
-  obj: AnnotationPrimitiveTypes | StructWithParams<object>
+  obj: AnnotationPrimitiveTypes | StructWithParams
 ): number => {
   return traverseStruct(
     obj,
@@ -17,7 +18,9 @@ export const maxDepth = (
   );
 };
 
-export const flatStructs = (annotation: AnnotationTypes): Set<StructBase> => {
+export const flatStructs = (
+  annotation: AnnotationPrimitiveTypes | StructComplete
+): Set<StructBase2> => {
   return traverseStruct(
     annotation,
     (s, acc) => {
@@ -26,13 +29,13 @@ export const flatStructs = (annotation: AnnotationTypes): Set<StructBase> => {
       }
       return acc;
     },
-    new Set()
+    new Set<StructBase2>()
   );
 };
 
 export const traverseStruct = <
   Result,
-  Ant extends AnnotationTypes | StructWithParams<object>
+  Ant extends AnnotationTypes | StructWithParams
 >(
   obj: Ant,
   callback: (structName: Ant, acc: Result, depth: number) => Result,
@@ -46,11 +49,8 @@ const hasStruct = (ant: AnnotationTypes | BaseStruct<object>) => {
   return ant.type === "struct" || ant.type === "struct[]";
 };
 
-const traverseHelper = <
-  Result,
-  Ant extends AnnotationTypes | StructWithParams<object>
->(
-  annotation: AnnotationTypes | StructWithParams<object>,
+const traverseHelper = <Result, Ant extends AnnotationTypes | StructWithParams>(
+  annotation: AnnotationTypes | StructWithParams,
   fn: (annotation: Ant, value: Result, depth: number) => Result,
   result: Result,
   depth: number = 0
