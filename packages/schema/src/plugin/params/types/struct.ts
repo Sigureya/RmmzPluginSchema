@@ -21,6 +21,12 @@ type StructParameters<T> = {
   [Key in Extract<keyof T, string>]: ParamType<T[Key]>;
 };
 
+export type AnnotationTypes =
+  | Type_StructArray<object[]>
+  | Type_Struct<object>
+  | AnnotationPrimitiveTypes
+  | StructNode_Error;
+
 type ParamType<T> = T extends number | string | boolean
   ? Primitive<T>
   : T extends number[] | string[]
@@ -30,12 +36,6 @@ type ParamType<T> = T extends number | string | boolean
   : T extends object
   ? Type_Struct<T>
   : StructNode_Error<"unknown">;
-
-export type AnnotationTypes =
-  | Type_StructArray<object[]>
-  | Type_Struct<object>
-  | AnnotationPrimitiveTypes
-  | StructNode_Error;
 
 interface HasStruct extends Omit<AnnotationBase, "default"> {
   struct: StructBase;

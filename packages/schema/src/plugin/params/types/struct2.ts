@@ -38,6 +38,11 @@ interface StructType2<
   params: StructParametersNode<T, KnowTypes, Path>;
 }
 
+export type StructParameters2<T extends object> = StructParametersNode<
+  T,
+  T,
+  "root"
+>;
 type StructParametersNode<
   T extends object,
   KnowTypes extends object,
@@ -49,11 +54,6 @@ type StructParametersNode<
     `${Path}.${Key}`
   >;
 };
-export type StructParameters2<T extends object> = StructParametersNode<
-  T,
-  T,
-  "root"
->;
 
 export type AnnotationTypes2 =
   | BooleanArg
@@ -81,30 +81,6 @@ export type ParamType2<
   : T extends object
   ? NodeItem_Struct<T, KnowTypes, Path> | NodeItem_TypelessStruct<T>
   : StructNode_Error<`never:${Path}`>;
-
-export interface HasStruct2 {
-  struct: StructBase2;
-  default?: unknown;
-}
-export interface NodeItem_Array<
-  Array extends object[],
-  KnowTypes extends object,
-  Path extends string = "array?"
-> extends HasStruct2 {
-  type: "struct[]";
-  struct: StructType2<Array[number], KnowTypes | Array[number], Path>;
-  default: Array;
-}
-
-export interface NodeItem_Struct<
-  T extends object,
-  KnowTypes extends object,
-  Path extends string = "struct?"
-> extends HasStruct2 {
-  type: "struct";
-  struct: StructType2<T, KnowTypes, Path>;
-  default?: T;
-}
 
 export type StructUnion2<T extends object = object> =
   | StructWithName<T>
@@ -155,4 +131,27 @@ export interface StructWithDefault<T extends object> extends BaseStruct<T> {
 export interface NodeItem_TypelessStruct<T extends object = object> {
   type: "struct";
   default: T;
+}
+export interface HasStruct2 {
+  struct: StructBase2;
+  default?: unknown;
+}
+
+interface NodeItem_Array<
+  Array extends object[],
+  KnowTypes extends object,
+  Path extends string = "array?"
+> extends HasStruct2 {
+  type: "struct[]";
+  struct: StructType2<Array[number], KnowTypes | Array[number], Path>;
+  default: Array;
+}
+interface NodeItem_Struct<
+  T extends object,
+  KnowTypes extends object,
+  Path extends string = "struct?"
+> extends HasStruct2 {
+  type: "struct";
+  struct: StructType2<T, KnowTypes, Path>;
+  default?: T;
 }
