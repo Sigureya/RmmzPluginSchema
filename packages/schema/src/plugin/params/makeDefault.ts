@@ -1,10 +1,10 @@
 import { EMPTY_DICTINARY } from "./constants";
 import { lookupDictionary } from "./makeAnnotation";
 import type * as Types from "./types/";
-import type { BaseStruct } from "./types/";
+import type { StructInterface } from "./types/";
 
 export const makeDefaultValue = (
-  annotation: Types.AnnotationPrimitiveTypes | BaseStruct<object>,
+  annotation: Types.AnnotationPrimitiveTypes | StructInterface<object>,
   dic: Types.Dictionary = EMPTY_DICTINARY
 ): string => {
   switch (annotation.type) {
@@ -44,7 +44,7 @@ const lookUp = (
   return lookupDictionary(ant.default, dic);
 };
 export const makeDefaultStruct = <T extends object>(
-  annotation: BaseStruct<T>
+  annotation: StructInterface<T>
 ): T => {
   return annotation.default === undefined
     ? (makeDefaultHelper(annotation, () => undefined) as T)
@@ -52,7 +52,7 @@ export const makeDefaultStruct = <T extends object>(
 };
 
 const makeDefaultHelper = <T extends object>(
-  ant: BaseStruct<T> | Types.AnnotationPrimitiveTypes,
+  ant: StructInterface<T> | Types.AnnotationPrimitiveTypes,
   fn: (typename: string) => T | undefined,
   depth: number = 0
 ) => {
