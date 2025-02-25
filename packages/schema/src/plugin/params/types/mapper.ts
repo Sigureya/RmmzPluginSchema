@@ -12,7 +12,7 @@ import type {
   ToArrayAnnotation,
 } from "./primitive";
 // import type { HasStruct } from "./struct";
-import type { StructComplete } from "./struct2";
+import type { StructComplete } from "./struct";
 
 type Dispatch<T, Param extends AnnotationBase> = (
   param: Omit<Param | ToArrayAnnotation<Param>, "default">

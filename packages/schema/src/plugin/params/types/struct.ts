@@ -1,55 +1,154 @@
 import type { StructNode_Error } from "./errors";
 import type {
-  AnnotationBase,
+  AnnotationBaseTexts,
   Primitive,
   PrimitiveArray,
   AnnotationPrimitiveTypes,
 } from "./primitive";
-
-interface StructBase {
+export interface StructBase2 {
   structName: string;
-  params: ParameterBase;
+  params: ParameterBase2;
 }
-interface ParameterBase extends Record<string, AnnotationTypes> {}
+export interface ParameterBase2
+  extends Record<
+    string,
+    AnnotationTypes2 | AnnotationPrimitiveTypes | StructUnion
+  > {}
 
-interface Struct<T extends object> extends StructBase {
+export interface Struct<T extends object>
+  extends NodeItem_Struct<T, T, "root"> {}
+
+type StructUnion =
+  | NodeItem_Array<object[], object, string>
+  | NodeItem_Struct<object, object, string>
+  | NodeItem_TypelessStruct<object>;
+
+interface StructType2<
+  T extends object,
+  KnowTypes extends object,
+  Path extends string = ""
+> {
   structName: string;
-  params: StructParameters<T>;
+  params: StructParametersNode<T, KnowTypes, Path>;
 }
 
-type StructParameters<T> = {
-  [Key in Extract<keyof T, string>]: ParamType<T[Key]>;
+export type StructParameters2<T extends object> = StructParametersNode<
+  T,
+  T,
+  "root"
+>;
+type StructParametersNode<
+  T extends object,
+  KnowTypes extends object,
+  Path extends string
+> = {
+  [Key in Extract<keyof T, string>]: ParamType2<
+    T[Key],
+    KnowTypes,
+    `${Path}.${Key}`
+  >;
 };
 
-export type AnnotationTypes =
-  | Type_StructArray<object[]>
-  | Type_Struct<object>
+export type AnnotationTypes2 =
   | AnnotationPrimitiveTypes
-  | StructNode_Error;
+  | StructNode_Error
+  | StructUnion;
 
-type ParamType<T> = T extends number | string | boolean
+export type ParamType2<
+  T,
+  KnowTypes extends object,
+  Path extends string = "?"
+> = T extends number | string | boolean
   ? Primitive<T>
   : T extends number[] | string[]
   ? PrimitiveArray<T>
+  : T extends KnowTypes
+  ? StructNode_Error<Path>
+  : T extends KnowTypes[]
+  ? StructNode_Error<`${Path}[]`>
   : T extends object[]
-  ? Type_StructArray<T>
+  ? NodeItem_Array<T, KnowTypes, Path>
   : T extends object
-  ? Type_Struct<T>
-  : StructNode_Error<"unknown">;
+  ? NodeItem_Struct<T, KnowTypes, Path> | NodeItem_TypelessStruct<T>
+  : StructNode_Error<`never:${Path}`>;
 
-interface HasStruct extends Omit<AnnotationBase, "default"> {
-  struct: StructBase;
-  default?: unknown;
+export type StructUnion2<T extends object = object> =
+  | StructWithName<T>
+  | StructWithParams<T>
+  | StructWithDefault<T>
+  | StructComplete<T>;
+
+export interface BaseStruct<T extends object> extends AnnotationBaseTexts {
+  type: "struct";
+  struct?: {
+    structName?: string;
+    params?: ParameterBase2;
+  };
+  default?: T;
 }
 
-interface Type_StructArray<Array extends object[]> extends HasStruct {
+export interface StructComplete<T extends object = object>
+  extends BaseStruct<T> {
+  type: "struct";
+  struct: {
+    structName: string;
+    params: ParameterBase2;
+  };
+  default: T;
+}
+
+export interface StructWithName<T extends object = object>
+  extends BaseStruct<T> {
+  struct: {
+    structName: string;
+    params?: ParameterBase2;
+  };
+  default?: T;
+}
+
+export interface StructWithParams<T extends object = object>
+  extends BaseStruct<T> {
+  struct: {
+    structName?: string;
+    params: ParameterBase2;
+  };
+  default?: T;
+}
+export interface StructWithDefault<T extends object> extends BaseStruct<T> {
+  default: T;
+}
+
+export interface StructArray<Array extends object[] = object[]>
+  extends HasStruct2 {
   type: "struct[]";
-  struct: Struct<Array[number]>;
+  struct: StructBase2;
   default: Array;
 }
 
-interface Type_Struct<T extends object> extends HasStruct {
+export interface NodeItem_TypelessStruct<T extends object = object> {
   type: "struct";
-  struct: Struct<T>;
+  default: T;
+}
+export interface HasStruct2 {
+  struct: StructBase2;
+  default?: unknown;
+}
+
+interface NodeItem_Array<
+  Array extends object[],
+  KnowTypes extends object,
+  Path extends string = "array?"
+> extends HasStruct2 {
+  type: "struct[]";
+  struct: StructType2<Array[number], KnowTypes | Array[number], Path>;
+  default: Array;
+}
+interface NodeItem_Struct<
+  T extends object,
+  KnowTypes extends object,
+  Path extends string = "struct?"
+> extends HasStruct2 {
+  type: "struct";
+  struct: StructType2<T, KnowTypes, Path>;
   default?: T;
 }
