@@ -1,6 +1,7 @@
 import { EMPTY_DICTINARY } from "./constants";
 import { lookupDictionary } from "./makeAnnotation";
 import type * as Types from "./types/";
+import type { BaseStruct } from "./types/struct2";
 
 export const makeDefaultValue = (
   annotation: Types.AnnotationTypes,
@@ -46,27 +47,68 @@ export const makeDefaultStruct = <T extends object>(
   annotation: Types.Type_Struct<T>
 ): T => {
   return annotation.default === undefined
-    ? (makeDefaultHelper(annotation) as T)
+    ? (makeDefaultHelper(annotation, () => undefined) as T)
     : annotation.default;
 };
-const MAX_RECURSION_DEPTH = 32 as const;
-const makeDefaultHelper = (annotation: Types.AnnotationTypes, depth = 0) => {
+
+const makeDefaultHelper = <T extends object>(
+  ant: BaseStruct<T> | Types.AnnotationPrimitiveTypes,
+  fn: (typename: string) => T | undefined,
+  depth: number = 0
+) => {
   if (depth > MAX_RECURSION_DEPTH) {
     throw new Error("Max depth exceeded");
   }
 
+  if (ant.default !== undefined) {
+    return ant.default;
+  }
+  if (ant.type !== "struct") {
+    throw new Error(`unknown type:${ant.type}`, {
+      cause: ant,
+    });
+  }
+  if (ant.struct === undefined) {
+    throw new Error("struct is undefined");
+  }
+  // 処理方法の関係上、名前引きの方が速い
+  if (ant.struct.structName !== undefined) {
+    const result = fn(ant.struct.structName);
+    if (result !== undefined) {
+      return result;
+    }
+  }
+  if (ant.struct.params === undefined) {
+    throw new Error("struct is invalid");
+  }
+
+  // 最後の手段として、paramsを使って生成する
+  type Result = Record<string, unknown>;
+  return Object.entries(ant.struct.params).reduce<Result>((prev, v) => {
+    prev[v[0]] = makeDefaultHelper(v[1] as typeof ant, fn, depth + 1);
+    return prev;
+  }, {});
+};
+
+const MAX_RECURSION_DEPTH = 32 as const;
+const makeDefaultHelperOld = (annotation: Types.AnnotationTypes, depth = 0) => {
+  if (depth > MAX_RECURSION_DEPTH) {
+    throw new Error("Max depth exceeded");
+  }
+  if (annotation.type === "error") {
+    throw new Error("", {
+      cause: annotation,
+    });
+  }
+
   if (annotation.type === "struct") {
     type Result = Record<string, unknown>;
-    return Object.entries(annotation.struct.params).reduce<Result>(
-      (prev, v) => {
-        prev[v[0]] = makeDefaultHelper(
-          v[1] as Types.AnnotationTypes,
-          depth + 1
-        );
-        return prev;
-      },
-      {}
-    );
+    return Object.entries<Types.AnnotationTypes>(
+      annotation.struct.params
+    ).reduce<Result>((prev, v) => {
+      prev[v[0]] = makeDefaultHelperOld(v[1], depth + 1);
+      return prev;
+    }, {});
   }
   return annotation.default;
 };
