@@ -2,6 +2,7 @@ import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
 import { makeDefaultStruct, makeDefaultValue } from "./makeDefault";
 import type { DefaultValueType } from "./types/metaTypes/metaTypes";
+import type { Struct } from "./types/struct2";
 
 interface Parson {
   name: string;
@@ -16,7 +17,7 @@ interface Home {
   family: Parson[];
 }
 
-const createMockParson = (default_?: Parson): Types.Type_Struct<Parson> => ({
+const createMockParson = (default_?: Parson): Struct<Parson> => ({
   type: "struct",
   struct: {
     structName: "Parson",
@@ -34,9 +35,7 @@ const createMockParson = (default_?: Parson): Types.Type_Struct<Parson> => ({
   default: default_,
 });
 
-const createMockHome = (
-  home: DefaultValueType<Home>
-): Types.Type_Struct<Home> => ({
+const createMockHome = (home: DefaultValueType<Home>): Struct<Home> => ({
   type: "struct",
   struct: {
     structName: "Home",
@@ -60,11 +59,12 @@ const createMockHome = (
             },
           },
         },
+        default: home.address,
       },
       family: {
         type: "struct[]",
         struct: createMockParson().struct,
-        default: [],
+        default: home.family,
       },
     },
   },
@@ -100,8 +100,13 @@ describe("makeDefaultStruct", () => {
       name: "Home",
       family: [],
     });
+
     test("addres is undefined", () => {
       expect(mockHome.struct.params.address.default).toBeUndefined();
+    });
+    test("family is empty", () => {
+      expect(mockHome.struct.params.family.struct.structName).toBe("Parson");
+      expect(mockHome.struct.params.family.default).toEqual([]);
     });
     test("defaultStruct Home", () => {
       const home = makeDefaultStruct(mockHome);
@@ -116,7 +121,7 @@ describe("makeDefaultStruct", () => {
 });
 const runDefaultValueTests = <Text extends string>(
   caseName: string,
-  ant: Types.AnnotationTypes,
+  ant: Types.AnnotationPrimitiveTypes,
   exceededText: Text,
   dictionary: Record<Text, string>
 ) => {

@@ -11,7 +11,8 @@ import type {
   StringSelect,
   ToArrayAnnotation,
 } from "./primitive";
-import type { HasStruct } from "./struct";
+// import type { HasStruct } from "./struct";
+import type { StructComplete } from "./struct2";
 
 type Dispatch<T, Param extends AnnotationBase> = (
   param: Omit<Param | ToArrayAnnotation<Param>, "default">
@@ -22,7 +23,7 @@ export interface AnnotationMapper<T> {
   boolean: (bool: BooleanArg) => T;
   string: Dispatch<T, StringArg | MultilineString>;
   dataIndex: Dispatch<T, DataIndexArg<string>>;
-  struct: (struct: HasStruct) => T;
+  struct: (struct: StructComplete) => T;
   select: Dispatch<T, NumberSelect | StringSelect>;
   file: Dispatch<T, FilePathAnnotation>;
   combo: Dispatch<T, ComboAnnotation>;
