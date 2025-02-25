@@ -43,7 +43,7 @@ export const makeParam = (
   };
 };
 
-export const joinAnntations = (paramTexts: ParamTexts): string => {
+export const joinAnntations = (paramTexts: ParamTexts): string[] => {
   return [
     "",
     paramTexts.name,
@@ -51,5 +51,5 @@ export const joinAnntations = (paramTexts: ParamTexts): string => {
     paramTexts.default,
     ...paramTexts.base,
     ...paramTexts.other,
-  ].join("\n");
+  ];
 };

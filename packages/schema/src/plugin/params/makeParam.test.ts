@@ -20,8 +20,8 @@ describe("joinAnntations", () => {
       base: [],
       other: [],
     };
-    const result = joinAnntations(paramTexts);
-    expect(result).toBe("\n@param name\n@type string\n@default abc");
+    const result: string[] = joinAnntations(paramTexts);
+    expect(result).toEqual(["", "@param name", "@type string", "@default abc"]);
   });
 });
 
