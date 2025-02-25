@@ -1,6 +1,7 @@
 import type { StructNode_Error } from "./errors";
 import type {
   AnnotationBase,
+  AnnotationBaseTexts,
   BooleanArg,
   Primitive,
   Primitive_Numbers,
@@ -11,17 +12,13 @@ import type {
 } from "./primitive";
 import type { AnnotationPrimitiveTypes, AnnotationTypes } from "./struct";
 
-interface StructRoot<T extends object> extends StructType2<T, T, "root"> {}
+export interface StructRoot<T extends object>
+  extends NodeItem_Struct<T, T, "root"> {}
 
 type StructUnion =
   | NodeItem_Array<object[], object, string>
   | NodeItem_Struct<object, object, string>
   | NodeItem_TypelessStruct<object>;
-
-interface StructName {
-  structName: string;
-  params?: ParameterBase2;
-}
 
 export interface StructBase2 {
   structName: string;
@@ -53,13 +50,15 @@ type StructParameters2<
     `${Path}.${Key}`
   >;
 };
+
 export type AnnotationTypes2 =
   | BooleanArg
   | Primitive_Numbers
   | Primitive_NumbersArray
   | Primitive_Strings
   | Primitive_StringsArray
-  | StructNode_Error;
+  | StructNode_Error
+  | StructUnion;
 
 export type ParamType2<
   T,
@@ -79,7 +78,7 @@ export type ParamType2<
   ? NodeItem_Struct<T, KnowTypes, Path> | NodeItem_TypelessStruct<T>
   : StructNode_Error<`never:${Path}`>;
 
-interface HasStruct2 {
+export interface HasStruct2 {
   struct: StructBase2;
   default?: unknown;
 }
@@ -108,8 +107,7 @@ export type StructUnion2<T extends object> =
   | StructWithParams<T>
   | StructWithDefault<T>;
 
-export interface BaseStruct<T extends object>
-  extends Omit<AnnotationBase, "default"> {
+export interface BaseStruct<T extends object> extends AnnotationBaseTexts {
   type: "struct";
   struct?: {
     structName?: string;
@@ -118,7 +116,8 @@ export interface BaseStruct<T extends object>
   default?: T;
 }
 
-export interface StructComplete<T extends object> extends BaseStruct<T> {
+export interface StructComplete<T extends object = object>
+  extends BaseStruct<T> {
   type: "struct";
   struct: {
     structName: string;
@@ -127,7 +126,8 @@ export interface StructComplete<T extends object> extends BaseStruct<T> {
   default: T;
 }
 
-interface StructWithName<T extends object> extends BaseStruct<T> {
+export interface StructWithName<T extends object = object>
+  extends BaseStruct<T> {
   struct: {
     structName: string;
     params?: ParameterBase2;
@@ -135,7 +135,8 @@ interface StructWithName<T extends object> extends BaseStruct<T> {
   default?: T;
 }
 
-export interface StructWithParams<T extends object> extends BaseStruct<T> {
+export interface StructWithParams<T extends object = object>
+  extends BaseStruct<T> {
   struct: {
     structName?: string;
     params: ParameterBase2;
@@ -163,62 +164,3 @@ interface Home {
   };
   family: Parson[];
 }
-
-const pp: StructRoot<Parson> = {
-  structName: "Parson",
-
-  params: {
-    name: {
-      type: "string",
-      default: "John",
-    },
-    age: {
-      type: "number",
-      default: 30,
-    },
-  },
-};
-
-const xx: StructRoot<Home> = {
-  structName: "Home",
-
-  params: {
-    name: {
-      type: "string",
-      default: "John",
-    },
-    family: {
-      type: "struct[]",
-      struct: {
-        structName: "Parson",
-        params: {
-          name: {
-            type: "string",
-            default: "John",
-          },
-          age: {
-            type: "number",
-            default: 30,
-          },
-        },
-      },
-      default: [],
-    },
-    address: {
-      type: "struct",
-      struct: {
-        structName: "Address",
-        params: {
-          street: {
-            type: "string",
-            default: "sss",
-          },
-          city: {
-            type: "string",
-            default: "ccc",
-          },
-        },
-      },
-    },
-  },
-};
