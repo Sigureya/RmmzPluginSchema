@@ -20,6 +20,11 @@ export const makeDefaultValue = (
 
   return stringify(annotation.default);
 };
+/**
+ * @description JSON.stringify("string")すると面倒なJSONになるので、こうやって予防する
+ * @param value
+ * @returns
+ */
 const stringify = <T>(value: Exclude<T, string>): string => {
   return JSON.stringify(value, null, 0);
 };
@@ -32,6 +37,7 @@ const lookUp = (
   dic: Types.Dictionary
 ): string => {
   if (ant.type === "select") {
+    // select is not text.
     return ant.default;
   }
   return lookupDictionary(ant.default, dic);
@@ -43,9 +49,9 @@ export const makeDefaultStruct = <T extends object>(
     ? (makeDefaultHelper(annotation) as T)
     : annotation.default;
 };
-
+const MAX_RECURSION_DEPTH = 32 as const;
 const makeDefaultHelper = (annotation: Types.AnnotationTypes, depth = 0) => {
-  if (depth > 32) {
+  if (depth > MAX_RECURSION_DEPTH) {
     throw new Error("Max depth exceeded");
   }
 
