@@ -83,7 +83,7 @@ describe("select", () => {
   });
 });
 
-describe("formatBooleanAnnotation", () => {
+describe("formatTextAnnotation", () => {
   describe("without dictionary", () => {
     test("on", () => {
       const result = formatTextAnnotation({ on: "enabled" }, "on");
@@ -124,7 +124,7 @@ describe("formatBooleanAnnotation", () => {
   });
 });
 
-describe("booleanArgAnnotations", () => {
+describe("booleanAnnotations", () => {
   describe("without dictionary", () => {
     test("on", () => {
       const result = booleanAnnotations({ on: "enabled" });
@@ -145,7 +145,7 @@ describe("booleanArgAnnotations", () => {
     });
   });
 
-  describe("booleanArgAnnotations with unexpected values", () => {
+  describe("booleanAnnotations with unexpected values", () => {
     test("on with null", () => {
       const result = booleanAnnotations({
         on: null as unknown as undefined,
@@ -181,7 +181,7 @@ describe("booleanArgAnnotations", () => {
     });
   });
 
-  describe("booleanArgAnnotations with dictionary", () => {
+  describe("booleanAnnotations with dictionary", () => {
     test("on with dictionary", () => {
       const dic = { enabled: "有効" };
       const result = booleanAnnotations({ on: "enabled" }, dic);
