@@ -3,21 +3,12 @@ import type { Dictionary, OmitBaseParams } from "./types/";
 
 const EMPTY_DICTINARY: Dictionary = {} as const;
 
-const simpleAnntation = <
-  V extends string | number,
-  T extends { [K in string]?: V } = { [K in string]?: V }
->(
-  data: T,
-  key: string & keyof typeof data
-): `@${typeof key} ${V}` | undefined => {
-  const value: V | undefined = data[key];
+const simpleAnntation = <T>(data: T, key: string & keyof T) => {
+  const value = data[key];
   return value === undefined ? undefined : (`@${key} ${value}` as const);
 };
 
-export const collectAnnotations = <
-  V extends string | number,
-  T extends { [K in string]?: V }
->(
+export const collectAnnotations = <T>(
   ant: T,
   key: ReadonlyArray<string & keyof typeof ant>
 ) => {
@@ -65,7 +56,7 @@ export const baseAnnotions = (
     [
       formatTextAnnotation(ant, "text", dic),
       formatTextAnnotation(ant, "desc", dic),
-      simpleAnntation<string, typeof ant>(ant, "parent"),
+      simpleAnntation(ant, "parent"),
     ] as const
   ).filter((s) => s !== undefined);
 };
