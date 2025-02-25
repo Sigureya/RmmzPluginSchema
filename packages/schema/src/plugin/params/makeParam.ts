@@ -10,10 +10,11 @@ import {
 } from "./makeAnnotation";
 import type { AnnotationTypes, Dictionary, ParamTexts } from "./types";
 import { mapping } from "./mapping";
+import { EMPTY_DICTINARY } from "./constants";
 
 export const uniqueAnnotations = (
   ant: AnnotationTypes,
-  dic: Dictionary = {}
+  dic: Dictionary = EMPTY_DICTINARY
 ) => {
   return mapping<`@${string} ${string}`[]>(ant, {
     boolean: (b) => booleanAnnotations(b, dic),
@@ -31,7 +32,7 @@ export const makeParam = (
   name: string,
   ant: AnnotationTypes,
   mode: "@param" | "@arg" = "@param",
-  dic: Dictionary = {}
+  dic: Dictionary = EMPTY_DICTINARY
 ): ParamTexts => {
   return {
     other: uniqueAnnotations(ant, dic),

@@ -1,7 +1,6 @@
+import { EMPTY_DICTINARY } from "./constants";
 import type * as Primitve from "./types/";
 import type { Dictionary, OmitBaseParams } from "./types/";
-
-const EMPTY_DICTINARY: Dictionary = {} as const;
 
 const simpleAnntation = <T>(data: T, key: string & keyof T) => {
   const value = data[key];
