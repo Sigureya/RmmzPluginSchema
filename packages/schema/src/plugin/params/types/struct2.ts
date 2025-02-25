@@ -1,16 +1,10 @@
 import type { StructNode_Error } from "./errors";
 import type {
   AnnotationBaseTexts,
-  BooleanArg,
   Primitive,
-  Primitive_Numbers,
-  Primitive_NumbersArray,
-  Primitive_Strings,
-  Primitive_StringsArray,
   PrimitiveArray,
   AnnotationPrimitiveTypes,
 } from "./primitive";
-import type { AnnotationTypes } from "./struct";
 export interface StructBase2 {
   structName: string;
   params: ParameterBase2;
@@ -18,7 +12,7 @@ export interface StructBase2 {
 export interface ParameterBase2
   extends Record<
     string,
-    AnnotationTypes | AnnotationPrimitiveTypes | StructUnion
+    AnnotationTypes2 | AnnotationPrimitiveTypes | StructUnion
   > {}
 
 export interface Struct<T extends object>
@@ -56,11 +50,7 @@ type StructParametersNode<
 };
 
 export type AnnotationTypes2 =
-  | BooleanArg
-  | Primitive_Numbers
-  | Primitive_NumbersArray
-  | Primitive_Strings
-  | Primitive_StringsArray
+  | AnnotationPrimitiveTypes
   | StructNode_Error
   | StructUnion;
 
@@ -126,6 +116,13 @@ export interface StructWithParams<T extends object = object>
 }
 export interface StructWithDefault<T extends object> extends BaseStruct<T> {
   default: T;
+}
+
+export interface StructArray<Array extends object[] = object[]>
+  extends HasStruct2 {
+  type: "struct[]";
+  struct: StructBase2;
+  default: Array;
 }
 
 export interface NodeItem_TypelessStruct<T extends object = object> {
