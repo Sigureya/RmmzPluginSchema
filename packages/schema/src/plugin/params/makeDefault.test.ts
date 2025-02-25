@@ -101,8 +101,13 @@ describe("makeDefaultStruct", () => {
       name: "Home",
       family: [],
     });
+
     test("addres is undefined", () => {
       expect(mockHome.struct.params.address.default).toBeUndefined();
+    });
+    test("family is empty", () => {
+      expect(mockHome.struct.params.family.struct.structName).toBe("Parson");
+      expect(mockHome.struct.params.family.default).toEqual([]);
     });
     test("defaultStruct Home", () => {
       const home = makeDefaultStruct(mockHome);
