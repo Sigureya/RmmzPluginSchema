@@ -16,28 +16,6 @@ export interface StructBase {
 }
 export interface ParameterBase extends Record<string, AnnotationTypes> {}
 
-type StructNodeType =
-  | StructBaseVirtual
-  | StructBaseUnnamed
-  | StructBaseXX<object>;
-// 新規追加。特定のオブジェクトのメンバだけで使うような型を簡単に書くためのパターン
-export interface StructBaseUnnamed {
-  structName?: string;
-  params: ParameterBase;
-}
-
-// 新規。名前だけ判明しており、どこかに定義があるパターン
-export interface StructBaseVirtual {
-  structName: string;
-  params?: ParameterBase;
-}
-
-// 初期値だけ判明しているが、型情報が無いパターン。自動生成することになる。
-// これを再帰すると地獄になるので、valueはある程度制限する
-export interface StructBaseXX<T extends object> {
-  default: T;
-}
-
 export interface Struct<T extends object> extends StructBase {
   structName: string;
   params: StructParameters<T>;
