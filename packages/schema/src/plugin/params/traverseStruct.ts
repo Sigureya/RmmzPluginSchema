@@ -1,10 +1,11 @@
-import type { AnnotationPrimitiveTypes, AnnotationTypes } from "./types/";
 import type {
+  AnnotationPrimitiveTypes,
   BaseStruct,
+  StructArray,
   StructBase2,
   StructComplete,
   StructWithParams,
-} from "./types/struct2";
+} from "./types/";
 
 export const maxDepth = (
   obj: AnnotationPrimitiveTypes | StructWithParams
@@ -45,7 +46,9 @@ export const traverseStruct = <
   return traverseHelper(obj, callback, x);
 };
 
-const hasStruct = (ant: AnnotationTypes | BaseStruct<object>) => {
+const hasStruct = (
+  ant: AnnotationPrimitiveTypes | BaseStruct<object> | StructArray<object[]>
+) => {
   return ant.type === "struct" || ant.type === "struct[]";
 };
 
