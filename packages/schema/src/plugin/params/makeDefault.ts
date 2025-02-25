@@ -4,7 +4,7 @@ import type * as Types from "./types/";
 import type { BaseStruct } from "./types/struct2";
 
 export const makeDefaultValue = (
-  annotation: Types.AnnotationTypes,
+  annotation: Types.AnnotationPrimitiveTypes | BaseStruct<object>,
   dic: Types.Dictionary = EMPTY_DICTINARY
 ): string => {
   switch (annotation.type) {
@@ -88,24 +88,3 @@ const makeDefaultHelper = <T extends object>(
 };
 
 const MAX_RECURSION_DEPTH = 32 as const;
-const makeDefaultHelperOld = (annotation: Types.AnnotationTypes, depth = 0) => {
-  if (depth > MAX_RECURSION_DEPTH) {
-    throw new Error("Max depth exceeded");
-  }
-  if (annotation.type === "error") {
-    throw new Error("", {
-      cause: annotation,
-    });
-  }
-
-  if (annotation.type === "struct") {
-    type Result = Record<string, unknown>;
-    return Object.entries<Types.AnnotationTypes>(
-      annotation.struct.params
-    ).reduce<Result>((prev, v) => {
-      prev[v[0]] = makeDefaultHelperOld(v[1], depth + 1);
-      return prev;
-    }, {});
-  }
-  return annotation.default;
-};
