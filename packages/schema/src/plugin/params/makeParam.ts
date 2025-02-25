@@ -8,10 +8,14 @@ import {
   selectAnnotations,
   typeAnnotation,
 } from "./makeAnnotation";
-import type { AnnotationPrimitiveTypes, Dictionary, ParamTexts } from "./types";
+import type {
+  AnnotationPrimitiveTypes,
+  Dictionary,
+  ParamTexts,
+  StructComplete,
+} from "./types";
 import { mapping } from "./mapping";
 import { EMPTY_DICTINARY } from "./constants";
-import type { StructComplete } from "./types/struct2";
 
 export const uniqueAnnotations = (
   ant: AnnotationPrimitiveTypes | StructComplete,

@@ -1,7 +1,7 @@
 import { EMPTY_DICTINARY } from "./constants";
 import { lookupDictionary } from "./makeAnnotation";
 import type * as Types from "./types/";
-import type { BaseStruct } from "./types/struct2";
+import type { BaseStruct } from "./types/";
 
 export const makeDefaultValue = (
   annotation: Types.AnnotationPrimitiveTypes | BaseStruct<object>,
