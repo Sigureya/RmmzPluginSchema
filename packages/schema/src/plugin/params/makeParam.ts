@@ -1,10 +1,10 @@
 import { makeDefaultValue } from "./makeDefault";
 import {
-  baseAnnotion,
-  booleanArgAnnotations,
+  baseAnnotions,
+  booleanAnnotations,
   comboAnnotations,
   fileAnnotations,
-  numberArgAnnotations,
+  numberAnnotations,
   selectAnnotations,
   typeAnnotation,
 } from "./makeAnnotation";
@@ -16,8 +16,8 @@ export const uniqueAnnotations = (
   dic: Dictionary = {}
 ) => {
   return mapping<`@${string} ${string}`[]>(ant, {
-    boolean: (b) => booleanArgAnnotations(b, dic),
-    number: (num) => numberArgAnnotations(num),
+    boolean: (b) => booleanAnnotations(b, dic),
+    number: (num) => numberAnnotations(num),
     file: (f) => fileAnnotations(f),
     string: () => [],
     struct: () => [],
@@ -38,6 +38,6 @@ export const makeParam = (
     default: `@default ${makeDefaultValue(ant)}`,
     name: `${mode} ${name}`,
     type: typeAnnotation(ant),
-    base: baseAnnotion(ant, dic),
+    base: baseAnnotions(ant, dic),
   };
 };
