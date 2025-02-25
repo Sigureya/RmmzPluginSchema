@@ -1,6 +1,6 @@
 import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
-import { makeDefault, makeDefaultValue } from "./makeDefault";
+import { makeDefaultStruct, makeDefaultValue } from "./makeDefault";
 
 interface Parson {
   name: string;
@@ -15,7 +15,7 @@ interface Home {
   family: Parson[];
 }
 
-const createMockParson = (): Types.Type_Struct<Parson> => ({
+const createMockParson = (default_?: Parson): Types.Type_Struct<Parson> => ({
   type: "struct",
   struct: {
     structName: "Parson",
@@ -30,24 +30,7 @@ const createMockParson = (): Types.Type_Struct<Parson> => ({
       },
     },
   },
-});
-
-const createMockParson2 = (): Types.Type_Struct<Parson> => ({
-  default: { name: "aaa", age: 17 },
-  type: "struct",
-  struct: {
-    structName: "Parson",
-    params: {
-      name: {
-        type: "string",
-        default: "John",
-      },
-      age: {
-        type: "number",
-        default: 30,
-      },
-    },
-  },
+  default: default_,
 });
 
 const createMockHome = (): Types.Type_Struct<Home> => ({
@@ -83,20 +66,28 @@ const createMockHome = (): Types.Type_Struct<Home> => ({
     },
   },
 });
+const mockDictionary: Types.Dictionary = {
+  cat: "CAT",
+  John: "JOHN",
+};
+
 describe("makeDefault", () => {
   describe("Struct Types", () => {
     test("parson", () => {
       const mockParson = createMockParson();
-      const parson: Parson = makeDefault(mockParson);
+      const parson: Parson = makeDefaultStruct(mockParson);
       expect(mockParson.default).toBeUndefined();
       const expected: Parson = { name: "John", age: 30 };
       expect(parson).toEqual(expected);
       const json = makeDefaultValue(mockParson);
       expect(json).toBe('{"name":"John","age":30}');
     });
-    test("parson2", () => {
-      const mock = createMockParson2();
-      const parson: Parson = makeDefault(mock);
+    test("parson manualy defaultValue", () => {
+      const mock = createMockParson({
+        name: "aaa",
+        age: 17,
+      });
+      const parson: Parson = makeDefaultStruct(mock);
       const expected: Parson = { name: "aaa", age: 17 };
       expect(mock.default).toEqual(expected);
       expect(parson).toEqual(expected);
@@ -104,7 +95,7 @@ describe("makeDefault", () => {
 
     test("home", () => {
       const mockHome = createMockHome();
-      const home = makeDefault(mockHome);
+      const home = makeDefaultStruct(mockHome);
       const expected: Home = {
         name: "Home",
         address: { street: "sss", city: "ccc" },
@@ -113,29 +104,32 @@ describe("makeDefault", () => {
       expect(home).toEqual(expected);
     });
   });
+});
+
+describe("makeDefaultValue with Dictionary", () => {
   describe("Primitive types", () => {
     test("number", () => {
       const mockNumber: Types.NumberArg = {
         default: 123,
         type: "number",
       };
-      const result: number = makeDefault(mockNumber);
-      expect(result).toBe(123);
+      const result = makeDefaultValue(mockNumber);
+      expect(result).toBe("123");
     });
     test("numberArray", () => {
       const mockNumberArray: Types.Primitive_NumbersArray = {
         default: [1, 2, 3],
         type: "number[]",
       };
-      const result: number[] = makeDefault(mockNumberArray);
-      expect(result).toEqual([1, 2, 3]);
+      const result = makeDefaultValue(mockNumberArray);
+      expect(result).toEqual("[1,2,3]");
     });
     test("string", () => {
       const mockString: Types.Primitive_Strings = {
         default: "test",
         type: "string",
       };
-      const result: string = makeDefault(mockString);
+      const result: string = makeDefaultValue(mockString);
       expect(result).toBe("test");
     });
     test("stringArray", () => {
@@ -143,8 +137,6 @@ describe("makeDefault", () => {
         default: ["a", "b", "c"],
         type: "string[]",
       };
-      const result: string[] = makeDefault(mockStringArray);
-      expect(result).toEqual(["a", "b", "c"]);
       const json = makeDefaultValue(mockStringArray);
       expect(json).toBe('["a","b","c"]');
     });
@@ -153,8 +145,8 @@ describe("makeDefault", () => {
         default: true,
         type: "boolean",
       };
-      const result: boolean = makeDefault(mockBoolean);
-      expect(result).toBe(true);
+      const result: string = makeDefaultValue(mockBoolean);
+      expect(result).toBe("true");
     });
     test("boolean2", () => {
       const mockBoolean: Types.BooleanArg = {
@@ -163,13 +155,12 @@ describe("makeDefault", () => {
         on: "on",
         off: "off",
       };
-      const result: boolean = makeDefault(mockBoolean);
-      expect(result).toBe(false);
       const json = makeDefaultValue(mockBoolean);
       expect(json).toBe("false");
     });
   });
 });
+
 describe("makeDefault with Dictionary", () => {
   const dic: Types.Dictionary = {
     on: "enabled",

@@ -1,33 +1,46 @@
+import { EMPTY_DICTINARY } from "./constants";
 import { lookupDictionary } from "./makeAnnotation";
 import type * as Types from "./types/";
 
-// const isNotTextType = (annotation: Types.AnnotationTypes) => {
-//   return annotation.type === "file" || annotation.type === "";
-// };
-
-// selectは差し替えない。おそらくenum的に使われており、テキストではない
-// comboは差し替える。まあテキストでしょう
-// fileは差し替えない
-
 export const makeDefaultValue = (
   annotation: Types.AnnotationTypes,
-  dic: Types.Dictionary = {}
+  dic: Types.Dictionary = EMPTY_DICTINARY
 ): string => {
-  // ファイル名はそのまま。変換テーブルで差し替えると危険なので
-  if (annotation.type === "file") {
-    return makeDefault(annotation);
+  switch (annotation.type) {
+    case "file":
+      return annotation.default;
+    case "struct":
+      return stringify(makeDefaultStruct(annotation));
+    case "string[]":
+      return stringify(annotation.default.map((s) => lookupDictionary(s, dic)));
   }
-  const value = makeDefault(annotation);
-  return typeof value === "string"
-    ? lookupDictionary(value, dic)
-    : JSON.stringify(value, null, 0);
+  if (typeof annotation.default === "string") {
+    return lookUp(annotation, dic);
+  }
+
+  return stringify(annotation.default);
+};
+const stringify = <T>(value: Exclude<T, string>): string => {
+  return JSON.stringify(value, null, 0);
 };
 
-export const makeDefault = <T extends Types.AnnotationTypes>(
-  annotation: T
-): NonNullable<T["default"]> => {
+const lookUp = (
+  ant: Exclude<
+    Extract<Types.AnnotationTypes, { default: string }>,
+    Types.FilePathAnnotation
+  >,
+  dic: Types.Dictionary
+): string => {
+  if (ant.type === "select") {
+    return ant.default;
+  }
+  return lookupDictionary(ant.default, dic);
+};
+export const makeDefaultStruct = <T extends object>(
+  annotation: Types.Type_Struct<T>
+): T => {
   return annotation.default === undefined
-    ? makeDefaultHelper(annotation)
+    ? (makeDefaultHelper(annotation) as T)
     : annotation.default;
 };
 
