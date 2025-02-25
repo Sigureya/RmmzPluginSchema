@@ -84,7 +84,7 @@ describe("uniqueAnnotations", () => {
     });
 
     test("matches Make.booleanArgAnnotations output", () => {
-      expect(result).toEqual(Make.booleanArgAnnotations(ant));
+      expect(result).toEqual(Make.booleanAnnotations(ant));
     });
     test("correctly generates annotations for an undefined boolean argument", () => {
       const ant: BooleanArg = {
@@ -95,7 +95,7 @@ describe("uniqueAnnotations", () => {
       };
       const result = uniqueAnnotations(ant);
       expect(result).toEqual([]);
-      expect(result).toEqual(Make.booleanArgAnnotations(ant));
+      expect(result).toEqual(Make.booleanAnnotations(ant));
     });
   });
 
@@ -114,7 +114,7 @@ describe("uniqueAnnotations", () => {
     });
 
     test("matches Make.numberArgAnnotations output", () => {
-      expect(result).toEqual(Make.numberArgAnnotations(ant));
+      expect(result).toEqual(Make.numberAnnotations(ant));
     });
   });
   describe("number undefined", () => {
@@ -130,7 +130,7 @@ describe("uniqueAnnotations", () => {
       expect(result).toEqual([]);
     });
     test("matches Make.numberArgAnnotations output", () => {
-      expect(result).toEqual(Make.numberArgAnnotations(ant));
+      expect(result).toEqual(Make.numberAnnotations(ant));
     });
   });
 
@@ -146,7 +146,7 @@ describe("uniqueAnnotations", () => {
     });
 
     test("matches Make.baseAnnotion output", () => {
-      expect(result).toEqual(Make.baseAnnotion(ant));
+      expect(result).toEqual(Make.baseAnnotions(ant));
     });
   });
 
