@@ -1,6 +1,7 @@
 import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
 import { makeDefaultStruct, makeDefaultValue } from "./makeDefault";
+import type { DefaultValueType } from "./types/metaTypes/metaTypes";
 
 interface Parson {
   name: string;
@@ -33,14 +34,16 @@ const createMockParson = (default_?: Parson): Types.Type_Struct<Parson> => ({
   default: default_,
 });
 
-const createMockHome = (): Types.Type_Struct<Home> => ({
+const createMockHome = (
+  home: DefaultValueType<Home>
+): Types.Type_Struct<Home> => ({
   type: "struct",
   struct: {
     structName: "Home",
     params: {
       name: {
         type: "string",
-        default: "Home",
+        default: home.name,
       },
       address: {
         type: "struct",
@@ -92,18 +95,26 @@ describe("makeDefaultStruct", () => {
     expect(parson).toEqual(expected);
   });
 
-  test("home", () => {
-    const mockHome = createMockHome();
-    const home = makeDefaultStruct(mockHome);
-    const expected: Home = {
+  describe("defaultStructValue Home", () => {
+    const mockHome = createMockHome({
       name: "Home",
-      address: { street: "sss", city: "ccc" },
       family: [],
-    };
-    expect(home).toEqual(expected);
+    });
+    test("addres is undefined", () => {
+      expect(mockHome.struct.params.address.default).toBeUndefined();
+    });
+    test("defaultStruct Home", () => {
+      const home = makeDefaultStruct(mockHome);
+      const expected: Home = {
+        name: "Home",
+        address: { street: "sss", city: "ccc" },
+        family: [],
+      };
+      expect(home).toEqual(expected);
+    });
   });
 });
-const xxxx = <Text extends string>(
+const runDefaultValueTests = <Text extends string>(
   caseName: string,
   ant: Types.AnnotationTypes,
   exceededText: Text,
@@ -125,30 +136,32 @@ describe("makeDefaultValue Primitive types ", () => {
       default: true,
       type: "boolean",
     };
-    xxxx("boolean", mockBoolean, "true", { true: "false" });
+    runDefaultValueTests("boolean", mockBoolean, "true", { true: "false" });
   });
-  describe("boolean2", () => {
+  describe("boolean labeled", () => {
     const mockBoolean: Types.BooleanArg = {
       default: false,
       type: "boolean",
       on: "on",
       off: "off",
     };
-    xxxx("boolean2", mockBoolean, "false", { false: "true" });
+    runDefaultValueTests("boolean2", mockBoolean, "false", { false: "true" });
   });
   describe("number", () => {
     const mockNumber: Types.NumberArg = {
       default: 123,
       type: "number",
     };
-    xxxx("number", mockNumber, "123", { "123": "999" });
+    runDefaultValueTests("number", mockNumber, "123", { "123": "999" });
   });
   describe("numberArray", () => {
     const mockNumberArray: Types.Primitive_NumbersArray = {
       default: [1, 2, 3],
       type: "number[]",
     };
-    xxxx("numberArray", mockNumberArray, "[1,2,3]", { "[1,2,3]": "[9,8,7]" });
+    runDefaultValueTests("numberArray", mockNumberArray, "[1,2,3]", {
+      "[1,2,3]": "[9,8,7]",
+    });
   });
   describe("string", () => {
     const mockString: Types.Primitive_Strings = {
@@ -164,17 +177,23 @@ describe("makeDefaultValue Primitive types ", () => {
       expect(result).toBe("CAT");
     });
   });
-  test("stringArray", () => {
+  describe("stringArray", () => {
     const mockStringArray: Types.Primitive_StringsArray = {
-      default: ["a", "b", "c"],
+      default: ["a", "b", "cat"],
       type: "string[]",
     };
-    const json = makeDefaultValue(mockStringArray);
-    expect(json).toBe('["a","b","c"]');
+    test("no dictionary", () => {
+      const json = makeDefaultValue(mockStringArray);
+      expect(json).toBe('["a","b","cat"]');
+    });
+    test("with dictionary", () => {
+      const json = makeDefaultValue(mockStringArray, mockDictionary);
+      expect(json).toBe('["a","b","CAT"]');
+    });
   });
 });
 
-describe("makeDefault with Dictionary", () => {
+describe("makeDefaultValue with Dictionary", () => {
   const dic: Types.Dictionary = {
     on: "enabled",
     off: "disabled",
