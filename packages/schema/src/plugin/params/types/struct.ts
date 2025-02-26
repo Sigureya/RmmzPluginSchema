@@ -1,9 +1,12 @@
 import type { StructNode_Error } from "./errors";
 import type {
   AnnotationBaseTexts,
-  Primitive,
-  PrimitiveArray,
   AnnotationPrimitiveTypes,
+  BooleanArg,
+  Primitive_Numbers,
+  Primitive_Strings,
+  Primitive_StringsArray,
+  Primitive_NumbersArray,
 } from "./primitive";
 
 export type AnnotationTypes =
@@ -25,17 +28,32 @@ export interface HasStruct {
 }
 
 export interface StructAnnotation<T extends object>
-  extends NodeItem_StructWithType<T, "root", T> {}
+  extends NodeChild_StructWithType<T, "root", T> {}
+
+export type StructAnnotation_Partial<T extends object> = NodeChild_Union<
+  T,
+  "root",
+  T
+>;
 
 export interface StructType<T extends object> extends StructBase {
   structName: string;
   params: StructParameters<T>;
 }
 
-export type StructParameters<T extends object> = StructParametersNode<
+export interface StructType_WithName<T extends object> {
+  structName: string;
+  params?: StructParameters<T>;
+}
+export interface StructType_WithParams<T extends object> {
+  structName?: string;
+  params: StructParameters<T>;
+}
+
+export type StructParameters<T extends object> = NodeParent_StructParameters<
   T,
-  T,
-  "root"
+  "root",
+  T
 >;
 
 export type StructAnnotationBase_Union =
@@ -45,18 +63,18 @@ export type StructAnnotationBase_Union =
   | StructAnnotationBase_WithType
   | StructAnnotationBase_Complete;
 
-export interface StructAnnotationBase_Partial<T extends object = object>
-  extends AnnotationBaseTexts {
+export interface StructAnnotationBase_Partial extends AnnotationBaseTexts {
   type: "struct";
   struct?: {
     structName?: string;
     params?: ParameterBase;
   };
-  default?: T;
+  default?: object;
 }
 
 export interface StructAnnotationBase_Complete
-  extends StructAnnotationBase_Partial {
+  extends StructAnnotationBase_Partial,
+    HasStruct {
   type: "struct";
   struct: StructBase;
   default: object;
@@ -94,42 +112,51 @@ export interface StructAnnotationBase_WithDefault
   default: object;
 }
 
-export interface StructAnnotationBase_Array extends HasStruct {
+export interface StructAnnotationBase_Array
+  extends HasStruct,
+    AnnotationBaseTexts {
   type: "struct[]";
   struct: StructBase;
   default: object[];
 }
 
-type StructParametersNode<
+type NodeParent_StructParameters<
   T extends object,
-  KnowTypes extends object,
-  Path extends string
+  Path extends string,
+  KnowTypes extends object
 > = {
-  [Key in Extract<keyof T, string>]: ParamType<
+  [Key in Extract<keyof T, string>]: NodeChild_ParamType<
     T[Key],
-    T | KnowTypes,
-    `${Path}.${Key}`
+    `${Path}.${Key}`,
+    T | KnowTypes
   >;
 };
 
-type ParamType<T, KnowTypes extends object, Path extends string> = T extends
-  | number
-  | string
-  | boolean
-  ? Primitive<T>
-  : T extends number[] | string[]
-  ? PrimitiveArray<T>
+type NodeChild_ParamType<
+  T,
+  Path extends string,
+  KnowTypes extends object
+> = T extends boolean
+  ? BooleanArg
+  : T extends number
+  ? Primitive_Numbers
+  : T extends string
+  ? Primitive_Strings
+  : T extends string[]
+  ? Primitive_StringsArray
+  : T extends number[]
+  ? Primitive_NumbersArray
   : T extends KnowTypes
   ? StructNode_Error<Path>
   : T extends KnowTypes[]
   ? StructNode_Error<`${Path}[]`>
   : T extends object[]
-  ? NodeItem_Array<T, KnowTypes, Path>
+  ? NodeChild_Array<T, KnowTypes, Path>
   : T extends object
-  ? NodeItem_Union<T, Path, KnowTypes>
+  ? NodeChild_Union<T, Path, KnowTypes>
   : StructNode_Error<`never:${Path}`>;
 
-interface NodeItem_Array<
+interface NodeChild_Array<
   Array extends object[],
   KnowTypes extends object,
   Path extends string
@@ -138,25 +165,25 @@ interface NodeItem_Array<
   default: Array;
   struct: {
     structName: string;
-    params: StructParametersNode<
+    params: NodeParent_StructParameters<
       Array[number],
-      Array[number] | KnowTypes,
-      `${Path}[]`
+      `${Path}[]`,
+      Array[number] | KnowTypes
     >;
   };
 }
 
-type NodeItem_Union<
+type NodeChild_Union<
   T extends object,
   Path extends string,
   KnowTypes extends object
 > =
-  | NodeItem_StructWithType<T, Path, KnowTypes>
-  | NodeItem_StructWithName<T, Path, KnowTypes>
-  | NodeItem_StructWithDefault<T, Path, KnowTypes>
-  | NodeItem_StructWithParams<T, Path, KnowTypes>;
+  | NodeChild_StructWithType<T, Path, KnowTypes>
+  | NodeChild_StructWithName<T, Path, KnowTypes>
+  | NodeChild_StructWithDefault<T, Path, KnowTypes>
+  | NodeChild_StructWithParams<T, Path, KnowTypes>;
 
-interface NodeItem_StructWithType<
+interface NodeChild_StructWithType<
   T extends object,
   Path extends string,
   KnowTypes extends object
@@ -164,12 +191,12 @@ interface NodeItem_StructWithType<
   type: "struct";
   struct: {
     structName: string;
-    params: StructParametersNode<T, KnowTypes, Path>;
+    params: NodeParent_StructParameters<T, Path, KnowTypes>;
   };
   default?: T;
 }
 
-interface NodeItem_StructWithName<
+interface NodeChild_StructWithName<
   T extends object,
   Path extends string,
   KnowTypes extends object
@@ -177,12 +204,12 @@ interface NodeItem_StructWithName<
   type: "struct";
   struct: {
     structName: string;
-    param?: StructParametersNode<T, KnowTypes, Path>;
+    param?: NodeParent_StructParameters<T, Path, KnowTypes>;
   };
   default?: T;
 }
 
-interface NodeItem_StructWithParams<
+interface NodeChild_StructWithParams<
   T extends object,
   Path extends string,
   KnowTypes extends object
@@ -190,12 +217,12 @@ interface NodeItem_StructWithParams<
   type: "struct";
   struct: {
     structName?: string;
-    params: StructParametersNode<T, KnowTypes, Path>;
+    params: NodeParent_StructParameters<T, Path, KnowTypes>;
   };
   default?: T;
 }
 
-interface NodeItem_StructWithDefault<
+interface NodeChild_StructWithDefault<
   T extends object,
   Path extends string,
   KnowTypes extends object
@@ -204,6 +231,6 @@ interface NodeItem_StructWithDefault<
   default: T;
   struct?: {
     structName?: string;
-    params?: StructParametersNode<T, KnowTypes, Path>;
+    params?: NodeParent_StructParameters<T, Path, KnowTypes>;
   };
 }
