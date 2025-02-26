@@ -1,4 +1,4 @@
-import { EMPTY_DICTINARY } from "./constants";
+import { EMPTY_DICTINARY } from "./constants/";
 import { lookupDictionary } from "./makeAnnotation";
 import type * as Types from "./types/";
 import type { StructAnnotation } from "./types/";
@@ -33,10 +33,7 @@ const stringify = <T>(value: Exclude<T, string>): string => {
 };
 
 const lookUp = (
-  ant: Exclude<
-    Extract<Types.AnnotationPrimitiveTypes, { default: string }>,
-    Types.FilePathAnnotation
-  >,
+  ant: Exclude<Types.Primitive_Strings, Types.FilePathAnnotation>,
   dic: Types.Dictionary
 ): string => {
   if (ant.type === "select") {
