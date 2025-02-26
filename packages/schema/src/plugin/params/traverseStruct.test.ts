@@ -1,14 +1,18 @@
 import { test, expect, describe } from "vitest";
 
 import { maxDepth, flatStructs } from "./traverseStruct";
-import type { NumberArg, StructAnnotation } from "./types";
+import type {
+  NumberArg,
+  StructAnnotation,
+  StructAnnotation_WithType,
+} from "./types";
 
 interface Parson {
   name: string;
   age: number;
 }
 
-const mockParson: StructAnnotation<Parson> = {
+const mockParson: StructAnnotation_WithType<Parson> = {
   type: "struct",
   struct: {
     structName: "Parson",
@@ -23,14 +27,18 @@ const mockParson: StructAnnotation<Parson> = {
       },
     },
   },
-};
+  default: {
+    name: "John",
+    age: 30,
+  },
+} as const;
 
 interface Home {
   name: string;
   address: string;
   family: Parson[];
 }
-const mockHome: StructAnnotation<Home> = {
+const mockHome: StructAnnotation_WithType<Home> = {
   type: "struct",
   struct: {
     structName: "Home",
@@ -51,6 +59,34 @@ const mockHome: StructAnnotation<Home> = {
     },
   },
 };
+interface City {
+  name: string;
+  home1: Home;
+  home2: Home;
+}
+const mockCity: StructAnnotation<City> = {
+  type: "struct",
+  struct: {
+    structName: "City",
+    params: {
+      name: {
+        type: "string",
+        default: "City",
+      },
+      home1: {
+        type: "struct",
+        struct: mockHome.struct,
+        default: mockHome.default,
+      },
+      home2: {
+        type: "struct",
+        struct: mockHome.struct,
+        default: mockHome.default,
+      },
+    },
+  },
+};
+
 const mockNumber: NumberArg = {
   default: 123,
   type: "number",
@@ -68,6 +104,10 @@ describe("maxDepth", () => {
     const result: number = maxDepth(mockHome);
     expect(result).toBe(2);
   });
+  test("struct-city", () => {
+    const result: number = maxDepth(mockCity);
+    expect(result).toBe(3);
+  });
 });
 
 describe("flatStruct", () => {
@@ -82,8 +122,15 @@ describe("flatStruct", () => {
   });
   test("struct-home", () => {
     const result = flatStructs(mockHome);
-    expect(result.size).toBe(2);
     expect(result).toContain(mockParson.struct);
     expect(result).toContain(mockHome.struct);
+    expect(result.size).toBe(2);
+  });
+  test("struct-city", () => {
+    const result = flatStructs(mockCity);
+    expect(result.size).toBe(3);
+    expect(result).toContain(mockParson.struct);
+    expect(result).toContain(mockHome.struct);
+    expect(result).toContain(mockCity.struct);
   });
 });

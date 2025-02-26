@@ -1,10 +1,10 @@
+import { hasStruct } from "./structHasMember";
 import type {
   AnnotationPrimitiveTypes,
-  StructAnnotationBase_Partial,
-  StructAnnotationBase_Array,
   StructBase,
   StructAnnotationBase_WithParams,
   StructAnnotationBase_WithType,
+  AnnotationTypes,
 } from "./types/";
 
 export const maxDepth = (
@@ -12,8 +12,8 @@ export const maxDepth = (
 ): number => {
   return traverseStruct(
     obj,
-    (s, acc) => {
-      return hasStruct(s) ? acc + 1 : acc;
+    (s, acc, depth) => {
+      return Math.max(depth, acc);
     },
     0
   );
@@ -25,7 +25,7 @@ export const flatStructs = (
   return traverseStruct(
     annotation,
     (s, acc) => {
-      if (hasStruct(s) && !acc.has(s.struct)) {
+      if (hasStruct(s)) {
         acc.add(s.struct);
       }
       return acc;
@@ -39,47 +39,29 @@ export const traverseStruct = <
   Ant extends AnnotationPrimitiveTypes | StructAnnotationBase_WithParams
 >(
   obj: Ant,
-  callback: (structName: Ant, acc: Result, depth: number) => Result,
+  callback: (structName: AnnotationTypes, acc: Result, depth: number) => Result,
   initialValue: Result
 ) => {
   const x = callback(obj, initialValue, 0);
   return traverseHelper(obj, callback, x);
 };
 
-const hasStruct = (
-  ant:
-    | AnnotationPrimitiveTypes
-    | StructAnnotationBase_Partial
-    | StructAnnotationBase_Array
-) => {
-  return ant.type === "struct" || ant.type === "struct[]";
-};
-
-const traverseHelper = <
-  Result,
-  Ant extends AnnotationPrimitiveTypes | StructAnnotationBase_WithParams
->(
-  annotation: Ant,
-  fn: (annotation: Ant, value: Result, depth: number) => Result,
+const traverseHelper = <Result>(
+  annotation: AnnotationTypes,
+  fn: (annotation: AnnotationTypes, value: Result, depth: number) => Result,
   result: Result,
   depth: number = 0
 ): Result => {
   if (depth > 32) {
     throw new Error("Max depth exceeded");
   }
+  const newValue = fn(annotation, result, depth);
   if (!hasStruct(annotation)) {
-    return result;
+    return newValue;
   }
-  // if (annotation.struct === undefined) {
-  //   return result;
-  // }
-  let acc: Result = result;
-  //  Object.entries<Ant>(annotation.struct.params);
-
-  for (const p in annotation.struct.params) {
-    const param: Ant = (annotation.struct.params as Record<string, Ant>)[p];
-    const ac2 = fn(param, acc, depth);
-    acc = traverseHelper(param, fn, ac2, depth + 1);
-  }
-  return acc;
+  return Object.entries<AnnotationTypes>(
+    annotation.struct.params
+  ).reduce<Result>((prev, [, an2]) => {
+    return traverseHelper(an2, fn, prev, depth + 1);
+  }, newValue);
 };
