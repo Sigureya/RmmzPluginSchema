@@ -1,5 +1,4 @@
-import { AnnotationPrimitiveTypes } from './types/';
-import { StructBase2, StructComplete, StructWithParams } from './types/struct2';
-export declare const maxDepth: (obj: AnnotationPrimitiveTypes | StructWithParams) => number;
-export declare const flatStructs: (annotation: AnnotationPrimitiveTypes | Omit<StructComplete, "default">) => Set<StructBase2>;
-export declare const traverseStruct: <Result, Ant extends AnnotationPrimitiveTypes | StructWithParams>(obj: Ant, callback: (structName: Ant, acc: Result, depth: number) => Result, initialValue: Result) => Result;
+import { AnnotationPrimitiveTypes, StructBase, StructAnnotationBase_WithParams, StructAnnotationBase_WithType, AnnotationTypes } from './types/';
+export declare const maxDepth: (obj: AnnotationPrimitiveTypes | StructAnnotationBase_WithParams) => number;
+export declare const flatStructs: (annotation: AnnotationPrimitiveTypes | StructAnnotationBase_WithType) => Set<StructBase>;
+export declare const traverseStruct: <Result, Ant extends AnnotationPrimitiveTypes | StructAnnotationBase_WithParams>(obj: Ant, callback: (structName: AnnotationTypes, acc: Result, depth: number) => Result, initialValue: Result) => Result;

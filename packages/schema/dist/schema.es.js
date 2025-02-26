@@ -13,19 +13,19 @@ const m = {
 }, M = {
   type: "switch",
   default: 0
-}, R = {
+}, h = {
   type: "armor",
   default: 0
-}, x = {
+}, R = {
   type: "skill",
   default: 0
-}, g = {
+}, x = {
   type: "item",
   default: 0
 }, $ = {
   type: "weapon",
   default: 0
-}, h = {
+}, g = {
   type: "troop",
   default: 0
 }, C = {
@@ -34,126 +34,131 @@ const m = {
 }, D = {
   type: "state",
   default: 0
-}, L = {
+}, b = {
   type: "common_event",
   default: 0
-}, y = {
+}, _ = {
   type: "combo",
   default: "",
   options: []
-}, b = {
+}, L = {
   type: "select",
   default: 0,
   options: []
-}, U = {
+}, P = {
   string: m,
-  combo: y,
+  combo: _,
   multiline_string: I
-}, B = (t) => a(
+}, a = (t) => t.type === "struct" ? f(t) : t.type === "struct[]", f = (t) => {
+  const e = t.struct;
+  return e === void 0 ? !1 : e.params !== void 0;
+}, U = (t) => t.default !== void 0, B = (t) => {
+  const e = t.struct;
+  return e === void 0 ? !1 : e.structName !== void 0;
+}, H = (t) => A(
   t,
-  (e, r) => N(e) ? r + 1 : r,
+  (e, r, s) => Math.max(s, r),
   0
-), H = (t) => a(
+), G = (t) => A(
   t,
-  (e, r) => (N(e) && !r.has(e.struct) && r.add(e.struct), r),
+  (e, r) => (a(e) && r.add(e.struct), r),
   /* @__PURE__ */ new Set()
-), a = (t, e, r) => {
-  const o = e(t, r, 0);
-  return f(t, e, o);
-}, N = (t) => t.type === "struct" || t.type === "struct[]", f = (t, e, r, o = 0) => {
-  if (o > 32)
+), A = (t, e, r) => {
+  const s = e(t, r, 0);
+  return d(t, e, s);
+}, d = (t, e, r, s = 0) => {
+  if (s > 32)
     throw new Error("Max depth exceeded");
-  if (!N(t))
-    return r;
-  let s = r;
-  for (const d in t.struct.params) {
-    const l = t.struct.params[d], O = e(l, s, o);
-    s = f(l, e, O, o + 1);
-  }
-  return s;
-}, n = {}, p = (t, e) => {
+  const u = e(t, r, s);
+  return a(t) ? Object.entries(
+    t.struct.params
+  ).reduce((n, [, i]) => d(i, e, n, s + 1), u) : u;
+}, o = {}, T = (t, e) => {
   const r = t[e];
   return r === void 0 ? void 0 : `@${e} ${r}`;
-}, A = (t, e) => e.map((r) => p(t, r)).filter((r) => r !== void 0), c = (t, e) => {
+}, p = (t, e) => e.map((r) => T(t, r)).filter((r) => r !== void 0), l = (t, e) => {
   const r = e[t];
   return r === void 0 ? t : r;
-}, P = (t, e = n) => [
-  u(t, "on", e),
-  u(t, "off", e)
-].filter((r) => r !== void 0), u = (t, e, r = n) => {
-  const o = t[e];
-  return o ? `@${e} ${c(o, r)}` : void 0;
-}, k = (t) => `@type ${t.type}`, G = (t, e = n) => [
-  u(t, "text", e),
-  u(t, "desc", e),
-  p(t, "parent")
-].filter((r) => r !== void 0), V = (t) => A(t, ["min", "max", "digit"]), W = (t, e = n) => t.options.flatMap(
+}, V = (t, e = o) => [
+  c(t, "on", e),
+  c(t, "off", e)
+].filter((r) => r !== void 0), c = (t, e, r = o) => {
+  const s = t[e];
+  return s ? `@${e} ${l(s, r)}` : void 0;
+}, k = (t) => `@type ${t.type}`, W = (t, e = o) => [
+  c(t, "text", e),
+  c(t, "desc", e),
+  T(t, "parent")
+].filter((r) => r !== void 0), Y = (t) => p(t, ["min", "max", "digit"]), j = (t, e = o) => t.options.flatMap(
   (r) => [
-    `@option ${c(r.option, e)}`,
+    `@option ${l(r.option, e)}`,
     `@value ${r.value}`
   ]
-), Y = (t) => t.options.map((e) => `@option ${e}`), J = (t) => A(t, ["dir"]), K = (t, e = n) => {
+), J = (t) => t.options.map((e) => `@option ${e}`), K = (t) => p(t, ["dir"]), X = (t, e = o) => {
   switch (t.type) {
     case "file":
       return t.default;
     case "struct":
-      return i(v(t));
+      return N(v(t));
     case "string[]":
-      return i(t.default.map((r) => c(r, e)));
+      return N(t.default.map((r) => l(r, e)));
   }
-  return typeof t.default == "string" ? _(t, e) : i(t.default);
-}, i = (t) => JSON.stringify(t, null, 0), _ = (t, e) => t.type === "select" ? t.default : c(t.default, e), v = (t) => t.default === void 0 ? T(t, () => {
-}) : t.default, T = (t, e, r = 0) => {
-  if (r > E)
-    throw new Error("Max depth exceeded");
+  return typeof t.default == "string" ? y(t, e) : N(t.default);
+}, N = (t) => JSON.stringify(t, null, 0), y = (t, e) => t.type === "select" ? t.default : l(t.default, e), v = (t) => t.default !== void 0 ? t.default : O(t, () => {
+}), O = (t, e, r = 0) => {
   if (t.default !== void 0)
     return t.default;
-  if (t.type !== "struct" || t.struct === void 0)
-    throw new Error(`unknown type:${t.type}`, {
-      cause: t
-    });
-  if (t.struct.structName !== void 0) {
-    const o = e(t.struct.structName);
-    if (o !== void 0)
-      return o;
-  }
-  if (t.struct.params === void 0)
+  if (r > E)
+    throw new Error("Max depth exceeded");
+  if (!f(t))
     throw new Error("struct is invalid");
-  return Object.entries(t.struct.params).reduce((o, s) => (o[s[0]] = T(s[1], e, r + 1), o), {});
-}, E = 32, X = (t) => "", j = (t) => [];
+  return Object.entries(
+    t.struct.params
+  ).reduce((s, [u, n]) => {
+    const i = n.type === "struct" ? O(n, e, r + 1) : n.default;
+    return s[u] = i, s;
+  }, {});
+}, E = 32, q = (t, e) => {
+  throw new Error(`${e}: ${t.type}`, { cause: t });
+}, z = (t) => "", F = (t) => [];
 export {
   w as ANNOTATION_ACTOR,
-  R as ANNOTATION_ARMOR,
+  h as ANNOTATION_ARMOR,
   C as ANNOTATION_CLASS,
-  y as ANNOTATION_COMBO,
-  L as ANNOTATION_COMMON_EVENT,
-  g as ANNOTATION_ITEM,
+  _ as ANNOTATION_COMBO,
+  b as ANNOTATION_COMMON_EVENT,
+  x as ANNOTATION_ITEM,
   I as ANNOTATION_MULTILINE_STRING,
   S as ANNOTATION_NUMBER,
-  b as ANNOTATION_SELECT_NUMBER,
-  x as ANNOTATION_SKILL,
+  L as ANNOTATION_SELECT_NUMBER,
+  R as ANNOTATION_SKILL,
   D as ANNOTATION_STATE,
   m as ANNOTATION_STRING,
   M as ANNOTATION_SWITCH,
-  U as ANNOTATION_TABLE_STRING,
-  h as ANNOTATION_TROOP,
+  P as ANNOTATION_TABLE_STRING,
+  g as ANNOTATION_TROOP,
   $ as ANNOTATION_WEAPON,
-  G as baseAnnotions,
-  P as booleanAnnotations,
-  X as buildAnnotation,
-  A as collectAnnotations,
-  Y as comboAnnotations,
-  j as correctErros,
-  J as fileAnnotations,
-  H as flatStructs,
-  u as formatTextAnnotation,
-  c as lookupDictionary,
+  W as baseAnnotions,
+  V as booleanAnnotations,
+  z as buildAnnotation,
+  p as collectAnnotations,
+  J as comboAnnotations,
+  F as correctErros,
+  K as fileAnnotations,
+  G as flatStructs,
+  c as formatTextAnnotation,
+  a as hasStruct,
+  U as hasStructDefault,
+  B as hasStructName,
+  f as hasStructParams,
+  l as lookupDictionary,
   v as makeDefaultStruct,
-  K as makeDefaultValue,
-  B as maxDepth,
-  V as numberAnnotations,
-  W as selectAnnotations,
-  a as traverseStruct,
+  X as makeDefaultValue,
+  H as maxDepth,
+  Y as numberAnnotations,
+  j as selectAnnotations,
+  q as thorwAnnotationError,
+  A as traverseStruct,
   k as typeAnnotation
 };
 //# sourceMappingURL=schema.es.js.map
