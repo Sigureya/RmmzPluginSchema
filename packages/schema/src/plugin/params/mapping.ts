@@ -1,6 +1,8 @@
-import type { AnnotationPrimitiveTypes } from "./types";
-import type { AnnotationMapper } from "./types/mapper";
-import type { StructAnnotationBase_Complete } from "./types/";
+import type {
+  AnnotationPrimitiveTypes,
+  StructAnnotationBase_Complete,
+  AnnotationMapper,
+} from "./types";
 
 export const mapping = <T>(
   annotation: AnnotationPrimitiveTypes | StructAnnotationBase_Complete,

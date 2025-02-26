@@ -30,6 +30,9 @@ export interface HasStruct {
 export interface StructAnnotation<T extends object>
   extends NodeChild_StructWithType<T, "root", T> {}
 
+export interface StructAnnotation_WithDefault<T extends object>
+  extends NodeChild_StructWithDefault<T, "root", T> {}
+
 export type StructAnnotation_Partial<T extends object> = NodeChild_Union<
   T,
   "root",
