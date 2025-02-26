@@ -51,7 +51,7 @@ export const makeDefaultStruct = <T extends object>(
 };
 
 const makeDefaultHelper = <T extends object>(
-  ant: StructAnnotation<T> | Types.AnnotationPrimitiveTypes,
+  ant: Types.StructAnnotation<T> | Types.AnnotationPrimitiveTypes,
   fn: (typename: string) => T | undefined,
   depth: number = 0
 ) => {
