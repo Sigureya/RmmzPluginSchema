@@ -1,21 +1,25 @@
 import type { StructNode_Error } from "./errors";
 import type {
   AnnotationBaseTexts,
-  Primitive,
-  PrimitiveArray,
   AnnotationPrimitiveTypes,
+  BooleanArg,
+  Primitive_Numbers,
+  Primitive_Strings,
+  Primitive_StringsArray,
+  Primitive_NumbersArray,
 } from "./primitive";
 
 export type AnnotationTypes =
   | AnnotationPrimitiveTypes
   | StructNode_Error
-  | StructUnion
-  | StructArray;
+  | StructAnnotationBase_Union
+  | StructAnnotationBase_Array;
 
 export interface StructBase {
   structName: string;
   params: ParameterBase;
 }
+
 export interface ParameterBase extends Record<string, AnnotationTypes> {}
 
 export interface HasStruct {
@@ -23,135 +27,215 @@ export interface HasStruct {
   default?: unknown;
 }
 
-export interface Struct<T extends object>
-  extends NodeItem_Struct<T, T, "root"> {}
+export interface StructAnnotation<T extends object>
+  extends NodeChild_StructWithType<T, "root", T> {}
 
-export type StructUnion<T extends object = object> =
-  | StructWithName<T>
-  | StructWithParams<T>
-  | StructWithDefault<T>
-  | StructWithType<T>
-  | StructComplete<T>;
+export type StructAnnotation_Partial<T extends object> = NodeChild_Union<
+  T,
+  "root",
+  T
+>;
 
-export interface StructInterface<T extends object> extends AnnotationBaseTexts {
+export type StructType_Union<T extends object> =
+  | StructType<T>
+  | StructType_WithName<T>
+  | StructType_WithParams<T>;
+
+export interface StructType<T extends object> extends StructBase {
+  structName: string;
+  params: StructParameters<T>;
+}
+
+export interface StructType_WithName<T extends object> {
+  structName: string;
+  params?: StructParameters<T>;
+}
+export interface StructType_WithParams<T extends object> {
+  structName?: string;
+  params: StructParameters<T>;
+}
+
+export type StructParameters<T extends object> = NodeParent_StructParameters<
+  T,
+  "root",
+  T
+>;
+
+export type StructAnnotationBase_Union =
+  | StructAnnotationBase_WithName
+  | StructAnnotationBase_WithParams
+  | StructAnnotationBase_WithDefault
+  | StructAnnotationBase_WithType
+  | StructAnnotationBase_Complete;
+
+export interface StructAnnotationBase_Partial extends AnnotationBaseTexts {
   type: "struct";
   struct?: {
     structName?: string;
     params?: ParameterBase;
   };
-  default?: T;
+  default?: object;
 }
 
-export interface StructComplete<T extends object = object>
-  extends StructInterface<T> {
+export interface StructAnnotationBase_Complete
+  extends StructAnnotationBase_Partial,
+    HasStruct {
   type: "struct";
-  struct: {
-    structName: string;
-    params: ParameterBase;
-  };
-  default: T;
+  struct: StructBase;
+  default: object;
 }
-
-export interface StructWithDefault<T extends object>
-  extends StructInterface<T> {
-  default: T;
-}
-
-export interface StructWithName<T extends object = object>
-  extends StructInterface<T> {
-  struct: {
-    structName: string;
-    params?: ParameterBase;
-  };
-  default?: T;
-}
-
-export interface StructWithParams<T extends object = object>
-  extends StructInterface<T> {
-  struct: {
-    structName?: string;
-    params: ParameterBase;
-  };
-  default?: T;
-}
-
-export interface StructWithType<T extends object = object>
-  extends StructInterface<T>,
+export interface StructAnnotationBase_WithType
+  extends StructAnnotationBase_Partial,
     HasStruct {
   struct: {
     structName: string;
     params: ParameterBase;
   };
-  default?: T;
+  default?: object;
 }
 
-export interface StructArray<Array extends object[] = object[]>
-  extends HasStruct {
+export interface StructAnnotationBase_WithName
+  extends StructAnnotationBase_Partial {
+  struct: {
+    structName: string;
+    params?: ParameterBase;
+  };
+  default?: object;
+}
+
+export interface StructAnnotationBase_WithParams
+  extends StructAnnotationBase_Partial {
+  struct: {
+    structName?: string;
+    params: ParameterBase;
+  };
+  default?: object;
+}
+
+export interface StructAnnotationBase_WithDefault
+  extends StructAnnotationBase_Partial {
+  default: object;
+}
+
+export interface StructAnnotationBase_Array
+  extends HasStruct,
+    AnnotationBaseTexts {
   type: "struct[]";
   struct: StructBase;
-  default: Array;
+  default: object[];
 }
 
-export type StructParameters<T extends object> = StructParametersNode<
-  T,
-  T,
-  "root"
->;
-type StructParametersNode<
+type NodeParent_StructParameters<
   T extends object,
-  KnowTypes extends object,
-  Path extends string
+  Path extends string,
+  KnowTypes extends object
 > = {
-  [Key in Extract<keyof T, string>]: ParamType<
+  [Key in Extract<keyof T, string>]: NodeChild_ParamType<
     T[Key],
-    KnowTypes,
-    `${Path}.${Key}`
+    `${Path}.${Key}`,
+    T | KnowTypes
   >;
 };
 
-type ParamType<
+type NodeChild_ParamType<
   T,
-  KnowTypes extends object,
-  Path extends string = "?"
-> = T extends number | string | boolean
-  ? Primitive<T>
-  : T extends number[] | string[]
-  ? PrimitiveArray<T>
+  Path extends string,
+  KnowTypes extends object
+> = T extends boolean
+  ? BooleanArg
+  : T extends number
+  ? Primitive_Numbers
+  : T extends string
+  ? Primitive_Strings
+  : T extends string[]
+  ? Primitive_StringsArray
+  : T extends number[]
+  ? Primitive_NumbersArray
   : T extends KnowTypes
   ? StructNode_Error<Path>
   : T extends KnowTypes[]
   ? StructNode_Error<`${Path}[]`>
   : T extends object[]
-  ? NodeItem_Array<T, KnowTypes, Path>
+  ? NodeChild_Array<T, KnowTypes, Path>
   : T extends object
-  ? NodeItem_Struct<T, KnowTypes, Path> | StructWithDefault<T>
+  ? NodeChild_Union<T, Path, KnowTypes>
   : StructNode_Error<`never:${Path}`>;
 
-interface NodeItem_Array<
+interface NodeChild_Array<
   Array extends object[],
   KnowTypes extends object,
-  Path extends string = "array?"
-> extends HasStruct {
+  Path extends string
+> extends StructAnnotationBase_Array {
   type: "struct[]";
-  struct: StructType<Array[number], KnowTypes | Array[number], Path>;
   default: Array;
+  struct: {
+    structName: string;
+    params: NodeParent_StructParameters<
+      Array[number],
+      `${Path}[]`,
+      Array[number] | KnowTypes
+    >;
+  };
 }
 
-interface NodeItem_Struct<
+type NodeChild_Union<
   T extends object,
-  KnowTypes extends object,
-  Path extends string = "struct?"
-> extends HasStruct {
+  Path extends string,
+  KnowTypes extends object
+> =
+  | NodeChild_StructWithType<T, Path, KnowTypes>
+  | NodeChild_StructWithName<T, Path, KnowTypes>
+  | NodeChild_StructWithDefault<T, Path, KnowTypes>
+  | NodeChild_StructWithParams<T, Path, KnowTypes>;
+
+interface NodeChild_StructWithType<
+  T extends object,
+  Path extends string,
+  KnowTypes extends object
+> extends StructAnnotationBase_WithType {
   type: "struct";
-  struct: StructType<T, KnowTypes, Path>;
+  struct: {
+    structName: string;
+    params: NodeParent_StructParameters<T, Path, KnowTypes>;
+  };
   default?: T;
 }
 
-interface StructType<
+interface NodeChild_StructWithName<
   T extends object,
-  KnowTypes extends object,
-  Path extends string
-> {
-  structName: string;
-  params: StructParametersNode<T, KnowTypes, Path>;
+  Path extends string,
+  KnowTypes extends object
+> extends StructAnnotationBase_WithName {
+  type: "struct";
+  struct: {
+    structName: string;
+    param?: NodeParent_StructParameters<T, Path, KnowTypes>;
+  };
+  default?: T;
+}
+
+interface NodeChild_StructWithParams<
+  T extends object,
+  Path extends string,
+  KnowTypes extends object
+> extends StructAnnotationBase_WithParams {
+  type: "struct";
+  struct: {
+    structName?: string;
+    params: NodeParent_StructParameters<T, Path, KnowTypes>;
+  };
+  default?: T;
+}
+
+interface NodeChild_StructWithDefault<
+  T extends object,
+  Path extends string,
+  KnowTypes extends object
+> extends StructAnnotationBase_WithDefault {
+  type: "struct";
+  default: T;
+  struct?: {
+    structName?: string;
+    params?: NodeParent_StructParameters<T, Path, KnowTypes>;
+  };
 }

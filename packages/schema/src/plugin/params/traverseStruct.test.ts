@@ -1,14 +1,14 @@
 import { test, expect, describe } from "vitest";
 
 import { maxDepth, flatStructs } from "./traverseStruct";
-import type { NumberArg, Struct } from "./types";
+import type { NumberArg, StructAnnotation } from "./types";
 
 interface Parson {
   name: string;
   age: number;
 }
 
-const mockParson: Struct<Parson> = {
+const mockParson: StructAnnotation<Parson> = {
   type: "struct",
   struct: {
     structName: "Parson",
@@ -30,7 +30,7 @@ interface Home {
   address: string;
   family: Parson[];
 }
-const mockHome: Struct<Home> = {
+const mockHome: StructAnnotation<Home> = {
   type: "struct",
   struct: {
     structName: "Home",

@@ -1,9 +1,9 @@
 import type { AnnotationPrimitiveTypes } from "./types";
 import type { AnnotationMapper } from "./types/mapper";
-import type { StructComplete } from "./types/";
+import type { StructAnnotationBase_Complete } from "./types/";
 
 export const mapping = <T>(
-  annotation: AnnotationPrimitiveTypes | StructComplete,
+  annotation: AnnotationPrimitiveTypes | StructAnnotationBase_Complete,
   mapper: AnnotationMapper<T>
 ) => {
   switch (annotation.type) {

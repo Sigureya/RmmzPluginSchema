@@ -2,7 +2,7 @@ import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
 import { makeDefaultStruct, makeDefaultValue } from "./makeDefault";
 import type { DefaultValueType } from "./types/metaTypes/metaTypes";
-import type { Struct } from "./types/";
+import type { StructAnnotation } from "./types/";
 
 interface Parson {
   name: string;
@@ -17,7 +17,85 @@ interface Home {
   family: Parson[];
 }
 
-const createMockParson = (default_?: Parson): Struct<Parson> => ({
+interface Team {
+  aaaa: Parson;
+  bbb: Parson;
+  cc2: Parson;
+}
+
+interface Company {
+  team: Team;
+}
+const createCompany = (company: Company): StructAnnotation<Company> => {
+  const aaaa: StructAnnotation<Parson> = {
+    type: "struct",
+    struct: {
+      structName: "Parson",
+      params: {
+        name: {
+          type: "string",
+          default: "aaa",
+        },
+        age: {
+          type: "number",
+          default: 17,
+        },
+      },
+    },
+  };
+
+  const params: Types.StructParameters<Parson> = {
+    name: {
+      type: "string",
+      default: "aaa",
+    },
+    age: {
+      type: "number",
+      default: 17,
+    },
+  };
+  const ccc: Types.StructType<Parson> = {
+    structName: "Parson",
+    params: {
+      age: {
+        type: "number",
+        default: 17,
+      },
+      name: {
+        type: "string",
+        default: "aaa",
+      },
+    },
+  };
+  return {
+    type: "struct",
+    struct: {
+      structName: "Company",
+      params: {
+        team: {
+          type: "struct",
+          struct: {
+            structName: "Team",
+            params: {
+              aaaa,
+              bbb: {
+                type: "struct",
+                struct: ccc,
+              },
+              cc2: {
+                type: "struct",
+                struct: {
+                  params: params,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  };
+};
+const createMockParson = (default_?: Parson): StructAnnotation<Parson> => ({
   type: "struct",
   struct: {
     structName: "Parson",
@@ -35,7 +113,9 @@ const createMockParson = (default_?: Parson): Struct<Parson> => ({
   default: default_,
 });
 
-const createMockHome = (home: DefaultValueType<Home>): Struct<Home> => ({
+const createMockHome = (
+  home: DefaultValueType<Home>
+): StructAnnotation<Home> => ({
   type: "struct",
   struct: {
     structName: "Home",
@@ -73,6 +153,27 @@ const mockDictionary: Types.Dictionary = {
   cat: "CAT",
   John: "JOHN",
 };
+
+describe("makeDefaultStruct from partial", () => {
+  test("", () => {
+    const struct: Types.StructAnnotationBase_WithParams = {
+      type: "struct",
+      struct: {
+        params: {
+          name: {
+            type: "string",
+            default: "John",
+          },
+          age: {
+            type: "number",
+            default: 30,
+          },
+        },
+      },
+    };
+    expect(struct.struct.structName).toBeUndefined();
+  });
+});
 
 describe("makeDefaultStruct", () => {
   test("parson", () => {
