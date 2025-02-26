@@ -1,6 +1,6 @@
-import type { Struct } from "./plugin";
+import type { StructAnnotation } from "./plugin";
 
-export const buildAnnotation = <T extends object>(s: Struct<T>[]) => {
+export const buildAnnotation = <T extends object>(s: StructAnnotation<T>[]) => {
   return "";
   // const x = s.map((x) => x.structName).join("\n");
   // return `/*
@@ -8,6 +8,6 @@ export const buildAnnotation = <T extends object>(s: Struct<T>[]) => {
   // */`;
 };
 
-export const correctErros = (s: Struct<object>[]) => {
+export const correctErros = (s: StructAnnotation<object>[]) => {
   return [];
 };

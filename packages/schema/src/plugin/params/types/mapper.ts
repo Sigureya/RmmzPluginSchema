@@ -12,18 +12,24 @@ import type {
   ToArrayAnnotation,
 } from "./primitive";
 // import type { HasStruct } from "./struct";
-import type { StructComplete } from "./struct";
+import type {
+  StructAnnotationBase_Complete,
+  StructAnnotationBase_Union,
+} from "./struct";
 
 type Dispatch<T, Param extends AnnotationBase> = (
   param: Omit<Param | ToArrayAnnotation<Param>, "default">
 ) => T;
 
-export interface AnnotationMapper<T> {
+export interface AnnotationMapper<
+  T,
+  StructType extends StructAnnotationBase_Union = StructAnnotationBase_Complete
+> {
   number: Dispatch<T, NumberArg>;
   boolean: (bool: BooleanArg) => T;
   string: Dispatch<T, StringArg | MultilineString>;
   dataIndex: Dispatch<T, DataIndexArg<string>>;
-  struct: (struct: StructComplete) => T;
+  struct: (struct: StructType) => T;
   select: Dispatch<T, NumberSelect | StringSelect>;
   file: Dispatch<T, FilePathAnnotation>;
   combo: Dispatch<T, ComboAnnotation>;
