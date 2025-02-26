@@ -25,12 +25,11 @@ export interface ComboAnnotation extends AnnotationBase {
 
 export interface StringSelect extends Select<string> {}
 
-export type Primitive_Strings = [
-  StringArg,
-  MultilineString,
-  FilePathAnnotation,
-  ComboAnnotation,
-  StringSelect
-][number];
+export type Primitive_Strings =
+  | StringArg
+  | MultilineString
+  | FilePathAnnotation
+  | ComboAnnotation
+  | StringSelect;
 
 export type Primitive_StringsArray = ToArrayAnnotation<Primitive_Strings>;
