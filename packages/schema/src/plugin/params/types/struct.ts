@@ -36,6 +36,11 @@ export type StructAnnotation_Partial<T extends object> = NodeChild_Union<
   T
 >;
 
+export type StructType_Union<T extends object> =
+  | StructType<T>
+  | StructType_WithName<T>
+  | StructType_WithParams<T>;
+
 export interface StructType<T extends object> extends StructBase {
   structName: string;
   params: StructParameters<T>;
