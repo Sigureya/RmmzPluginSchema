@@ -156,7 +156,7 @@ const mockDictionary: Types.Dictionary = {
 
 describe("makeDefaultStruct from partial", () => {
   test("", () => {
-    const struct: Types.StructAnnotationBase_WithParams = {
+    const ant: Types.StructAnnotation_WithParams<Parson> = {
       type: "struct",
       struct: {
         params: {
@@ -171,7 +171,8 @@ describe("makeDefaultStruct from partial", () => {
         },
       },
     };
-    expect(struct.struct.structName).toBeUndefined();
+    expect(ant.struct.structName).toBeUndefined();
+    expect(makeDefaultValue(ant));
   });
 });
 

@@ -27,11 +27,31 @@ export interface HasStruct {
   default?: unknown;
 }
 
+type ROOT = "root";
+
 export interface StructAnnotation<T extends object>
-  extends NodeChild_StructWithType<T, "root", T> {}
+  extends NodeChild_StructWithType<T, ROOT, T> {}
 
 export interface StructAnnotation_WithDefault<T extends object>
-  extends NodeChild_StructWithDefault<T, "root", T> {}
+  extends NodeChild_StructWithDefault<T, ROOT, T> {}
+
+export interface StructAnnotation_WithType<T extends object>
+  extends NodeChild_StructWithType<T, ROOT, T> {}
+
+export interface StructAnnotation_WithName<T extends object>
+  extends NodeChild_StructWithName<T, ROOT, T> {}
+
+export interface StructAnnotation_WithParams<T extends object>
+  extends NodeChild_StructWithParams<T, ROOT, T> {}
+export interface StructAnnotation_Completed<T extends object>
+  extends NodeChild_StructCompleted<T, ROOT, T> {}
+
+export type StructAnnotation_Union<T extends object> =
+  | StructAnnotation<T>
+  | StructAnnotation_WithDefault<T>
+  | StructAnnotation_WithType<T>
+  | StructAnnotation_WithName<T>
+  | StructAnnotation_WithParams<T>;
 
 export type StructAnnotation_Partial<T extends object> = NodeChild_Union<
   T,
@@ -60,7 +80,7 @@ export interface StructType_WithParams<T extends object> {
 
 export type StructParameters<T extends object> = NodeParent_StructParameters<
   T,
-  "root",
+  ROOT,
   T
 >;
 
@@ -69,7 +89,7 @@ export type StructAnnotationBase_Union =
   | StructAnnotationBase_WithParams
   | StructAnnotationBase_WithDefault
   | StructAnnotationBase_WithType
-  | StructAnnotationBase_Complete;
+  | StructAnnotationBase_Completed;
 
 export interface StructAnnotationBase_Partial extends AnnotationBaseTexts {
   type: "struct";
@@ -80,7 +100,7 @@ export interface StructAnnotationBase_Partial extends AnnotationBaseTexts {
   default?: object;
 }
 
-export interface StructAnnotationBase_Complete
+export interface StructAnnotationBase_Completed
   extends StructAnnotationBase_Partial,
     HasStruct {
   type: "struct";
@@ -118,6 +138,10 @@ export interface StructAnnotationBase_WithParams
 export interface StructAnnotationBase_WithDefault
   extends StructAnnotationBase_Partial {
   default: object;
+  struct?: {
+    structName?: string;
+    params?: ParameterBase;
+  };
 }
 
 export interface StructAnnotationBase_Array
@@ -212,7 +236,7 @@ interface NodeChild_StructWithName<
   type: "struct";
   struct: {
     structName: string;
-    param?: NodeParent_StructParameters<T, Path, KnowTypes>;
+    params?: NodeParent_StructParameters<T, Path, KnowTypes>;
   };
   default?: T;
 }
@@ -240,5 +264,17 @@ interface NodeChild_StructWithDefault<
   struct?: {
     structName?: string;
     params?: NodeParent_StructParameters<T, Path, KnowTypes>;
+  };
+}
+
+interface NodeChild_StructCompleted<
+  T extends object,
+  Path extends string,
+  KnowTypes extends object
+> extends StructAnnotationBase_Completed {
+  type: "struct";
+  struct: {
+    structName: string;
+    params: NodeParent_StructParameters<T, Path, KnowTypes>;
   };
 }

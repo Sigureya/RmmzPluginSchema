@@ -13,7 +13,7 @@ import type {
 } from "./primitive";
 // import type { HasStruct } from "./struct";
 import type {
-  StructAnnotationBase_Complete,
+  StructAnnotationBase_Completed,
   StructAnnotationBase_Union,
 } from "./struct";
 
@@ -23,7 +23,7 @@ type Dispatch<T, Param extends AnnotationBase> = (
 
 export interface AnnotationMapper<
   T,
-  StructType extends StructAnnotationBase_Union = StructAnnotationBase_Complete
+  StructType extends StructAnnotationBase_Union = StructAnnotationBase_Completed
 > {
   number: Dispatch<T, NumberArg>;
   boolean: (bool: BooleanArg) => T;

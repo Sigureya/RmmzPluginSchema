@@ -12,13 +12,13 @@ import type {
   AnnotationPrimitiveTypes,
   Dictionary,
   ParamTexts,
-  StructAnnotationBase_Complete,
+  StructAnnotationBase_Completed,
 } from "./types";
 import { mapping } from "./mapping";
 import { EMPTY_DICTINARY } from "./constants/";
 
 export const uniqueAnnotations = (
-  ant: AnnotationPrimitiveTypes | StructAnnotationBase_Complete,
+  ant: AnnotationPrimitiveTypes | StructAnnotationBase_Completed,
   dic: Dictionary = EMPTY_DICTINARY
 ) => {
   return mapping<`@${string} ${string}`[]>(ant, {
@@ -35,7 +35,7 @@ export const uniqueAnnotations = (
 
 export const makeParam = (
   name: string,
-  ant: AnnotationPrimitiveTypes | StructAnnotationBase_Complete,
+  ant: AnnotationPrimitiveTypes | StructAnnotationBase_Completed,
   mode: "@param" | "@arg" = "@param",
   dic: Dictionary = EMPTY_DICTINARY
 ): ParamTexts => {
