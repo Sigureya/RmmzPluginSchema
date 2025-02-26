@@ -1,11 +1,11 @@
 import type {
   AnnotationPrimitiveTypes,
-  StructAnnotationBase_Complete,
+  StructAnnotationBase_Completed,
   AnnotationMapper,
 } from "./types";
 
 export const mapping = <T>(
-  annotation: AnnotationPrimitiveTypes | StructAnnotationBase_Complete,
+  annotation: AnnotationPrimitiveTypes | StructAnnotationBase_Completed,
   mapper: AnnotationMapper<T>
 ) => {
   switch (annotation.type) {
