@@ -27,11 +27,22 @@ export interface HasStruct {
   default?: unknown;
 }
 
+type ROOT = "root";
+
 export interface StructAnnotation<T extends object>
-  extends NodeChild_StructWithType<T, "root", T> {}
+  extends NodeChild_StructWithType<T, ROOT, T> {}
 
 export interface StructAnnotation_WithDefault<T extends object>
-  extends NodeChild_StructWithDefault<T, "root", T> {}
+  extends NodeChild_StructWithDefault<T, ROOT, T> {}
+
+export interface StructAnnotation_WithType<T extends object>
+  extends NodeChild_StructWithType<T, ROOT, T> {}
+
+export interface StructAnnotation_WithName<T extends object>
+  extends NodeChild_StructWithName<T, ROOT, T> {}
+
+export interface StructAnnotation_WithParams<T extends object>
+  extends NodeChild_StructWithParams<T, ROOT, T> {}
 
 export type StructAnnotation_Partial<T extends object> = NodeChild_Union<
   T,
@@ -60,7 +71,7 @@ export interface StructType_WithParams<T extends object> {
 
 export type StructParameters<T extends object> = NodeParent_StructParameters<
   T,
-  "root",
+  ROOT,
   T
 >;
 
