@@ -1,4 +1,4 @@
-import { makeDefaultValue } from "./makeDefault";
+import { makeDefaultValueJSONLike } from "./makeDefault";
 import {
   baseAnnotions,
   booleanAnnotations,
@@ -41,7 +41,7 @@ export const makeParam = (
 ): ParamTexts => {
   return {
     other: uniqueAnnotations(ant, dic),
-    default: `@default ${makeDefaultValue(ant)}`,
+    default: `@default ${makeDefaultValueJSONLike(ant)}`,
     name: `${mode} ${name}`,
     type: typeAnnotation(ant),
     base: baseAnnotions(ant, dic),

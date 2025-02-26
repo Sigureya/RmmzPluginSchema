@@ -3,7 +3,7 @@ import { lookupDictionary } from "./makeAnnotation";
 import { hasStructParams } from "./structHasMember";
 import type * as Types from "./types/";
 
-export const makeDefaultValue = (
+export const makeDefaultValueJSONLike = (
   annotation:
     | Types.AnnotationPrimitiveTypes
     | Types.StructAnnotation_Union<object>,
