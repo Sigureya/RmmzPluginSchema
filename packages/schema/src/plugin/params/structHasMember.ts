@@ -3,7 +3,17 @@ import type {
   StructAnnotation_WithName,
   StructAnnotation_WithParams,
   StructAnnotation_WithDefault,
+  AnnotationTypes,
+  HasStruct,
 } from "./types";
+
+export const hasStruct = (
+  annotation: AnnotationTypes
+): annotation is Extract<AnnotationTypes, HasStruct> => {
+  return annotation.type === "struct"
+    ? hasStructParams(annotation)
+    : annotation.type === "struct[]";
+};
 
 export const hasStructParams = <T extends object>(
   annotation: StructAnnotation_Union<T>
