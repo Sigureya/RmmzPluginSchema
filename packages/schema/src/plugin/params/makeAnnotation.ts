@@ -1,4 +1,4 @@
-import { EMPTY_DICTINARY } from "./constants";
+import { EMPTY_DICTINARY } from "./constants/";
 import type * as Primitve from "./types/";
 import type { Dictionary, OmitBaseParams } from "./types/";
 

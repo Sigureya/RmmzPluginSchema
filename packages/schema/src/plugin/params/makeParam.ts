@@ -15,7 +15,7 @@ import type {
   StructAnnotationBase_Complete,
 } from "./types";
 import { mapping } from "./mapping";
-import { EMPTY_DICTINARY } from "./constants";
+import { EMPTY_DICTINARY } from "./constants/";
 
 export const uniqueAnnotations = (
   ant: AnnotationPrimitiveTypes | StructAnnotationBase_Complete,
