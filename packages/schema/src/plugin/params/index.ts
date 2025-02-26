@@ -3,3 +3,4 @@ export * from "./traverseStruct";
 export * from "./makeDefault";
 export * from "./makeAnnotation";
 export * from "./throw";
+export * from "./structHasMember";
