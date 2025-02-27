@@ -10,12 +10,12 @@ import {
   hasStructParams,
 } from "./structHasMember";
 
-interface Parson {
+interface Person {
   name: string;
   age: number;
 }
 
-const mockWithParam: StructAnnotation_WithParams<Parson> = {
+const mockWithParam: StructAnnotation_WithParams<Person> = {
   type: "struct",
   struct: {
     params: {
@@ -32,14 +32,14 @@ const mockWithParam: StructAnnotation_WithParams<Parson> = {
   },
 };
 
-const mockWithName: StructAnnotation_WithName<Parson> = {
+const mockWithName: StructAnnotation_WithName<Person> = {
   type: "struct",
   struct: {
     structName: "Parson",
   },
 };
 
-const mockWithDefault: StructAnnotation_WithDefault<Parson> = {
+const mockWithDefault: StructAnnotation_WithDefault<Person> = {
   type: "struct",
   default: {
     name: "aaa",

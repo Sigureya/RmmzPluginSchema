@@ -4,7 +4,7 @@ import { makeDefaultStruct, makeDefaultValueJSONLike } from "./makeDefault";
 import type { DefaultValueType } from "./types/metaTypes/metaTypes";
 import type { StructAnnotation } from "./types/";
 
-interface Parson {
+interface Person {
   name: string;
   age: number;
 }
@@ -14,10 +14,10 @@ interface Home {
     street: string;
     city: string;
   };
-  family: Parson[];
+  family: Person[];
 }
 
-const createMockParson = (default_?: Parson): StructAnnotation<Parson> => ({
+const createMockPerson = (default_?: Person): StructAnnotation<Person> => ({
   type: "struct",
   struct: {
     structName: "Parson",
@@ -65,7 +65,7 @@ const createMockHome = (
       },
       family: {
         type: "struct[]",
-        struct: createMockParson().struct,
+        struct: createMockPerson().struct,
         default: home.family,
       },
     },
@@ -77,12 +77,12 @@ const mockDictionary: Types.Dictionary = {
 };
 
 describe("makeDefaultStruct from partial", () => {
-  const exceeded: Parson = {
+  const exceeded: Person = {
     name: "John",
     age: 30,
   };
   test("withParam", () => {
-    const ant: Types.StructAnnotation_WithParams<Parson> = {
+    const ant: Types.StructAnnotation_WithParams<Person> = {
       type: "struct",
       struct: {
         params: {
@@ -103,7 +103,7 @@ describe("makeDefaultStruct from partial", () => {
     expect(JSON.parse(json)).toEqual(exceeded);
   });
   test("withDefault", () => {
-    const ant: Types.StructAnnotation_WithDefault<Parson> = {
+    const ant: Types.StructAnnotation_WithDefault<Person> = {
       type: "struct",
       default: {
         name: "John",
@@ -118,21 +118,21 @@ describe("makeDefaultStruct from partial", () => {
 
 describe("makeDefaultStruct", () => {
   test("parson", () => {
-    const mockParson = createMockParson();
-    const parson: Parson = makeDefaultStruct(mockParson);
+    const mockParson = createMockPerson();
+    const parson: Person = makeDefaultStruct(mockParson);
     expect(mockParson.default).toBeUndefined();
-    const expected: Parson = { name: "John", age: 30 };
+    const expected: Person = { name: "John", age: 30 };
     expect(parson).toEqual(expected);
     const json = makeDefaultValueJSONLike(mockParson);
     expect(json).toBe('{"name":"John","age":30}');
   });
   test("parson manualy defaultValue", () => {
-    const mock = createMockParson({
+    const mock = createMockPerson({
       name: "aaa",
       age: 17,
     });
-    const parson: Parson = makeDefaultStruct(mock);
-    const expected: Parson = { name: "aaa", age: 17 };
+    const parson: Person = makeDefaultStruct(mock);
+    const expected: Person = { name: "aaa", age: 17 };
     expect(mock.default).toEqual(expected);
     expect(parson).toEqual(expected);
   });
