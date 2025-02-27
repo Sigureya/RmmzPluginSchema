@@ -34,16 +34,6 @@ const stringify = <T>(value: Exclude<T, string>): string => {
   return JSON.stringify(value, null, 0);
 };
 
-const lookUp = (
-  ant: Exclude<Types.Primitive_Strings, Types.FilePathAnnotation>,
-  dic: Types.Dictionary
-): string => {
-  if (ant.type === "select") {
-    // select is not text.
-    return ant.default;
-  }
-  return lookupDictionary(ant.default, dic);
-};
 export const makeDefaultStruct = <T extends object>(
   annotation: Types.StructAnnotation_Union<T>
 ): T => {
