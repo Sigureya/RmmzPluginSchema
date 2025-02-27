@@ -206,8 +206,8 @@ describe("makeDefaultValue Primitive types ", () => {
       default: [1, 2, 3],
       type: "number[]",
     };
-    runDefaultValueTests("numberArray", mockNumberArray, "[1,2,3]", {
-      "[1,2,3]": "[9,8,7]",
+    runDefaultValueTests("numberArray", mockNumberArray, `["1","2","3"]`, {
+      '["1","2","3"]': "[9,8,7]",
     });
   });
   describe("string", () => {

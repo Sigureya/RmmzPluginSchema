@@ -1,5 +1,6 @@
 import { EMPTY_DICTINARY } from "./constants/";
 import { lookupDictionary } from "./makeAnnotation";
+import { stringifyPrimitiveAnnotation } from "./stringifyPrimitive";
 import { hasStructParams } from "./structHasMember";
 import type * as Types from "./types/";
 
@@ -10,18 +11,19 @@ export const makeDefaultValueJSONLike = (
   dic: Types.Dictionary = EMPTY_DICTINARY
 ): string => {
   switch (annotation.type) {
-    case "file":
-      return annotation.default;
+    // case "file":
+    //   return annotation.default;
     case "struct":
       return stringify(makeDefaultStruct(annotation));
-    case "string[]":
-      return stringify(annotation.default.map((s) => lookupDictionary(s, dic)));
+    // case "string[]":
+    //   return stringify(annotation.default.map((s) => lookupDictionary(s, dic)));
   }
-  if (typeof annotation.default === "string") {
-    return lookUp(annotation, dic);
-  }
+  return stringifyPrimitiveAnnotation(annotation, dic);
+  // if (typeof annotation.default === "string") {
+  //   return lookUp(annotation, dic);
+  // }
 
-  return stringify(annotation.default);
+  // return stringify(annotation.default);
 };
 /**
  * @description JSON.stringify("string")すると面倒なJSONになるので、こうやって予防する
