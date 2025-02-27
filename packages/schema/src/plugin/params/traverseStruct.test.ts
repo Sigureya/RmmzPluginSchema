@@ -7,12 +7,12 @@ import type {
   StructAnnotation_WithType,
 } from "./types";
 
-interface Parson {
+interface Person {
   name: string;
   age: number;
 }
 
-const mockParson: StructAnnotation_WithType<Parson> = {
+const mockParson: StructAnnotation_WithType<Person> = {
   type: "struct",
   struct: {
     structName: "Parson",
@@ -36,7 +36,7 @@ const mockParson: StructAnnotation_WithType<Parson> = {
 interface Home {
   name: string;
   address: string;
-  family: Parson[];
+  family: Person[];
 }
 const mockHome: StructAnnotation_WithType<Home> = {
   type: "struct",
