@@ -1,10 +1,10 @@
 import { test, expect, describe } from "vitest";
 import type * as Types from "./types/";
-import { makeDefaultStruct, makeDefaultValue } from "./makeDefault";
+import { makeDefaultStruct, makeDefaultValueJSONLike } from "./makeDefault";
 import type { DefaultValueType } from "./types/metaTypes/metaTypes";
 import type { StructAnnotation } from "./types/";
 
-interface Parson {
+interface Person {
   name: string;
   age: number;
 }
@@ -14,88 +14,10 @@ interface Home {
     street: string;
     city: string;
   };
-  family: Parson[];
+  family: Person[];
 }
 
-interface Team {
-  aaaa: Parson;
-  bbb: Parson;
-  cc2: Parson;
-}
-
-interface Company {
-  team: Team;
-}
-const createCompany = (company: Company): StructAnnotation<Company> => {
-  const aaaa: StructAnnotation<Parson> = {
-    type: "struct",
-    struct: {
-      structName: "Parson",
-      params: {
-        name: {
-          type: "string",
-          default: "aaa",
-        },
-        age: {
-          type: "number",
-          default: 17,
-        },
-      },
-    },
-  };
-
-  const params: Types.StructParameters<Parson> = {
-    name: {
-      type: "string",
-      default: "aaa",
-    },
-    age: {
-      type: "number",
-      default: 17,
-    },
-  };
-  const ccc: Types.StructType<Parson> = {
-    structName: "Parson",
-    params: {
-      age: {
-        type: "number",
-        default: 17,
-      },
-      name: {
-        type: "string",
-        default: "aaa",
-      },
-    },
-  };
-  return {
-    type: "struct",
-    struct: {
-      structName: "Company",
-      params: {
-        team: {
-          type: "struct",
-          struct: {
-            structName: "Team",
-            params: {
-              aaaa,
-              bbb: {
-                type: "struct",
-                struct: ccc,
-              },
-              cc2: {
-                type: "struct",
-                struct: {
-                  params: params,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  };
-};
-const createMockParson = (default_?: Parson): StructAnnotation<Parson> => ({
+const createMockPerson = (default_?: Person): StructAnnotation<Person> => ({
   type: "struct",
   struct: {
     structName: "Parson",
@@ -143,7 +65,7 @@ const createMockHome = (
       },
       family: {
         type: "struct[]",
-        struct: createMockParson().struct,
+        struct: createMockPerson().struct,
         default: home.family,
       },
     },
@@ -155,8 +77,12 @@ const mockDictionary: Types.Dictionary = {
 };
 
 describe("makeDefaultStruct from partial", () => {
-  test("", () => {
-    const ant: Types.StructAnnotation_WithParams<Parson> = {
+  const exceeded: Person = {
+    name: "John",
+    age: 30,
+  };
+  test("withParam", () => {
+    const ant: Types.StructAnnotation_WithParams<Person> = {
       type: "struct",
       struct: {
         params: {
@@ -172,27 +98,41 @@ describe("makeDefaultStruct from partial", () => {
       },
     };
     expect(ant.struct.structName).toBeUndefined();
-    expect(makeDefaultValue(ant));
+    expect(ant.default).toBeUndefined();
+    const json: string = makeDefaultValueJSONLike(ant);
+    expect(JSON.parse(json)).toEqual(exceeded);
+  });
+  test("withDefault", () => {
+    const ant: Types.StructAnnotation_WithDefault<Person> = {
+      type: "struct",
+      default: {
+        name: "John",
+        age: 30,
+      },
+    };
+    expect(ant.struct).toBeUndefined();
+    const json: string = makeDefaultValueJSONLike(ant);
+    expect(JSON.parse(json)).toEqual(exceeded);
   });
 });
 
 describe("makeDefaultStruct", () => {
   test("parson", () => {
-    const mockParson = createMockParson();
-    const parson: Parson = makeDefaultStruct(mockParson);
+    const mockParson = createMockPerson();
+    const parson: Person = makeDefaultStruct(mockParson);
     expect(mockParson.default).toBeUndefined();
-    const expected: Parson = { name: "John", age: 30 };
+    const expected: Person = { name: "John", age: 30 };
     expect(parson).toEqual(expected);
-    const json = makeDefaultValue(mockParson);
+    const json = makeDefaultValueJSONLike(mockParson);
     expect(json).toBe('{"name":"John","age":30}');
   });
   test("parson manualy defaultValue", () => {
-    const mock = createMockParson({
+    const mock = createMockPerson({
       name: "aaa",
       age: 17,
     });
-    const parson: Parson = makeDefaultStruct(mock);
-    const expected: Parson = { name: "aaa", age: 17 };
+    const parson: Person = makeDefaultStruct(mock);
+    const expected: Person = { name: "aaa", age: 17 };
     expect(mock.default).toEqual(expected);
     expect(parson).toEqual(expected);
   });
@@ -228,13 +168,13 @@ const runDefaultValueTests = <Text extends string>(
   dictionary: Record<Text, string>
 ) => {
   test(caseName, () => {
-    expect(makeDefaultValue(ant)).toBe(exceededText);
+    expect(makeDefaultValueJSONLike(ant)).toBe(exceededText);
   });
   test(`${caseName} with custom dictionary`, () => {
-    expect(makeDefaultValue(ant, dictionary)).toBe(exceededText);
+    expect(makeDefaultValueJSONLike(ant, dictionary)).toBe(exceededText);
   });
   test(`${caseName} with dictionary`, () => {
-    expect(makeDefaultValue(ant, mockDictionary)).toBe(exceededText);
+    expect(makeDefaultValueJSONLike(ant, mockDictionary)).toBe(exceededText);
   });
 };
 describe("makeDefaultValue Primitive types ", () => {
@@ -266,8 +206,8 @@ describe("makeDefaultValue Primitive types ", () => {
       default: [1, 2, 3],
       type: "number[]",
     };
-    runDefaultValueTests("numberArray", mockNumberArray, "[1,2,3]", {
-      "[1,2,3]": "[9,8,7]",
+    runDefaultValueTests("numberArray", mockNumberArray, `["1","2","3"]`, {
+      '["1","2","3"]': "[9,8,7]",
     });
   });
   describe("string", () => {
@@ -276,11 +216,14 @@ describe("makeDefaultValue Primitive types ", () => {
       type: "string",
     };
     test("no dictionary", () => {
-      const result: string = makeDefaultValue(mockString);
+      const result: string = makeDefaultValueJSONLike(mockString);
       expect(result).toBe("cat");
     });
     test("with dictionary", () => {
-      const result: string = makeDefaultValue(mockString, mockDictionary);
+      const result: string = makeDefaultValueJSONLike(
+        mockString,
+        mockDictionary
+      );
       expect(result).toBe("CAT");
     });
   });
@@ -290,11 +233,11 @@ describe("makeDefaultValue Primitive types ", () => {
       type: "string[]",
     };
     test("no dictionary", () => {
-      const json = makeDefaultValue(mockStringArray);
+      const json = makeDefaultValueJSONLike(mockStringArray);
       expect(json).toBe('["a","b","cat"]');
     });
     test("with dictionary", () => {
-      const json = makeDefaultValue(mockStringArray, mockDictionary);
+      const json = makeDefaultValueJSONLike(mockStringArray, mockDictionary);
       expect(json).toBe('["a","b","CAT"]');
     });
   });
@@ -311,7 +254,7 @@ describe("makeDefaultValue with Dictionary", () => {
         default: "test",
         type: "string",
       };
-      const result: string = makeDefaultValue(mockString, dic);
+      const result: string = makeDefaultValueJSONLike(mockString, dic);
       expect(result).toBe("test");
     });
   });

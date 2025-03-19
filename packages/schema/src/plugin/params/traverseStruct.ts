@@ -49,13 +49,13 @@ export const traverseStruct = <
 const traverseHelper = <Result>(
   annotation: AnnotationTypes,
   fn: (annotation: AnnotationTypes, value: Result, depth: number) => Result,
-  result: Result,
+  initValue: Result,
   depth: number = 0
 ): Result => {
   if (depth > 32) {
     throw new Error("Max depth exceeded");
   }
-  const newValue = fn(annotation, result, depth);
+  const newValue = fn(annotation, initValue, depth);
   if (!hasStruct(annotation)) {
     return newValue;
   }

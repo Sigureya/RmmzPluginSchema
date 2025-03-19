@@ -28,6 +28,7 @@ export default [
         },
       ],
       "spaced-comment": "error",
+      curly: "error",
     },
   },
 ];

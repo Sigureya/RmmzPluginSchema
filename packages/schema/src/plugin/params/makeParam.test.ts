@@ -66,7 +66,7 @@ describe("makeParam", () => {
       const result: ParamTexts = makeParam("numArray", ant);
       expect(result.name).toBe("@param numArray");
       expect(result.type).toBe("@type number[]");
-      expect(result.default).toBe("@default [1,2,3]");
+      expect(result.default).toBe(`@default ["1","2","3"]`);
     });
   });
   describe("string", () => {
