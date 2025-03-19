@@ -15,6 +15,13 @@ export type AnnotationTypes =
   | StructAnnotationBase_Union
   | StructAnnotationBase_Array;
 
+export interface StructBasePrimitive {
+  structName: string;
+  params: ParameterBasePrimitive;
+}
+export interface ParameterBasePrimitive
+  extends Record<string, AnnotationPrimitiveTypes> {}
+
 export interface StructBase {
   structName: string;
   params: ParameterBase;
