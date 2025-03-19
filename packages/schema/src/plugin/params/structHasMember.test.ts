@@ -5,6 +5,7 @@ import type {
   StructAnnotation_WithDefault,
 } from "./types";
 import {
+  primitveParams,
   hasStructDefault,
   hasStructName,
   hasStructParams,

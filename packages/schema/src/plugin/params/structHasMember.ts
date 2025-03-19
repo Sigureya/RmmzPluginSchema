@@ -5,6 +5,9 @@ import type {
   StructAnnotation_WithDefault,
   AnnotationTypes,
   HasStruct,
+  StructType_Union,
+  StructType_WithParams,
+  AnnotationPrimitiveTypes,
 } from "./types";
 
 export const hasStruct = (
@@ -39,4 +42,21 @@ export const hasStructName = <T extends object>(
     return false;
   }
   return st.structName !== undefined;
+};
+
+const isError = (ant: AnnotationTypes) => {
+  return ant.type === "error";
+};
+export const isPrimitiveAnnotation = (
+  ant: AnnotationTypes
+): ant is AnnotationPrimitiveTypes => {
+  return !hasStruct(ant) && !isError(ant);
+};
+
+export const primitveParams = <T extends object>(
+  type: StructType_WithParams<T>
+) => {
+  return Object.entries<AnnotationTypes>(type.params).filter(([key, p]) =>
+    isPrimitiveAnnotation(p)
+  );
 };
