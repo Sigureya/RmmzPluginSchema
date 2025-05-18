@@ -1,3 +1,10 @@
-import { KEYWORD_PARAM } from "./constants";
+import {
+  KEYWORD_DEFAULT,
+  KEYWORD_DESC,
+  KEYWORD_PARAM,
+  KEYWORD_TEXT,
+  KEYWORD_TYPE,
+} from "./constants";
 
-const KEYWORD_AT = `@(${KEYWORD_PARAM})` as const;
+export const KEYWORD_AT =
+  `${KEYWORD_PARAM}|${KEYWORD_DESC}|${KEYWORD_TEXT}|${KEYWORD_DEFAULT}|${KEYWORD_TYPE}` as const;
