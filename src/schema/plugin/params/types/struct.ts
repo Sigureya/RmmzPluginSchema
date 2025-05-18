@@ -9,6 +9,7 @@ import type {
   Primitive_NumbersArray,
 } from "./primitive";
 
+export type KeyWord_Strcut = "struct";
 export type AnnotationTypes =
   | AnnotationPrimitiveTypes
   | StructNode_Error
@@ -99,7 +100,7 @@ export type StructAnnotationBase_Union =
   | StructAnnotationBase_Completed;
 
 export interface StructAnnotationBase_Partial extends AnnotationBaseTexts {
-  type: "struct";
+  type: KeyWord_Strcut;
   struct?: {
     structName?: string;
     params?: ParameterBase;
@@ -110,7 +111,7 @@ export interface StructAnnotationBase_Partial extends AnnotationBaseTexts {
 export interface StructAnnotationBase_Completed
   extends StructAnnotationBase_Partial,
     HasStruct {
-  type: "struct";
+  type: KeyWord_Strcut;
   struct: StructBase;
   default: object;
 }
@@ -227,7 +228,7 @@ interface NodeChild_StructWithType<
   Path extends string,
   KnowTypes extends object
 > extends StructAnnotationBase_WithType {
-  type: "struct";
+  type: KeyWord_Strcut;
   struct: {
     structName: string;
     params: NodeParent_StructParameters<T, Path, KnowTypes>;
@@ -240,7 +241,7 @@ interface NodeChild_StructWithName<
   Path extends string,
   KnowTypes extends object
 > extends StructAnnotationBase_WithName {
-  type: "struct";
+  type: KeyWord_Strcut;
   struct: {
     structName: string;
     params?: NodeParent_StructParameters<T, Path, KnowTypes>;
@@ -253,7 +254,7 @@ interface NodeChild_StructWithParams<
   Path extends string,
   KnowTypes extends object
 > extends StructAnnotationBase_WithParams {
-  type: "struct";
+  type: KeyWord_Strcut;
   struct: {
     structName?: string;
     params: NodeParent_StructParameters<T, Path, KnowTypes>;
@@ -266,7 +267,7 @@ interface NodeChild_StructWithDefault<
   Path extends string,
   KnowTypes extends object
 > extends StructAnnotationBase_WithDefault {
-  type: "struct";
+  type: KeyWord_Strcut;
   default: T;
   struct?: {
     structName?: string;
@@ -279,7 +280,7 @@ interface NodeChild_StructCompleted<
   Path extends string,
   KnowTypes extends object
 > extends StructAnnotationBase_Completed {
-  type: "struct";
+  type: KeyWord_Strcut;
   struct: {
     structName: string;
     params: NodeParent_StructParameters<T, Path, KnowTypes>;
