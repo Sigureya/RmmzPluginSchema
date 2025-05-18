@@ -14,7 +14,7 @@
     "url": "https://github.com/Sigureya/RpgMakerSchema"
   },
   "scripts": {
-    "build": "pnpm -r run build",
+    "build": "npx pnpm -r run build",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "format": "prettier --write .",

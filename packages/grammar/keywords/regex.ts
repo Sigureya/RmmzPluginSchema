@@ -1,0 +1,10 @@
+import {
+  KEYWORD_DEFAULT,
+  KEYWORD_DESC,
+  KEYWORD_PARAM,
+  KEYWORD_TEXT,
+  KEYWORD_TYPE,
+} from "./constants";
+
+export const KEYWORD_AT =
+  `${KEYWORD_PARAM}|${KEYWORD_DESC}|${KEYWORD_TEXT}|${KEYWORD_DEFAULT}|${KEYWORD_TYPE}` as const;
