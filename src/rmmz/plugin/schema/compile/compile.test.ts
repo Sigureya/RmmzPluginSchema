@@ -1,11 +1,11 @@
 import { describe, test, expect } from "vitest";
+import { compilePluginStruct } from "@RpgTypes/features/jsonSchema/struct";
 import type { JSONSchemaType } from "ajv";
 import type {
   PluginCommand,
   PluginStructEx,
   StructParam,
 } from "./kinds/core/pluginEntriesEx";
-import { compilePluginStruct } from "./struct";
 interface PluginXX {
   commands: PluginCommand<object>[];
   structs: PluginStructEx<object>[];
