@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { PluginMeta } from "@RpgTypes/features/jsonSchema/compileOption";
+import type { PluginMeta } from "@RpgTypes/features/jsonSchema/meta/compileOption";
 import type { PluginStructType } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/pluginEntryTypes";
 import type { JSONSchemaType } from "ajv";
 import type { StructCompileLog } from "./compileLog";

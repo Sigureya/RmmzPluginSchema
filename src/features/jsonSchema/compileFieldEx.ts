@@ -6,7 +6,7 @@ import type {
   StructDefParam,
 } from "../../rmmz/plugin/schema/compile/kinds/core/pluginEntriesEx";
 import type { StructCompileLog } from "./compileLog";
-import type { CompileContext } from "./compileOption";
+import type { CompileContext } from "./meta/compileOption";
 import type { AnyParamSchema } from "./scala/base/anyParamSchema";
 import { withDefault } from "./scala/base/basicMetaField";
 import {

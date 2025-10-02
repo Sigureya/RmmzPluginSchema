@@ -1,8 +1,8 @@
 import { describe, test, expect } from "vitest";
 import type { Schema } from "jsonschema";
-import type { StructRefParam } from "../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
-import type { X_RmmzParam } from "./scala/base/x-rpg-param";
-import { X_RPG_PARM } from "./scala/base/x-rpg-param";
+import type { StructRefParam } from "../../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
+import type { X_RmmzParam } from "./base/x-rpg-param";
+import { X_RPG_PARM } from "./base/x-rpg-param";
 import { makeStructRef, makeStructRefWithXParam } from "./structDef";
 
 describe("StructDef schema generation", () => {

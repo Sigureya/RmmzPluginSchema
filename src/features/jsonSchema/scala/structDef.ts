@@ -1,7 +1,7 @@
 import type { StructRefParam } from "@RpgTypes/rmmz/plugin/schema/compile";
-import { withTexts } from "./scala/base/basicMetaField";
-import type { X_RPG_PARM, X_RmmzParam } from "./scala/base/x-rpg-param";
-import { xparamBaseData } from "./scala/base/x-rpg-param";
+import { withTexts } from "./base/basicMetaField";
+import type { X_RPG_PARM, X_RmmzParam } from "./base/x-rpg-param";
+import { xparamBaseData } from "./base/x-rpg-param";
 
 export interface JSONSchemaStructRef {
   $ref: string;
