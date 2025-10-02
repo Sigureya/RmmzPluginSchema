@@ -1,0 +1,5 @@
+# サンプル用のコアスクリプトはコミットしない
+ref/**/*.*
+/node_modules
+game/
+dummy/
