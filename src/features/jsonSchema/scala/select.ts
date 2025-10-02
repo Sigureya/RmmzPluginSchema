@@ -1,8 +1,8 @@
 import type { SelectParam } from "@RpgTypes/rmmz/plugin/schema/compile";
 import type { JSONSchemaType } from "ajv";
-import { withDefault, withTexts } from "./scala/base/basicMetaField";
-import type { JSONSchemaTypeWithRpgParam } from "./scala/base/x-rpg-param";
-import { xparamBaseData } from "./scala/base/x-rpg-param";
+import { withDefault, withTexts } from "./base/basicMetaField";
+import type { JSONSchemaTypeWithRpgParam } from "./base/x-rpg-param";
+import { xparamBaseData } from "./base/x-rpg-param";
 
 export const compileSelectField = (
   data: SelectParam

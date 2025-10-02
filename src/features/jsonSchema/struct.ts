@@ -1,7 +1,7 @@
 import type {
   PluginMeta,
   PluginCompileOptions,
-} from "@RpgTypes/features/jsonSchema/compileOption";
+} from "@RpgTypes/features/jsonSchema/meta/compileOption";
 import { PLUGIN_COMMAND } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/constants";
 import type {
   PluginCommand,

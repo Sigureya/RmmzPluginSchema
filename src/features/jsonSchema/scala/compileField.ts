@@ -1,6 +1,4 @@
 import type { PrimitiveParam } from "../../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
-import { compileSelectField, compileSelectFieldWithXparam } from "../select";
-import { makeStructRef } from "../structDef";
 import type { AnyParamSchema } from "./base/anyParamSchema";
 import { compileArrayField } from "./base/basicMetaField";
 import { compileBooleanFieldWithXParam, compileBooleanField } from "./boolean";
@@ -13,7 +11,9 @@ import {
   compileNumberFieldWithXparam,
 } from "./numbers";
 import { makeRpgIdField, makeRpgIdFieldWithXParam } from "./rpgDataKind";
+import { compileSelectField, compileSelectFieldWithXparam } from "./select";
 import { compileStringField, compileStringFieldWithXparam } from "./string";
+import { makeStructRef } from "./structDef";
 
 const makeStringArrayField = (
   data: Extract<PrimitiveParam, { default: string[] }>
