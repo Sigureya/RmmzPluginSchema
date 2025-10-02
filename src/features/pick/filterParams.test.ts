@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 import type { FilteredPluginSchema } from "./filtedTypes";
 import { filterPluginSchemaByParam } from "./filterParams";
-import type { PrimitiveParam } from "./kinds";
-import type { PluginJSON } from "./kinds/core/pluginJSONTypes";
+import type { PrimitiveParam } from "../../rmmz/plugin/schema/compile/kinds";
+import type { PluginJSON } from "../../rmmz/plugin/schema/compile/kinds/core/pluginJSONTypes";
 
 const paramIsNumber = (param: PrimitiveParam): param is PrimitiveParam => {
   return param.kind === "number";

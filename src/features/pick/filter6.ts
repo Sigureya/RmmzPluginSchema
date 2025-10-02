@@ -1,6 +1,6 @@
 import type { ParamFilterCriteria } from "./filterParamArray2";
-import type { ParamKinds } from "./kinds";
-import type { PluginStructSchemaArray } from "./kinds/core/types";
+import type { ParamKinds } from "../../rmmz/plugin/schema/compile/kinds";
+import type { PluginStructSchemaArray } from "../../rmmz/plugin/schema/compile/kinds/core/types";
 
 const stst = (
   structs: ReadonlyArray<PluginStructSchemaArray>,

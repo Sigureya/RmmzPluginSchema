@@ -2,8 +2,8 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { PluginParamGroups } from "./filter2Type2";
 import { filterParams } from "./filterParamArray";
-import type { PrimitiveParam } from "./kinds";
-import type { PluginParam } from "./kinds/core/types";
+import type { PrimitiveParam } from "../../rmmz/plugin/schema/compile/kinds";
+import type { PluginParam } from "../../rmmz/plugin/schema/compile/kinds/core/types";
 
 type MockedSet = MockedObject<Pick<ReadonlySet<string>, "has">>;
 
