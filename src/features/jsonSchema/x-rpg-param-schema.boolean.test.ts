@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
+import type { BooleanParam } from "@RpgTypes/rmmz/plugin/schema/compile";
 import Ajv from "ajv";
-import type { X_ParamData } from "./paramBase/x-rpg-param";
-import type { BooleanParam } from "./primitiveParams";
+import type { X_ParamData } from "./base/x-rpg-param";
 import SCHEMA_RPG_PARAM_META_SCHEMA from "./x-rpg-param.schema";
 const makeValidator = () => {
   const schema = SCHEMA_RPG_PARAM_META_SCHEMA;

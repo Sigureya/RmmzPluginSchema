@@ -3,8 +3,8 @@ import { withTexts } from "./core/paramBase/basicMetaField";
 import type {
   JSONSchemaTypeWithRpgParam,
   X_Param,
-} from "./core/paramBase/x-rpg-param";
-import { xparamBaseData } from "./core/paramBase/x-rpg-param";
+} from "../../../../../features/jsonSchema/base/x-rpg-param";
+import { xparamBaseData } from "../../../../../features/jsonSchema/base/x-rpg-param";
 import type { NumberParam, NumberArrayParam } from "./core/primitiveParams";
 import { withDefault } from "./utils";
 

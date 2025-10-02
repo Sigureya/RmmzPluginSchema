@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
+import type { BooleanParam } from "@RpgTypes/rmmz/plugin/schema/compile";
 import Ajv from "ajv";
-import type { BooleanParam } from "./core/primitiveParams";
 import { makePluginParamSchema } from "./paramSchema";
 
 describe("RmmzParam_Boolean JSON Schema Validation", () => {

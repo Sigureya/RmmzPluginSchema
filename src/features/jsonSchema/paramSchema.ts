@@ -1,20 +1,20 @@
-import type { JSONSchemaType } from "ajv";
-import type { DiscriminatedUnionSchemaType3 } from "src/libs/templates/discriminator/discriminator3";
-import type { ParamBase } from "./core/paramBase";
 import type {
   BooleanParam,
   ComboParam,
+  RpgDataIdParam,
   FileParam,
   FileArrayParam,
   NumberParam,
   NumberArrayParam,
+  StructRefParam,
+  StructArrayRefParam,
   SelectParam,
   StringParam,
   StringArrayParam,
-  StructArrayRefParam,
-  StructRefParam,
-  RpgDataIdParam,
-} from "./core/primitiveParams";
+} from "@RpgTypes/rmmz/plugin/schema/compile";
+import type { ParamBase } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/paramBase";
+import type { JSONSchemaType } from "ajv";
+import type { DiscriminatedUnionSchemaType3 } from "src/libs/templates/discriminator/discriminator3";
 
 const BASIC_TEXT = {
   type: "string",
