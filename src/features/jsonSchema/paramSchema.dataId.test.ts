@@ -1,7 +1,9 @@
 import { describe, test, expect } from "vitest";
+import type {
+  RpgDataIdParam,
+  DataKind_RpgUnion,
+} from "@RpgTypes/rmmz/plugin/schema/compile";
 import Ajv from "ajv";
-import type { RpgDataIdParam } from "./core/primitiveParams";
-import type { DataKind_RpgUnion } from "./core/rpgData/rpgDataTypesNames";
 import { makePluginParamSchema } from "./paramSchema";
 
 const makeDataParam = (param: Partial<RpgDataIdParam>): RpgDataIdParam => {

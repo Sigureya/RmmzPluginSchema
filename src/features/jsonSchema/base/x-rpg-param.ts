@@ -1,5 +1,5 @@
 import type { JSONSchemaType } from "ajv";
-import type { ParamBase } from "./paramBase";
+import type { ParamBase } from "../../../rmmz/plugin/schema/compile/kinds/core/paramBase/paramBase";
 
 // JSONSchemaの拡張データ型。
 // 拡張プロパティはx-**なので、型名も同様にX_**とする

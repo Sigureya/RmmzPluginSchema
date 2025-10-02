@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type { Schema } from "jsonschema";
-import type { X_RmmzParam } from "./core/paramBase/x-rpg-param";
-import { X_RPG_PARM } from "./core/paramBase/x-rpg-param";
+import type { X_RmmzParam } from "../../../../../features/jsonSchema/base/x-rpg-param";
+import { X_RPG_PARM } from "../../../../../features/jsonSchema/base/x-rpg-param";
 import type { StructRefParam } from "./core/primitiveParams";
 import { makeStructRef, makeStructRefWithXParam } from "./structDef";
 

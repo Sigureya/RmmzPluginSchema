@@ -1,6 +1,9 @@
 import { withTexts } from "./core/paramBase/basicMetaField";
-import type { X_RPG_PARM, X_RmmzParam } from "./core/paramBase/x-rpg-param";
-import { xparamBaseData } from "./core/paramBase/x-rpg-param";
+import type {
+  X_RPG_PARM,
+  X_RmmzParam,
+} from "../../../../../features/jsonSchema/base/x-rpg-param";
+import { xparamBaseData } from "../../../../../features/jsonSchema/base/x-rpg-param";
 import type { StructRefParam } from "./core/primitiveParams";
 
 export interface JSONSchemaStructRef {

@@ -1,6 +1,5 @@
 /* eslint-disable @functional/no-return-void */
 
-import type { NamedAttribute, PluginParamGroups } from "./filter2Type2";
 import type {
   ArrayParam,
   ParamKinds,
@@ -15,6 +14,7 @@ import {
   isStructArrayParam,
   isStructParam,
 } from "../../rmmz/plugin/schema/compile/kinds/isStruct";
+import type { NamedAttribute, PluginParamGroups } from "./filter2Type2";
 
 export interface ParamFilterCriteria {
   structNames: ReadonlySet<string>;

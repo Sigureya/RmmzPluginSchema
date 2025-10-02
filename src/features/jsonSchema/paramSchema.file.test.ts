@@ -1,6 +1,9 @@
 import { describe, test, expect } from "vitest";
+import type {
+  FileParam,
+  FileArrayParam,
+} from "@RpgTypes/rmmz/plugin/schema/compile";
 import Ajv from "ajv";
-import type { FileParam, FileArrayParam } from "./core/primitiveParams";
 import { makePluginParamSchema } from "./paramSchema";
 
 describe("RmmzParam_File JSON Schema Validation", () => {

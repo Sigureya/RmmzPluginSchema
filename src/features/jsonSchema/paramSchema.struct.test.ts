@@ -1,9 +1,9 @@
 import { describe, test, expect } from "vitest";
-import Ajv from "ajv";
 import type {
   StructRefParam,
   StructArrayRefParam,
-} from "./core/primitiveParams";
+} from "@RpgTypes/rmmz/plugin/schema/compile";
+import Ajv from "ajv";
 import { makePluginParamSchema } from "./paramSchema";
 const ajv = new Ajv({
   strict: true,

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { SourceIdentifier } from "@RpgTypes/libs";
 import type { JSONSchemaType } from "ajv";
-import type { X_RmmzParam } from "./core/paramBase/x-rpg-param";
+import type { X_RmmzParam } from "../../../../../features/jsonSchema/base/x-rpg-param";
 import type { RpgDataIdParam, SystemDataIdParam } from "./core/primitiveParams";
 import { lookupKind } from "./core/rpgData/lookup";
 import { makeRpgIdField, makeRpgIdFieldWithXParam } from "./rpgDataKind";

@@ -1,6 +1,9 @@
 import { describe, test, expect } from "vitest";
+import type {
+  NumberParam,
+  NumberArrayParam,
+} from "@RpgTypes/rmmz/plugin/schema/compile";
 import Ajv from "ajv";
-import type { NumberParam, NumberArrayParam } from "./core/primitiveParams";
 import { makePluginParamSchema } from "./paramSchema";
 
 type NumberParamBase = Omit<NumberParam, "kind" | "default">;

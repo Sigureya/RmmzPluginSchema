@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
 import type { JSONSchemaType } from "ajv";
+import type { JSONSchemaTypeWithRpgParam } from "../../../../../features/jsonSchema/base/x-rpg-param";
 import {
   compilePrimitiveField,
   compilePrimitiveFieldWithXParam,
 } from "./compileField";
-import type { JSONSchemaTypeWithRpgParam } from "./core/paramBase/x-rpg-param";
 import type { NumberParam, NumberArrayParam } from "./core/primitiveParams";
 import {
   compileNumberArrayField,
