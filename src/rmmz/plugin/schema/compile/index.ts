@@ -1,4 +1,3 @@
-export type * from "./filtedTypes";
+export type * from "../../../../features/pick/filtedTypes";
 export * from "./kinds";
 export * from "./struct";
-export { filterPluginSchemaByParam } from "./filterParams";

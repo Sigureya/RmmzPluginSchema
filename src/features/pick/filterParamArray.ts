@@ -7,10 +7,13 @@ import type {
   StructRefParam,
   StructArrayRefParam,
   ScalaParam,
-} from "./kinds";
-import type { PluginParam } from "./kinds/core/types";
-import { isArrayParam } from "./kinds/isArray";
-import { isStructArrayParam, isStructParam } from "./kinds/isStruct";
+} from "../../rmmz/plugin/schema/compile/kinds";
+import type { PluginParam } from "../../rmmz/plugin/schema/compile/kinds/core/types";
+import { isArrayParam } from "../../rmmz/plugin/schema/compile/kinds/isArray";
+import {
+  isStructArrayParam,
+  isStructParam,
+} from "../../rmmz/plugin/schema/compile/kinds/isStruct";
 
 export const filterParams = <
   Fn extends (param: ScalaParam, name: string) => boolean
