@@ -45,7 +45,6 @@ describe("person", () => {
       ],
       structName: "MockPerson",
       objectSchema: toObjectPluginParams(personSchema.scalas),
-      arraySchema: toObjectPluginParams(personSchema.scalaArrays),
     },
   ] as const satisfies StructPropertysPath[];
   test("getPathFromStruct", () => {

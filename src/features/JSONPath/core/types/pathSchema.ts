@@ -1,6 +1,5 @@
 import type {
   PrimitiveParam,
-  ClassifiedPluginParams,
   PluginParamEx,
   ArrayParamTypes,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -10,14 +9,6 @@ export interface StructPropertysPath {
   scalas: string | undefined;
   scalaArrays: PathPair[];
   objectSchema: Record<string, PrimitiveParam>;
-  arraySchema?: Record<string, PrimitiveParam>;
-}
-
-export interface StructPropertysPathV2<T> {
-  structName: string;
-  scalas: string | undefined;
-  scalaArrays: PathPair[];
-  struct?: null | ClassifiedPluginParams;
 }
 
 export interface PathPair {
