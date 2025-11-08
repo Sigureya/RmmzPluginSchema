@@ -7,12 +7,20 @@ import type {
   PluginStructType,
   PrimitiveParam,
   ObjectParamsV5,
+  ScalaParam,
 } from "./types";
 
-export function toObjectPluginParams(
+export function toObjectPluginParamsOld(
   params: ReadonlyArray<PluginParam>
 ): Record<string, PrimitiveParam> {
   const e = params.map((p): [string, PrimitiveParam] => [p.name, p.attr]);
+  return Object.fromEntries(e);
+}
+
+export function toObjectPluginParams(
+  params: ReadonlyArray<PluginParamEx<ScalaParam>>
+): Record<string, ScalaParam> {
+  const e = params.map((p): [string, ScalaParam] => [p.name, p.attr]);
   return Object.fromEntries(e);
 }
 
@@ -34,7 +42,7 @@ export const convertStructSchema = <T extends PluginStructSchemaArray>(
 ): PluginStructType<object> => {
   return {
     struct: schema.struct,
-    params: toObjectPluginParams(schema.params),
+    params: toObjectPluginParamsOld(schema.params),
   };
 };
 
@@ -44,7 +52,7 @@ export const convertPluginCommandSchema = <T extends PluginParam>(
   return {
     ...textAndDesc(command),
     command: command.command,
-    args: toObjectPluginParams(command.args),
+    args: toObjectPluginParamsOld(command.args),
   };
 };
 
