@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,Symbol.toStringTag,{value:"Module"});exports.AUTHOR_RMMZ="rmmz",exports.SRC_COLOR="colors",exports.domainNames=e=>Object.entries(e).map(([,m])=>m.title),exports.isValidNumber=e=>typeof e=="number"&&!Number.isNaN(e),exports.makeAudioFileParams=(e={})=>({name:e.name??"",volume:e.volume??100,pitch:e.pitch??100,pan:e.pan??0});
