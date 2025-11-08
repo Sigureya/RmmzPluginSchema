@@ -1,14 +1,14 @@
 import type {
-  PrimitiveParam,
   PluginParamEx,
   ArrayParamTypes,
+  ScalaParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 
 export interface StructPropertysPath {
   structName: string;
   scalas: string | undefined;
   scalaArrays: PathPair[];
-  objectSchema: Record<string, PrimitiveParam>;
+  objectSchema: Record<string, ScalaParam>;
 }
 
 export interface PathPair {

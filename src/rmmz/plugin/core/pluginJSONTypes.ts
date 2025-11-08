@@ -14,11 +14,11 @@ export interface PluginJSON {
 /**
  * @deprecated
  */
-export interface PluginCommandBody<Param = PrimitiveParam> {
+export interface PluginCommandBody {
   desc?: string;
   text?: string;
   args: {
-    [key: string]: Param;
+    [key: string]: PrimitiveParam;
   };
 }
 

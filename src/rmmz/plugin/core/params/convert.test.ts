@@ -1,5 +1,9 @@
 import { describe, expect, test } from "vitest";
-import { toArrayPluginParam, toObjectPluginParams } from "./convert";
+import {
+  toArrayPluginParam,
+  toObjectPluginParams,
+  toObjectPluginParamsOld,
+} from "./convert";
 import type {
   PluginParam,
   PluginParamEx,
@@ -69,7 +73,7 @@ describe("ToObjectParams<T> and PluginParamEx<T, K> conversion and type validati
       { name: "values", attr: { kind: "number[]", default: [] } },
     ];
     test("toObjectPluginParams converts array to object", () => {
-      const result = toObjectPluginParams(arrayParams);
+      const result = toObjectPluginParamsOld(arrayParams);
       expect(result).toEqual(objectParams);
     });
     test("toArrayPluginParam converts object to array", () => {
@@ -90,7 +94,7 @@ describe("ToObjectParams<T> and PluginParamEx<T, K> conversion and type validati
     ];
     test("toObjectPluginParams converts array to object", () => {
       const result: { [K in string]?: PrimitiveParam } =
-        toObjectPluginParams(arrayParams);
+        toObjectPluginParamsOld(arrayParams);
       expect(result).toEqual(objectParams);
     });
   });
