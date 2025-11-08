@@ -1,9 +1,9 @@
+import type { SourceIdentifier } from "@RmmzPluginSchema/libs/namedItemSource";
 import type {
   SourceId_SystemSwitches,
   SourceId_SystemVariables,
-  SourceIdentifier,
-  SourceIdUnion_RpgData,
-} from "@RpgTypes/libs";
+} from "@RmmzPluginSchema/libs/sourceIdTypes";
+import type { SourceIdUnion_RpgData } from "@RmmzPluginSchema/libs/sourceIdTypesRpg";
 import type {
   DataKind_SystemUnion,
   DataKind_RpgUnion,
