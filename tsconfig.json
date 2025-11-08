@@ -14,7 +14,8 @@
     "baseUrl": "./",
     "rootDir": "src",
     "paths": {
-      "@RmmzPluginSchema/*": ["src/*"],
+      "@RmmzPluginSchema/rmmz/*": ["src/rmmz/*"],
+      "@RmmzPluginSchema/libs/*": ["src/libs/*"],
       "@RpgTypes/*": ["src/*"]
     }
   },
