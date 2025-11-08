@@ -8,12 +8,12 @@ import type {
   StructRefParam,
   StructArrayRefParam,
   PluginParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isStructParam,
   isStructArrayParam,
   isArrayParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { NamedAttribute, PluginParamGroups } from "./filter2Type2";
 
 export interface ParamFilterCriteria {

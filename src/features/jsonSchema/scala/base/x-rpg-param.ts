@@ -1,4 +1,4 @@
-import type { ParamBase } from "@RmmzPluginSchema/rmmz";
+import type { ParamBase } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 
 // JSONSchemaの拡張データ型。

@@ -3,7 +3,7 @@ import type {
   StructDefParam,
   StructArrayDefParam,
   PluginStructEx,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import type { StructCompileLog } from "./compileLog";
 import type { CompileContext } from "./meta/compileOption";

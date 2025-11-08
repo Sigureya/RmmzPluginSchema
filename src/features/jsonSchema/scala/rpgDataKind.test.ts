@@ -1,6 +1,9 @@
 import { describe, expect, test } from "vitest";
-import type { RpgDataIdParam, SystemDataIdParam } from "@RmmzPluginSchema/rmmz";
-import { lookupKind } from "@RmmzPluginSchema/rmmz";
+import type {
+  RpgDataIdParam,
+  SystemDataIdParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { lookupKind } from "@RmmzPluginSchema/rmmz/plugin";
 import type { X_RmmzParam } from "@RpgTypes/features/jsonSchema/scala/base/x-rpg-param";
 import type { SourceIdentifier } from "@RpgTypes/libs";
 import type { JSONSchemaType } from "ajv";

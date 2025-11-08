@@ -3,7 +3,7 @@ import type {
   StringParam,
   SelectParam,
   ComboParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { SourceIdentifier } from "@RpgTypes/libs";
 import type { DiscriminatedUnionSchemaType3 } from "@RpgTypes/libs/templates/discriminator/discriminator3";
 import type { JSONSchemaType } from "ajv";

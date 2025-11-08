@@ -3,7 +3,7 @@ import type {
   ParamKinds,
   PluginParam,
   PrimitiveParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginParamGroups } from "./filter2Type2";
 import type { ParamFilterCriteria } from "./filterParamArray2";
 import { filterParams2 } from "./filterParamArray2";

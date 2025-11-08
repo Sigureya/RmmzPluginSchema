@@ -1,4 +1,4 @@
-import type { ArrayParamBase, ParamBase } from "@RmmzPluginSchema/rmmz";
+import type { ArrayParamBase, ParamBase } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 
 export const compileArrayField = <T, S extends JSONSchemaType<T>>(

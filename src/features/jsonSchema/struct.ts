@@ -1,4 +1,7 @@
-import type { PluginCommand, PluginStructEx } from "@RmmzPluginSchema/rmmz";
+import type {
+  PluginCommand,
+  PluginStructEx,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { PLUGIN_COMMAND } from "@RmmzPluginSchema/rmmz/plugin/constants";
 import { compileStructDetail } from "./compileFieldEx";
 import type { CompileResult } from "./compileLog";

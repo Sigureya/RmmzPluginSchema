@@ -1,4 +1,4 @@
-import type { BooleanParam } from "@RmmzPluginSchema/rmmz";
+import type { BooleanParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import { withDefault, withTexts } from "./base/basicMetaField";
 import type { JSONSchemaTypeWithRpgParam, X_Param } from "./base/x-rpg-param";

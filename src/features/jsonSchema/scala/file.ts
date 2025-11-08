@@ -1,4 +1,4 @@
-import type { FileParam } from "@RmmzPluginSchema/rmmz";
+import type { FileParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import { withDefault, withTexts } from "./base/basicMetaField";
 import type { JSONSchemaTypeWithRpgParam } from "./base/x-rpg-param";

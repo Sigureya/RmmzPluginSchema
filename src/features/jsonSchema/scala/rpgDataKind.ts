@@ -1,5 +1,8 @@
-import type { RpgDataIdParam, SystemDataIdParam } from "@RmmzPluginSchema/rmmz";
-import { lookupKind } from "@RmmzPluginSchema/rmmz";
+import type {
+  RpgDataIdParam,
+  SystemDataIdParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { lookupKind } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import { withDefault, withTexts } from "./base/basicMetaField";
 import type { X_Param } from "./base/x-rpg-param";

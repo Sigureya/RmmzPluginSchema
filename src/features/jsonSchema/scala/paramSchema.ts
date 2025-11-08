@@ -12,7 +12,7 @@ import type {
   SelectParam,
   StringParam,
   StringArrayParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import type { DiscriminatedUnionSchemaType3 } from "src/libs/templates/discriminator/discriminator3";
 

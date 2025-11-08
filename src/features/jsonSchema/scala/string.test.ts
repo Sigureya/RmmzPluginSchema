@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { StringParam } from "@RmmzPluginSchema/rmmz";
+import type { StringParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import type { AnyParamSchema } from "./base/anyParamSchema";
 import type { JSONSchemaTypeWithRpgParam } from "./base/x-rpg-param";

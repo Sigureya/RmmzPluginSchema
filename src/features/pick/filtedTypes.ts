@@ -1,4 +1,4 @@
-import type { PluginStructBody } from "@RmmzPluginSchema/rmmz";
+import type { PluginStructBody } from "@RmmzPluginSchema/rmmz/plugin";
 
 export type CommandArgsSchemaMap<T> = {
   [k: string]: { args: Record<string, T> };

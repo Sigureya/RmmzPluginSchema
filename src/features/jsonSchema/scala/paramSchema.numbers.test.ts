@@ -1,5 +1,8 @@
 import { describe, test, expect } from "vitest";
-import type { NumberParam, NumberArrayParam } from "@RmmzPluginSchema/rmmz";
+import type {
+  NumberParam,
+  NumberArrayParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import Ajv from "ajv";
 import { makePluginParamSchema } from "./paramSchema";
 

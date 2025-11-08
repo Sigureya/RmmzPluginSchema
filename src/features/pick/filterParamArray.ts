@@ -7,12 +7,12 @@ import type {
   StructRefParam,
   StructArrayRefParam,
   PluginParamEx,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isStructParam,
   isStructArrayParam,
   isArrayParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginParamGroups, NamedAttribute } from "./filter2Type2";
 
 export const filterParams = <

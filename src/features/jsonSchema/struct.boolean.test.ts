@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { PluginStructType } from "@RmmzPluginSchema/rmmz";
+import type { PluginStructType } from "@RmmzPluginSchema/rmmz/plugin";
 import { Ajv, type JSONSchemaType } from "ajv";
 import type { PluginMeta } from "./meta/compileOption";
 import { compilePluginStruct } from "./struct";

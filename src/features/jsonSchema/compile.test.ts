@@ -3,7 +3,7 @@ import type {
   PluginCommand,
   PluginStructEx,
   StructParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import { compilePluginStruct } from "./struct";
 interface PluginXX {

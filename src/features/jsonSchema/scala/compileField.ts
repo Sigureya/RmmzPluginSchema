@@ -1,4 +1,4 @@
-import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz";
+import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { AnyParamSchema } from "./base/anyParamSchema";
 import { compileArrayField } from "./base/basicMetaField";
 import { compileBooleanFieldWithXParam, compileBooleanField } from "./boolean";

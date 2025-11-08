@@ -5,7 +5,7 @@ import type {
   StructRefParam,
   StructArrayRefParam,
   PluginStructSchemaArray,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 
 export interface PluginParamGroups<T extends PrimitiveParam = PrimitiveParam> {
   single: NamedAttribute<ScalaParam>[];

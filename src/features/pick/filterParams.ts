@@ -3,7 +3,7 @@ import type {
   PluginJSON,
   PluginStructBody,
   PluginCommandBody,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { CommandArgsSchemaMap, FilteredPluginSchema } from "./filtedTypes";
 
 export const filterPluginSchemaByParam = <T extends PrimitiveParam>(

@@ -2,7 +2,7 @@ import { describe, test, expect } from "vitest";
 import type {
   StructRefParam,
   StructArrayRefParam,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import Ajv from "ajv";
 import { makePluginParamSchema } from "./paramSchema";
 const ajv = new Ajv({

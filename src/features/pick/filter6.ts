@@ -1,7 +1,7 @@
 import type {
   PluginStructSchemaArray,
   ParamKinds,
-} from "@RmmzPluginSchema/rmmz";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { ParamFilterCriteria } from "./filterParamArray2";
 
 const stst = (

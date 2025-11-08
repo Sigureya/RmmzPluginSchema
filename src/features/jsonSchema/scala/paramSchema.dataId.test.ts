@@ -1,5 +1,8 @@
 import { describe, test, expect } from "vitest";
-import type { RpgDataIdParam, DataKind_RpgUnion } from "@RmmzPluginSchema/rmmz";
+import type {
+  RpgDataIdParam,
+  DataKind_RpgUnion,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import Ajv from "ajv";
 import { makePluginParamSchema } from "./paramSchema";
 

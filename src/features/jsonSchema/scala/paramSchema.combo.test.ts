@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { ComboParam } from "@RmmzPluginSchema/rmmz";
+import type { ComboParam } from "@RmmzPluginSchema/rmmz/plugin";
 import Ajv from "ajv";
 import { makePluginParamSchema } from "./paramSchema";
 

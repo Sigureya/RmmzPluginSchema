@@ -1,4 +1,4 @@
-import type { StructRefParam } from "@RmmzPluginSchema/rmmz";
+import type { StructRefParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { withTexts } from "./base/basicMetaField";
 import type { X_RPG_PARM, X_RmmzParam } from "./base/x-rpg-param";
 import { xparamBaseData } from "./base/x-rpg-param";
