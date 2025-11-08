@@ -1,4 +1,3 @@
-import { textAndDesc } from "@RpgTypes/rmmz/utils";
 import type {
   PluginCommandSchemaArrayEx3,
   PluginCommandTypeEx,
@@ -46,5 +45,14 @@ export const convertPluginCommandSchema = <T extends PluginParam>(
     ...textAndDesc(command),
     command: command.command,
     args: toObjectPluginParams(command.args),
+  };
+};
+
+const textAndDesc = (
+  command: PluginCommandSchemaArrayEx3<PluginParam>
+): { text?: string; desc?: string } => {
+  return {
+    ...(command.text ? { text: command.text } : {}),
+    ...(command.desc ? { desc: command.desc } : {}),
   };
 };

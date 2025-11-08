@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
-import type { SourceIdUnion_RpgData } from "@RpgTypes/rmmz/rpg";
 import type {
   SourceId_SystemSwitches,
   SourceId_SystemVariables,
-} from "@RpgTypes/rmmz/system";
+  SourceIdUnion_RpgData,
+} from "@RmmzPluginSchema/libs";
 import type { SourceId_RmmzUnknown } from "./lookupRpgDataKind";
-import { lookupKind, isRmmzDataKind } from "./lookupRpgDataKind";
+import { isRmmzDataKind, lookupKind } from "./lookupRpgDataKind";
 import type { DataKind_SystemUnion, DataKind_RpgUnion } from "./types";
 
 interface TestCase {

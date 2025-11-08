@@ -1,15 +1,17 @@
 import { describe, expect, test } from "vitest";
+import type {
+  ParamKinds,
+  PluginParam,
+  PrimitiveParam,
+} from "@RmmzPluginSchema/rmmz";
 import type { PluginParamGroups } from "./filter2Type2";
 import type { ParamFilterCriteria } from "./filterParamArray2";
 import { filterParams2 } from "./filterParamArray2";
-import type { PrimitiveParam } from "../../rmmz/plugin/schema/compile/kinds";
-import type { ParamKinds } from "../../rmmz/plugin/schema/compile/kinds";
-import type { PluginParam } from "../../rmmz/plugin/schema/compile/kinds/core/types";
 
 interface TestCase {
   caseName: string;
   input: {
-    params: PluginParam<PrimitiveParam>[];
+    params: PluginParam[];
     ppp: ParamFilterCriteria;
   };
   expected: PluginParamGroups<PrimitiveParam>;

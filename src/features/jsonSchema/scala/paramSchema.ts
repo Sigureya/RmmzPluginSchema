@@ -1,4 +1,5 @@
 import type {
+  ParamBase,
   BooleanParam,
   ComboParam,
   RpgDataIdParam,
@@ -11,8 +12,7 @@ import type {
   SelectParam,
   StringParam,
   StringArrayParam,
-} from "@RpgTypes/rmmz/plugin/schema/compile";
-import type { ParamBase } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/paramBase";
+} from "@RmmzPluginSchema/rmmz";
 import type { JSONSchemaType } from "ajv";
 import type { DiscriminatedUnionSchemaType3 } from "src/libs/templates/discriminator/discriminator3";
 

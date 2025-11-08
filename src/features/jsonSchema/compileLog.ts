@@ -2,7 +2,7 @@ import type {
   StructParam,
   StructDefParam,
   StructArrayDefParam,
-} from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/pluginEntriesEx";
+} from "@RmmzPluginSchema/rmmz";
 import type { JSONSchemaType } from "ajv";
 import type { Schema } from "jsonschema";
 

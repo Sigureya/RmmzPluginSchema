@@ -1,4 +1,4 @@
-import type { PrimitiveParam } from "../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
+import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz";
 import type { AnyParamSchema } from "./scala/base/anyParamSchema";
 import { compilePrimitiveField } from "./scala/compileField";
 

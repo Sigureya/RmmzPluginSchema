@@ -1,24 +1,24 @@
 /* eslint-disable @functional/no-return-void */
 
-import type { PluginParamGroups, NamedAttribute } from "./filter2Type2";
 import type {
+  ScalaParam,
   PrimitiveParam,
   ArrayParam,
   StructRefParam,
   StructArrayRefParam,
-  ScalaParam,
-} from "../../rmmz/plugin/schema/compile/kinds";
-import type { PluginParam } from "../../rmmz/plugin/schema/compile/kinds/core/types";
-import { isArrayParam } from "../../rmmz/plugin/schema/compile/kinds/isArray";
+  PluginParamEx,
+} from "@RmmzPluginSchema/rmmz";
 import {
-  isStructArrayParam,
   isStructParam,
-} from "../../rmmz/plugin/schema/compile/kinds/isStruct";
+  isStructArrayParam,
+  isArrayParam,
+} from "@RmmzPluginSchema/rmmz";
+import type { PluginParamGroups, NamedAttribute } from "./filter2Type2";
 
 export const filterParams = <
   Fn extends (param: ScalaParam, name: string) => boolean
 >(
-  params2: PluginParam<PrimitiveParam>[],
+  params2: PluginParamEx<PrimitiveParam>[],
   set: Pick<ReadonlySet<string>, "has">,
   fn: Fn
 ): PluginParamGroups => {
