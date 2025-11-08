@@ -4,15 +4,21 @@ import type {
   PluginParamEx,
 } from "@RpgTypes/rmmz/plugin";
 
-export interface StringSequenceParamValues {
+export interface SequenceParamValuesBase {
+  valueType: string;
+  values: unknown[];
+  param: PluginParamEx<ArrayParamTypes>;
+}
+
+export interface StringSequenceParamValues extends SequenceParamValuesBase {
   values: string[];
-  valueKind: "string";
+  valueType: "string";
   param: PluginParamEx<Extract<ArrayParamTypes, { default: string[] }>>;
 }
 
-export interface NumberSequenceParamValues {
+export interface NumberSequenceParamValues extends SequenceParamValuesBase {
   values: number[];
-  valueKind: "number";
+  valueType: "number";
   param: PluginParamEx<Extract<ArrayParamTypes, { default: number[] }>>;
 }
 
