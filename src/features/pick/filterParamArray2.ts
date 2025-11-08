@@ -1,19 +1,19 @@
 /* eslint-disable @functional/no-return-void */
 
 import type {
-  ArrayParam,
   ParamKinds,
   PrimitiveParam,
   ScalaParam,
-  StructArrayRefParam,
+  ArrayParam,
   StructRefParam,
-} from "../../rmmz/plugin/schema/compile/kinds";
-import type { PluginParam } from "../../rmmz/plugin/schema/compile/kinds/core/types";
-import { isArrayParam } from "../../rmmz/plugin/schema/compile/kinds/isArray";
+  StructArrayRefParam,
+  PluginParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
-  isStructArrayParam,
   isStructParam,
-} from "../../rmmz/plugin/schema/compile/kinds/isStruct";
+  isStructArrayParam,
+  isArrayParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { NamedAttribute, PluginParamGroups } from "./filter2Type2";
 
 export interface ParamFilterCriteria {
@@ -23,7 +23,7 @@ export interface ParamFilterCriteria {
 }
 
 export const filterParams2 = (
-  params2: ReadonlyArray<PluginParam<PrimitiveParam>>,
+  params2: ReadonlyArray<PluginParam>,
   { arrayKinds, singleKinds, structNames }: ParamFilterCriteria
 ): PluginParamGroups => {
   const single: NamedAttribute<ScalaParam>[] = [];

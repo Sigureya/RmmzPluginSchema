@@ -1,12 +1,12 @@
-import type { X_Param } from "@RpgTypes/features/jsonSchema/scala/base/x-rpg-param";
-import { xparamBaseData } from "@RpgTypes/features/jsonSchema/scala/base/x-rpg-param";
 import type {
   RpgDataIdParam,
   SystemDataIdParam,
-} from "@RpgTypes/rmmz/plugin/schema/compile";
-import { lookupKind } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/rpgData/lookup";
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { lookupKind } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import { withDefault, withTexts } from "./base/basicMetaField";
+import type { X_Param } from "./base/x-rpg-param";
+import { xparamBaseData } from "./base/x-rpg-param";
 
 export const makeRpgIdField = (data: RpgDataIdParam | SystemDataIdParam) =>
   ({

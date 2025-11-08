@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { FileParam } from "@RpgTypes/rmmz/plugin/schema/compile";
+import type { FileParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import type { AnyParamSchema } from "./base/anyParamSchema";
 import type { JSONSchemaTypeWithRpgParam } from "./base/x-rpg-param";

@@ -1,9 +1,9 @@
 import { describe, test, expect } from "vitest";
-import type { JSONSchemaType } from "ajv";
 import type {
   NumberParam,
   NumberArrayParam,
-} from "../../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type { JSONSchemaType } from "ajv";
 import type { AnyParamSchema } from "./base/anyParamSchema";
 import type { JSONSchemaTypeWithRpgParam } from "./base/x-rpg-param";
 import {

@@ -1,6 +1,8 @@
 import { describe, test, expect } from "vitest";
-import type { PluginStructEx } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/pluginEntriesEx";
-import type { PluginStructType } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/pluginEntryTypes";
+import type {
+  PluginStructType,
+  PluginStructEx,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import type { PluginMeta } from "./meta/compileOption";
 import { compilePluginStruct } from "./struct";

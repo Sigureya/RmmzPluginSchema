@@ -1,9 +1,11 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
+import type {
+  PluginParamEx,
+  PrimitiveParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginParamGroups } from "./filter2Type2";
 import { filterParams } from "./filterParamArray";
-import type { PrimitiveParam } from "../../rmmz/plugin/schema/compile/kinds";
-import type { PluginParam } from "../../rmmz/plugin/schema/compile/kinds/core/types";
 
 type MockedSet = MockedObject<Pick<ReadonlySet<string>, "has">>;
 
@@ -17,7 +19,7 @@ const makeMockedSet = (items: ReadonlyArray<string>): MockedSet => {
 interface TestCase {
   caseName: string;
   input: {
-    params: PluginParam<PrimitiveParam>[];
+    params: PluginParamEx<PrimitiveParam>[];
     setItems: ReadonlyArray<string>;
     fn: (param: PrimitiveParam) => boolean;
   };

@@ -1,5 +1,5 @@
-import type { SourceIdentifier } from "@RpgTypes/libs";
-import type { NumberParam } from "@RpgTypes/rmmz/plugin/schema/compile";
+import type { SourceIdentifier } from "@RmmzPluginSchema/libs/namedItemSource";
+import type { NumberParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { X_ParamData, X_RmmzParam } from "./scala/base/x-rpg-param";
 
 export type X_ParamDataId = X_RmmzParam<SourceIdentifier, "dataId">;

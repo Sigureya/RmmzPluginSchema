@@ -1,14 +1,11 @@
 import type {
-  PluginMeta,
-  PluginCompileOptions,
-} from "@RpgTypes/features/jsonSchema/meta/compileOption";
-import { PLUGIN_COMMAND } from "@RpgTypes/rmmz/plugin/schema/compile/kinds/constants";
-import type {
   PluginCommand,
   PluginStructEx,
-} from "@RpgTypes/rmmz/plugin/schema/compile/kinds/core/pluginEntriesEx";
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { PLUGIN_COMMAND } from "@RmmzPluginSchema/rmmz/plugin/constants";
 import { compileStructDetail } from "./compileFieldEx";
 import type { CompileResult } from "./compileLog";
+import type { PluginMeta, PluginCompileOptions } from "./meta/compileOption";
 
 const SEPARATOR = "." as const;
 

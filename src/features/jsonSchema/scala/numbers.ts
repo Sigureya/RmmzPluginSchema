@@ -1,8 +1,8 @@
-import type { JSONSchemaType } from "ajv";
 import type {
   NumberParam,
   NumberArrayParam,
-} from "../../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type { JSONSchemaType } from "ajv";
 import { withDefault, withTexts } from "./base/basicMetaField";
 import type { JSONSchemaTypeWithRpgParam, X_Param } from "./base/x-rpg-param";
 import { xparamBaseData } from "./base/x-rpg-param";

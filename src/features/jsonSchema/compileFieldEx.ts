@@ -1,10 +1,10 @@
-import type { JSONSchemaType } from "ajv";
 import type {
   StructParam,
-  PluginStructEx,
-  StructArrayDefParam,
   StructDefParam,
-} from "../../rmmz/plugin/schema/compile/kinds/core/pluginEntriesEx";
+  StructArrayDefParam,
+  PluginStructEx,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type { JSONSchemaType } from "ajv";
 import type { StructCompileLog } from "./compileLog";
 import type { CompileContext } from "./meta/compileOption";
 import type { AnyParamSchema } from "./scala/base/anyParamSchema";

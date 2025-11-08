@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
+import type { BooleanParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
-import type { BooleanParam } from "../../../rmmz/plugin/schema/compile/kinds/core/primitiveParams";
 import type { AnyParamSchema } from "./base/anyParamSchema";
 import type { JSONSchemaTypeWithRpgParam } from "./base/x-rpg-param";
 import { compileBooleanField, compileBooleanFieldWithXParam } from "./boolean";
@@ -17,7 +17,6 @@ const mockData: BooleanParam = {
   off: "disabled",
   on: "enabled",
 };
-
 describe("Boolean field schema generation - Basic", () => {
   const expectedSchema: JSONSchemaType<boolean> = {
     type: "boolean",
