@@ -8,7 +8,10 @@ import type { ArrayPathPair } from "./arrayEx/types/query";
 export const makeScalaParams = (
   scalas: ReadonlyArray<PluginParamEx<ScalaParam>>,
   parent: string
-): string => {
+): string | undefined => {
+  if (scalas.length === 0) {
+    return undefined;
+  }
   const itesm = scalas.map((param) => `"${param.name}"`).join(",");
   return `${parent}[${itesm}]`;
 };

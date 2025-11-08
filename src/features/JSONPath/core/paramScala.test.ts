@@ -17,35 +17,49 @@ interface ScalaMock {
 }
 
 describe("makeScalaParams", () => {
-  const mockData = {
-    stringParam: "hello",
-    numberParam: 42,
-    booleanParam: true,
-  } as const satisfies ScalaMock;
-  const schema: ClassifiedPluginParamsEx<ScalaMock> = {
-    structs: [],
-    structArrays: [],
-    scalas: [
-      { name: "stringParam", attr: { kind: "string", default: "" } },
-      { name: "numberParam", attr: { kind: "number", default: 0 } },
-      { name: "booleanParam", attr: { kind: "boolean", default: false } },
-    ],
-    scalaArrays: [],
-  };
-  const path = `$["stringParam","numberParam","booleanParam"]`;
-  test("path", () => {
-    const path1 = makeScalaParams(schema.scalas, "$");
-    expect(path1).toBe(path);
+  describe("empty scalas", () => {
+    const schema: ClassifiedPluginParamsEx<ScalaMock> = {
+      structs: [],
+      structArrays: [],
+      scalas: [],
+      scalaArrays: [],
+    };
+    test("undefined", () => {
+      const path = makeScalaParams(schema.scalas, "$");
+      expect(path).toBeUndefined();
+    });
   });
-  test("find", () => {
-    const jsonPath = new JSONPathJS(path);
-    const result = jsonPath.pathSegments(mockData);
-    const expected: typeof result = [
-      { value: "hello", segments: ["stringParam"] },
-      { value: 42, segments: ["numberParam"] },
-      { value: true, segments: ["booleanParam"] },
-    ];
-    expect(result).toEqual(expected);
+  describe("scala params", () => {
+    const mockData = {
+      stringParam: "hello",
+      numberParam: 42,
+      booleanParam: true,
+    } as const satisfies ScalaMock;
+    const schema: ClassifiedPluginParamsEx<ScalaMock> = {
+      structs: [],
+      structArrays: [],
+      scalas: [
+        { name: "stringParam", attr: { kind: "string", default: "" } },
+        { name: "numberParam", attr: { kind: "number", default: 0 } },
+        { name: "booleanParam", attr: { kind: "boolean", default: false } },
+      ],
+      scalaArrays: [],
+    };
+    const path = `$["stringParam","numberParam","booleanParam"]`;
+    test("path", () => {
+      const path1 = makeScalaParams(schema.scalas, "$");
+      expect(path1).toBe(path);
+    });
+    test("find", () => {
+      const jsonPath = new JSONPathJS(path);
+      const result = jsonPath.pathSegments(mockData);
+      const expected: typeof result = [
+        { value: "hello", segments: ["stringParam"] },
+        { value: 42, segments: ["numberParam"] },
+        { value: true, segments: ["booleanParam"] },
+      ];
+      expect(result).toEqual(expected);
+    });
   });
 });
 
