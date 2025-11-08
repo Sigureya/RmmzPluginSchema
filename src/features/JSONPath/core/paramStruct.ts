@@ -33,7 +33,6 @@ function createNode(
   { path, structName }: { path: string; structName: string }
 ): StructPropertysPath {
   return {
-    arraySchema: toObjectPluginParams(structSchema.scalaArrays),
     objectSchema: toObjectPluginParams(structSchema.scalas),
     structName: structName,
     scalaArrays: makeScalaArrayParams(structSchema.scalaArrays, path),

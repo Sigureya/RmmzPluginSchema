@@ -48,7 +48,6 @@ describe("empty struct", () => {
         objectSchema: {
           actorId: { kind: "actor", default: 0 },
         },
-        arraySchema: {},
       },
     ];
     expect(result.items).toEqual(expected);
@@ -76,9 +75,6 @@ describe("empty struct", () => {
     const expected: StructPropertysPath[] = [
       {
         objectSchema: {},
-        arraySchema: {
-          numberArray: { kind: "number[]", default: [] },
-        },
         structName: "EmptyStructArray",
         scalas: undefined,
         scalaArrays: [

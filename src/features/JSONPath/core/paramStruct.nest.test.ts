@@ -110,7 +110,6 @@ describe("address", () => {
     scalas: `$.address["street","city","zipCode"]`,
     scalaArrays: [],
     structName: "Address",
-    arraySchema: {},
     objectSchema: toObjectPluginParams(addressSchema.scalas),
   };
   const paramSchema = {
@@ -170,7 +169,6 @@ describe("person", () => {
         { path: "$.person.nicknames[*]", param: personScheame.scalaArrays[1] },
       ],
       structName: "Person",
-      arraySchema: toObjectPluginParams(personScheame.scalaArrays),
       objectSchema: toObjectPluginParams(personScheame.scalas),
     },
   ];
@@ -242,7 +240,6 @@ describe("classroom", () => {
       scalaArrays: [],
       structName: "Class",
       objectSchema: toObjectPluginParams(classRoomSchema.scalas),
-      arraySchema: toObjectPluginParams(classRoomSchema.scalaArrays),
     },
     {
       scalas: `$.classroom.teacher["name","age"]`,
@@ -258,7 +255,6 @@ describe("classroom", () => {
       ],
       structName: "Person",
       objectSchema: toObjectPluginParams(personScheame.scalas),
-      arraySchema: toObjectPluginParams(personScheame.scalaArrays),
     },
     {
       scalas: `$.classroom.students[*]["name","age"]`,
@@ -274,7 +270,6 @@ describe("classroom", () => {
       ],
       structName: "Person",
       objectSchema: toObjectPluginParams(personScheame.scalas),
-      arraySchema: toObjectPluginParams(personScheame.scalaArrays),
     },
   ];
   test("getPathFromStruct", () => {
@@ -299,21 +294,18 @@ describe("school", () => {
       scalas: `$.school["since"]`,
       scalaArrays: [],
       objectSchema: toObjectPluginParams(schoolSchema.scalas),
-      arraySchema: {},
     },
     {
       structName: "Address",
       scalas: `$.school.address["street","city","zipCode"]`,
       scalaArrays: [],
       objectSchema: toObjectPluginParams(addressSchema.scalas),
-      arraySchema: {},
     },
     {
       structName: "Class",
       scalas: `$.school.classrooms[*]["className"]`,
       scalaArrays: [],
       objectSchema: toObjectPluginParams(classRoomSchema.scalas),
-      arraySchema: toObjectPluginParams(classRoomSchema.scalaArrays),
     },
     {
       structName: "Person",
@@ -329,7 +321,6 @@ describe("school", () => {
         },
       ],
       objectSchema: toObjectPluginParams(personScheame.scalas),
-      arraySchema: toObjectPluginParams(personScheame.scalaArrays),
     },
     {
       structName: "Person",
@@ -345,7 +336,6 @@ describe("school", () => {
         },
       ],
       objectSchema: toObjectPluginParams(personScheame.scalas),
-      arraySchema: toObjectPluginParams(personScheame.scalaArrays),
     },
   ];
 
