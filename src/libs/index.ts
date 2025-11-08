@@ -1,3 +1,5 @@
+export * from "./JSONValue";
+export * from "./jsonPath";
 export * from "./namedItemSource";
 export * from "./sourceIdTypes";
 export * from "./sourceIdTypesRpg";
