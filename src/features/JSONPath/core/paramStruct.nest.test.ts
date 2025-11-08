@@ -220,12 +220,12 @@ describe("person", () => {
       {
         param: { name: "items", attr: { kind: "number[]", default: [] } },
         values: [1, 2, 3],
-        valueKind: "number",
+        valueType: "number",
       },
       {
         param: { name: "nicknames", attr: { kind: "string[]", default: [] } },
         values: ["Johnny", "JD"],
-        valueKind: "string",
+        valueType: "string",
       },
     ];
     const result = extractArrayValuesFromJson(paramObject, path[0]);

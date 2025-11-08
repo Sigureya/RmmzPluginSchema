@@ -180,7 +180,7 @@ describe("extractArrayValuesFromJson", () => {
     const expected: StringSequenceParamValues[] = [
       {
         values: ["G", "Grady", "Big G"],
-        valueKind: "string",
+        valueType: "string",
         param: {
           name: "nicknames",
           attr: { kind: "string[]", default: [] },

@@ -42,7 +42,7 @@ describe("extractArrayParamValue", () => {
     };
     const expected: NumberSequenceParamValues = {
       values: [233, 211, 209],
-      valueKind: "number",
+      valueType: "number",
       param: {
         name: "numberArray",
         attr: { kind: "number[]", default: [] },
@@ -63,7 +63,7 @@ describe("extractArrayParamValue", () => {
       };
       const expected: NumberSequenceParamValues = {
         values: [1, 2, 3, 4, 5],
-        valueKind: "number",
+        valueType: "number",
         param: {
           name: "items",
           attr: { kind: "item[]", default: [] },
@@ -82,7 +82,7 @@ describe("extractArrayParamValue", () => {
       } as const satisfies ArrayPathPair;
       const expected = {
         values: [1, 2, 3, 4, 5],
-        valueKind: "number",
+        valueType: "number",
         param: path.param,
       } as const satisfies NumberSequenceParamValues;
       const result = extractArrayParamValue(mockData, path);
@@ -101,7 +101,7 @@ describe("extractArrayParamValue", () => {
       } as const satisfies ArrayParamPairEx<ArrayMock>;
       const expected: StringSequenceParamValues = {
         values: ["a", "b", "c"],
-        valueKind: "string",
+        valueType: "string",
         param: path.param,
       };
       const result = extractArrayParamValue(mockData.arrayMock, path);
@@ -139,7 +139,7 @@ describe("extractArrayParamValue", () => {
     } as const satisfies Person;
     const expected: StringSequenceParamValues = {
       values: [],
-      valueKind: "string",
+      valueType: "string",
       param: {
         name: "stringArray",
         attr: { kind: "string[]", default: [] },

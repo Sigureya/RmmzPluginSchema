@@ -31,7 +31,7 @@ export const extractArrayParamValue = (
     const s: string[] = values.filter((v) => typeof v === "string");
     return {
       values: s,
-      valueKind: "string",
+      valueType: "string",
       param: {
         name: pair.param.name,
         attr: attr,
@@ -42,7 +42,7 @@ export const extractArrayParamValue = (
     const n: number[] = values.filter((v) => typeof v === "number");
     return {
       values: n,
-      valueKind: "number",
+      valueType: "number",
       param: {
         name: pair.param.name,
         attr: attr,
