@@ -11,13 +11,13 @@ import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./paramStruct";
-import type { StructPathResult, StructPropertysPath } from "./types";
+import type { StructPropertysPath } from "./types";
 import type { CommandPath } from "./types/command";
 
 export const cccc2 = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): StructPathResult => {
+) => {
   const rrrr: CommandPath = createCommandArgsPath(schema, structMap);
 
   return {
