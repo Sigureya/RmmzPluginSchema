@@ -13,8 +13,28 @@ import {
 } from "./paramStruct";
 import type { StructPathResult, StructPropertysPath } from "./types";
 import type { CommandPath } from "./types/command";
+import { buildCommandPathSchema, mmm, ppp, type PPEX } from "./utils";
+export interface CCCC {
+  commandName: string;
+  path: StructPathResult;
+}
 
-export const cccc2 = (
+export const ccc3 = (
+  schema: ReadonlyArray<PluginCommandSchemaArray>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): Map<string, CCCC> => {
+  return new Map(
+    schema.map((s): [string, CCCC] => [
+      s.command,
+      {
+        commandName: s.command,
+        path: cccc2(s, structMap),
+      },
+    ])
+  );
+};
+
+const cccc2 = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): StructPathResult => {
@@ -25,7 +45,15 @@ export const cccc2 = (
   };
 };
 
-export const createCommandArgsPath = (
+const ggg = (
+  schema: PluginCommandSchemaArray,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+) => {
+  const cpp = createCommandArgsPath(schema, structMap);
+  return buildCommandPathSchema(cpp);
+};
+
+const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {
