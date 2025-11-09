@@ -1,13 +1,13 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { extractArrayParamValue } from "./arrayEx/extractParam";
+import { extractArrayParamValue } from "./extractParam";
+import type { StructPropertysPath } from "./types/pathSchemaTypes";
 import type {
-  NumberSequenceParamValues,
   ScalaPathResult,
   StringSequenceParamValues,
-} from "./arrayEx/types/result";
-import type { StructPropertysPath } from "./types";
+  NumberSequenceParamValues,
+} from "./types/result";
 
 export const extractScalaValuesFromJson = (
   json: JSONValue,

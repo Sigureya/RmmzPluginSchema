@@ -6,8 +6,8 @@ import {
   filterPluginSchemaByStringParam,
   classifyTextParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { StructPathResult } from "./core";
 import { getPathFromStructSchema } from "./core/paramStruct";
+import type { StructPathResult } from "./core/value/types/pathSchemaTypes";
 
 const p = (plugin: PluginSchemaArray) => {
   const textSchema = filterPluginSchemaByStringParam(plugin);

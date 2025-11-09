@@ -6,14 +6,18 @@ import {
   classifyPluginParams,
   toObjectPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { makeScalaArrayParams, makeScalaParams } from "./paramScala";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./paramStruct";
-import type { StructPathResult, StructPropertysPath } from "./types";
-import type { CommandPath } from "./types/command";
-import { buildCommandPathSchema, mmm, ppp, type PPEX } from "./utils";
+import { buildCommandPathSchema } from "./utils";
+import { makeScalaParams, makeScalaArrayParams } from "./value/paramScala";
+import type { CommandPath } from "./value/types/commandTypes";
+import type {
+  StructPathResult,
+  StructPropertysPath,
+} from "./value/types/pathSchemaTypes";
+
 export interface CCCC {
   commandName: string;
   path: StructPathResult;
@@ -53,7 +57,7 @@ const ggg = (
   return buildCommandPathSchema(cpp);
 };
 
-const createCommandArgsPath = (
+export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {

@@ -6,7 +6,10 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./paramStruct";
-import type { StructPathResult, StructPropertysPath } from "./types";
+import type {
+  StructPropertysPath,
+  StructPathResult,
+} from "./value/types/pathSchemaTypes";
 
 interface Person {
   name: string;

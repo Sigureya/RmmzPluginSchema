@@ -8,7 +8,10 @@ import type {
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import { getPathFromStructParam, getPathFromStructSchema } from "./paramStruct";
-import type { StructPathResult, StructPropertysPath } from "./types";
+import type {
+  StructPropertysPath,
+  StructPathResult,
+} from "./value/types/pathSchemaTypes";
 
 interface MockPerson {
   name: string;

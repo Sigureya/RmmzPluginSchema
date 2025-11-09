@@ -1,4 +1,4 @@
-import type { StructPathResult, StructPropertysPath } from "./pathSchema";
+import type { StructPathResult, StructPropertysPath } from "./pathSchemaTypes";
 
 export interface CommandPath {
   scalars: StructPropertysPath;

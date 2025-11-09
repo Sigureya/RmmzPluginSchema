@@ -6,17 +6,20 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import type {
-  NumberSequenceParamValues,
-  ScalaPathResult,
-  StringSequenceParamValues,
-} from "./arrayEx/types/result";
 import { getPathFromStructParam } from "./paramStruct";
 import {
   extractArrayValuesFromJson,
   extractScalaValuesFromJson,
-} from "./paramStructRead";
-import type { StructPathResult, StructPropertysPath } from "./types";
+} from "./value/paramStructRead";
+import type {
+  StructPropertysPath,
+  StructPathResult,
+} from "./value/types/pathSchemaTypes";
+import type {
+  ScalaPathResult,
+  StringSequenceParamValues,
+  NumberSequenceParamValues,
+} from "./value/types/result";
 
 interface Person {
   name: string;
