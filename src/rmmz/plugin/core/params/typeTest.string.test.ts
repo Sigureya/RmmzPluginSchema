@@ -3,7 +3,7 @@ import type {
   StringParam,
   ComboParam,
   SelectParam,
-  ScalaParam,
+  ScalarParam,
   PrimitiveParam,
   FileParam,
 } from "./types";
@@ -43,7 +43,7 @@ const selectParam: SelectParam = {
   ],
 };
 
-const runTestCase = (param: ScalaParam) => {
+const runTestCase = (param: ScalarParam) => {
   describe(`param kind=${param.kind}`, () => {
     it("is string value param", () => {
       expect(param).toSatisfy(isStringValueParam);

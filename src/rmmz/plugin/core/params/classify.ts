@@ -4,7 +4,7 @@ import type {
   PluginParamEx,
   StructRefParam,
   StructArrayRefParam,
-  ScalaParam,
+  ScalarParam,
   ArrayParamTypes,
   ClassifiedPluginParams,
   PluginParam,
@@ -27,7 +27,7 @@ export const classifyPluginParams = (
 ): ClassifiedPluginParams => {
   return classifyPluginParamsCore(
     params,
-    (p): p is PluginParamEx<ScalaParam> => true,
+    (p): p is PluginParamEx<ScalarParam> => true,
     (p): p is PluginParamEx<ArrayParamTypes> => true
   );
 };
@@ -53,7 +53,7 @@ export const classifyTextParams = (
 };
 
 const classifyPluginParamsCore = <
-  T extends ScalaParam,
+  T extends ScalarParam,
   A extends ArrayParamTypes
 >(
   paramArray: ReadonlyArray<PluginParam>,

@@ -2,11 +2,11 @@ import { describe, test, expect } from "vitest";
 import type { PrimitiveParam } from "@RpgTypes/rmmz/plugin";
 import {
   extractArrayValuesFromJson,
-  extractScalaValuesFromJson,
+  extractScalarValuesFromJson,
 } from "./value/paramStructRead";
 import type { StructPropertysPath } from "./value/types/pathSchemaTypes";
 import type {
-  ScalaPathResult,
+  ScalarPathResult,
   StringSequenceParamValues,
 } from "./value/types/result";
 
@@ -54,7 +54,7 @@ describe("extractScalaValuesFromJson", () => {
       objectSchema: {},
       scalas: undefined,
     };
-    const reuslt = extractScalaValuesFromJson(mockData, path);
+    const reuslt = extractScalarValuesFromJson(mockData, path);
     expect(reuslt).toEqual([]);
   });
   test("should extract scala values from json", () => {
@@ -64,7 +64,7 @@ describe("extractScalaValuesFromJson", () => {
       objectSchema: personSchema,
       scalas: "$.person['name','age','isStudent']",
     };
-    const expected: ScalaPathResult[] = [
+    const expected: ScalarPathResult[] = [
       {
         structName: "Person",
         value: "Grad",
@@ -84,7 +84,7 @@ describe("extractScalaValuesFromJson", () => {
         param: { name: "isStudent", attr: { kind: "boolean", default: false } },
       },
     ];
-    const result = extractScalaValuesFromJson(mockData, path);
+    const result = extractScalarValuesFromJson(mockData, path);
     expect(result).toEqual(expected);
   });
   test("students", () => {
@@ -95,7 +95,7 @@ describe("extractScalaValuesFromJson", () => {
       objectSchema: personSchema,
       scalas: `$.students[*]["name","age"]`,
     };
-    const expected: ScalaPathResult[] = [
+    const expected: ScalarPathResult[] = [
       {
         structName: "Person",
         value: "Alice",
@@ -136,7 +136,7 @@ describe("extractScalaValuesFromJson", () => {
         param: { name: "age", attr: personSchema.age },
       },
     ];
-    const result = extractScalaValuesFromJson(mockData, path);
+    const result = extractScalarValuesFromJson(mockData, path);
     expect(result).toEqual(expected);
   });
 });

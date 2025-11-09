@@ -59,7 +59,7 @@ export type ParamKinds = Exclude<
   ArrayParam | StructArrayRefParam
 >["kind"];
 
-export type ScalaParam = Exclude<
+export type ScalarParam = Exclude<
   PrimitiveParam,
   ArrayParam | StructArrayRefParam | KindOfStructBase
 >;
