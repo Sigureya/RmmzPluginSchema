@@ -4,20 +4,18 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { createCommandArgsPath } from "./command";
 import {
-  extractArrayValuesFromJson,
-  extractScalaValuesFromJson,
-} from "./value/paramStructRead";
+  buildCommandPathSchema,
+  collectScalaPathResults,
+  createCommandArgsPath,
+} from "./command";
+import type { CommandMemoItem } from "./value/types/JSONPathTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
   CommandPath,
 } from "./value/types/pathSchemaTypes";
-import type {
-  ScalaPathResult,
-  NumberSequenceParamValues,
-} from "./value/types/result";
+import type { ScalaPathResult } from "./value/types/result";
 
 interface Effect {
   code: number;
@@ -101,61 +99,61 @@ const mockData = {
     { code: 10, value: 100 },
     { code: 20, value: 200 },
   ],
-  damage: { exprFunc: "a  b", landomTable: [201, 211, 233] },
+  damage: { exprFunc: "a + b", landomTable: [201, 211, 233] },
   message: { success: "Hit!", failure: "Miss!" },
 } as const satisfies Action;
 
-describe("ccc", () => {
-  const scalarsPath: StructPropertysPath = {
-    structName: "Action",
-    objectSchema: {
-      subject: { default: 0, kind: "number" },
+const scalarsPath: StructPropertysPath = {
+  structName: "Action",
+  objectSchema: {
+    subject: { default: 0, kind: "number" },
+  },
+  scalaArrays: [
+    {
+      param: { attr: { default: [], kind: "number[]" }, name: "targets" },
+      path: "$.targets[*]",
     },
-    scalaArrays: [
-      {
-        param: { attr: { default: [], kind: "number[]" }, name: "targets" },
-        path: "$.targets[*]",
-      },
-    ],
-    scalas: '$["subject"]',
-  };
+  ],
+  scalas: '$["subject"]',
+};
 
-  const structsPath: StructPathResult = {
-    errors: [],
-    items: [
-      {
-        structName: "Damage",
-        objectSchema: { exprFunc: { default: "", kind: "string" } },
-        scalaArrays: [],
-        scalas: '$.damage["exprFunc"]',
+const structsPath: StructPathResult = {
+  errors: [],
+  items: [
+    {
+      structName: "Damage",
+      objectSchema: { exprFunc: { default: "", kind: "string" } },
+      scalaArrays: [],
+      scalas: '$.damage["exprFunc"]',
+    },
+    {
+      structName: "Message",
+      objectSchema: {
+        failure: { default: "", kind: "string" },
+        success: { default: "", kind: "string" },
       },
-      {
-        structName: "Message",
-        objectSchema: {
-          failure: { default: "", kind: "string" },
-          success: { default: "", kind: "string" },
-        },
-        scalaArrays: [],
-        scalas: '$.message["success","failure"]',
-      },
-    ],
-  };
+      scalaArrays: [],
+      scalas: '$.message["success","failure"]',
+    },
+  ],
+};
 
-  const structArrays: StructPathResult = {
-    errors: [],
-    items: [
-      {
-        structName: "Effect",
-        objectSchema: {
-          code: { default: 0, kind: "number" },
-          value: { default: 0, kind: "number" },
-        },
-        scalaArrays: [],
-        scalas: '$.effects[*]["code","value"]',
+const structArrays: StructPathResult = {
+  errors: [],
+  items: [
+    {
+      structName: "Effect",
+      objectSchema: {
+        code: { default: 0, kind: "number" },
+        value: { default: 0, kind: "number" },
       },
-    ],
-  };
+      scalaArrays: [],
+      scalas: '$.effects[*]["code","value"]',
+    },
+  ],
+};
 
+describe("command", () => {
   test("createCommandArgsPath", () => {
     const expected: CommandPath = {
       scalars: scalarsPath,
@@ -171,38 +169,75 @@ describe("ccc", () => {
     expect(result.structArrays).toEqual(expected.structArrays);
     expect(result).toEqual(expected);
   });
-  describe("extractValue", () => {
-    test("", () => {
-      const expected: ScalaPathResult[] = [
-        {
-          structName: "Action",
-          value: 1,
-          param: {
-            name: "subject",
-            attr: { default: 0, kind: "number" },
-          },
-        },
-      ];
 
-      const result: ScalaPathResult[] = extractScalaValuesFromJson(
-        mockData,
-        scalarsPath
-      );
-      expect(result).toEqual(expected);
+  test("buildCommandPathSchema", () => {
+    const commandMemo: CommandMemoItem[] = buildCommandPathSchema({
+      scalars: scalarsPath,
+      structArrays: structArrays,
+      structs: structsPath,
     });
-    test("", () => {
-      const expected: NumberSequenceParamValues[] = [
-        {
-          param: {
-            name: "targets",
-            attr: { default: [], kind: "number[]" },
-          },
-          valueType: "number",
-          values: [2, 3],
-        },
-      ];
-      const result = extractArrayValuesFromJson(mockData, scalarsPath);
-      expect(result).toEqual(expected);
+    expect(commandMemo).lengthOf(5);
+    expect(commandMemo[0].schema).toBe(scalarsPath);
+    expect(commandMemo[1].schema).toBe(scalarsPath);
+    expect(commandMemo[2].schema).toBe(structsPath.items[0]);
+    expect(commandMemo[3].schema).toBe(structsPath.items[1]);
+    expect(commandMemo[4].schema).toBe(structArrays.items[0]);
+  });
+
+  test("collectScalaPathResults", () => {
+    const expected: ScalaPathResult[] = [
+      {
+        structName: "Action",
+        value: 1,
+        param: { attr: { default: 0, kind: "number" }, name: "subject" },
+      },
+      {
+        structName: "Damage",
+        value: "a + b",
+        param: { attr: { default: "", kind: "string" }, name: "exprFunc" },
+      },
+      {
+        structName: "Message",
+        value: "Hit!",
+        param: { attr: { default: "", kind: "string" }, name: "success" },
+      },
+      {
+        structName: "Message",
+        value: "Miss!",
+        param: { attr: { default: "", kind: "string" }, name: "failure" },
+      },
+      {
+        structName: "Effect",
+        value: 10,
+        param: { attr: { default: 0, kind: "number" }, name: "code" },
+      },
+      {
+        structName: "Effect",
+        value: 100,
+        param: { attr: { default: 0, kind: "number" }, name: "value" },
+      },
+      {
+        structName: "Effect",
+        value: 20,
+        param: { attr: { default: 0, kind: "number" }, name: "code" },
+      },
+      {
+        structName: "Effect",
+        value: 200,
+        param: { attr: { default: 0, kind: "number" }, name: "value" },
+      },
+    ];
+
+    const commandMemo = buildCommandPathSchema({
+      scalars: scalarsPath,
+      structArrays: structArrays,
+      structs: structsPath,
     });
+
+    const result: ScalaPathResult[] = collectScalaPathResults(
+      mockData,
+      commandMemo
+    );
+    expect(result).toEqual(expected);
   });
 });
