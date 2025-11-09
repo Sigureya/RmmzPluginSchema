@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
-import type { PluginParamEx, ScalaParam } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginParamEx, ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { extractScalaParams } from "./extractParam";
-import type { ScalaPathResult } from "./types/result";
+import type { ScalarPathResult } from "./types/result";
 
 interface Person {
   name: string;
@@ -30,16 +30,16 @@ describe("extractScalaParams", () => {
     { name: "name", attr: { kind: "string", default: "" } },
     { name: "age", attr: { kind: "number", default: 0 } },
     { name: "isStudent", attr: { kind: "boolean", default: false } },
-  ] as const satisfies PluginParamEx<ScalaParam>[];
+  ] as const satisfies PluginParamEx<ScalarParam>[];
 
   test("path", () => {
-    const result: ScalaPathResult[] = extractScalaParams(
+    const result: ScalarPathResult[] = extractScalaParams(
       mockData,
       "$.person['name','age','isStudent']",
       schema,
       "Person"
     );
-    const expected: ScalaPathResult[] = [
+    const expected: ScalarPathResult[] = [
       {
         structName: "Person",
         value: "Alice",
@@ -52,13 +52,13 @@ describe("extractScalaParams", () => {
   });
 
   test("array", () => {
-    const result: ScalaPathResult[] = extractScalaParams(
+    const result: ScalarPathResult[] = extractScalaParams(
       mockData,
       "$.students[*]['name','age','isStudent']",
       schema,
       "Person"
     );
-    const expected: ScalaPathResult[] = [
+    const expected: ScalarPathResult[] = [
       { structName: "Person", value: "Bob", param: schema[0] },
       { structName: "Person", value: 20, param: schema[1] },
       { structName: "Person", value: true, param: schema[2] },

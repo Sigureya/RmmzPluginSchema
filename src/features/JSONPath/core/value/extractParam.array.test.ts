@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { extractArrayParamValue } from "./extractParam";
+import { extractArrayParamValues } from "./extractParam";
 import type { ArrayParamPairEx, ArrayPathPair } from "./types/query";
 import type {
   NumberSequenceParamValues,
@@ -48,7 +48,7 @@ describe("extractArrayParamValue", () => {
         attr: { kind: "number[]", default: [] },
       },
     };
-    const result = extractArrayParamValue(mockData.arrayMock, path);
+    const result = extractArrayParamValues(mockData.arrayMock, path);
     expect(result).toEqual(expected);
   });
 
@@ -69,7 +69,7 @@ describe("extractArrayParamValue", () => {
           attr: { kind: "item[]", default: [] },
         },
       };
-      const result = extractArrayParamValue(mockData.arrayMock, path);
+      const result = extractArrayParamValues(mockData.arrayMock, path);
       expect(result).toEqual(expected);
     });
     test("nested", () => {
@@ -85,7 +85,7 @@ describe("extractArrayParamValue", () => {
         valueType: "number",
         param: path.param,
       } as const satisfies NumberSequenceParamValues;
-      const result = extractArrayParamValue(mockData, path);
+      const result = extractArrayParamValues(mockData, path);
       expect(result).toEqual(expected);
     });
   });
@@ -104,7 +104,7 @@ describe("extractArrayParamValue", () => {
         valueType: "string",
         param: path.param,
       };
-      const result = extractArrayParamValue(mockData.arrayMock, path);
+      const result = extractArrayParamValues(mockData.arrayMock, path);
       expect(result).toEqual(expected);
     });
     test("nested", () => {
@@ -120,7 +120,7 @@ describe("extractArrayParamValue", () => {
         valueType: "string",
         param: path.param,
       };
-      const result = extractArrayParamValue(mockData, path);
+      const result = extractArrayParamValues(mockData, path);
       expect(result).toEqual(expected);
     });
   });
@@ -145,7 +145,7 @@ describe("extractArrayParamValue", () => {
         attr: { kind: "string[]", default: [] },
       },
     };
-    const result = extractArrayParamValue(mock, path);
+    const result = extractArrayParamValues(mock, path);
     expect(result).toEqual(expected);
   });
 });

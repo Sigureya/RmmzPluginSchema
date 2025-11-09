@@ -2,7 +2,7 @@ import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import type {
   ArrayParamTypes,
   PluginParamEx,
-  ScalaParam,
+  ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isStringArrayParam,
@@ -13,10 +13,10 @@ import type { ArrayPathPair } from "./types/query";
 import type {
   StringSequenceParamValues,
   NumberSequenceParamValues,
-  ScalaPathResult,
+  ScalarPathResult,
 } from "./types/result";
 
-export const extractArrayParamValue = (
+export const extractArrayParamValues = (
   object: JSONValue,
   pair: ArrayPathPair
 ): null | StringSequenceParamValues | NumberSequenceParamValues => {
@@ -56,13 +56,13 @@ export const extractArrayParamValue = (
 export const extractScalaParams = (
   data: JSONValue,
   path: string,
-  params: ReadonlyArray<PluginParamEx<ScalaParam>>,
+  params: ReadonlyArray<PluginParamEx<ScalarParam>>,
   structName: string
-): ScalaPathResult[] => {
+): ScalarPathResult[] => {
   const map = new Map(params.map((param) => [param.name, param.attr] as const));
   const jsonPath = new JSONPathJS(path);
   const values = jsonPath.pathSegments(data);
-  return values.reduce<ScalaPathResult[]>((acc, { value, segments }) => {
+  return values.reduce<ScalarPathResult[]>((acc, { value, segments }) => {
     if (typeof value === "object") {
       return acc;
     }

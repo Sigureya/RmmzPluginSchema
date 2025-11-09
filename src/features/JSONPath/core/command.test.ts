@@ -15,7 +15,7 @@ import type {
   StructPathResult,
   CommandPath,
 } from "./value/types/pathSchemaTypes";
-import type { ScalaPathResult } from "./value/types/result";
+import type { ScalarPathResult } from "./value/types/result";
 
 interface Effect {
   code: number;
@@ -185,7 +185,7 @@ describe("command", () => {
   });
 
   test("collectScalaPathResults", () => {
-    const expected: ScalaPathResult[] = [
+    const expected: ScalarPathResult[] = [
       {
         structName: "Action",
         value: 1,
@@ -234,7 +234,7 @@ describe("command", () => {
       structs: structsPath,
     });
 
-    const result: ScalaPathResult[] = collectScalaPathResults(
+    const result: ScalarPathResult[] = collectScalaPathResults(
       mockData,
       commandMemo
     );

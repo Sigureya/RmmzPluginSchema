@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type { ClassifiedPluginParamsEx } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { makeScalaParams, makeScalaArrayParams } from "./paramScala";
+import { makeScalarParams, makeScalarArrayParams } from "./paramScala";
 import type { PathPair } from "./types/types";
 
 interface ArrayMock {
@@ -25,7 +25,7 @@ describe("makeScalaParams", () => {
       scalaArrays: [],
     };
     test("undefined", () => {
-      const path = makeScalaParams(schema.scalas, "$");
+      const path = makeScalarParams(schema.scalas, "$");
       expect(path).toBeUndefined();
     });
   });
@@ -47,7 +47,7 @@ describe("makeScalaParams", () => {
     };
     const path = `$["stringParam","numberParam","booleanParam"]`;
     test("path", () => {
-      const path1 = makeScalaParams(schema.scalas, "$");
+      const path1 = makeScalarParams(schema.scalas, "$");
       expect(path1).toBe(path);
     });
     test("find", () => {
@@ -95,7 +95,7 @@ describe("makeScalaArrayParams", () => {
   ] as const satisfies PathPair[];
 
   test("create path", () => {
-    const path1: PathPair[] = makeScalaArrayParams(schema.scalaArrays, "$");
+    const path1: PathPair[] = makeScalarArrayParams(schema.scalaArrays, "$");
     expect(path1).toEqual(paths);
   });
   test("find number params", () => {

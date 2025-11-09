@@ -1,11 +1,11 @@
-import type { ScalaParam } from "@RmmzPluginSchema/rmmz/plugin";
+import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PathPair } from "./types";
 
 export interface StructPropertysPath {
   structName: string;
   scalas: string | undefined;
   scalaArrays: PathPair[];
-  objectSchema: Record<string, ScalaParam>;
+  objectSchema: Record<string, ScalarParam>;
 }
 
 export interface StructPathError {

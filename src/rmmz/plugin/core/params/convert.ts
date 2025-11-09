@@ -7,7 +7,7 @@ import type {
   PluginStructType,
   PrimitiveParam,
   ObjectParamsV5,
-  ScalaParam,
+  ScalarParam,
 } from "./types";
 
 export function toObjectPluginParamsOld(
@@ -18,9 +18,9 @@ export function toObjectPluginParamsOld(
 }
 
 export function toObjectPluginParams(
-  params: ReadonlyArray<PluginParamEx<ScalaParam>>
-): Record<string, ScalaParam> {
-  const e = params.map((p): [string, ScalaParam] => [p.name, p.attr]);
+  params: ReadonlyArray<PluginParamEx<ScalarParam>>
+): Record<string, ScalarParam> {
+  const e = params.map((p): [string, ScalarParam] => [p.name, p.attr]);
   return Object.fromEntries(e);
 }
 

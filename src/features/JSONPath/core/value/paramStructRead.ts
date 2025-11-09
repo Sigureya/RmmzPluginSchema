@@ -1,24 +1,24 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { extractArrayParamValue } from "./extractParam";
+import { extractArrayParamValues } from "./extractParam";
 import type { StructPropertysPath } from "./types/pathSchemaTypes";
 import type {
-  ScalaPathResult,
+  ScalarPathResult,
   StringSequenceParamValues,
   NumberSequenceParamValues,
 } from "./types/result";
 
-export const extractScalaValuesFromJson = (
+export const extractScalarValuesFromJson = (
   json: JSONValue,
   structPath: StructPropertysPath
-): ScalaPathResult[] => {
+): ScalarPathResult[] => {
   if (!structPath.scalas) {
     return [];
   }
   const jsonPath = new JSONPathJS(structPath.scalas);
   const segments = jsonPath.pathSegments(json);
-  return collectScalaResults(segments, structPath, structPath.structName);
+  return collectScalarResults(segments, structPath, structPath.structName);
 };
 
 interface PathSegment {
@@ -29,12 +29,12 @@ interface PathSegment {
 /**
  * セグメント配列からScalaPathResult配列を生成する
  */
-export const collectScalaResults = (
+export const collectScalarResults = (
   segments: ReadonlyArray<PathSegment>,
   structPath: StructPropertysPath,
   structName: string
-): ScalaPathResult[] => {
-  return segments.reduce<ScalaPathResult[]>((acc, { segments, value }) => {
+): ScalarPathResult[] => {
+  return segments.reduce<ScalarPathResult[]>((acc, { segments, value }) => {
     if (typeof value === "object") {
       return acc;
     }
@@ -49,7 +49,7 @@ export const collectScalaResults = (
       return acc;
     }
 
-    const result: ScalaPathResult = {
+    const result: ScalarPathResult = {
       value: value,
       structName: structName,
       param: { name: paramName, attr: schema },
@@ -64,7 +64,7 @@ export const extractArrayValuesFromJson = (
 ): (StringSequenceParamValues | NumberSequenceParamValues)[] => {
   return structPath.scalaArrays
     .map((scalaArray) => {
-      return extractArrayParamValue(json, scalaArray);
+      return extractArrayParamValues(json, scalaArray);
     })
     .filter((v) => v !== null);
 };

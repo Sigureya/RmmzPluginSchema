@@ -2,7 +2,7 @@ import type {
   PrimitiveParam,
   ArrayParam,
   ParamKinds,
-  ScalaParam,
+  ScalarParam,
   StructRefParam,
   PluginParam,
   PluginParamEx,
@@ -40,7 +40,7 @@ export const isArrayParamEx = <T extends PrimitiveParam, K extends ParamKinds>(
 
 export const isScalarParam = <T extends PrimitiveParam>(
   param: T
-): param is Extract<T, ScalaParam> => {
+): param is Extract<T, ScalarParam> => {
   return param.kind !== "struct" && !isArrayParam(param);
 };
 
@@ -83,7 +83,7 @@ export const hasTextAttr = <P extends PrimitiveParam>(
 };
 
 export const isStringValueParam = (
-  param: ScalaParam
+  param: ScalarParam
 ): param is Extract<PrimitiveParam, { default: string }> => {
   const info = TABLE[param.kind];
   return info.type === "string";
@@ -96,7 +96,7 @@ export const isNumberValueParam = (
 };
 
 export const isNumberValueParamEx = (
-  param: ScalaParam
+  param: ScalarParam
 ): param is Extract<PrimitiveParam, { default: number }> => {
   const info = TABLE[param.kind];
   return info.type === "number";
