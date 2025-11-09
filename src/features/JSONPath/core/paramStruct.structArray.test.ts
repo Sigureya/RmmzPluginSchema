@@ -27,19 +27,19 @@ interface ClassRoom {
 }
 
 const personSchema: ClassifiedPluginParamsEx<Person> = {
-  scalaArrays: [],
+  scalarArrays: [],
   structs: [],
   structArrays: [],
-  scalas: [
+  scalars: [
     { name: "name", attr: { kind: "string", default: "" } },
     { name: "age", attr: { kind: "number", default: 0 } },
   ],
 };
 
 const classRoomSchema: ClassifiedPluginParamsEx<ClassRoom> = {
-  scalaArrays: [],
+  scalarArrays: [],
   structs: [],
-  scalas: [],
+  scalars: [],
   structArrays: [
     {
       name: "students",
@@ -53,10 +53,10 @@ const classRoomSchema: ClassifiedPluginParamsEx<ClassRoom> = {
 };
 
 const itemSchema: ClassifiedPluginParamsEx<Item> = {
-  scalaArrays: [],
+  scalarArrays: [],
   structs: [],
   structArrays: [],
-  scalas: [
+  scalars: [
     { name: "itemId", attr: { kind: "number", default: 0 } },
     { name: "itemName", attr: { kind: "string", default: "" } },
   ],
@@ -77,8 +77,8 @@ describe("getPathFromStructParam", () => {
       age: { default: 0, kind: "number" },
       name: { default: "", kind: "string" },
     },
-    scalaArrays: [],
-    scalas: '$.classRoom.students[*]["name","age"]',
+    scalarArrays: [],
+    scalars: '$.classRoom.students[*]["name","age"]',
     structName: "Person",
   };
   const path2: StructPropertysPath = {
@@ -86,8 +86,8 @@ describe("getPathFromStructParam", () => {
       itemId: { default: 0, kind: "number" },
       itemName: { default: "", kind: "string" },
     },
-    scalaArrays: [],
-    scalas: '$.classRoom.items[*]["itemId","itemName"]',
+    scalarArrays: [],
+    scalars: '$.classRoom.items[*]["itemId","itemName"]',
     structName: "Item",
   };
 

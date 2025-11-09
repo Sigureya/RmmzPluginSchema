@@ -23,12 +23,12 @@ interface MockPerson {
 
 describe("person", () => {
   const personSchema: ClassifiedPluginParamsEx<MockPerson> = {
-    scalas: [
+    scalars: [
       { name: "name", attr: { kind: "string", default: "" } },
       { name: "age", attr: { kind: "number", default: 0 } },
       { name: "b", attr: { kind: "boolean", default: false } },
     ],
-    scalaArrays: [
+    scalarArrays: [
       { name: "numberArray", attr: { kind: "number[]", default: [] } },
       { name: "stringArray", attr: { kind: "string[]", default: [] } },
     ],
@@ -37,17 +37,20 @@ describe("person", () => {
   };
   const expected = [
     {
-      scalas: `$.person["name","age","b"]`,
-      scalaArrays: [
+      scalars: `$.person["name","age","b"]`,
+      scalarArrays: [
         {
           path: "$.person.numberArray[*]",
 
-          param: personSchema.scalaArrays[0],
+          param: personSchema.scalarArrays[0],
         },
-        { path: "$.person.stringArray[*]", param: personSchema.scalaArrays[1] },
+        {
+          path: "$.person.stringArray[*]",
+          param: personSchema.scalarArrays[1],
+        },
       ],
       structName: "MockPerson",
-      objectSchema: toObjectPluginParams(personSchema.scalas),
+      objectSchema: toObjectPluginParams(personSchema.scalars),
     },
   ] as const satisfies StructPropertysPath[];
   test("getPathFromStruct", () => {
@@ -72,9 +75,9 @@ describe("person", () => {
   test("isvalid path", () => {
     expected.forEach((item) => {
       expect(() => {
-        new JSONPathJS(item.scalas);
+        new JSONPathJS(item.scalars);
       }).not.toThrow();
-      item.scalaArrays.forEach((path) => {
+      item.scalarArrays.forEach((path) => {
         expect(() => {
           new JSONPathJS(path.path);
         }).not.toThrow();

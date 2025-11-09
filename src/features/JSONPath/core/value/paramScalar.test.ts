@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type { ClassifiedPluginParamsEx } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { makeScalarParams, makeScalarArrayParams } from "./paramScala";
+import { makeScalarParams, makeScalarArrayParams } from "./paramScalar";
 import type { PathPair } from "./types/types";
 
 interface ArrayMock {
@@ -21,11 +21,11 @@ describe("makeScalaParams", () => {
     const schema: ClassifiedPluginParamsEx<ScalaMock> = {
       structs: [],
       structArrays: [],
-      scalas: [],
-      scalaArrays: [],
+      scalars: [],
+      scalarArrays: [],
     };
     test("undefined", () => {
-      const path = makeScalarParams(schema.scalas, "$");
+      const path = makeScalarParams(schema.scalars, "$");
       expect(path).toBeUndefined();
     });
   });
@@ -38,16 +38,16 @@ describe("makeScalaParams", () => {
     const schema: ClassifiedPluginParamsEx<ScalaMock> = {
       structs: [],
       structArrays: [],
-      scalas: [
+      scalars: [
         { name: "stringParam", attr: { kind: "string", default: "" } },
         { name: "numberParam", attr: { kind: "number", default: 0 } },
         { name: "booleanParam", attr: { kind: "boolean", default: false } },
       ],
-      scalaArrays: [],
+      scalarArrays: [],
     };
     const path = `$["stringParam","numberParam","booleanParam"]`;
     test("path", () => {
-      const path1 = makeScalarParams(schema.scalas, "$");
+      const path1 = makeScalarParams(schema.scalars, "$");
       expect(path1).toBe(path);
     });
     test("find", () => {
@@ -72,8 +72,8 @@ describe("makeScalaArrayParams", () => {
   const schema: ClassifiedPluginParamsEx<ArrayMock> = {
     structs: [],
     structArrays: [],
-    scalas: [],
-    scalaArrays: [
+    scalars: [],
+    scalarArrays: [
       { name: "numberArray", attr: { kind: "number[]", default: [] } },
       { name: "stringArray", attr: { kind: "string[]", default: [] } },
       { name: "files", attr: { kind: "file[]", default: [], dir: "img" } },
@@ -82,20 +82,20 @@ describe("makeScalaArrayParams", () => {
   const paths = [
     {
       path: "$.numberArray[*]",
-      param: schema.scalaArrays[0],
+      param: schema.scalarArrays[0],
     },
     {
       path: "$.stringArray[*]",
-      param: schema.scalaArrays[1],
+      param: schema.scalarArrays[1],
     },
     {
       path: "$.files[*]",
-      param: schema.scalaArrays[2],
+      param: schema.scalarArrays[2],
     },
   ] as const satisfies PathPair[];
 
   test("create path", () => {
-    const path1: PathPair[] = makeScalarArrayParams(schema.scalaArrays, "$");
+    const path1: PathPair[] = makeScalarArrayParams(schema.scalarArrays, "$");
     expect(path1).toEqual(paths);
   });
   test("find number params", () => {

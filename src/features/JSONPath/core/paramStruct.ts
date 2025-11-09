@@ -6,7 +6,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import type { ErrorCodes } from "./types/errorTypes";
-import { makeScalarArrayParams, makeScalarParams } from "./value/paramScala";
+import { makeScalarArrayParams, makeScalarParams } from "./value/paramScalar";
 import type {
   StructPropertysPath,
   StructPathError,
@@ -34,12 +34,12 @@ function createNode(
   { path, structName }: { path: string; structName: string }
 ): StructPropertysPath {
   return {
-    objectSchema: toObjectPluginParams(structSchema.scalas),
+    objectSchema: toObjectPluginParams(structSchema.scalars),
     structName: structName,
-    scalaArrays: makeScalarArrayParams(structSchema.scalaArrays, path),
-    scalas:
-      structSchema.scalas.length > 0
-        ? makeScalarParams(structSchema.scalas, path)
+    scalarArrays: makeScalarArrayParams(structSchema.scalarArrays, path),
+    scalars:
+      structSchema.scalars.length > 0
+        ? makeScalarParams(structSchema.scalars, path)
         : undefined,
   };
 }
@@ -115,7 +115,7 @@ function stepState(
   }
 
   const childrenDesired: Frame[] = createChildFrames(frame, structSchema);
-  if (structSchema.scalas.length > 0 || structSchema.scalaArrays.length > 0) {
+  if (structSchema.scalars.length > 0 || structSchema.scalarArrays.length > 0) {
     // 現在ノードを追加（pre-order）
 
     const current: StructPropertysPath = createNode(structSchema, {

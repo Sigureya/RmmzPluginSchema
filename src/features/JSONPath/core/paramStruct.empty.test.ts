@@ -10,8 +10,8 @@ import type { StructPropertysPath } from "./value/types/pathSchemaTypes";
 describe("empty struct", () => {
   test("getPathFromStruct", () => {
     const schema: ClassifiedPluginParams = {
-      scalas: [],
-      scalaArrays: [],
+      scalars: [],
+      scalarArrays: [],
       structs: [],
       structArrays: [],
     };
@@ -27,8 +27,8 @@ describe("empty struct", () => {
   });
   test("", () => {
     const schema: ClassifiedPluginParams = {
-      scalas: [{ name: "actorId", attr: { kind: "actor", default: 0 } }],
-      scalaArrays: [],
+      scalars: [{ name: "actorId", attr: { kind: "actor", default: 0 } }],
+      scalarArrays: [],
       structs: [],
       structArrays: [],
     };
@@ -43,8 +43,8 @@ describe("empty struct", () => {
     const expected: StructPropertysPath[] = [
       {
         structName: "NotEmptyStruct",
-        scalas: `$.notEmptyStruct["actorId"]`,
-        scalaArrays: [],
+        scalars: `$.notEmptyStruct["actorId"]`,
+        scalarArrays: [],
         objectSchema: {
           actorId: { kind: "actor", default: 0 },
         },
@@ -54,8 +54,8 @@ describe("empty struct", () => {
   });
   test("struct array", () => {
     const schema: ClassifiedPluginParams = {
-      scalas: [],
-      scalaArrays: [
+      scalars: [],
+      scalarArrays: [
         {
           name: "numberArray",
           attr: { kind: "number[]", default: [] },
@@ -76,11 +76,11 @@ describe("empty struct", () => {
       {
         objectSchema: {},
         structName: "EmptyStructArray",
-        scalas: undefined,
-        scalaArrays: [
+        scalars: undefined,
+        scalarArrays: [
           {
             path: "$.emptyStructArray.numberArray[*]",
-            param: schema.scalaArrays[0],
+            param: schema.scalarArrays[0],
           },
         ],
       },

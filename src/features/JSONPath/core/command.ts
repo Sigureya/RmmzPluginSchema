@@ -12,14 +12,14 @@ import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./paramStruct";
-import { makeScalarParams, makeScalarArrayParams } from "./value/paramScala";
+import { makeScalarParams, makeScalarArrayParams } from "./value/paramScalar";
 import { collectScalarResults } from "./value/paramStructRead";
 import type { CommandMemo, CommandMemoItem } from "./value/types/JSONPathTypes";
 import type {
   CommandPath,
   StructPropertysPath,
 } from "./value/types/pathSchemaTypes";
-import type { ScalarPathResult } from "./value/types/result";
+import type { PluginValues } from "./value/types/result";
 
 export const createCommandMemo = (
   schema: ReadonlyArray<PluginCommandSchemaArray>,
@@ -53,10 +53,10 @@ export const createCommandArgsPath = (
   );
 
   const path: StructPropertysPath = {
-    objectSchema: toObjectPluginParams(cpp.scalas),
+    objectSchema: toObjectPluginParams(cpp.scalars),
     structName: `Command<${schema.command}>`,
-    scalas: makeScalarParams(cpp.scalas, parent),
-    scalaArrays: makeScalarArrayParams(cpp.scalaArrays, parent),
+    scalars: makeScalarParams(cpp.scalars, parent),
+    scalarArrays: makeScalarArrayParams(cpp.scalarArrays, parent),
   };
 
   return {
@@ -66,11 +66,11 @@ export const createCommandArgsPath = (
   };
 };
 
-export const collectScalaPathResults = (
+export const collectPluginValues = (
   value: JSONValue,
   memoList: ReadonlyArray<CommandMemoItem>
-): ScalarPathResult[] => {
-  return memoList.flatMap((memo): ScalarPathResult[] => {
+): PluginValues[] => {
+  return memoList.flatMap((memo): PluginValues[] => {
     const segments = memo.jsonPathJS.pathSegments(value);
     return collectScalarResults(segments, memo.schema, memo.schema.structName);
   });
@@ -89,15 +89,15 @@ export const buildCommandPathSchema = (
 const createSchemaJsonPathPair = (
   structPath: StructPropertysPath
 ): CommandMemoItem[] => {
-  const list = structPath.scalaArrays.map(
+  const list = structPath.scalarArrays.map(
     (scalaArray): CommandMemoItem => ({
       jsonPathJS: new JSONPathJS(scalaArray.path),
       schema: structPath,
     })
   );
-  if (structPath.scalas) {
+  if (structPath.scalars) {
     list.push({
-      jsonPathJS: new JSONPathJS(structPath.scalas),
+      jsonPathJS: new JSONPathJS(structPath.scalars),
       schema: structPath,
     });
   }

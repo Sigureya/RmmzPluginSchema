@@ -45,19 +45,19 @@ describe("classifyPluginParams", () => {
           attr: { kind: "struct", struct: "AnotherStruct" },
         },
       ],
-      scalaArrays: [
+      scalarArrays: [
         { name: "stringArray", attr: { kind: "string[]", default: [] } },
         { name: "numArray", attr: { kind: "number[]", default: [1, 2, 3] } },
       ],
-      scalas: [
+      scalars: [
         { name: "name", attr: { kind: "string", default: "defaultText" } },
         { name: "num", attr: { kind: "number", default: 42 } },
         { name: "isActive", attr: { kind: "boolean", default: true } },
       ],
       structArrays: [],
     };
-    expect(result.scalas).toEqual(expected.scalas);
-    expect(result.scalaArrays).toEqual(expected.scalaArrays);
+    expect(result.scalars).toEqual(expected.scalars);
+    expect(result.scalarArrays).toEqual(expected.scalarArrays);
     expect(result.structs).toEqual(expected.structs);
     expect(result.structArrays).toEqual(expected.structArrays);
     expect(result).toEqual(expected);

@@ -16,7 +16,7 @@ import type {
   StructPathResult,
 } from "./value/types/pathSchemaTypes";
 import type {
-  ScalarPathResult,
+  PluginValues,
   StringSequenceParamValues,
   NumberSequenceParamValues,
 } from "./value/types/result";
@@ -46,33 +46,32 @@ interface School {
   since: number;
 }
 
-const personScheame = {
+const personScheame: ClassifiedPluginParamsEx<Person> = {
   structs: [],
   structArrays: [],
-  scalas: [
+  scalars: [
     { name: "name", attr: { kind: "string", default: "" } },
     { name: "age", attr: { kind: "number", default: 0 } },
   ],
-  scalaArrays: [
+  scalarArrays: [
     { name: "items", attr: { kind: "number[]", default: [] } },
     { name: "nicknames", attr: { kind: "string[]", default: [] } },
   ],
-} as const satisfies ClassifiedPluginParamsEx<Person>;
+};
 
-const addressSchema = {
+const addressSchema: ClassifiedPluginParamsEx<Address> = {
   structs: [],
   structArrays: [],
-  scalas: [
+  scalars: [
     { name: "street", attr: { kind: "string", default: "" } },
     { name: "city", attr: { kind: "string", default: "" } },
     { name: "zipCode", attr: { kind: "string", default: "" } },
   ],
-  scalaArrays: [],
-} as const satisfies ClassifiedPluginParamsEx<Address>;
-
-const classRoomSchema = {
-  scalas: [{ name: "className", attr: { kind: "string", default: "" } }],
-  scalaArrays: [],
+  scalarArrays: [],
+};
+const classRoomSchema: ClassifiedPluginParamsEx<Class> = {
+  scalars: [{ name: "className", attr: { kind: "string", default: "" } }],
+  scalarArrays: [],
   structs: [
     {
       name: "teacher",
@@ -85,11 +84,11 @@ const classRoomSchema = {
       attr: { kind: "struct[]", struct: "Person", default: [] },
     },
   ],
-} as const satisfies ClassifiedPluginParamsEx<Class>;
+};
 
-const schoolSchema = {
-  scalas: [{ name: "since", attr: { kind: "number", default: 0 } }],
-  scalaArrays: [],
+const schoolSchema: ClassifiedPluginParamsEx<School> = {
+  scalars: [{ name: "since", attr: { kind: "number", default: 0 } }],
+  scalarArrays: [],
   structs: [{ name: "address", attr: { kind: "struct", struct: "Address" } }],
   structArrays: [
     {
@@ -97,7 +96,7 @@ const schoolSchema = {
       attr: { kind: "struct[]", struct: "Class", default: [] },
     },
   ],
-} as const satisfies ClassifiedPluginParamsEx<School>;
+};
 
 const makeMap = (): ReadonlyMap<string, ClassifiedPluginParams> => {
   return new Map<string, ClassifiedPluginParams>([
@@ -110,10 +109,10 @@ const makeMap = (): ReadonlyMap<string, ClassifiedPluginParams> => {
 
 describe("address", () => {
   const path: StructPropertysPath = {
-    scalas: `$.address["street","city","zipCode"]`,
-    scalaArrays: [],
+    scalars: `$.address["street","city","zipCode"]`,
+    scalarArrays: [],
     structName: "Address",
-    objectSchema: toObjectPluginParams(addressSchema.scalas),
+    objectSchema: toObjectPluginParams(addressSchema.scalars),
   };
   const paramSchema = {
     name: "address",
@@ -136,7 +135,7 @@ describe("address", () => {
   });
 
   test("extractScalaValuesFromJson", () => {
-    const expectedValues: ScalarPathResult[] = [
+    const expectedValues: PluginValues[] = [
       {
         structName: "Address",
         param: { name: "street", attr: { kind: "string", default: "" } },
@@ -166,13 +165,13 @@ describe("address", () => {
 describe("person", () => {
   const path: StructPropertysPath[] = [
     {
-      scalas: `$.person["name","age"]`,
-      scalaArrays: [
-        { path: "$.person.items[*]", param: personScheame.scalaArrays[0] },
-        { path: "$.person.nicknames[*]", param: personScheame.scalaArrays[1] },
+      scalars: `$.person["name","age"]`,
+      scalarArrays: [
+        { path: "$.person.items[*]", param: personScheame.scalarArrays[0] },
+        { path: "$.person.nicknames[*]", param: personScheame.scalarArrays[1] },
       ],
       structName: "Person",
-      objectSchema: toObjectPluginParams(personScheame.scalas),
+      objectSchema: toObjectPluginParams(personScheame.scalars),
     },
   ];
   const paramObject = {
@@ -200,7 +199,7 @@ describe("person", () => {
     expect(result.errors).toEqual([]);
   });
   test("extractScalaValuesFromJson", () => {
-    const expectedValues: ScalarPathResult[] = [
+    const expectedValues: PluginValues[] = [
       {
         structName: "Person",
         param: { name: "name", attr: { kind: "string", default: "" } },
@@ -239,40 +238,40 @@ describe("person", () => {
 describe("classroom", () => {
   const expected: StructPropertysPath[] = [
     {
-      scalas: `$.classroom["className"]`,
-      scalaArrays: [],
+      scalars: `$.classroom["className"]`,
+      scalarArrays: [],
       structName: "Class",
-      objectSchema: toObjectPluginParams(classRoomSchema.scalas),
+      objectSchema: toObjectPluginParams(classRoomSchema.scalars),
     },
     {
-      scalas: `$.classroom.teacher["name","age"]`,
-      scalaArrays: [
+      scalars: `$.classroom.teacher["name","age"]`,
+      scalarArrays: [
         {
           path: "$.classroom.teacher.items[*]",
-          param: personScheame.scalaArrays[0],
+          param: personScheame.scalarArrays[0],
         },
         {
           path: "$.classroom.teacher.nicknames[*]",
-          param: personScheame.scalaArrays[1],
+          param: personScheame.scalarArrays[1],
         },
       ],
       structName: "Person",
-      objectSchema: toObjectPluginParams(personScheame.scalas),
+      objectSchema: toObjectPluginParams(personScheame.scalars),
     },
     {
-      scalas: `$.classroom.students[*]["name","age"]`,
-      scalaArrays: [
+      scalars: `$.classroom.students[*]["name","age"]`,
+      scalarArrays: [
         {
           path: "$.classroom.students[*].items[*]",
-          param: personScheame.scalaArrays[0],
+          param: personScheame.scalarArrays[0],
         },
         {
           path: "$.classroom.students[*].nicknames[*]",
-          param: personScheame.scalaArrays[1],
+          param: personScheame.scalarArrays[1],
         },
       ],
       structName: "Person",
-      objectSchema: toObjectPluginParams(personScheame.scalas),
+      objectSchema: toObjectPluginParams(personScheame.scalars),
     },
   ];
   test("getPathFromStruct", () => {
@@ -294,51 +293,51 @@ describe("school", () => {
   const path: StructPropertysPath[] = [
     {
       structName: "School",
-      scalas: `$.school["since"]`,
-      scalaArrays: [],
-      objectSchema: toObjectPluginParams(schoolSchema.scalas),
+      scalars: `$.school["since"]`,
+      scalarArrays: [],
+      objectSchema: toObjectPluginParams(schoolSchema.scalars),
     },
     {
       structName: "Address",
-      scalas: `$.school.address["street","city","zipCode"]`,
-      scalaArrays: [],
-      objectSchema: toObjectPluginParams(addressSchema.scalas),
+      scalars: `$.school.address["street","city","zipCode"]`,
+      scalarArrays: [],
+      objectSchema: toObjectPluginParams(addressSchema.scalars),
     },
     {
       structName: "Class",
-      scalas: `$.school.classrooms[*]["className"]`,
-      scalaArrays: [],
-      objectSchema: toObjectPluginParams(classRoomSchema.scalas),
+      scalars: `$.school.classrooms[*]["className"]`,
+      scalarArrays: [],
+      objectSchema: toObjectPluginParams(classRoomSchema.scalars),
     },
     {
       structName: "Person",
-      scalas: `$.school.classrooms[*].teacher["name","age"]`,
-      scalaArrays: [
+      scalars: `$.school.classrooms[*].teacher["name","age"]`,
+      scalarArrays: [
         {
           path: "$.school.classrooms[*].teacher.items[*]",
-          param: personScheame.scalaArrays[0],
+          param: personScheame.scalarArrays[0],
         },
         {
           path: "$.school.classrooms[*].teacher.nicknames[*]",
-          param: personScheame.scalaArrays[1],
+          param: personScheame.scalarArrays[1],
         },
       ],
-      objectSchema: toObjectPluginParams(personScheame.scalas),
+      objectSchema: toObjectPluginParams(personScheame.scalars),
     },
     {
       structName: "Person",
-      scalas: `$.school.classrooms[*].students[*]["name","age"]`,
-      scalaArrays: [
+      scalars: `$.school.classrooms[*].students[*]["name","age"]`,
+      scalarArrays: [
         {
           path: "$.school.classrooms[*].students[*].items[*]",
-          param: personScheame.scalaArrays[0],
+          param: personScheame.scalarArrays[0],
         },
         {
           path: "$.school.classrooms[*].students[*].nicknames[*]",
-          param: personScheame.scalaArrays[1],
+          param: personScheame.scalarArrays[1],
         },
       ],
-      objectSchema: toObjectPluginParams(personScheame.scalas),
+      objectSchema: toObjectPluginParams(personScheame.scalars),
     },
   ];
 
@@ -405,7 +404,7 @@ describe("school", () => {
 
     test("school since", () => {
       const path0 = path[0];
-      const expectedValues: ScalarPathResult[] = [
+      const expectedValues: PluginValues[] = [
         {
           structName: "School",
           param: { name: "since", attr: { kind: "number", default: 0 } },
@@ -417,7 +416,7 @@ describe("school", () => {
     });
     test("school address", () => {
       const path1 = path[1];
-      const expectedValues: ScalarPathResult[] = [
+      const expectedValues: PluginValues[] = [
         {
           structName: "Address",
           param: { name: "street", attr: { kind: "string", default: "" } },
@@ -440,7 +439,7 @@ describe("school", () => {
     test("school classrooms className", () => {
       const path2 = path[2];
       const result = extractScalarValuesFromJson(paramObject, path2);
-      const expectedValues: ScalarPathResult[] = [
+      const expectedValues: PluginValues[] = [
         {
           structName: "Class",
           param: { name: "className", attr: { kind: "string", default: "" } },
@@ -456,7 +455,7 @@ describe("school", () => {
     });
     test("school classrooms teacher", () => {
       const path3 = path[3];
-      const expectedValues: ScalarPathResult[] = [
+      const expectedValues: PluginValues[] = [
         {
           structName: "Person",
           param: { name: "name", attr: { kind: "string", default: "" } },
