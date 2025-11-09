@@ -17,3 +17,9 @@ export interface StructPathResult {
   items: StructPropertysPath[];
   errors: StructPathError[];
 }
+
+export interface CommandPath {
+  scalars: StructPropertysPath;
+  structs: StructPathResult;
+  structArrays: StructPathResult;
+}
