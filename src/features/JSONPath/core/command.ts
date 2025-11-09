@@ -6,55 +6,32 @@ import {
   classifyPluginParams,
   toObjectPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { buildCommandPathSchema } from "./commandMemo";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./paramStruct";
-import { buildCommandPathSchema } from "./utils";
 import { makeScalaParams, makeScalaArrayParams } from "./value/paramScala";
-import type { CommandPath } from "./value/types/commandTypes";
+import type { CommandMemo } from "./value/types/JSONPathTypes";
 import type {
+  CommandPath,
   StructPathResult,
   StructPropertysPath,
 } from "./value/types/pathSchemaTypes";
-
 export interface CCCC {
   commandName: string;
   path: StructPathResult;
 }
 
-export const ccc3 = (
+export const px = (
   schema: ReadonlyArray<PluginCommandSchemaArray>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): Map<string, CCCC> => {
-  return new Map(
-    schema.map((s): [string, CCCC] => [
-      s.command,
-      {
-        commandName: s.command,
-        path: cccc2(s, structMap),
-      },
-    ])
-  );
-};
-
-const cccc2 = (
-  schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): StructPathResult => {
-  const rrrr: CommandPath = createCommandArgsPath(schema, structMap);
-  return {
-    items: [rrrr.scalars, ...rrrr.structs.items, ...rrrr.structArrays.items],
-    errors: [...rrrr.structs.errors, ...rrrr.structArrays.errors],
-  };
-};
-
-const ggg = (
-  schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
-) => {
-  const cpp = createCommandArgsPath(schema, structMap);
-  return buildCommandPathSchema(cpp);
+): Map<string, CommandMemo[]> => {
+  const list = schema.map((s): [string, CommandMemo[]] => {
+    const commandPath = createCommandArgsPath(s, structMap);
+    return [s.command, buildCommandPathSchema(commandPath)];
+  });
+  return new Map(list);
 };
 
 export const createCommandArgsPath = (

@@ -9,10 +9,10 @@ import {
   extractArrayValuesFromJson,
   extractScalaValuesFromJson,
 } from "./value/paramStructRead";
-import type { CommandPath } from "./value/types/commandTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
+  CommandPath,
 } from "./value/types/pathSchemaTypes";
 import type {
   ScalaPathResult,
