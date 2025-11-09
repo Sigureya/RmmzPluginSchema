@@ -15,13 +15,8 @@ import { makeScalaParams, makeScalaArrayParams } from "./value/paramScala";
 import type { CommandMemo } from "./value/types/JSONPathTypes";
 import type {
   CommandPath,
-  StructPathResult,
   StructPropertysPath,
 } from "./value/types/pathSchemaTypes";
-export interface CCCC {
-  commandName: string;
-  path: StructPathResult;
-}
 
 export const createCommandMemo = (
   schema: ReadonlyArray<PluginCommandSchemaArray>,
