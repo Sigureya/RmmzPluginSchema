@@ -9,18 +9,18 @@ import type {
 import type { ScalaPathResult } from "./value/types/result";
 
 export const collectScalaPathResults = (
-  data: JSONValue,
-  ppxx: ReadonlyArray<CommandMemo>
+  value: JSONValue,
+  memoList: ReadonlyArray<CommandMemo>
 ): ScalaPathResult[] => {
-  return ppxx.flatMap((ppx) => extractScalaResultsBySchema(data, ppx));
+  return memoList.flatMap((memo) => extractScalaResultsBySchema(value, memo));
 };
 
 const extractScalaResultsBySchema = (
   value: JSONValue,
-  ppaa: CommandMemo
+  memo: CommandMemo
 ): ScalaPathResult[] => {
-  const segments = ppaa.jsonPathJS.pathSegments(value);
-  return collectScalaResults(segments, ppaa.schema, ppaa.schema.structName);
+  const segments = memo.jsonPathJS.pathSegments(value);
+  return collectScalaResults(segments, memo.schema, memo.schema.structName);
 };
 
 export const buildCommandPathSchema = (command: CommandPath): CommandMemo[] => {
