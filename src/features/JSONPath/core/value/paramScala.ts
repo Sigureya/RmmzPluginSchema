@@ -3,7 +3,7 @@ import type {
   ScalaParam,
   ArrayParamTypes,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayPathPair } from "./arrayEx/types/query";
+import type { ArrayPathPair } from "./types/query";
 
 export const makeScalaParams = (
   scalas: ReadonlyArray<PluginParamEx<ScalaParam>>,

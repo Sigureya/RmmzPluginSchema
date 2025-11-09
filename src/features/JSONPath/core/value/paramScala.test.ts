@@ -2,7 +2,7 @@ import { describe, test, expect } from "vitest";
 import type { ClassifiedPluginParamsEx } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import { makeScalaParams, makeScalaArrayParams } from "./paramScala";
-import type { PathPair } from "./types";
+import type { PathPair } from "./types/types";
 
 interface ArrayMock {
   numberArray: number[];

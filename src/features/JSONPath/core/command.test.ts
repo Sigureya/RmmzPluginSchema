@@ -4,17 +4,20 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type {
-  NumberSequenceParamValues,
-  ScalaPathResult,
-} from "./arrayEx/types/result";
 import { createCommandArgsPath } from "./command";
 import {
   extractArrayValuesFromJson,
   extractScalaValuesFromJson,
-} from "./paramStructRead";
-import type { StructPathResult, StructPropertysPath } from "./types";
-import type { CommandPath } from "./types/command";
+} from "./value/paramStructRead";
+import type { CommandPath } from "./value/types/commandTypes";
+import type {
+  StructPropertysPath,
+  StructPathResult,
+} from "./value/types/pathSchemaTypes";
+import type {
+  ScalaPathResult,
+  NumberSequenceParamValues,
+} from "./value/types/result";
 
 interface Effect {
   code: number;

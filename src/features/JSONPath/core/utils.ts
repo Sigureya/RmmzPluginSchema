@@ -1,9 +1,9 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import { JSONPathJS } from "jsonpath-js";
-import type { ScalaPathResult } from "./arrayEx/types/result";
-import { collectScalaResults } from "./paramStructRead";
-import type { StructPropertysPath } from "./types";
-import type { CommandPath } from "./types/command";
+import { collectScalaResults } from "./value/paramStructRead";
+import type { CommandPath } from "./value/types/commandTypes";
+import type { StructPropertysPath } from "./value/types/pathSchemaTypes";
+import type { ScalaPathResult } from "./value/types/result";
 
 export interface PPEX {
   schema: StructPropertysPath;

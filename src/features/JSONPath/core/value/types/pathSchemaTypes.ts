@@ -1,19 +1,11 @@
-import type {
-  PluginParamEx,
-  ArrayParamTypes,
-  ScalaParam,
-} from "@RmmzPluginSchema/rmmz/plugin";
+import type { ScalaParam } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PathPair } from "./types";
 
 export interface StructPropertysPath {
   structName: string;
   scalas: string | undefined;
   scalaArrays: PathPair[];
   objectSchema: Record<string, ScalaParam>;
-}
-
-export interface PathPair {
-  path: string;
-  param: PluginParamEx<ArrayParamTypes>;
 }
 
 export interface StructPathError {

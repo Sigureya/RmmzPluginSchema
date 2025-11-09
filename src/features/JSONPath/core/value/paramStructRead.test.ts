@@ -3,12 +3,12 @@ import type { PrimitiveParam } from "@RpgTypes/rmmz/plugin";
 import {
   extractArrayValuesFromJson,
   extractScalaValuesFromJson,
-} from "./value/paramStructRead";
-import type { StructPropertysPath } from "./value/types/pathSchemaTypes";
+} from "./paramStructRead";
+import type { StructPropertysPath } from "./types/pathSchemaTypes";
 import type {
   ScalaPathResult,
   StringSequenceParamValues,
-} from "./value/types/result";
+} from "./types/result";
 
 interface Person {
   name: string;
