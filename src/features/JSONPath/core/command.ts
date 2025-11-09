@@ -21,10 +21,16 @@ import type {
 export const createCommandMemo = (
   schema: ReadonlyArray<PluginCommandSchemaArray>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): Map<string, CommandMemo[]> => {
-  const list = schema.map((s): [string, CommandMemo[]] => {
+): Map<string, CommandMemo> => {
+  const list = schema.map((s): [string, CommandMemo] => {
     const commandPath = createCommandArgsPath(s, structMap);
-    return [s.command, buildCommandPathSchema(commandPath)];
+    return [
+      s.command,
+      {
+        commandName: s.command,
+        items: buildCommandPathSchema(commandPath),
+      },
+    ];
   });
   return new Map(list);
 };

@@ -1,7 +1,7 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import { JSONPathJS } from "jsonpath-js";
 import { collectScalaResults } from "./value/paramStructRead";
-import type { CommandMemo } from "./value/types/JSONPathTypes";
+import type { CommandMemoItems } from "./value/types/JSONPathTypes";
 import type {
   CommandPath,
   StructPropertysPath,
@@ -10,20 +10,22 @@ import type { ScalaPathResult } from "./value/types/result";
 
 export const collectScalaPathResults = (
   value: JSONValue,
-  memoList: ReadonlyArray<CommandMemo>
+  memoList: ReadonlyArray<CommandMemoItems>
 ): ScalaPathResult[] => {
   return memoList.flatMap((memo) => extractScalaResultsBySchema(value, memo));
 };
 
 const extractScalaResultsBySchema = (
   value: JSONValue,
-  memo: CommandMemo
+  memo: CommandMemoItems
 ): ScalaPathResult[] => {
   const segments = memo.jsonPathJS.pathSegments(value);
   return collectScalaResults(segments, memo.schema, memo.schema.structName);
 };
 
-export const buildCommandPathSchema = (command: CommandPath): CommandMemo[] => {
+export const buildCommandPathSchema = (
+  command: CommandPath
+): CommandMemoItems[] => {
   return [
     ...createSchemaJsonPathPair(command.scalars),
     ...command.structs.items.flatMap(createSchemaJsonPathPair),
@@ -33,9 +35,9 @@ export const buildCommandPathSchema = (command: CommandPath): CommandMemo[] => {
 
 const createSchemaJsonPathPair = (
   structPath: StructPropertysPath
-): CommandMemo[] => {
+): CommandMemoItems[] => {
   return structPath.scalaArrays.map(
-    (scalaArray): CommandMemo => ({
+    (scalaArray): CommandMemoItems => ({
       jsonPathJS: new JSONPathJS(scalaArray.path),
       schema: structPath,
     })
