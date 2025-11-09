@@ -7,17 +7,37 @@ import {
   toObjectPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalaArrayParams, makeScalaParams } from "./paramScala";
-import { getPathFromStructParam } from "./paramStruct";
-import type { StructPropertysPath } from "./types";
+import {
+  getPathFromStructParam,
+  getPathFromStructArraySchema,
+} from "./paramStruct";
+import type { StructPathResult, StructPropertysPath } from "./types";
+import type { CommandPath } from "./types/command";
 
-const ccc = (
+export const cccc2 = (
   schema: PluginCommandSchemaArray,
-  structs: ReadonlyMap<string, ClassifiedPluginParams>,
-  parent: string = "$"
-) => {
-  const cpp = classifyPluginParams(schema.args);
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): StructPathResult => {
+  const rrrr: CommandPath = createCommandArgsPath(schema, structMap);
+  return {
+    items: [rrrr.scalars, ...rrrr.structs.items, ...rrrr.structArrays.items],
+    errors: [...rrrr.structs.errors, ...rrrr.structArrays.errors],
+  };
+};
 
-  const structArgsPath = getPathFromStructParam(cpp.structs, parent, structs);
+export const createCommandArgsPath = (
+  schema: PluginCommandSchemaArray,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): CommandPath => {
+  const cpp = classifyPluginParams(schema.args);
+  const parent: string = "$";
+
+  const structArgsPath = getPathFromStructParam(cpp.structs, parent, structMap);
+  const structArrayArgsPath = getPathFromStructArraySchema(
+    cpp.structArrays,
+    parent,
+    structMap
+  );
 
   const p: StructPropertysPath = {
     objectSchema: toObjectPluginParams(cpp.scalas),
@@ -25,9 +45,10 @@ const ccc = (
     scalas: makeScalaParams(cpp.scalas, parent),
     scalaArrays: makeScalaArrayParams(cpp.scalaArrays, parent),
   };
+
   return {
-    p,
-    structArgsPath,
+    scalars: p,
+    structs: structArgsPath,
+    structArrays: structArrayArgsPath,
   };
-  //    schema.args
 };

@@ -1,6 +1,7 @@
 import type {
   ClassifiedPluginParams,
   PluginParamEx,
+  StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
@@ -186,6 +187,26 @@ export const getPathFromStructParam = (
   return {
     items: results.flatMap((r) => r.items),
     errors: results.flatMap((r) => r.errors),
+  };
+};
+
+export const getPathFromStructArraySchema = (
+  param: ReadonlyArray<PluginParamEx<StructArrayRefParam>>,
+  parent: string,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  errors: ErrorCodes = ERROR_CODE
+): StructPathResult => {
+  const reuslts = param.map((p) =>
+    collectFromSchema(
+      p.attr.struct,
+      `${parent}.${p.name}[*]`,
+      structMap,
+      errors
+    )
+  );
+  return {
+    items: reuslts.flatMap((r) => r.items),
+    errors: reuslts.flatMap((r) => r.errors),
   };
 };
 
