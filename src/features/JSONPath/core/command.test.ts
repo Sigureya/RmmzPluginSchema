@@ -153,7 +153,7 @@ const structArrays: StructPathResult = {
   ],
 };
 
-describe("ccc", () => {
+describe("command", () => {
   test("createCommandArgsPath", () => {
     const expected: CommandPath = {
       scalars: scalarsPath,
@@ -169,9 +169,7 @@ describe("ccc", () => {
     expect(result.structArrays).toEqual(expected.structArrays);
     expect(result).toEqual(expected);
   });
-});
 
-describe("memo", () => {
   test("buildCommandPathSchema", () => {
     const commandMemo: CommandMemoItem[] = buildCommandPathSchema({
       scalars: scalarsPath,
@@ -179,7 +177,13 @@ describe("memo", () => {
       structs: structsPath,
     });
     expect(commandMemo).lengthOf(5);
+    expect(commandMemo[0].schema).toBe(scalarsPath);
+    expect(commandMemo[1].schema).toBe(scalarsPath);
+    expect(commandMemo[2].schema).toBe(structsPath.items[0]);
+    expect(commandMemo[3].schema).toBe(structsPath.items[1]);
+    expect(commandMemo[4].schema).toBe(structArrays.items[0]);
   });
+
   test("collectScalaPathResults", () => {
     const expected: ScalaPathResult[] = [
       {
@@ -230,10 +234,10 @@ describe("memo", () => {
       structs: structsPath,
     });
 
-    const gg: ScalaPathResult[] = collectScalaPathResults(
+    const result: ScalaPathResult[] = collectScalaPathResults(
       mockData,
       commandMemo
     );
-    expect(gg).toEqual(expected);
+    expect(result).toEqual(expected);
   });
 });
