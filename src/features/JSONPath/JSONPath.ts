@@ -4,7 +4,7 @@ import { createCommandMemo } from "./core/command";
 
 const jsonPath = (bundle: PluginSchemaArray) => {
   const structMap = createStructMapclassifyed(bundle.structs);
-  const commands = createCommandMemo(bundle.commands, structMap);
+  const commands = createCommandMemo(bundle.commands, structMap, "");
   return {
     commands,
     structMap,

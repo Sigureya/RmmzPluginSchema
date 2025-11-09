@@ -10,3 +10,5 @@ export interface CommandMemo {
   commandName: string;
   items: CommandMemoItem[];
 }
+
+export type CommandMemoPair = [commandKey: string, memo: CommandMemo];

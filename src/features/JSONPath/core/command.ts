@@ -14,7 +14,10 @@ import {
 } from "./paramStruct";
 import { makeScalarParams, makeScalarArrayParams } from "./value/paramScalar";
 import { collectScalarResults } from "./value/paramStructRead";
-import type { CommandMemo, CommandMemoItem } from "./value/types/JSONPathTypes";
+import type {
+  CommandMemoItem,
+  CommandMemoPair,
+} from "./value/types/JSONPathTypes";
 import type {
   CommandPath,
   StructPropertysPath,
@@ -23,19 +26,19 @@ import type { PluginValues } from "./value/types/result";
 
 export const createCommandMemo = (
   schema: ReadonlyArray<PluginCommandSchemaArray>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): Map<string, CommandMemo> => {
-  const list = schema.map((s): [string, CommandMemo] => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  pluginName: string
+): CommandMemoPair[] => {
+  return schema.map((s): CommandMemoPair => {
     const commandPath = createCommandArgsPath(s, structMap);
     return [
-      s.command,
+      `${s.command}:${pluginName}`,
       {
         commandName: s.command,
         items: buildCommandPathSchema(commandPath),
       },
     ];
   });
-  return new Map(list);
 };
 
 export const createCommandArgsPath = (
