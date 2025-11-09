@@ -29,7 +29,7 @@ interface PathSegment {
 /**
  * セグメント配列からScalaPathResult配列を生成する
  */
-const collectScalaResults = (
+export const collectScalaResults = (
   segments: ReadonlyArray<PathSegment>,
   structPath: StructPropertysPath,
   structName: string
