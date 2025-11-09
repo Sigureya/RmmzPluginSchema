@@ -1,26 +1,12 @@
-import type {
-  ClassifiedPluginParams,
-  PluginSchemaArray,
-} from "@RmmzPluginSchema/rmmz/plugin";
-import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginSchemaArray } from "@RmmzPluginSchema/rmmz/plugin";
+import { createStructMapclassifyed } from "@RmmzPluginSchema/rmmz/plugin";
 import { createCommandMemo } from "./core/command";
 
 const jsonPath = (bundle: PluginSchemaArray) => {
-  const structMap = createStructMap(bundle);
+  const structMap = createStructMapclassifyed(bundle.structs);
   const commands = createCommandMemo(bundle.commands, structMap);
   return {
     commands,
     structMap,
   };
-};
-
-const createStructMap = (
-  bundle: PluginSchemaArray
-): Map<string, ClassifiedPluginParams> => {
-  return new Map(
-    bundle.structs.map((s): [string, ClassifiedPluginParams] => [
-      s.struct,
-      classifyPluginParams(s.params),
-    ])
-  );
 };
