@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type { PluginParamEx, ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { extractScalaParams } from "./extractParam";
-import type { ScalarPathResult } from "./types/result";
+import type { PluginValues } from "./types/result";
 
 interface Person {
   name: string;
@@ -33,13 +33,13 @@ describe("extractScalaParams", () => {
   ] as const satisfies PluginParamEx<ScalarParam>[];
 
   test("path", () => {
-    const result: ScalarPathResult[] = extractScalaParams(
+    const result: PluginValues[] = extractScalaParams(
       mockData,
       "$.person['name','age','isStudent']",
       schema,
       "Person"
     );
-    const expected: ScalarPathResult[] = [
+    const expected: PluginValues[] = [
       {
         structName: "Person",
         value: "Alice",
@@ -52,13 +52,13 @@ describe("extractScalaParams", () => {
   });
 
   test("array", () => {
-    const result: ScalarPathResult[] = extractScalaParams(
+    const result: PluginValues[] = extractScalaParams(
       mockData,
       "$.students[*]['name','age','isStudent']",
       schema,
       "Person"
     );
-    const expected: ScalarPathResult[] = [
+    const expected: PluginValues[] = [
       { structName: "Person", value: "Bob", param: schema[0] },
       { structName: "Person", value: 20, param: schema[1] },
       { structName: "Person", value: true, param: schema[2] },

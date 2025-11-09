@@ -3,8 +3,8 @@ import type { PathPair } from "./types";
 
 export interface StructPropertysPath {
   structName: string;
-  scalas: string | undefined;
-  scalaArrays: PathPair[];
+  scalars: string | undefined;
+  scalarArrays: PathPair[];
   objectSchema: Record<string, ScalarParam>;
 }
 

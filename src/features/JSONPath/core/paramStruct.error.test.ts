@@ -21,8 +21,8 @@ const schema: ClassifiedPluginParams = {
       attr: { kind: "struct[]", struct: "LoopMock" },
     },
   ],
-  scalas: [],
-  scalaArrays: [],
+  scalars: [],
+  scalarArrays: [],
 };
 
 const errors: ErrorCodes = {

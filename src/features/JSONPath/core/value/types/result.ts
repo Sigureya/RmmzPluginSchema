@@ -22,7 +22,7 @@ export interface NumberSequenceParamValues extends SequenceParamValuesBase {
   param: PluginParamEx<Extract<ArrayParamTypes, { default: number[] }>>;
 }
 
-export interface ScalarPathResult {
+export interface PluginValues {
   value: number | string | boolean;
 
   structName: string;

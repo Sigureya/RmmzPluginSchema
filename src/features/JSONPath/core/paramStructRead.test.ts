@@ -6,7 +6,7 @@ import {
 } from "./value/paramStructRead";
 import type { StructPropertysPath } from "./value/types/pathSchemaTypes";
 import type {
-  ScalarPathResult,
+  PluginValues,
   StringSequenceParamValues,
 } from "./value/types/result";
 
@@ -50,9 +50,9 @@ describe("extractScalaValuesFromJson", () => {
   test("should return empty array when scalas is undefined", () => {
     const path: StructPropertysPath = {
       structName: "TestStruct",
-      scalaArrays: [],
+      scalarArrays: [],
       objectSchema: {},
-      scalas: undefined,
+      scalars: undefined,
     };
     const reuslt = extractScalarValuesFromJson(mockData, path);
     expect(reuslt).toEqual([]);
@@ -60,11 +60,11 @@ describe("extractScalaValuesFromJson", () => {
   test("should extract scala values from json", () => {
     const path: StructPropertysPath = {
       structName: "Person",
-      scalaArrays: [],
+      scalarArrays: [],
       objectSchema: personSchema,
-      scalas: "$.person['name','age','isStudent']",
+      scalars: "$.person['name','age','isStudent']",
     };
-    const expected: ScalarPathResult[] = [
+    const expected: PluginValues[] = [
       {
         structName: "Person",
         value: "Grad",
@@ -91,11 +91,11 @@ describe("extractScalaValuesFromJson", () => {
     const path: StructPropertysPath = {
       structName: "Person",
 
-      scalaArrays: [],
+      scalarArrays: [],
       objectSchema: personSchema,
-      scalas: `$.students[*]["name","age"]`,
+      scalars: `$.students[*]["name","age"]`,
     };
-    const expected: ScalarPathResult[] = [
+    const expected: PluginValues[] = [
       {
         structName: "Person",
         value: "Alice",
@@ -145,9 +145,9 @@ describe("extractArrayValuesFromJson", () => {
   test("should return empty array when scalaArrays is empty", () => {
     const path: StructPropertysPath = {
       structName: "Person",
-      scalas: undefined,
+      scalars: undefined,
       objectSchema: personSchema,
-      scalaArrays: [],
+      scalarArrays: [],
     };
     const result = extractArrayValuesFromJson(mockData, path);
     expect(result).toEqual([]);
@@ -155,9 +155,9 @@ describe("extractArrayValuesFromJson", () => {
   test("should extract array values from json", () => {
     const path: StructPropertysPath = {
       structName: "Person",
-      scalas: "dummyPath",
+      scalars: "dummyPath",
       objectSchema: personSchema,
-      scalaArrays: [],
+      scalarArrays: [],
     };
     const result = extractArrayValuesFromJson(mockData, path);
     expect(result).toEqual([]);
@@ -165,9 +165,9 @@ describe("extractArrayValuesFromJson", () => {
   test("should extract array values from json with scalaArrays", () => {
     const path: StructPropertysPath = {
       structName: "Person",
-      scalas: undefined,
+      scalars: undefined,
       objectSchema: personSchema,
-      scalaArrays: [
+      scalarArrays: [
         {
           path: "$.person.nicknames[*]",
           param: {

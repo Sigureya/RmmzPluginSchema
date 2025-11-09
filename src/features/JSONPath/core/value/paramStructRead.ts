@@ -4,7 +4,7 @@ import { JSONPathJS } from "jsonpath-js";
 import { extractArrayParamValues } from "./extractParam";
 import type { StructPropertysPath } from "./types/pathSchemaTypes";
 import type {
-  ScalarPathResult,
+  PluginValues,
   StringSequenceParamValues,
   NumberSequenceParamValues,
 } from "./types/result";
@@ -12,11 +12,11 @@ import type {
 export const extractScalarValuesFromJson = (
   json: JSONValue,
   structPath: StructPropertysPath
-): ScalarPathResult[] => {
-  if (!structPath.scalas) {
+): PluginValues[] => {
+  if (!structPath.scalars) {
     return [];
   }
-  const jsonPath = new JSONPathJS(structPath.scalas);
+  const jsonPath = new JSONPathJS(structPath.scalars);
   const segments = jsonPath.pathSegments(json);
   return collectScalarResults(segments, structPath, structPath.structName);
 };
@@ -33,8 +33,8 @@ export const collectScalarResults = (
   segments: ReadonlyArray<PathSegment>,
   structPath: StructPropertysPath,
   structName: string
-): ScalarPathResult[] => {
-  return segments.reduce<ScalarPathResult[]>((acc, { segments, value }) => {
+): PluginValues[] => {
+  return segments.reduce<PluginValues[]>((acc, { segments, value }) => {
     if (typeof value === "object") {
       return acc;
     }
@@ -49,7 +49,7 @@ export const collectScalarResults = (
       return acc;
     }
 
-    const result: ScalarPathResult = {
+    const result: PluginValues = {
       value: value,
       structName: structName,
       param: { name: paramName, attr: schema },
@@ -62,7 +62,7 @@ export const extractArrayValuesFromJson = (
   json: JSONValue,
   structPath: StructPropertysPath
 ): (StringSequenceParamValues | NumberSequenceParamValues)[] => {
-  return structPath.scalaArrays
+  return structPath.scalarArrays
     .map((scalaArray) => {
       return extractArrayParamValues(json, scalaArray);
     })

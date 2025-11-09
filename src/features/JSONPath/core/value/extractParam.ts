@@ -13,7 +13,7 @@ import type { ArrayPathPair } from "./types/query";
 import type {
   StringSequenceParamValues,
   NumberSequenceParamValues,
-  ScalarPathResult,
+  PluginValues,
 } from "./types/result";
 
 export const extractArrayParamValues = (
@@ -58,11 +58,11 @@ export const extractScalaParams = (
   path: string,
   params: ReadonlyArray<PluginParamEx<ScalarParam>>,
   structName: string
-): ScalarPathResult[] => {
+): PluginValues[] => {
   const map = new Map(params.map((param) => [param.name, param.attr] as const));
   const jsonPath = new JSONPathJS(path);
   const values = jsonPath.pathSegments(data);
-  return values.reduce<ScalarPathResult[]>((acc, { value, segments }) => {
+  return values.reduce<PluginValues[]>((acc, { value, segments }) => {
     if (typeof value === "object") {
       return acc;
     }

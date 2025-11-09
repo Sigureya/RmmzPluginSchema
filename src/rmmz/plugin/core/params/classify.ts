@@ -86,5 +86,5 @@ const classifyPluginParamsCore = <
       }
     }
   });
-  return { structs, structArrays, scalas, scalaArrays };
+  return { structs, structArrays, scalars: scalas, scalarArrays: scalaArrays };
 };

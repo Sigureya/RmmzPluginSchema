@@ -6,7 +6,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   buildCommandPathSchema,
-  collectScalaPathResults,
+  collectPluginValues,
   createCommandArgsPath,
 } from "./command";
 import type { CommandMemoItem } from "./value/types/JSONPathTypes";
@@ -15,7 +15,7 @@ import type {
   StructPathResult,
   CommandPath,
 } from "./value/types/pathSchemaTypes";
-import type { ScalarPathResult } from "./value/types/result";
+import type { PluginValues } from "./value/types/result";
 
 interface Effect {
   code: number;
@@ -41,33 +41,33 @@ interface Action {
 }
 
 const schemaDamage: ClassifiedPluginParamsEx<Damage> = {
-  scalas: [
+  scalars: [
     {
       name: "exprFunc",
       attr: { kind: "string", default: "" },
     },
   ],
-  scalaArrays: [],
+  scalarArrays: [],
   structArrays: [],
   structs: [],
 };
 
 const schemaEffect: ClassifiedPluginParamsEx<Effect> = {
-  scalas: [
+  scalars: [
     { name: "code", attr: { kind: "number", default: 0 } },
     { name: "value", attr: { kind: "number", default: 0 } },
   ],
-  scalaArrays: [],
+  scalarArrays: [],
   structArrays: [],
   structs: [],
 };
 
 const schemaMessage: ClassifiedPluginParamsEx<Message> = {
-  scalas: [
+  scalars: [
     { name: "success", attr: { kind: "string", default: "" } },
     { name: "failure", attr: { kind: "string", default: "" } },
   ],
-  scalaArrays: [],
+  scalarArrays: [],
   structArrays: [],
   structs: [],
 };
@@ -108,13 +108,13 @@ const scalarsPath: StructPropertysPath = {
   objectSchema: {
     subject: { default: 0, kind: "number" },
   },
-  scalaArrays: [
+  scalarArrays: [
     {
       param: { attr: { default: [], kind: "number[]" }, name: "targets" },
       path: "$.targets[*]",
     },
   ],
-  scalas: '$["subject"]',
+  scalars: '$["subject"]',
 };
 
 const structsPath: StructPathResult = {
@@ -123,8 +123,8 @@ const structsPath: StructPathResult = {
     {
       structName: "Damage",
       objectSchema: { exprFunc: { default: "", kind: "string" } },
-      scalaArrays: [],
-      scalas: '$.damage["exprFunc"]',
+      scalarArrays: [],
+      scalars: '$.damage["exprFunc"]',
     },
     {
       structName: "Message",
@@ -132,8 +132,8 @@ const structsPath: StructPathResult = {
         failure: { default: "", kind: "string" },
         success: { default: "", kind: "string" },
       },
-      scalaArrays: [],
-      scalas: '$.message["success","failure"]',
+      scalarArrays: [],
+      scalars: '$.message["success","failure"]',
     },
   ],
 };
@@ -147,8 +147,8 @@ const structArrays: StructPathResult = {
         code: { default: 0, kind: "number" },
         value: { default: 0, kind: "number" },
       },
-      scalaArrays: [],
-      scalas: '$.effects[*]["code","value"]',
+      scalarArrays: [],
+      scalars: '$.effects[*]["code","value"]',
     },
   ],
 };
@@ -185,7 +185,7 @@ describe("command", () => {
   });
 
   test("collectScalaPathResults", () => {
-    const expected: ScalarPathResult[] = [
+    const expected: PluginValues[] = [
       {
         // TODO:プラグインコマンド直下にある値の扱い方
         structName: "Command<Action>",
@@ -235,10 +235,7 @@ describe("command", () => {
       structs: structsPath,
     });
 
-    const result: ScalarPathResult[] = collectScalaPathResults(
-      mockData,
-      commandMemo
-    );
+    const result: PluginValues[] = collectPluginValues(mockData, commandMemo);
     expect(result).toEqual(expected);
   });
 });
