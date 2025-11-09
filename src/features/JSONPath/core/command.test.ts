@@ -105,57 +105,57 @@ const mockData = {
   message: { success: "Hit!", failure: "Miss!" },
 } as const satisfies Action;
 
-describe("ccc", () => {
-  const scalarsPath: StructPropertysPath = {
-    structName: "Action",
-    objectSchema: {
-      subject: { default: 0, kind: "number" },
+const scalarsPath: StructPropertysPath = {
+  structName: "Action",
+  objectSchema: {
+    subject: { default: 0, kind: "number" },
+  },
+  scalaArrays: [
+    {
+      param: { attr: { default: [], kind: "number[]" }, name: "targets" },
+      path: "$.targets[*]",
     },
-    scalaArrays: [
-      {
-        param: { attr: { default: [], kind: "number[]" }, name: "targets" },
-        path: "$.targets[*]",
-      },
-    ],
-    scalas: '$["subject"]',
-  };
+  ],
+  scalas: '$["subject"]',
+};
 
-  const structsPath: StructPathResult = {
-    errors: [],
-    items: [
-      {
-        structName: "Damage",
-        objectSchema: { exprFunc: { default: "", kind: "string" } },
-        scalaArrays: [],
-        scalas: '$.damage["exprFunc"]',
+const structsPath: StructPathResult = {
+  errors: [],
+  items: [
+    {
+      structName: "Damage",
+      objectSchema: { exprFunc: { default: "", kind: "string" } },
+      scalaArrays: [],
+      scalas: '$.damage["exprFunc"]',
+    },
+    {
+      structName: "Message",
+      objectSchema: {
+        failure: { default: "", kind: "string" },
+        success: { default: "", kind: "string" },
       },
-      {
-        structName: "Message",
-        objectSchema: {
-          failure: { default: "", kind: "string" },
-          success: { default: "", kind: "string" },
-        },
-        scalaArrays: [],
-        scalas: '$.message["success","failure"]',
-      },
-    ],
-  };
+      scalaArrays: [],
+      scalas: '$.message["success","failure"]',
+    },
+  ],
+};
 
-  const structArrays: StructPathResult = {
-    errors: [],
-    items: [
-      {
-        structName: "Effect",
-        objectSchema: {
-          code: { default: 0, kind: "number" },
-          value: { default: 0, kind: "number" },
-        },
-        scalaArrays: [],
-        scalas: '$.effects[*]["code","value"]',
+const structArrays: StructPathResult = {
+  errors: [],
+  items: [
+    {
+      structName: "Effect",
+      objectSchema: {
+        code: { default: 0, kind: "number" },
+        value: { default: 0, kind: "number" },
       },
-    ],
-  };
+      scalaArrays: [],
+      scalas: '$.effects[*]["code","value"]',
+    },
+  ],
+};
 
+describe("ccc", () => {
   test("createCommandArgsPath", () => {
     const expected: CommandPath = {
       scalars: scalarsPath,
