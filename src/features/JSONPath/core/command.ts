@@ -42,8 +42,8 @@ export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {
-  const cpp = classifyPluginParams(schema.args);
   const parent: string = "$";
+  const cpp = classifyPluginParams(schema.args);
 
   const structArgsPath = getPathFromStructParam(cpp.structs, parent, structMap);
   const structArrayArgsPath = getPathFromStructArraySchema(
@@ -52,15 +52,15 @@ export const createCommandArgsPath = (
     structMap
   );
 
-  const p: StructPropertysPath = {
+  const path: StructPropertysPath = {
     objectSchema: toObjectPluginParams(cpp.scalas),
-    structName: schema.command,
+    structName: `Command<${schema.command}>`,
     scalas: makeScalarParams(cpp.scalas, parent),
     scalaArrays: makeScalarArrayParams(cpp.scalaArrays, parent),
   };
 
   return {
-    scalars: p,
+    scalars: path,
     structs: structArgsPath,
     structArrays: structArrayArgsPath,
   };
@@ -70,15 +70,10 @@ export const collectScalaPathResults = (
   value: JSONValue,
   memoList: ReadonlyArray<CommandMemoItem>
 ): ScalarPathResult[] => {
-  return memoList.flatMap((memo) => extractScalaResultsBySchema(value, memo));
-};
-
-const extractScalaResultsBySchema = (
-  value: JSONValue,
-  memo: CommandMemoItem
-): ScalarPathResult[] => {
-  const segments = memo.jsonPathJS.pathSegments(value);
-  return collectScalarResults(segments, memo.schema, memo.schema.structName);
+  return memoList.flatMap((memo): ScalarPathResult[] => {
+    const segments = memo.jsonPathJS.pathSegments(value);
+    return collectScalarResults(segments, memo.schema, memo.schema.structName);
+  });
 };
 
 export const buildCommandPathSchema = (
