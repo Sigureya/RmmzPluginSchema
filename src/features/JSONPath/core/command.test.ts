@@ -183,44 +183,44 @@ describe("memo", () => {
   test("collectScalaPathResults", () => {
     const expected: ScalaPathResult[] = [
       {
-        param: { attr: { default: 0, kind: "number" }, name: "subject" },
         structName: "Action",
         value: 1,
+        param: { attr: { default: 0, kind: "number" }, name: "subject" },
       },
       {
-        param: { attr: { default: "", kind: "string" }, name: "exprFunc" },
         structName: "Damage",
         value: "a + b",
+        param: { attr: { default: "", kind: "string" }, name: "exprFunc" },
       },
       {
-        param: { attr: { default: "", kind: "string" }, name: "success" },
         structName: "Message",
         value: "Hit!",
+        param: { attr: { default: "", kind: "string" }, name: "success" },
       },
       {
-        param: { attr: { default: "", kind: "string" }, name: "failure" },
         structName: "Message",
         value: "Miss!",
+        param: { attr: { default: "", kind: "string" }, name: "failure" },
       },
       {
-        param: { attr: { default: 0, kind: "number" }, name: "code" },
         structName: "Effect",
         value: 10,
+        param: { attr: { default: 0, kind: "number" }, name: "code" },
       },
       {
-        param: { attr: { default: 0, kind: "number" }, name: "value" },
         structName: "Effect",
         value: 100,
+        param: { attr: { default: 0, kind: "number" }, name: "value" },
       },
       {
-        param: { attr: { default: 0, kind: "number" }, name: "code" },
         structName: "Effect",
         value: 20,
+        param: { attr: { default: 0, kind: "number" }, name: "code" },
       },
       {
-        param: { attr: { default: 0, kind: "number" }, name: "value" },
         structName: "Effect",
         value: 200,
+        param: { attr: { default: 0, kind: "number" }, name: "value" },
       },
     ];
 
