@@ -23,7 +23,7 @@ export interface CCCC {
   path: StructPathResult;
 }
 
-export const px = (
+export const createCommandMemo = (
   schema: ReadonlyArray<PluginCommandSchemaArray>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): Map<string, CommandMemo[]> => {

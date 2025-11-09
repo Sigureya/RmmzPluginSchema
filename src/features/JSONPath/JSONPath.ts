@@ -3,11 +3,11 @@ import type {
   PluginSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import { px } from "./core/command";
+import { createCommandMemo } from "./core/command";
 
 const jsonPath = (bundle: PluginSchemaArray) => {
   const structMap = createStructMap(bundle);
-  const commands = px(bundle.commands, structMap);
+  const commands = createCommandMemo(bundle.commands, structMap);
   return {
     commands,
     structMap,
