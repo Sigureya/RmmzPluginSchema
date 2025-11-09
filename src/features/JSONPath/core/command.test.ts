@@ -104,7 +104,7 @@ const mockData = {
 } as const satisfies Action;
 
 const scalarsPath: StructPropertysPath = {
-  structName: "Action",
+  structName: "Command<Action>",
   objectSchema: {
     subject: { default: 0, kind: "number" },
   },
@@ -187,7 +187,8 @@ describe("command", () => {
   test("collectScalaPathResults", () => {
     const expected: ScalarPathResult[] = [
       {
-        structName: "Action",
+        // TODO:プラグインコマンド直下にある値の扱い方
+        structName: "Command<Action>",
         value: 1,
         param: { attr: { default: 0, kind: "number" }, name: "subject" },
       },
@@ -228,7 +229,7 @@ describe("command", () => {
       },
     ];
 
-    const commandMemo = buildCommandPathSchema({
+    const commandMemo: CommandMemoItem[] = buildCommandPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
