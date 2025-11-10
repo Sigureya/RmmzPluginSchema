@@ -9,7 +9,7 @@ import {
   collectPluginValues,
   createCommandArgsPath,
 } from "./command";
-import type { CommandMemoItem } from "./value/types/JSONPathTypes";
+import type { pluginValuesPath } from "./value/types/JSONPathTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
@@ -171,7 +171,7 @@ describe("command", () => {
   });
 
   test("buildCommandPathSchema", () => {
-    const commandMemo: CommandMemoItem[] = buildCommandPathSchema({
+    const commandMemo: pluginValuesPath[] = buildCommandPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
@@ -229,7 +229,7 @@ describe("command", () => {
       },
     ];
 
-    const commandMemo: CommandMemoItem[] = buildCommandPathSchema({
+    const commandMemo: pluginValuesPath[] = buildCommandPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
