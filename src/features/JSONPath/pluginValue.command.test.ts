@@ -12,7 +12,7 @@ import type {
 } from "./core/types/pathSchemaTypes";
 import type { PluginValues } from "./core/types/result";
 import {
-  buildCommandPathSchema,
+  buildPluginValuesPathSchema,
   collectPluginValues,
   createCommandArgsPath,
 } from "./pluginValue";
@@ -175,7 +175,7 @@ describe("command", () => {
   });
 
   test("buildCommandPathSchema", () => {
-    const commandMemo: PluginValuesPathMemo[] = buildCommandPathSchema({
+    const commandMemo: PluginValuesPathMemo[] = buildPluginValuesPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
@@ -241,7 +241,7 @@ describe("command", () => {
       },
     ];
 
-    const commandMemo: PluginValuesPathMemo[] = buildCommandPathSchema({
+    const commandMemo: PluginValuesPathMemo[] = buildPluginValuesPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
