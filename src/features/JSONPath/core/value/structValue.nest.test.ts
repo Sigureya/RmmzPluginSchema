@@ -138,17 +138,20 @@ describe("address", () => {
   test("extractScalaValuesFromJson", () => {
     const expectedValues: PluginValues[] = [
       {
-        structName: "Address",
+        category: "struct",
+        name: "Address",
         param: { name: "street", attr: { kind: "string", default: "" } },
         value: "123 Sample St",
       },
       {
-        structName: "Address",
+        category: "struct",
+        name: "Address",
         param: { name: "city", attr: { kind: "string", default: "" } },
         value: "Sample City",
       },
       {
-        structName: "Address",
+        category: "struct",
+        name: "Address",
         param: { name: "zipCode", attr: { kind: "string", default: "" } },
         value: "12345",
       },
@@ -203,12 +206,14 @@ describe("person", () => {
   test("extractScalaValuesFromJson", () => {
     const expectedValues: PluginValues[] = [
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         param: { name: "name", attr: { kind: "string", default: "" } },
         value: "John Doe",
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         param: { name: "age", attr: { kind: "number", default: 0 } },
         value: 30,
       },
@@ -418,7 +423,8 @@ describe("school", () => {
       const path0 = path[0];
       const expectedValues: PluginValues[] = [
         {
-          structName: "School",
+          category: "struct",
+          name: "School",
           param: { name: "since", attr: { kind: "number", default: 0 } },
           value: 1990,
         },
@@ -430,17 +436,20 @@ describe("school", () => {
       const path1 = path[1];
       const expectedValues: PluginValues[] = [
         {
-          structName: "Address",
+          category: "struct",
+          name: "Address",
           param: { name: "street", attr: { kind: "string", default: "" } },
           value: "123 Sample St",
         },
         {
-          structName: "Address",
+          category: "struct",
+          name: "Address",
           param: { name: "city", attr: { kind: "string", default: "" } },
           value: "Sample City",
         },
         {
-          structName: "Address",
+          category: "struct",
+          name: "Address",
           param: { name: "zipCode", attr: { kind: "string", default: "" } },
           value: "12345",
         },
@@ -453,12 +462,14 @@ describe("school", () => {
       const result = extractScalarValuesFromJson(paramObject, path2);
       const expectedValues: PluginValues[] = [
         {
-          structName: "Class",
+          category: "struct",
+          name: "Class",
           param: { name: "className", attr: { kind: "string", default: "" } },
           value: "Class A",
         },
         {
-          structName: "Class",
+          category: "struct",
+          name: "Class",
           param: { name: "className", attr: { kind: "string", default: "" } },
           value: "Class B",
         },
@@ -469,22 +480,26 @@ describe("school", () => {
       const path3 = path[3];
       const expectedValues: PluginValues[] = [
         {
-          structName: "Person",
+          category: "struct",
+          name: "Person",
           param: { name: "name", attr: { kind: "string", default: "" } },
           value: "Alice Smith",
         },
         {
-          structName: "Person",
+          category: "struct",
+          name: "Person",
           param: { name: "age", attr: { kind: "number", default: 0 } },
           value: 40,
         },
         {
-          structName: "Person",
+          category: "struct",
+          name: "Person",
           param: { name: "name", attr: { kind: "string", default: "" } },
           value: "Bob Johnson",
         },
         {
-          structName: "Person",
+          category: "struct",
+          name: "Person",
           param: { name: "age", attr: { kind: "number", default: 0 } },
           value: 35,
         },

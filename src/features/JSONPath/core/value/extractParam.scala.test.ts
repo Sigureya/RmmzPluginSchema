@@ -37,16 +37,13 @@ describe("extractScalaParams", () => {
       mockData,
       "$.person['name','age','isStudent']",
       schema,
+      "struct",
       "Person"
     );
     const expected: PluginValues[] = [
-      {
-        structName: "Person",
-        value: "Alice",
-        param: schema[0],
-      },
-      { structName: "Person", value: 30, param: schema[1] },
-      { structName: "Person", value: false, param: schema[2] },
+      { category: "struct", name: "Person", value: "Alice", param: schema[0] },
+      { category: "struct", name: "Person", value: 30, param: schema[1] },
+      { category: "struct", name: "Person", value: false, param: schema[2] },
     ];
     expect(result).toEqual(expected);
   });
@@ -56,15 +53,21 @@ describe("extractScalaParams", () => {
       mockData,
       "$.students[*]['name','age','isStudent']",
       schema,
+      "struct",
       "Person"
     );
     const expected: PluginValues[] = [
-      { structName: "Person", value: "Bob", param: schema[0] },
-      { structName: "Person", value: 20, param: schema[1] },
-      { structName: "Person", value: true, param: schema[2] },
-      { structName: "Person", value: "Charlie", param: schema[0] },
-      { structName: "Person", value: 22, param: schema[1] },
-      { structName: "Person", value: true, param: schema[2] },
+      { category: "struct", name: "Person", value: "Bob", param: schema[0] },
+      { category: "struct", name: "Person", value: 20, param: schema[1] },
+      { category: "struct", name: "Person", value: true, param: schema[2] },
+      {
+        category: "struct",
+        name: "Person",
+        value: "Charlie",
+        param: schema[0],
+      },
+      { category: "struct", name: "Person", value: 22, param: schema[1] },
+      { category: "struct", name: "Person", value: true, param: schema[2] },
     ];
     expect(result).toEqual(expected);
   });

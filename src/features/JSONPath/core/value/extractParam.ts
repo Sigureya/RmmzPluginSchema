@@ -9,6 +9,7 @@ import {
   isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
+import type { ValueCategory } from "./types/pathSchemaTypes";
 import type { ArrayPathPair } from "./types/query";
 import type {
   StringSequenceParamValues,
@@ -57,6 +58,7 @@ export const extractScalaParams = (
   data: JSONValue,
   path: string,
   params: ReadonlyArray<PluginParamEx<ScalarParam>>,
+  category: ValueCategory,
   structName: string
 ): PluginValues[] => {
   const map = new Map(params.map((param) => [param.name, param.attr] as const));
@@ -75,7 +77,8 @@ export const extractScalaParams = (
       return acc;
     }
     acc.push({
-      structName,
+      category: category,
+      name: structName,
       value: value,
       param: { name: lastSegment, attr: schema },
     });
