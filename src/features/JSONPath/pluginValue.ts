@@ -1,18 +1,17 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import type {
-  ClassifiedPluginParams,
   PluginCommandSchemaArray,
+  ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { collectScalarResults } from "./core/readStructValue";
-import type { PluginValuesPathMemo } from "./core/types/JSONPathTypes";
+import { createPluginValuesPath, collectScalarResults } from "./core";
 import type {
   PluginValuesPath,
+  PluginValuesPathMemo,
+  PluginValues,
   StructPropertysPath,
-} from "./core/types/pathSchemaTypes";
-import type { PluginValues } from "./core/types/result";
-import { createPluginValuesPath } from "./core/value/value";
+} from "./core/types";
 
 export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
@@ -32,7 +31,7 @@ export const collectPluginValues = (
   });
 };
 
-export const buildCommandPathSchema = (
+export const buildPluginValuesPathSchema = (
   command: PluginValuesPath
 ): PluginValuesPathMemo[] => {
   return [

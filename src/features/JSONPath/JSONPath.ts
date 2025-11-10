@@ -1,12 +1,15 @@
 import type {
+  PluginSchemaArray,
+  PluginParam,
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
-  PluginParam,
-  PluginSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createStructMapclassifyed } from "@RmmzPluginSchema/rmmz/plugin";
-import { createCommandArgsPath, buildCommandPathSchema } from "./pluginValue";
-import type { CommandMemoPair } from "./core/value/types/JSONPathTypes";
+import type { CommandMemoPair } from "./core/types/JSONPathTypes";
+import {
+  createCommandArgsPath,
+  buildPluginValuesPathSchema,
+} from "./pluginValue";
 
 export const createCommandMemoEx = (
   pluginName: string,
@@ -33,7 +36,7 @@ export const createCommandMemo = (
       `${schema.command}:${pluginName}`,
       {
         commandName: schema.command,
-        items: buildCommandPathSchema(commandPath),
+        items: buildPluginValuesPathSchema(commandPath),
       },
     ];
   });
