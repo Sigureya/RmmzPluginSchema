@@ -1,1 +1,1 @@
-export * from "./paramStruct";
+export * from "./structValue";

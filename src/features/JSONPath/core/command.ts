@@ -5,7 +5,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { collectScalarResults } from "./value/paramStructRead";
+import { collectScalarResults } from "./value/readStructValue";
 import type { pluginValuesPath } from "./value/types/JSONPathTypes";
 import type {
   CommandPath,

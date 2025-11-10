@@ -1,1 +1,1 @@
-export * from "./value/paramStructRead";
+export * from "./value/readStructValue";

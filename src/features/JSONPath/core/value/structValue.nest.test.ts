@@ -6,11 +6,11 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import { getPathFromStructParam } from "./paramStruct";
 import {
   extractScalarValuesFromJson,
   extractArrayValuesFromJson,
-} from "./paramStructRead";
+} from "./readStructValue";
+import { getPathFromStructParam } from "./structValue";
 import type {
   StructPropertysPath,
   StructPathResult,

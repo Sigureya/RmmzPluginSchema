@@ -7,7 +7,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { getPathFromStructParam, getPathFromStructSchema } from "./paramStruct";
+import { getPathFromStructParam, getPathFromStructSchema } from "./structValue";
 import type {
   StructPropertysPath,
   StructPathResult,
@@ -64,6 +64,7 @@ describe("person", () => {
     const result = getPathFromStructParam([param], "$", structMap);
     expect(result.items).toEqual(expected);
   });
+
   test("getPathFromStructSchema", () => {
     const result: StructPathResult = getPathFromStructSchema(
       "MockPerson",
@@ -72,6 +73,7 @@ describe("person", () => {
     );
     expect(result.items).toEqual(expected);
   });
+
   test("isvalid path", () => {
     expected.forEach((item) => {
       expect(() => {

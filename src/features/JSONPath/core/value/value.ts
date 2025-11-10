@@ -4,7 +4,7 @@ import { makeScalarParams, makeScalarArrayParams } from "./paramScalar";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
-} from "./paramStruct";
+} from "./structValue";
 import type { CommandPath } from "./types/pathSchemaTypes";
 
 export const vv = (
