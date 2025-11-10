@@ -37,6 +37,8 @@ describe("person", () => {
   };
   const expected = [
     {
+      category: "struct",
+      structName: "MockPerson",
       scalars: `$.person["name","age","b"]`,
       scalarArrays: [
         {
@@ -49,7 +51,6 @@ describe("person", () => {
           param: personSchema.scalarArrays[1],
         },
       ],
-      structName: "MockPerson",
       objectSchema: toObjectPluginParams(personSchema.scalars),
     },
   ] as const satisfies StructPropertysPath[];

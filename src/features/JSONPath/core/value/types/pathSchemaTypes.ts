@@ -3,10 +3,13 @@ import type { PathPair } from "./types";
 
 export interface StructPropertysPath {
   structName: string;
+  category: ValueCategory;
   scalars: string | undefined;
   scalarArrays: PathPair[];
   objectSchema: Record<string, ScalarParam>;
 }
+
+export type ValueCategory = "struct" | "command" | "param";
 
 export interface StructPathError {
   path: string;

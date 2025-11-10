@@ -109,9 +109,10 @@ const makeMap = (): ReadonlyMap<string, ClassifiedPluginParams> => {
 
 describe("address", () => {
   const path: StructPropertysPath = {
+    category: "struct",
+    structName: "Address",
     scalars: `$.address["street","city","zipCode"]`,
     scalarArrays: [],
-    structName: "Address",
     objectSchema: toObjectPluginParams(addressSchema.scalars),
   };
   const paramSchema = {
@@ -165,12 +166,13 @@ describe("address", () => {
 describe("person", () => {
   const path: StructPropertysPath[] = [
     {
+      category: "struct",
+      structName: "Person",
       scalars: `$.person["name","age"]`,
       scalarArrays: [
         { path: "$.person.items[*]", param: personScheame.scalarArrays[0] },
         { path: "$.person.nicknames[*]", param: personScheame.scalarArrays[1] },
       ],
-      structName: "Person",
       objectSchema: toObjectPluginParams(personScheame.scalars),
     },
   ];
@@ -238,12 +240,17 @@ describe("person", () => {
 describe("classroom", () => {
   const expected: StructPropertysPath[] = [
     {
+      category: "struct",
+      structName: "Class",
+
       scalars: `$.classroom["className"]`,
       scalarArrays: [],
-      structName: "Class",
       objectSchema: toObjectPluginParams(classRoomSchema.scalars),
     },
     {
+      category: "struct",
+      structName: "Person",
+
       scalars: `$.classroom.teacher["name","age"]`,
       scalarArrays: [
         {
@@ -255,10 +262,11 @@ describe("classroom", () => {
           param: personScheame.scalarArrays[1],
         },
       ],
-      structName: "Person",
       objectSchema: toObjectPluginParams(personScheame.scalars),
     },
     {
+      category: "struct",
+      structName: "Person",
       scalars: `$.classroom.students[*]["name","age"]`,
       scalarArrays: [
         {
@@ -270,7 +278,6 @@ describe("classroom", () => {
           param: personScheame.scalarArrays[1],
         },
       ],
-      structName: "Person",
       objectSchema: toObjectPluginParams(personScheame.scalars),
     },
   ];
@@ -292,24 +299,28 @@ describe("classroom", () => {
 describe("school", () => {
   const path: StructPropertysPath[] = [
     {
+      category: "struct",
       structName: "School",
       scalars: `$.school["since"]`,
       scalarArrays: [],
       objectSchema: toObjectPluginParams(schoolSchema.scalars),
     },
     {
+      category: "struct",
       structName: "Address",
       scalars: `$.school.address["street","city","zipCode"]`,
       scalarArrays: [],
       objectSchema: toObjectPluginParams(addressSchema.scalars),
     },
     {
+      category: "struct",
       structName: "Class",
       scalars: `$.school.classrooms[*]["className"]`,
       scalarArrays: [],
       objectSchema: toObjectPluginParams(classRoomSchema.scalars),
     },
     {
+      category: "struct",
       structName: "Person",
       scalars: `$.school.classrooms[*].teacher["name","age"]`,
       scalarArrays: [
@@ -325,6 +336,7 @@ describe("school", () => {
       objectSchema: toObjectPluginParams(personScheame.scalars),
     },
     {
+      category: "struct",
       structName: "Person",
       scalars: `$.school.classrooms[*].students[*]["name","age"]`,
       scalarArrays: [

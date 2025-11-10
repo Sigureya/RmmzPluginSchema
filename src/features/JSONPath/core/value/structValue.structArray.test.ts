@@ -73,22 +73,24 @@ const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
 
 describe("getPathFromStructParam", () => {
   const path1: StructPropertysPath = {
+    category: "struct",
+    structName: "Person",
     objectSchema: {
       age: { default: 0, kind: "number" },
       name: { default: "", kind: "string" },
     },
     scalarArrays: [],
     scalars: '$.classRoom.students[*]["name","age"]',
-    structName: "Person",
   };
   const path2: StructPropertysPath = {
+    category: "struct",
+    structName: "Item",
     objectSchema: {
       itemId: { default: 0, kind: "number" },
       itemName: { default: "", kind: "string" },
     },
     scalarArrays: [],
     scalars: '$.classRoom.items[*]["itemId","itemName"]',
-    structName: "Item",
   };
 
   test("classRoom.students", () => {

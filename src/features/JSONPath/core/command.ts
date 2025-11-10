@@ -19,7 +19,7 @@ export const createCommandArgsPath = (
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {
   const cpp = classifyPluginParams(schema.args);
-  return vv(`Command<${schema.command}>`, cpp, structMap);
+  return vv(`Command<${schema.command}>`, cpp, structMap, "command");
 };
 
 export const collectPluginValues = (

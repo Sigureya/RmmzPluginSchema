@@ -5,12 +5,13 @@ import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./structValue";
-import type { CommandPath } from "./types/pathSchemaTypes";
+import type { CommandPath, ValueCategory } from "./types/pathSchemaTypes";
 
 export const vv = (
   rootName: string,
   cpp: ClassifiedPluginParams,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  category: ValueCategory
 ): CommandPath => {
   const parent: string = "$";
   return {
@@ -21,6 +22,7 @@ export const vv = (
       structMap
     ),
     scalars: {
+      category: category,
       objectSchema: toObjectPluginParams(cpp.scalars),
       structName: rootName,
       scalars: makeScalarParams(cpp.scalars, parent),
