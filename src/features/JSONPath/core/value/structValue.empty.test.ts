@@ -42,6 +42,7 @@ describe("empty struct", () => {
     const result = getPathFromStructParam([param], "$", structMap);
     const expected: StructPropertysPath[] = [
       {
+        category: "struct",
         structName: "NotEmptyStruct",
         scalars: `$.notEmptyStruct["actorId"]`,
         scalarArrays: [],
@@ -74,8 +75,9 @@ describe("empty struct", () => {
     const result = getPathFromStructParam([param], "$", structMap);
     const expected: StructPropertysPath[] = [
       {
-        objectSchema: {},
+        category: "struct",
         structName: "EmptyStructArray",
+        objectSchema: {},
         scalars: undefined,
         scalarArrays: [
           {

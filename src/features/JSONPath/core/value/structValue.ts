@@ -31,9 +31,16 @@ interface State {
 
 function createNode(
   structSchema: ClassifiedPluginParams,
-  { path, structName }: { path: string; structName: string }
+  {
+    path,
+    structName,
+  }: {
+    path: string;
+    structName: string;
+  }
 ): StructPropertysPath {
   return {
+    category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
     structName: structName,
     scalarArrays: makeScalarArrayParams(structSchema.scalarArrays, path),
