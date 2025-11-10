@@ -2,6 +2,7 @@ import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import type {
   PluginCommandSchemaArray,
   ClassifiedPluginParams,
+  PluginParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
@@ -19,6 +20,16 @@ export const createCommandArgsPath = (
 ): PluginValuesPath => {
   const cpp = classifyPluginParams(schema.args);
   return createPluginValuesPath("command", schema.command, cpp, structMap);
+};
+
+export const createPluginParamsPath = (
+  params: ReadonlyArray<PluginParam>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): PluginValuesPath[] => {
+  return params.map((p) => {
+    const cpp = classifyPluginParams([p]);
+    return createPluginValuesPath("param", p.name, cpp, structMap);
+  });
 };
 
 export const collectPluginValues = (
