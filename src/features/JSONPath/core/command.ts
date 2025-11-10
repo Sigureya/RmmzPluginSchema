@@ -6,9 +6,9 @@ import type {
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import { collectScalarResults } from "./value/readStructValue";
-import type { pluginValuesPath } from "./value/types/JSONPathTypes";
+import type { PluginValuesPathMemo } from "./value/types/JSONPathTypes";
 import type {
-  CommandPath,
+  PluginValuesPath,
   StructPropertysPath,
 } from "./value/types/pathSchemaTypes";
 import type { PluginValues } from "./value/types/result";
@@ -17,14 +17,14 @@ import { createPluginValuesPath } from "./value/value";
 export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): CommandPath => {
+): PluginValuesPath => {
   const cpp = classifyPluginParams(schema.args);
   return createPluginValuesPath("command", schema.command, cpp, structMap);
 };
 
 export const collectPluginValues = (
   value: JSONValue,
-  memoList: ReadonlyArray<pluginValuesPath>
+  memoList: ReadonlyArray<PluginValuesPathMemo>
 ): PluginValues[] => {
   return memoList.flatMap((memo): PluginValues[] => {
     const segments = memo.jsonPathJS.pathSegments(value);
@@ -33,8 +33,8 @@ export const collectPluginValues = (
 };
 
 export const buildCommandPathSchema = (
-  command: CommandPath
-): pluginValuesPath[] => {
+  command: PluginValuesPath
+): PluginValuesPathMemo[] => {
   return [
     ...createSchemaJsonPathPair(command.scalars),
     ...command.structs.items.flatMap(createSchemaJsonPathPair),
@@ -44,9 +44,9 @@ export const buildCommandPathSchema = (
 
 const createSchemaJsonPathPair = (
   structPath: StructPropertysPath
-): pluginValuesPath[] => {
+): PluginValuesPathMemo[] => {
   const list = structPath.scalarArrays.map(
-    (scalaArray): pluginValuesPath => ({
+    (scalaArray): PluginValuesPathMemo => ({
       jsonPathJS: new JSONPathJS(scalaArray.path),
       schema: structPath,
     })

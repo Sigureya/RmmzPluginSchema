@@ -5,17 +5,19 @@ import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./structValue";
-import type { CommandPath, ValueCategory } from "./types/pathSchemaTypes";
+import type { PluginValuesPath, ValueCategory } from "./types/pathSchemaTypes";
 
 export const createPluginValuesPath = (
   category: ValueCategory,
   rootName: string,
   cpp: ClassifiedPluginParams,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): CommandPath => {
+): PluginValuesPath => {
   const parent: string = "$";
   return {
+    // ex: root.struct.param
     structs: getPathFromStructParam(cpp.structs, parent, structMap),
+    // ex: root.array[*].param
     structArrays: getPathFromStructArraySchema(
       cpp.structArrays,
       parent,
@@ -23,9 +25,11 @@ export const createPluginValuesPath = (
     ),
     scalars: {
       category: category,
-      objectSchema: toObjectPluginParams(cpp.scalars),
       structName: rootName,
+      objectSchema: toObjectPluginParams(cpp.scalars),
+      // ex: root.param
       scalars: makeScalarParams(cpp.scalars, parent),
+      // ex: root.array[*]
       scalarArrays: makeScalarArrayParams(cpp.scalarArrays, parent),
     },
   };
