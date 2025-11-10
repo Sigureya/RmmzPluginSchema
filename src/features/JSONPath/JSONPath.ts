@@ -4,11 +4,16 @@ import type {
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { createStructMapclassifyed } from "@RmmzPluginSchema/rmmz/plugin";
+import {
+  classifyPluginParams,
+  createStructMapclassifyed,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { createPluginValuesPath } from "./core";
 import type { CommandMemoPair } from "./core/types/JSONPathTypes";
 import {
   createCommandArgsPath,
   buildPluginValuesPathSchema,
+  createPluginParamsPath,
 } from "./pluginValue";
 
 export const createCommandMemoEx = (
@@ -21,9 +26,13 @@ export const createCommandMemoEx = (
 
 const createParamsPath = (
   pluginName: string,
-  params: PluginParam[],
+  params: ReadonlyArray<PluginParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-) => {};
+) => {
+  const cpp: ClassifiedPluginParams = classifyPluginParams(params);
+  //  createPluginParamsPath(params, structMap);
+  return createPluginValuesPath("param", pluginName, cpp, structMap);
+};
 
 export const createCommandMemo = (
   pluginName: string,
