@@ -42,7 +42,7 @@ function createNode(
   return {
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
-    structName: structName,
+    name: structName,
     scalarArrays: makeScalarArrayPath(structSchema.scalarArrays, path),
     scalars:
       structSchema.scalars.length > 0

@@ -47,7 +47,7 @@ describe("extractScalaValuesFromJson", () => {
   test("should return empty array when scalas is undefined", () => {
     const path: StructPropertysPath = {
       category: "struct",
-      structName: "TestStruct",
+      name: "TestStruct",
       scalarArrays: [],
       objectSchema: {},
       scalars: undefined,
@@ -58,7 +58,7 @@ describe("extractScalaValuesFromJson", () => {
   test("should extract scala values from json", () => {
     const path: StructPropertysPath = {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalarArrays: [],
       objectSchema: personSchema,
       scalars: "$.person['name','age','isStudent']",
@@ -92,7 +92,7 @@ describe("extractScalaValuesFromJson", () => {
   test("students", () => {
     const path: StructPropertysPath = {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalarArrays: [],
       objectSchema: personSchema,
       scalars: `$.students[*]["name","age"]`,
@@ -153,7 +153,7 @@ describe("extractArrayValuesFromJson", () => {
   test("should return empty array when scalaArrays is empty", () => {
     const path: StructPropertysPath = {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: undefined,
       objectSchema: personSchema,
       scalarArrays: [],
@@ -164,7 +164,7 @@ describe("extractArrayValuesFromJson", () => {
   test("should extract array values from json", () => {
     const path: StructPropertysPath = {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: "dummyPath",
       objectSchema: personSchema,
       scalarArrays: [],
@@ -175,7 +175,7 @@ describe("extractArrayValuesFromJson", () => {
   test("should extract array values from json with scalaArrays", () => {
     const path: StructPropertysPath = {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: undefined,
       objectSchema: personSchema,
       scalarArrays: [
