@@ -21,7 +21,7 @@ export interface StructPathResult {
   errors: StructPathError[];
 }
 
-export interface CommandPath {
+export interface PluginValuesPath {
   scalars: StructPropertysPath;
   structs: StructPathResult;
   structArrays: StructPathResult;

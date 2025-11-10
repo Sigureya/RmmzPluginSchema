@@ -9,11 +9,11 @@ import {
   collectPluginValues,
   createCommandArgsPath,
 } from "./command";
-import type { pluginValuesPath } from "./value/types/JSONPathTypes";
+import type { PluginValuesPathMemo } from "./value/types/JSONPathTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
-  CommandPath,
+  PluginValuesPath,
 } from "./value/types/pathSchemaTypes";
 import type { PluginValues } from "./value/types/result";
 
@@ -159,12 +159,12 @@ const structArrays: StructPathResult = {
 
 describe("command", () => {
   test("createCommandArgsPath", () => {
-    const expected: CommandPath = {
+    const expected: PluginValuesPath = {
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
     };
-    const result: CommandPath = createCommandArgsPath(
+    const result: PluginValuesPath = createCommandArgsPath(
       commandAction,
       structsMap
     );
@@ -175,7 +175,7 @@ describe("command", () => {
   });
 
   test("buildCommandPathSchema", () => {
-    const commandMemo: pluginValuesPath[] = buildCommandPathSchema({
+    const commandMemo: PluginValuesPathMemo[] = buildCommandPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
@@ -234,7 +234,7 @@ describe("command", () => {
       },
     ];
 
-    const commandMemo: pluginValuesPath[] = buildCommandPathSchema({
+    const commandMemo: PluginValuesPathMemo[] = buildCommandPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
       structs: structsPath,
