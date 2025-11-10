@@ -2,7 +2,7 @@ import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PathPair } from "./types";
 
 export interface StructPropertysPath {
-  structName: string;
+  name: string;
   category: ValueCategory;
   scalars: string | undefined;
   scalarArrays: PathPair[];

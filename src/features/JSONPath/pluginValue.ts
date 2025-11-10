@@ -38,7 +38,7 @@ export const collectPluginValues = (
 ): PluginValues[] => {
   return memoList.flatMap((memo): PluginValues[] => {
     const segments = memo.jsonPathJS.pathSegments(value);
-    return collectScalarResults(segments, memo.schema, memo.schema.structName);
+    return collectScalarResults(segments, memo.schema, memo.schema.name);
   });
 };
 

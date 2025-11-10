@@ -110,7 +110,7 @@ const makeMap = (): ReadonlyMap<string, ClassifiedPluginParams> => {
 describe("address", () => {
   const path: StructPropertysPath = {
     category: "struct",
-    structName: "Address",
+    name: "Address",
     scalars: `$.address["street","city","zipCode"]`,
     scalarArrays: [],
     objectSchema: toObjectPluginParams(addressSchema.scalars),
@@ -170,7 +170,7 @@ describe("person", () => {
   const path: StructPropertysPath[] = [
     {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: `$.person["name","age"]`,
       scalarArrays: [
         { path: "$.person.items[*]", param: personScheame.scalarArrays[0] },
@@ -246,7 +246,7 @@ describe("classroom", () => {
   const expected: StructPropertysPath[] = [
     {
       category: "struct",
-      structName: "Class",
+      name: "Class",
 
       scalars: `$.classroom["className"]`,
       scalarArrays: [],
@@ -254,7 +254,7 @@ describe("classroom", () => {
     },
     {
       category: "struct",
-      structName: "Person",
+      name: "Person",
 
       scalars: `$.classroom.teacher["name","age"]`,
       scalarArrays: [
@@ -271,7 +271,7 @@ describe("classroom", () => {
     },
     {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: `$.classroom.students[*]["name","age"]`,
       scalarArrays: [
         {
@@ -305,28 +305,28 @@ describe("school", () => {
   const path: StructPropertysPath[] = [
     {
       category: "struct",
-      structName: "School",
+      name: "School",
       scalars: `$.school["since"]`,
       scalarArrays: [],
       objectSchema: toObjectPluginParams(schoolSchema.scalars),
     },
     {
       category: "struct",
-      structName: "Address",
+      name: "Address",
       scalars: `$.school.address["street","city","zipCode"]`,
       scalarArrays: [],
       objectSchema: toObjectPluginParams(addressSchema.scalars),
     },
     {
       category: "struct",
-      structName: "Class",
+      name: "Class",
       scalars: `$.school.classrooms[*]["className"]`,
       scalarArrays: [],
       objectSchema: toObjectPluginParams(classRoomSchema.scalars),
     },
     {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: `$.school.classrooms[*].teacher["name","age"]`,
       scalarArrays: [
         {
@@ -342,7 +342,7 @@ describe("school", () => {
     },
     {
       category: "struct",
-      structName: "Person",
+      name: "Person",
       scalars: `$.school.classrooms[*].students[*]["name","age"]`,
       scalarArrays: [
         {

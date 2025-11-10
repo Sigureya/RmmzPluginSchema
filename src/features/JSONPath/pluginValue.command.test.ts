@@ -104,7 +104,7 @@ const mockData = {
 } as const satisfies Action;
 
 const scalarsPath: StructPropertysPath = {
-  structName: "Action",
+  name: "Action",
   category: "command",
   objectSchema: {
     subject: { default: 0, kind: "number" },
@@ -123,14 +123,14 @@ const structsPath: StructPathResult = {
   items: [
     {
       category: "struct",
-      structName: "Damage",
+      name: "Damage",
       objectSchema: { exprFunc: { default: "", kind: "string" } },
       scalarArrays: [],
       scalars: '$.damage["exprFunc"]',
     },
     {
       category: "struct",
-      structName: "Message",
+      name: "Message",
       objectSchema: {
         failure: { default: "", kind: "string" },
         success: { default: "", kind: "string" },
@@ -146,7 +146,7 @@ const structArrays: StructPathResult = {
   items: [
     {
       category: "struct",
-      structName: "Effect",
+      name: "Effect",
       objectSchema: {
         code: { default: 0, kind: "number" },
         value: { default: 0, kind: "number" },

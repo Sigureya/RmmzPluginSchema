@@ -38,7 +38,7 @@ describe("person", () => {
   const expected = [
     {
       category: "struct",
-      structName: "MockPerson",
+      name: "MockPerson",
       scalars: `$.person["name","age","b"]`,
       scalarArrays: [
         {

@@ -18,7 +18,7 @@ export const extractScalarValuesFromJson = (
   }
   const jsonPath = new JSONPathJS(structPath.scalars);
   const segments = jsonPath.pathSegments(json);
-  return collectScalarResults(segments, structPath, structPath.structName);
+  return collectScalarResults(segments, structPath, structPath.name);
 };
 
 interface PathSegment {

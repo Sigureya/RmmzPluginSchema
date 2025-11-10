@@ -43,7 +43,7 @@ describe("empty struct", () => {
     const expected: StructPropertysPath[] = [
       {
         category: "struct",
-        structName: "NotEmptyStruct",
+        name: "NotEmptyStruct",
         scalars: `$.notEmptyStruct["actorId"]`,
         scalarArrays: [],
         objectSchema: {
@@ -76,7 +76,7 @@ describe("empty struct", () => {
     const expected: StructPropertysPath[] = [
       {
         category: "struct",
-        structName: "EmptyStructArray",
+        name: "EmptyStructArray",
         objectSchema: {},
         scalars: undefined,
         scalarArrays: [
