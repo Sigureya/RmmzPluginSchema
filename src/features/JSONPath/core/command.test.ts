@@ -104,7 +104,7 @@ const mockData = {
 } as const satisfies Action;
 
 const scalarsPath: StructPropertysPath = {
-  structName: "Command<Action>",
+  structName: "Action",
   category: "command",
   objectSchema: {
     subject: { default: 0, kind: "number" },
@@ -192,7 +192,7 @@ describe("command", () => {
     const expected: PluginValues[] = [
       {
         // TODO:プラグインコマンド直下にある値の扱い方
-        structName: "Command<Action>",
+        structName: "Action",
         value: 1,
         param: { attr: { default: 0, kind: "number" }, name: "subject" },
       },
