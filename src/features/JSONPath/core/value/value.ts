@@ -1,6 +1,6 @@
 import type { ClassifiedPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import { makeScalarParams, makeScalarArrayParams } from "./paramScalar";
+import { makeScalarValuesPath, makeScalarArrayPath } from "./scalarValue";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
@@ -28,9 +28,9 @@ export const createPluginValuesPath = (
       structName: rootName,
       objectSchema: toObjectPluginParams(cpp.scalars),
       // ex: root.param
-      scalars: makeScalarParams(cpp.scalars, parent),
+      scalars: makeScalarValuesPath(cpp.scalars, parent),
       // ex: root.array[*]
-      scalarArrays: makeScalarArrayParams(cpp.scalarArrays, parent),
+      scalarArrays: makeScalarArrayPath(cpp.scalarArrays, parent),
     },
   };
 };

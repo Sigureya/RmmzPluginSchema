@@ -5,7 +5,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { ArrayPathPair } from "./types/query";
 
-export const makeScalarParams = (
+export const makeScalarValuesPath = (
   scalas: ReadonlyArray<PluginParamEx<ScalarParam>>,
   parent: string
 ): string | undefined => {
@@ -16,7 +16,7 @@ export const makeScalarParams = (
   return `${parent}[${itesm}]`;
 };
 
-export const makeScalarArrayParams = (
+export const makeScalarArrayPath = (
   scalaArrays: ReadonlyArray<PluginParamEx<ArrayParamTypes>>,
   parent: string
 ): ArrayPathPair[] => {
