@@ -3,7 +3,7 @@ import type { PrimitiveParam } from "@RpgTypes/rmmz/plugin";
 import {
   extractArrayValuesFromJson,
   extractScalarValuesFromJson,
-} from "./paramStructRead";
+} from "./readStructValue";
 import type { StructPropertysPath } from "./types/pathSchemaTypes";
 import type { PluginValues, StringSequenceParamValues } from "./types/result";
 
