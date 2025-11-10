@@ -3,6 +3,7 @@ import type {
   PluginParam,
   PluginParamEx,
 } from "@RpgTypes/rmmz/plugin";
+import type { ValueCategory } from "./pathSchemaTypes";
 
 export interface SequenceParamValuesBase {
   valueType: string;
@@ -24,7 +25,8 @@ export interface NumberSequenceParamValues extends SequenceParamValuesBase {
 
 export interface PluginValues {
   value: number | string | boolean;
+  category: ValueCategory;
 
-  structName: string;
+  name: string;
   param: PluginParam;
 }

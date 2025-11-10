@@ -50,8 +50,9 @@ export const collectScalarResults = (
     }
 
     const result: PluginValues = {
+      category: structPath.category,
       value: value,
-      structName: structName,
+      name: structName,
       param: { name: paramName, attr: schema },
     };
     return [...acc, result];

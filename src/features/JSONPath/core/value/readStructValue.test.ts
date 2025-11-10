@@ -65,7 +65,8 @@ describe("extractScalaValuesFromJson", () => {
     };
     const expected: PluginValues[] = [
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: "Grad",
         param: {
           name: "name",
@@ -73,12 +74,14 @@ describe("extractScalaValuesFromJson", () => {
         },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: 30,
         param: { name: "age", attr: { kind: "number", default: 0 } },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: false,
         param: { name: "isStudent", attr: { kind: "boolean", default: false } },
       },
@@ -96,7 +99,8 @@ describe("extractScalaValuesFromJson", () => {
     };
     const expected: PluginValues[] = [
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: "Alice",
         param: {
           name: "name",
@@ -104,12 +108,14 @@ describe("extractScalaValuesFromJson", () => {
         },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: 20,
         param: { name: "age", attr: personSchema.age },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: "Bob",
         param: {
           name: "name",
@@ -117,12 +123,14 @@ describe("extractScalaValuesFromJson", () => {
         },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: 22,
         param: { name: "age", attr: personSchema.age },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: "Charlie",
         param: {
           name: "name",
@@ -130,7 +138,8 @@ describe("extractScalaValuesFromJson", () => {
         },
       },
       {
-        structName: "Person",
+        category: "struct",
+        name: "Person",
         value: 19,
         param: { name: "age", attr: personSchema.age },
       },

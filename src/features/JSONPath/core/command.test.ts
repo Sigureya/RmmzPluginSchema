@@ -191,44 +191,51 @@ describe("command", () => {
   test("collectScalaPathResults", () => {
     const expected: PluginValues[] = [
       {
-        // TODO:プラグインコマンド直下にある値の扱い方
-        structName: "Action",
+        category: "command",
+        name: "Action",
         value: 1,
         param: { attr: { default: 0, kind: "number" }, name: "subject" },
       },
       {
-        structName: "Damage",
-
+        category: "struct",
+        name: "Damage",
         value: "a + b",
         param: { attr: { default: "", kind: "string" }, name: "exprFunc" },
       },
       {
-        structName: "Message",
+        category: "struct",
+        name: "Message",
         value: "Hit!",
         param: { attr: { default: "", kind: "string" }, name: "success" },
       },
       {
-        structName: "Message",
+        category: "struct",
+
+        name: "Message",
         value: "Miss!",
         param: { attr: { default: "", kind: "string" }, name: "failure" },
       },
       {
-        structName: "Effect",
+        category: "struct",
+        name: "Effect",
         value: 10,
         param: { attr: { default: 0, kind: "number" }, name: "code" },
       },
       {
-        structName: "Effect",
+        category: "struct",
+        name: "Effect",
         value: 100,
         param: { attr: { default: 0, kind: "number" }, name: "value" },
       },
       {
-        structName: "Effect",
+        category: "struct",
+        name: "Effect",
         value: 20,
         param: { attr: { default: 0, kind: "number" }, name: "code" },
       },
       {
-        structName: "Effect",
+        category: "struct",
+        name: "Effect",
         value: 200,
         param: { attr: { default: 0, kind: "number" }, name: "value" },
       },
