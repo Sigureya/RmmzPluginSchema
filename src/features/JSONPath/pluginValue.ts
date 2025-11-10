@@ -5,14 +5,14 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { collectScalarResults } from "./value/readStructValue";
-import type { PluginValuesPathMemo } from "./value/types/JSONPathTypes";
+import { collectScalarResults } from "./core/readStructValue";
+import type { PluginValuesPathMemo } from "./core/types/JSONPathTypes";
 import type {
   PluginValuesPath,
   StructPropertysPath,
-} from "./value/types/pathSchemaTypes";
-import type { PluginValues } from "./value/types/result";
-import { createPluginValuesPath } from "./value/value";
+} from "./core/types/pathSchemaTypes";
+import type { PluginValues } from "./core/types/result";
+import { createPluginValuesPath } from "./core/value/value";
 
 export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,

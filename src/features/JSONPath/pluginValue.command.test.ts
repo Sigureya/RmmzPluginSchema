@@ -4,18 +4,18 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  buildCommandPathSchema,
-  collectPluginValues,
-  createCommandArgsPath,
-} from "./command";
-import type { PluginValuesPathMemo } from "./value/types/JSONPathTypes";
+import type { PluginValuesPathMemo } from "./core/types/JSONPathTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
   PluginValuesPath,
-} from "./value/types/pathSchemaTypes";
-import type { PluginValues } from "./value/types/result";
+} from "./core/types/pathSchemaTypes";
+import type { PluginValues } from "./core/types/result";
+import {
+  buildCommandPathSchema,
+  collectPluginValues,
+  createCommandArgsPath,
+} from "./pluginValue";
 
 interface Effect {
   code: number;
