@@ -12,14 +12,14 @@ import type {
   StructPropertysPath,
 } from "./value/types/pathSchemaTypes";
 import type { PluginValues } from "./value/types/result";
-import { vv } from "./value/value";
+import { createPluginValuesPath } from "./value/value";
 
 export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {
   const cpp = classifyPluginParams(schema.args);
-  return vv(`Command<${schema.command}>`, cpp, structMap, "command");
+  return createPluginValuesPath("command", schema.command, cpp, structMap);
 };
 
 export const collectPluginValues = (

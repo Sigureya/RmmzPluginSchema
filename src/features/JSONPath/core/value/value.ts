@@ -7,11 +7,11 @@ import {
 } from "./structValue";
 import type { CommandPath, ValueCategory } from "./types/pathSchemaTypes";
 
-export const vv = (
+export const createPluginValuesPath = (
+  category: ValueCategory,
   rootName: string,
   cpp: ClassifiedPluginParams,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
-  category: ValueCategory
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {
   const parent: string = "$";
   return {
