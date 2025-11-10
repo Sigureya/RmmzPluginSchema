@@ -5,7 +5,7 @@ import type {
   PluginSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createStructMapclassifyed } from "@RmmzPluginSchema/rmmz/plugin";
-import { createCommandArgsPath, buildCommandPathSchema } from "./core/command";
+import { createCommandArgsPath, buildCommandPathSchema } from "./pluginValue";
 import type { CommandMemoPair } from "./core/value/types/JSONPathTypes";
 
 export const createCommandMemoEx = (
