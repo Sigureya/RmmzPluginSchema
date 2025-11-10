@@ -5,7 +5,7 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import { makeScalarArrayParams, makeScalarParams } from "./paramScalar";
+import { makeScalarArrayPath, makeScalarValuesPath } from "./scalarValue";
 import type { ErrorCodes } from "./types/errorTypes";
 import type {
   StructPropertysPath,
@@ -43,10 +43,10 @@ function createNode(
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
     structName: structName,
-    scalarArrays: makeScalarArrayParams(structSchema.scalarArrays, path),
+    scalarArrays: makeScalarArrayPath(structSchema.scalarArrays, path),
     scalars:
       structSchema.scalars.length > 0
-        ? makeScalarParams(structSchema.scalars, path)
+        ? makeScalarValuesPath(structSchema.scalars, path)
         : undefined,
   };
 }

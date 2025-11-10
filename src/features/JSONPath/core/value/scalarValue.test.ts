@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type { ClassifiedPluginParamsEx } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { makeScalarParams, makeScalarArrayParams } from "./paramScalar";
+import { makeScalarValuesPath, makeScalarArrayPath } from "./scalarValue";
 import type { PathPair } from "./types/types";
 
 interface ArrayMock {
@@ -25,7 +25,7 @@ describe("makeScalaParams", () => {
       scalarArrays: [],
     };
     test("undefined", () => {
-      const path = makeScalarParams(schema.scalars, "$");
+      const path = makeScalarValuesPath(schema.scalars, "$");
       expect(path).toBeUndefined();
     });
   });
@@ -47,7 +47,7 @@ describe("makeScalaParams", () => {
     };
     const path = `$["stringParam","numberParam","booleanParam"]`;
     test("path", () => {
-      const path1 = makeScalarParams(schema.scalars, "$");
+      const path1 = makeScalarValuesPath(schema.scalars, "$");
       expect(path1).toBe(path);
     });
     test("find", () => {
@@ -95,7 +95,7 @@ describe("makeScalaArrayParams", () => {
   ] as const satisfies PathPair[];
 
   test("create path", () => {
-    const path1: PathPair[] = makeScalarArrayParams(schema.scalarArrays, "$");
+    const path1: PathPair[] = makeScalarArrayPath(schema.scalarArrays, "$");
     expect(path1).toEqual(paths);
   });
   test("find number params", () => {
