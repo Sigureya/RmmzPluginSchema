@@ -1,13 +1,11 @@
-import {
-  toObjectPluginParams,
-  type ClassifiedPluginParams,
-} from "@RmmzPluginSchema/rmmz/plugin";
+import type { ClassifiedPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import { makeScalarParams, makeScalarArrayParams } from "./paramScalar";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
-} from "../paramStruct";
-import { makeScalarParams, makeScalarArrayParams } from "./paramScalar";
-import type { CommandPath, StructPropertysPath } from "./types/pathSchemaTypes";
+} from "./paramStruct";
+import type { CommandPath } from "./types/pathSchemaTypes";
 
 export const vv = (
   rootName: string,
@@ -15,24 +13,18 @@ export const vv = (
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): CommandPath => {
   const parent: string = "$";
-
-  const structArgsPath = getPathFromStructParam(cpp.structs, parent, structMap);
-  const structArrayArgsPath = getPathFromStructArraySchema(
-    cpp.structArrays,
-    parent,
-    structMap
-  );
-
-  const path: StructPropertysPath = {
-    objectSchema: toObjectPluginParams(cpp.scalars),
-    structName: rootName,
-    scalars: makeScalarParams(cpp.scalars, parent),
-    scalarArrays: makeScalarArrayParams(cpp.scalarArrays, parent),
-  };
-
   return {
-    scalars: path,
-    structs: structArgsPath,
-    structArrays: structArrayArgsPath,
+    structs: getPathFromStructParam(cpp.structs, parent, structMap),
+    structArrays: getPathFromStructArraySchema(
+      cpp.structArrays,
+      parent,
+      structMap
+    ),
+    scalars: {
+      objectSchema: toObjectPluginParams(cpp.scalars),
+      structName: rootName,
+      scalars: makeScalarParams(cpp.scalars, parent),
+      scalarArrays: makeScalarArrayParams(cpp.scalarArrays, parent),
+    },
   };
 };
