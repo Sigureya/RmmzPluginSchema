@@ -5,13 +5,13 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { collectScalarResults } from "./core/value/readStructValue";
-import type { PluginValuesPathMemo } from "./core/value/types/JSONPathTypes";
+import { collectScalarResults } from "./core/readStructValue";
+import type { PluginValuesPathMemo } from "./core/types/JSONPathTypes";
 import type {
   PluginValuesPath,
   StructPropertysPath,
-} from "./core/value/types/pathSchemaTypes";
-import type { PluginValues } from "./core/value/types/result";
+} from "./core/types/pathSchemaTypes";
+import type { PluginValues } from "./core/types/result";
 import { createPluginValuesPath } from "./core/value/value";
 
 export const createCommandArgsPath = (

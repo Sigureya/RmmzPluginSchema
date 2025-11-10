@@ -4,13 +4,13 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesPathMemo } from "./core/value/types/JSONPathTypes";
+import type { PluginValuesPathMemo } from "./core/types/JSONPathTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
   PluginValuesPath,
-} from "./core/value/types/pathSchemaTypes";
-import type { PluginValues } from "./core/value/types/result";
+} from "./core/types/pathSchemaTypes";
+import type { PluginValues } from "./core/types/result";
 import {
   buildCommandPathSchema,
   collectPluginValues,
