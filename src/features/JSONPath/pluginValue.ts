@@ -41,6 +41,11 @@ export const collectPluginValues = (
     return collectScalarResults(segments, memo.schema, memo.schema.name);
   });
 };
+export const buildPluginValuesPathSchema2 = (
+  command: ReadonlyArray<PluginValuesPath>
+): PluginValuesPathMemo[] => {
+  return command.flatMap(buildPluginValuesPathSchema);
+};
 
 export const buildPluginValuesPathSchema = (
   command: PluginValuesPath
