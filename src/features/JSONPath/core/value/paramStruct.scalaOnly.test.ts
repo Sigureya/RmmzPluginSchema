@@ -11,7 +11,7 @@ import { getPathFromStructParam, getPathFromStructSchema } from "./paramStruct";
 import type {
   StructPropertysPath,
   StructPathResult,
-} from "./value/types/pathSchemaTypes";
+} from "./types/pathSchemaTypes";
 
 interface MockPerson {
   name: string;

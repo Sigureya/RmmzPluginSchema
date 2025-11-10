@@ -9,7 +9,7 @@ import { getPathFromStructParam } from "./paramStruct";
 import type {
   StructPropertysPath,
   StructPathResult,
-} from "./value/types/pathSchemaTypes";
+} from "./types/pathSchemaTypes";
 
 interface Person {
   name: string;

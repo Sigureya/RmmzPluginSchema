@@ -5,13 +5,13 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import { makeScalarArrayParams, makeScalarParams } from "./paramScalar";
 import type { ErrorCodes } from "./types/errorTypes";
-import { makeScalarArrayParams, makeScalarParams } from "./value/paramScalar";
 import type {
   StructPropertysPath,
   StructPathError,
   StructPathResult,
-} from "./value/types/pathSchemaTypes";
+} from "./types/pathSchemaTypes";
 
 const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
