@@ -3,14 +3,17 @@ import {
   isNumberArrayParam,
   isStringArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ValueCategory2 } from "./types";
-import type { PluginValuesNA, PluginValuesSA } from "./types/array";
-import type { ArrayPathEx } from "./types/memo";
+import type {
+  ValueCategory2,
+  ArrayPathMemo,
+  PluginValuesSA,
+  PluginValuesNA,
+} from "./types";
 
 export const readArrayValue2 = (
   category: ValueCategory2,
   json: JSONValue,
-  path: ArrayPathEx
+  path: ArrayPathMemo
 ): PluginValuesSA[] | PluginValuesNA[] => {
   const values: JSONValue = path.jsonPathJS.find(json);
   if (!Array.isArray(values)) {

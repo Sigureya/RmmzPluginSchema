@@ -1,19 +1,11 @@
-import type {
-  ArrayParamTypes,
-  PluginParamEx,
-} from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONPathJS } from "jsonpath-js";
 import type { StructPropertysPath } from "../../createPath/pathSchemaTypes";
+import type { ArrayPathMemo } from "./array";
 
 export interface PluginValuesPathMemo {
   schema: StructPropertysPath;
   jsonPathJS: JSONPathJS;
-  arrays: ArrayPathEx[];
-}
-
-export interface ArrayPathEx {
-  jsonPathJS: JSONPathJS;
-  schema: PluginParamEx<ArrayParamTypes>;
+  arrays: ArrayPathMemo[];
 }
 
 export interface CommandMemo {

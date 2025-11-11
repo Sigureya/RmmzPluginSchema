@@ -1,7 +1,9 @@
 import type {
+  ArrayParamTypes,
   PluginParamEx,
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type { JSONPathJS } from "jsonpath-js";
 import type { PluginValues, ValueCategory2 } from "./result";
 
 export interface PluginValuesSA extends PluginValues {
@@ -20,3 +22,8 @@ export interface PluginValuesNA extends PluginValues {
 
 type StringArrayParam = Extract<PrimitiveParam, { default: string[] }>;
 type NumberArrayParam = Extract<PrimitiveParam, { default: number[] }>;
+
+export interface ArrayPathMemo {
+  jsonPathJS: JSONPathJS;
+  schema: PluginParamEx<ArrayParamTypes>;
+}
