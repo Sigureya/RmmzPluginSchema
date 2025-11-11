@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
+import type { ArrayParamPairEx, ArrayPathPair } from "./createPath/types/query";
 import { extractArrayParamValues } from "./extractParam";
-import type { ArrayParamPairEx, ArrayPathPair } from "./types/query";
 import type {
   NumberSequenceParamValues,
   StringSequenceParamValues,

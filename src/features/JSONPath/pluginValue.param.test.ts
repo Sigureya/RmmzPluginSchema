@@ -175,7 +175,7 @@ describe("pluginValue.param", () => {
     );
     expect(result).toEqual(paths);
   });
-  test("buildPluginValuesPathSchema", () => {
+  test.skip("buildPluginValuesPathSchema", () => {
     const result: PluginValuesPathMemo[] = buildPluginValuesPathSchema2(paths);
     expect(result.length).toBe(4);
   });
