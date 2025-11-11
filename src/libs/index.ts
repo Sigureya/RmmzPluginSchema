@@ -1,4 +1,3 @@
-export * from "./jsonPath/JSONValue";
 export * from "./jsonPath";
 export * from "./namedItemSource";
 export * from "./sourceIdTypes";
