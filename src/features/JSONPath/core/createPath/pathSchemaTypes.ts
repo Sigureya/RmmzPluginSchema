@@ -1,5 +1,5 @@
 import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PathPair } from "./types";
+import type { PathPair } from "../types/types";
 
 export interface StructPropertysPath {
   name: string;
@@ -23,6 +23,7 @@ export interface StructPathResult {
 
 export interface PluginValuesPath {
   scalars: StructPropertysPath;
+  scalarArrays?: unknown;
   structs: StructPathResult;
   structArrays: StructPathResult;
 }

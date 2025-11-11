@@ -4,9 +4,9 @@ import type {
   PluginParamEx,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type { ErrorCodes } from "../types/errorTypes";
+import type { StructPathResult } from "./pathSchemaTypes";
 import { getPathFromStructParam } from "./structValue";
-import type { ErrorCodes } from "./types/errorTypes";
-import type { StructPathResult } from "./types/pathSchemaTypes";
 
 const schema: ClassifiedPluginParams = {
   structs: [
