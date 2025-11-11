@@ -4,7 +4,7 @@ import type {
   PluginValuesPath,
   StructPropertysPath,
 } from "./createPath/pathSchemaTypes";
-import type { PluginValues } from "./memo2/types/array";
+import type { PluginValues } from "./memo2/types";
 import type { PluginValuesPathMemo } from "./memo2/types/memo";
 import { collectScalarResults } from "./readStructValue";
 
