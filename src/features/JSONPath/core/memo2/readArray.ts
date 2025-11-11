@@ -1,16 +1,10 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import { isStringArrayParam } from "@RmmzPluginSchema/rmmz/plugin";
-import { JSONPathJS } from "jsonpath-js";
-import type { ArrayPathEx, PathPair, ValueCategory } from "../types";
-import type { PluginValuesSA } from "./resultTypes";
+import type { PluginValuesSA, ValueCategory2 } from "./types/array";
+import type { ArrayPathEx } from "./types/memo";
 
-const x = (pathPair: PathPair): ArrayPathEx => ({
-  jsonPathJS: new JSONPathJS(pathPair.path),
-  schema: pathPair.param,
-});
-
-const r = (
-  category: ValueCategory,
+export const readArrayValue2 = (
+  category: ValueCategory2,
   json: JSONValue,
   path: ArrayPathEx
 ): PluginValuesSA[] => {
