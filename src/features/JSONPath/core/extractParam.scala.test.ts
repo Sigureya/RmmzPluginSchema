@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type { PluginParamEx, ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { extractScalaParams } from "./extractParam";
-import type { PluginValues } from "./memo2/types/array";
+import type { PluginValues } from "./memo2/types";
 
 interface Person {
   name: string;

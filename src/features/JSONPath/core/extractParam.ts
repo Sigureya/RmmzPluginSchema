@@ -1,4 +1,4 @@
-import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath/JSONValue";
 import type {
   ArrayParamTypes,
   PluginParamEx,
@@ -11,7 +11,7 @@ import {
 import { JSONPathJS } from "jsonpath-js";
 import type { ValueCategory } from "./createPath/pathSchemaTypes";
 import type { ArrayPathPair } from "./createPath/types/query";
-import type { PluginValues } from "./memo2/types/array";
+import type { PluginValues } from "./memo2/types";
 import type {
   StringSequenceParamValues,
   NumberSequenceParamValues,
