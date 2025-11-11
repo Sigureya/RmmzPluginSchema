@@ -1,9 +1,9 @@
+import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type { PluginParamEx, ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type { JSONPathJS } from "jsonpath-js";
 import type { PluginValues, ValueCategory2 } from "./result";
 
 export interface StructPropertysMemo {
-  jsonPathJS: JSONPathJS;
+  jsonPathJS: JSONPathReader;
   propetys: Record<string, ScalarParam>;
 }
 

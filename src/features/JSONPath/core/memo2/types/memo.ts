@@ -1,10 +1,10 @@
-import type { JSONPathJS } from "jsonpath-js";
+import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type { StructPropertysPath } from "../../createPath/pathSchemaTypes";
 import type { ArrayPathMemo } from "./array";
 
 export interface PluginValuesPathMemo {
   schema: StructPropertysPath;
-  jsonPathJS: JSONPathJS;
+  jsonPathJS: JSONPathReader;
   arrays: ArrayPathMemo[];
 }
 
