@@ -1,9 +1,4 @@
-import type {
-  ArrayParamTypes,
-  PluginParam,
-  PluginParamEx,
-} from "@RpgTypes/rmmz/plugin";
-import type { ValueCategory } from "./pathSchemaTypes";
+import type { ArrayParamTypes, PluginParamEx } from "@RpgTypes/rmmz/plugin";
 
 export interface SequenceParamValuesBase {
   valueType: string;
@@ -21,12 +16,4 @@ export interface NumberSequenceParamValues extends SequenceParamValuesBase {
   values: number[];
   valueType: "number";
   param: PluginParamEx<Extract<ArrayParamTypes, { default: number[] }>>;
-}
-
-export interface PluginValues {
-  value: number | string | boolean;
-  category: ValueCategory;
-
-  name: string;
-  param: PluginParam;
 }
