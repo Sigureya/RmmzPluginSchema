@@ -1,11 +1,11 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import type {
-  PluginParamEx,
   PrimitiveParam,
+  PluginParamEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
-  isNumberArrayParam,
   isStringArrayParam,
+  isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   ValueCategory2,
