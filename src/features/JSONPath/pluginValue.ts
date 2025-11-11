@@ -6,13 +6,10 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
+import type { PluginValuesPath, StructPropertysPath } from "./core";
 import { createPluginValuesPath, collectScalarResults } from "./core";
-import type { PluginValues } from "./core/memo2/resultTypes";
-import type {
-  PluginValuesPath,
-  PluginValuesPathMemo,
-  StructPropertysPath,
-} from "./core/types";
+import type { PluginValues } from "./core/memo2/types/array";
+import type { PluginValuesPathMemo } from "./core/memo2/types/memo";
 
 export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,

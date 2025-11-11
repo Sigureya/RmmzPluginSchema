@@ -11,7 +11,7 @@ import type {
   StructPathResult,
 } from "./createPath/pathSchemaTypes";
 import { getPathFromStructParam } from "./createPath/structValue";
-import type { PluginValues } from "./memo2/resultTypes";
+import type { PluginValues } from "./memo2/types/array";
 import {
   extractScalarValuesFromJson,
   extractArrayValuesFromJson,

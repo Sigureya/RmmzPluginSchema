@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
+import type { PluginValuesPath } from "./createPath/pathSchemaTypes";
 import { buildPluginValuesPathSchemaV3, collectPluginValues } from "./memo";
-import type { PluginValues } from "./memo2/resultTypes";
-import type { PluginValuesPath } from "./types";
+import type { PluginValues } from "./memo2/types/array";
 
 interface MockData {
   items: number[];

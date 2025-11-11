@@ -1,13 +1,12 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import { JSONPathJS } from "jsonpath-js";
-import type { PluginValues } from "./memo2/resultTypes";
-import { collectScalarResults } from "./readStructValue";
 import type {
-  PathPair,
   PluginValuesPath,
-  PluginValuesPathMemo,
   StructPropertysPath,
-} from "./types";
+} from "./createPath/pathSchemaTypes";
+import type { PluginValues } from "./memo2/types/array";
+import type { PluginValuesPathMemo } from "./memo2/types/memo";
+import { collectScalarResults } from "./readStructValue";
 
 export const collectPluginValues = (
   value: JSONValue,
