@@ -1,4 +1,8 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
+import type {
+  PluginParamEx,
+  PrimitiveParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isNumberArrayParam,
   isStringArrayParam,
@@ -22,29 +26,25 @@ export const readArrayValue2 = (
   const attr = path.schema.attr;
   if (isStringArrayParam(attr)) {
     const s: string[] = values.filter((v) => typeof v === "string");
+    type ParamType = Extract<PrimitiveParam, { default: string[] }>;
     return s.map(
       (value): PluginValuesSA => ({
         value: value,
         category: category,
         name: path.schema.name,
-        param: {
-          name: path.schema.name,
-          attr: attr,
-        },
+        param: path.schema as PluginParamEx<ParamType>,
       })
     );
   }
   if (isNumberArrayParam(attr)) {
     const s: number[] = values.filter((v) => typeof v === "number");
+    type ParamType = Extract<PrimitiveParam, { default: number[] }>;
     return s.map(
       (value): PluginValuesNA => ({
         value: value,
         category: category,
         name: path.schema.name,
-        param: {
-          name: path.schema.name,
-          attr: attr,
-        },
+        param: path.schema as PluginParamEx<ParamType>,
       })
     );
   }
