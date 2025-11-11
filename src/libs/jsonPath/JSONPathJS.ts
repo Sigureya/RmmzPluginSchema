@@ -7,5 +7,5 @@ export interface JSONPathReader {
 
 export interface PathSegmentResult {
   value: JSONValue;
-  segment: (string | number)[];
+  segments: (string | number)[];
 }
