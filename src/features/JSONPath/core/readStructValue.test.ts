@@ -1,11 +1,12 @@
 import { describe, test, expect } from "vitest";
 import type { PrimitiveParam } from "@RpgTypes/rmmz/plugin";
+import type { StructPropertysPath } from "./createPath/types/pathSchemaTypes";
+import type { PluginValues } from "./memo2/types";
 import {
   extractArrayValuesFromJson,
   extractScalarValuesFromJson,
 } from "./readStructValue";
-import type { StructPropertysPath } from "./createPath/pathSchemaTypes";
-import type { PluginValues, StringSequenceParamValues } from "./types/result";
+import type { StringSequenceParamValues } from "./types";
 
 interface Person {
   name: string;

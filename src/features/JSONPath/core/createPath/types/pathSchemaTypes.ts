@@ -1,5 +1,5 @@
 import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PathPair } from "./types/types";
+import type { PathPair } from "./types";
 
 export interface StructPropertysPath {
   name: string;

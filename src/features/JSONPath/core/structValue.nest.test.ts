@@ -6,12 +6,9 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import type {
-  StructPropertysPath,
-  StructPathResult,
-} from "./createPath/pathSchemaTypes";
 import { getPathFromStructParam } from "./createPath/structValue";
-import type { PluginValues } from "./memo2/types/array";
+import type { StructPropertysPath, StructPathResult } from "./createPath/types";
+import type { PluginValues } from "./memo2/types";
 import {
   extractScalarValuesFromJson,
   extractArrayValuesFromJson,

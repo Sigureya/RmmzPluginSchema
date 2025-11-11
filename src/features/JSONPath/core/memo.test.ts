@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { PluginValuesPath } from "./createPath/pathSchemaTypes";
+import type { PluginValuesPath } from "./createPath/types/pathSchemaTypes";
 import { buildPluginValuesPathSchemaV3, collectPluginValues } from "./memo";
 import type { PluginValues } from "./memo2/types";
 
