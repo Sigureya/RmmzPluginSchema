@@ -9,7 +9,7 @@ import {
   createStructMapclassifyed,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./core";
-import type { CommandMemoPair } from "./core/types/JSONPathTypes";
+import type { CommandMemoPair } from "./core/types/memo";
 import {
   createCommandArgsPath,
   buildPluginValuesPathSchema,

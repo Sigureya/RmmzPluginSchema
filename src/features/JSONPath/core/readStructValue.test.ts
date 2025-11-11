@@ -4,7 +4,7 @@ import {
   extractArrayValuesFromJson,
   extractScalarValuesFromJson,
 } from "./readStructValue";
-import type { StructPropertysPath } from "./types/pathSchemaTypes";
+import type { StructPropertysPath } from "./createPath/pathSchemaTypes";
 import type { PluginValues, StringSequenceParamValues } from "./types/result";
 
 interface Person {

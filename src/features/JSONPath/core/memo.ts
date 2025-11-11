@@ -1,8 +1,9 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
 import { JSONPathJS } from "jsonpath-js";
+import type { PluginValues } from "./memo2/resultTypes";
 import { collectScalarResults } from "./readStructValue";
 import type {
-  PluginValues,
+  PathPair,
   PluginValuesPath,
   PluginValuesPathMemo,
   StructPropertysPath,
@@ -35,12 +36,14 @@ const createSchemaJsonPathPair = (
     (scalaArray): PluginValuesPathMemo => ({
       jsonPathJS: new JSONPathJS(scalaArray.path),
       schema: structPath,
+      arrays: [],
     })
   );
   if (structPath.scalars) {
     list.push({
       jsonPathJS: new JSONPathJS(structPath.scalars),
       schema: structPath,
+      arrays: [],
     });
   }
   return list;

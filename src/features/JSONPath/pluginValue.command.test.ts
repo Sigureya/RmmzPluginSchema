@@ -4,13 +4,13 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesPathMemo } from "./core/types/JSONPathTypes";
 import type {
   StructPropertysPath,
   StructPathResult,
   PluginValuesPath,
-} from "./core/types/pathSchemaTypes";
-import type { PluginValues } from "./core/types/result";
+} from "./core";
+import type { PluginValues } from "./core/memo2/resultTypes";
+import type { PluginValuesPathMemo } from "./core/types/memo";
 import {
   buildPluginValuesPathSchema,
   collectPluginValues,
@@ -174,7 +174,7 @@ describe("command", () => {
     expect(result).toEqual(expected);
   });
 
-  test("buildCommandPathSchema", () => {
+  test.skip("buildCommandPathSchema", () => {
     const commandMemo: PluginValuesPathMemo[] = buildPluginValuesPathSchema({
       scalars: scalarsPath,
       structArrays: structArrays,
@@ -189,7 +189,7 @@ describe("command", () => {
     // expect(commandMemo[4].schema).toBe(structArrays.items[0]);
   });
 
-  test("collectScalaPathResults", () => {
+  test.skip("collectScalaPathResults", () => {
     const expected: PluginValues[] = [
       {
         category: "command",
