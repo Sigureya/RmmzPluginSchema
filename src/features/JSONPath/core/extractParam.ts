@@ -9,13 +9,12 @@ import {
   isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type { ValueCategory } from "./createPath/pathSchemaTypes";
-import type { ArrayPathPair } from "./createPath/types/query";
+import type { ArrayPathPair, ValueCategory } from "./createPath/types";
 import type { PluginValues } from "./memo2/types";
 import type {
   StringSequenceParamValues,
   NumberSequenceParamValues,
-} from "./types/result";
+} from "./types";
 
 export const extractArrayParamValues = (
   object: JSONValue,

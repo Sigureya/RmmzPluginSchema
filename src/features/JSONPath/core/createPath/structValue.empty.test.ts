@@ -4,8 +4,8 @@ import type {
   PluginParamEx,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { StructPropertysPath } from "./pathSchemaTypes";
 import { getPathFromStructParam } from "./structValue";
+import type { StructPropertysPath } from "./types";
 
 describe("empty struct", () => {
   test("getPathFromStruct", () => {

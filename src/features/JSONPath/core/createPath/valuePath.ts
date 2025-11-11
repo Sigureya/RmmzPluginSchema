@@ -1,11 +1,11 @@
 import type { ClassifiedPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesPath, ValueCategory } from "./pathSchemaTypes";
 import { makeScalarValuesPath, makeScalarArrayPath } from "./scalarValue";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./structValue";
+import type { PluginValuesPath, ValueCategory } from "./types/pathSchemaTypes";
 
 export const createPluginValuesPath = (
   category: ValueCategory,

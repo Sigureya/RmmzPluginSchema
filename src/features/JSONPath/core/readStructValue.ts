@@ -1,7 +1,7 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath/JSONValue";
 import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type { StructPropertysPath } from "./createPath/pathSchemaTypes";
+import type { StructPropertysPath } from "./createPath/types/pathSchemaTypes";
 import { extractArrayParamValues } from "./extractParam";
 import type { PluginValues } from "./memo2/types";
 import type {
