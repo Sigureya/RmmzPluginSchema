@@ -11,7 +11,7 @@ import {
 import { JSONPathJS } from "jsonpath-js";
 import type { ValueCategory } from "./createPath/pathSchemaTypes";
 import type { ArrayPathPair } from "./createPath/types/query";
-import type { PluginValues } from "./memo2/resultTypes";
+import type { PluginValues } from "./memo2/types/array";
 import type {
   StringSequenceParamValues,
   NumberSequenceParamValues,
