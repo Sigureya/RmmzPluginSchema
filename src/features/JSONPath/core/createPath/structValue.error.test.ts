@@ -4,7 +4,7 @@ import type {
   PluginParamEx,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ErrorCodes } from "../types/errorTypes";
+import type { ErrorCodes } from "./errorTypes";
 import type { StructPathResult } from "./pathSchemaTypes";
 import { getPathFromStructParam } from "./structValue";
 
