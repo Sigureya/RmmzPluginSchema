@@ -9,7 +9,7 @@ import type {
   StructPathResult,
   PluginValuesPath,
 } from "./core";
-import type { PluginValues } from "./core/memo2/types/array";
+import type { PluginValues } from "./core/memo2/types";
 import type { PluginValuesPathMemo } from "./core/memo2/types/memo";
 import {
   buildPluginValuesPathSchema,

@@ -1,4 +1,4 @@
-import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath/JSONValue";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   PluginValuesPath,

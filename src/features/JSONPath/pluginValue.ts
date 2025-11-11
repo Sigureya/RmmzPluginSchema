@@ -1,4 +1,4 @@
-import type { JSONValue } from "@RmmzPluginSchema/libs/JSONValue";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath/JSONValue";
 import type {
   PluginCommandSchemaArray,
   ClassifiedPluginParams,
@@ -8,7 +8,7 @@ import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { PluginValuesPath, StructPropertysPath } from "./core";
 import { createPluginValuesPath, collectScalarResults } from "./core";
-import type { PluginValues } from "./core/memo2/types/array";
+import type { PluginValues } from "./core/memo2/types";
 import type { PluginValuesPathMemo } from "./core/memo2/types/memo";
 
 export const createCommandArgsPath = (
