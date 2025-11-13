@@ -271,3 +271,151 @@ describe("Person", () => {
     expect(result).toEqual(expectedValues);
   });
 });
+
+describe("classRoom", () => {
+  const paths: StructPropertysPath[] = [
+    {
+      category: "struct",
+      name: "Class",
+      scalars: `$.classRoom["className"]`,
+      scalarArrays: [],
+      objectSchema: toObjectPluginParams(classRoomSchema.scalars),
+    },
+    {
+      category: "struct",
+      name: "Person",
+      objectSchema: {
+        age: {
+          default: 0,
+          kind: "number",
+        },
+        name: {
+          default: "",
+          kind: "string",
+        },
+      },
+      scalarArrays: [
+        {
+          param: {
+            attr: {
+              default: [],
+              kind: "number[]",
+            },
+            name: "items",
+          },
+          path: "$.classRoom.teacher.items[*]",
+        },
+        {
+          param: {
+            attr: {
+              default: [],
+              kind: "string[]",
+            },
+            name: "nicknames",
+          },
+          path: "$.classRoom.teacher.nicknames[*]",
+        },
+      ],
+      scalars: '$.classRoom.teacher["name","age"]',
+    },
+    {
+      category: "struct",
+      name: "Person",
+      objectSchema: {
+        age: {
+          default: 0,
+          kind: "number",
+        },
+        name: {
+          default: "",
+          kind: "string",
+        },
+      },
+      scalarArrays: [
+        {
+          param: {
+            attr: {
+              default: [],
+              kind: "number[]",
+            },
+            name: "items",
+          },
+          path: "$.classRoom.students[*].items[*]",
+        },
+        {
+          param: {
+            attr: {
+              default: [],
+              kind: "string[]",
+            },
+            name: "nicknames",
+          },
+          path: "$.classRoom.students[*].nicknames[*]",
+        },
+      ],
+      scalars: '$.classRoom.students[*]["name","age"]',
+    },
+  ];
+  const paramObject = {
+    classRoom: {
+      className: "Class A",
+      teacher: {
+        name: "Ms. Smith",
+        age: 40,
+        items: [],
+        nicknames: [],
+      } satisfies Person,
+      students: [
+        {
+          name: "Alice",
+          age: 12,
+          items: [10, 20],
+          nicknames: ["Ally"],
+        },
+        {
+          name: "Bob",
+          age: 13,
+          items: [30],
+          nicknames: ["Bobby", "Rob"],
+        },
+      ],
+    } as const satisfies Class,
+  };
+  test("getPathFromStruct", () => {
+    const param = {
+      name: "classRoom",
+      attr: { kind: "struct", struct: "Class" },
+    } as const satisfies PluginParamEx<StructRefParam>;
+    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = makeMap();
+    const result: StructPathResult = getPathFromStructParam(
+      [param],
+      "$",
+      structMap
+    );
+    expect(result.items).toEqual(paths);
+    expect(result.errors).toEqual([]);
+  });
+  test("memo3", () => {
+    const expectedValues: PluginValues[] = [
+      {
+        category: "struct",
+        name: "Class",
+        value: "Class A",
+        param: {
+          name: "className",
+          attr: {
+            default: "",
+            kind: "string",
+          },
+        },
+      },
+    ];
+    const memo = createMemoFromPath({
+      scalars: paths[0],
+      structArrays: { items: [paths[2]] },
+      structs: { items: [paths[1]] },
+    });
+    const result: PluginValues[] = memo3("struct", "Class", paramObject, memo);
+    expect(result).toEqual(expectedValues);
+  });
+});
