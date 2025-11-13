@@ -10,7 +10,7 @@ import {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { ArrayPathPair, ValueCategory } from "./createPath/types";
-import { readScalarValueV3 } from "./memo2/readScalar";
+import { readScalarValueV3 } from "./memo2/memo3";
 import type { PluginValues } from "./memo2/types";
 import type {
   StringSequenceParamValues,
