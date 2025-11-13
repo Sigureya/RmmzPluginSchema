@@ -17,29 +17,30 @@ import type {
   PluginValuesSA,
   PluginValuesNA,
   ArrayPathMemo,
+  PluginValues,
 } from "./types";
-import type { PluginValuesPathMemo3 } from "./types/memo3";
+import type { PluginValuesPathMemo4 } from "./types/memo3";
 
 export const memo3 = (
   category: ValueCategory2,
   structName: string,
   value: JSONValue,
-  memo: PluginValuesPathMemo3
-): [
-  sclaras: PluginValueScalar[],
-  arrays: (PluginValuesSA | PluginValuesNA)[][]
-] => {
-  const svalues = readScalarValueV3(
-    category,
-    structName,
-    value,
-    memo.jsonPathJS,
-    memo.schema2
-  );
+  memo: PluginValuesPathMemo4
+): PluginValues[] => {
+  const svalues: PluginValueScalar[] = memo.scalar
+    ? readScalarValueV3(
+        category,
+        structName,
+        value,
+        memo.scalar.jsonPathJS,
+        memo.scalar.record
+      )
+    : [];
+
   const avalues: (PluginValuesSA[] | PluginValuesNA[])[] = memo.arrays.map(
     (arrayMemo) => readArrayValue2(category, value, arrayMemo)
   );
-  return [svalues, avalues];
+  return [svalues, avalues].flat(2);
 };
 
 export const readScalarValueV3 = (

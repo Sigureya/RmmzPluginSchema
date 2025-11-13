@@ -23,7 +23,12 @@ export interface StructPathResult {
 
 export interface PluginValuesPath {
   scalars: StructPropertysPath;
-  scalarArrays?: unknown;
   structs: StructPathResult;
   structArrays: StructPathResult;
+}
+
+export interface PluginValuesPath2 {
+  scalars: StructPropertysPath;
+  structs: Pick<StructPathResult, "items">;
+  structArrays: Pick<StructPathResult, "items">;
 }
