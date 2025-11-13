@@ -4,11 +4,8 @@ import type {
   ClassifiedPluginParamsEx,
   PluginStructParamTypeEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type {
-  PluginValuesPath,
-  PluginValuesPathMemo,
-  PluginValues,
-} from "./core/types";
+import type { PluginValuesPath } from "./core";
+import type { PluginValuesPathMemo, PluginValues } from "./core/memo2/types";
 import {
   createPluginParamsPath,
   collectPluginValues,
