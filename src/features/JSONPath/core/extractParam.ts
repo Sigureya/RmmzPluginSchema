@@ -10,6 +10,7 @@ import {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { ArrayPathPair, ValueCategory } from "./createPath/types";
+import { readScalarValueV3 } from "./memo2/readScalar";
 import type { PluginValues } from "./memo2/types";
 import type {
   StringSequenceParamValues,
@@ -60,27 +61,16 @@ export const extractScalaParams = (
   category: ValueCategory,
   structName: string
 ): PluginValues[] => {
-  const map = new Map(params.map((param) => [param.name, param.attr] as const));
+  const record = Object.fromEntries(
+    params.map((param) => [param.name, param.attr] as const)
+  );
   const jsonPath = new JSONPathJS(path);
-  const values = jsonPath.pathSegments(data);
-  return values.reduce<PluginValues[]>((acc, { value, segments }) => {
-    if (typeof value === "object") {
-      return acc;
-    }
-    const lastSegment = segments[segments.length - 1];
-    if (typeof lastSegment === "number") {
-      return acc;
-    }
-    const schema = map.get(lastSegment);
-    if (!schema) {
-      return acc;
-    }
-    acc.push({
-      category: category,
-      name: structName,
-      value: value,
-      param: { name: lastSegment, attr: schema },
-    });
-    return acc;
-  }, []);
+  return readScalarValueV3(
+    category,
+    structName,
+    data,
+    jsonPath,
+
+    record
+  );
 };
