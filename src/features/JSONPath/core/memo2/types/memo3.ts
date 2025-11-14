@@ -3,9 +3,17 @@ import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type { ArrayPathMemo } from "./array";
 
 export interface PluginValuesPathMemo4 {
-  scalar?: {
-    jsonPathJS: JSONPathReader;
-    record: Record<string, ScalarParam>;
-  };
+  scalar?: SSS;
   arrays: ArrayPathMemo[];
+}
+
+export interface SSS {
+  jsonPathJS: JSONPathReader;
+  record: Record<string, ScalarParam>;
+}
+
+export interface MemoBundle {
+  top: PluginValuesPathMemo4;
+  structs: PluginValuesPathMemo4[];
+  structArrays: PluginValuesPathMemo4[];
 }
