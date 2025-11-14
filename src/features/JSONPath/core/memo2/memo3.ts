@@ -21,21 +21,13 @@ import type {
 } from "./types";
 import type { MemoBundle, PluginValuesPathMemo4 } from "./types/memo3";
 
-export const memo3Ex = (
-  category: ValueCategory2,
-  structName: string,
-  value: JSONValue,
-  memo: PluginValuesPathMemo4[]
-): PluginValues[] => {
-  return memo.flatMap((m) => memo3(category, structName, value, m));
-};
-
 export const runMemoBundle = (
   category: ValueCategory2,
-  structName: string,
   value: JSONValue,
   memo: MemoBundle
 ): PluginValues[] => {
+  const structName = memo.name;
+
   const topValues: PluginValues[] = memo3(
     category,
     structName,
