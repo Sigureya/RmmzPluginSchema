@@ -50,6 +50,7 @@ export const runMemoBundle = (
   );
   return [topValues, structValues, structArrayValues].flat(2);
 };
+
 const memo3 = (
   category: ValueCategory2,
   structName: string,
@@ -67,7 +68,7 @@ const memo3 = (
     : [];
 
   const avalues: (PluginValuesSA[] | PluginValuesNA[])[] = memo.arrays.map(
-    (arrayMemo) => readArrayValue2(category, value, arrayMemo)
+    (arrayMemo) => readArrayValue2(category, structName, value, arrayMemo)
   );
   return [svalues, avalues].flat(2);
 };
@@ -104,6 +105,7 @@ export const readScalarValueV3 = (
 
 export const readArrayValue2 = (
   category: ValueCategory2,
+  groupName: string,
   json: JSONValue,
   path: ArrayPathMemo
 ): PluginValuesSA[] | PluginValuesNA[] => {
@@ -119,7 +121,7 @@ export const readArrayValue2 = (
       (value): PluginValuesSA => ({
         value: value,
         category: category,
-        name: path.schema.name,
+        name: groupName,
         param: path.schema as PluginParamEx<ParamType>,
       })
     );
@@ -131,7 +133,7 @@ export const readArrayValue2 = (
       (value): PluginValuesNA => ({
         value: value,
         category: category,
-        name: path.schema.name,
+        name: groupName,
         param: path.schema as PluginParamEx<ParamType>,
       })
     );

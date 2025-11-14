@@ -13,6 +13,8 @@ export interface SSS {
 }
 
 export interface MemoBundle {
+  name: string;
+
   top: PluginValuesPathMemo4;
   structs: PluginValuesPathMemo4[];
   structArrays: PluginValuesPathMemo4[];
