@@ -21,14 +21,24 @@ export interface StructPathResult {
   errors: StructPathError[];
 }
 
-export interface PluginValuesPath {
+export interface PluginValuesPathWithError {
   scalars: StructPropertysPath;
   structs: StructPathResult;
   structArrays: StructPathResult;
 }
 
+export interface PluginValuesPathNewVersion {
+  scalars: StructPropertysPath;
+  structs: StructPathResult;
+  structArrays: StructPathResult;
+}
+
+export interface StructPathResult2 {
+  items: StructPropertysPath[];
+}
+
 export interface PluginValuesPath2 {
   scalars: StructPropertysPath;
-  structs: Pick<StructPathResult, "items">;
-  structArrays: Pick<StructPathResult, "items">;
+  structs: StructPathResult2;
+  structArrays: StructPathResult2;
 }
