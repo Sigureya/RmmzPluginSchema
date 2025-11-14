@@ -19,9 +19,38 @@ import type {
   ArrayPathMemo,
   PluginValues,
 } from "./types";
-import type { PluginValuesPathMemo4 } from "./types/memo3";
+import type { MemoBundle, PluginValuesPathMemo4 } from "./types/memo3";
 
-export const memo3 = (
+export const memo3Ex = (
+  category: ValueCategory2,
+  structName: string,
+  value: JSONValue,
+  memo: PluginValuesPathMemo4[]
+): PluginValues[] => {
+  return memo.flatMap((m) => memo3(category, structName, value, m));
+};
+
+export const runMemoBundle = (
+  category: ValueCategory2,
+  structName: string,
+  value: JSONValue,
+  memo: MemoBundle
+): PluginValues[] => {
+  const topValues: PluginValues[] = memo3(
+    category,
+    structName,
+    value,
+    memo.top
+  );
+  const structValues: PluginValues[][] = memo.structs.map((m) =>
+    memo3(category, structName, value, m)
+  );
+  const structArrayValues: PluginValues[][] = memo.structArrays.map((m) =>
+    memo3(category, structName, value, m)
+  );
+  return [topValues, structValues, structArrayValues].flat(2);
+};
+const memo3 = (
   category: ValueCategory2,
   structName: string,
   value: JSONValue,
