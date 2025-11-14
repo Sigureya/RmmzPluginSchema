@@ -30,6 +30,7 @@ export const createMemoFromPath = (
   );
 
   return {
+    name: path.scalars.name,
     top,
     structs,
     structArrays,
