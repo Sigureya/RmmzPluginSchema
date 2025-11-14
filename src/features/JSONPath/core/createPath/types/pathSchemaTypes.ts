@@ -9,6 +9,14 @@ export interface StructPropertysPath {
   objectSchema: Record<string, ScalarParam>;
 }
 
+export interface StructPropertysPathV2 {
+  name?: string;
+  category?: ValueCategory;
+  scalars: string | undefined;
+  scalarArrays: PathPair[];
+  objectSchema: Record<string, ScalarParam>;
+}
+
 export type ValueCategory = "struct" | "command" | "param";
 
 export interface StructPathError {

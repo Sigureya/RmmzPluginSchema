@@ -13,7 +13,6 @@ import {
 } from "./structValue";
 import type {
   PluginValuesPathNewVersion,
-  PluginValuesPathWithError,
   ValueCategory,
 } from "./types/pathSchemaTypes";
 
@@ -21,7 +20,7 @@ export const createPluginValuesPathPP = (
   category: ValueCategory,
   param: PluginParam,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPathWithError => {
+): PluginValuesPathNewVersion => {
   const cpp = classifyFileParams([param]);
   return createPluginValuesPath(category, param.name, cpp, structMap);
 };
