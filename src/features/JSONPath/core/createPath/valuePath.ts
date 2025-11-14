@@ -12,6 +12,7 @@ import {
   getPathFromStructArraySchema,
 } from "./structValue";
 import type {
+  PluginValuesPathNewVersion,
   PluginValuesPathWithError,
   ValueCategory,
 } from "./types/pathSchemaTypes";
@@ -30,10 +31,11 @@ export const createPluginValuesPath = (
   rootName: string,
   cpp: ClassifiedPluginParams,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPathWithError => {
+): PluginValuesPathNewVersion => {
   const parent: string = "$";
 
   return {
+    category: category,
     // ex: root.struct.param
     structs: getPathFromStructParam(cpp.structs, parent, structMap),
     // ex: root.array[*].param

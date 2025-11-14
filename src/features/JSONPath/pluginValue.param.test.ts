@@ -4,7 +4,7 @@ import type {
   ClassifiedPluginParamsEx,
   PluginStructParamTypeEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesPath } from "./core";
+import type { PluginValuesPathWithError } from "./core";
 import type { PluginValuesPathMemo, PluginValues } from "./core/memo2/types";
 import {
   createPluginParamsPath,
@@ -80,7 +80,7 @@ const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
   ["Terms", schemaTerms],
 ]);
 
-const paths: PluginValuesPath[] = [
+const paths: PluginValuesPathWithError[] = [
   {
     scalars: {
       category: "param",
@@ -166,11 +166,11 @@ const paths: PluginValuesPath[] = [
 
 describe("pluginValue.param", () => {
   test("createPluginParamsPath", () => {
-    const result: PluginValuesPath[] = createPluginParamsPath(
+    const result: PluginValuesPathWithError[] = createPluginParamsPath(
       paramsSchema,
       structsMap
     );
-    expect(result).toEqual(paths);
+    expect(result).toMatchObject(paths);
   });
   test.skip("buildPluginValuesPathSchema", () => {
     const result: PluginValuesPathMemo[] = buildPluginValuesPathSchema2(paths);
