@@ -346,4 +346,289 @@ describe("pathToMemo", () => {
       expect(values).toEqual(expectedValues);
     });
   });
+  describe("classroom", () => {
+    const paramSchema: PluginParamEx<StructRefParam> = {
+      name: "classroom",
+      attr: { kind: "struct", struct: "Class" },
+    };
+
+    const pathV2: PluginValuesPathNewVersion = {
+      category: "param",
+      name: "Class",
+      scalars: {
+        category: "param",
+        name: "Class",
+        objectSchema: {},
+        scalars: undefined,
+        scalarArrays: [],
+      },
+      structArrays: {
+        errors: [],
+        items: [],
+      },
+      structs: {
+        errors: [],
+        items: [
+          {
+            category: "struct",
+            name: "Class",
+            objectSchema: {
+              className: { default: "", kind: "string" },
+            },
+            scalarArrays: [],
+            scalars: '$.classroom["className"]',
+          },
+          {
+            category: "struct",
+            name: "Person",
+            objectSchema: {
+              age: { default: 0, kind: "number" },
+              name: { default: "", kind: "string" },
+            },
+            scalarArrays: [
+              {
+                param: {
+                  name: "items",
+                  attr: { default: [], kind: "number[]" },
+                },
+                path: "$.classroom.teacher.items[*]",
+              },
+              {
+                param: {
+                  name: "nicknames",
+                  attr: { default: [], kind: "string[]" },
+                },
+                path: "$.classroom.teacher.nicknames[*]",
+              },
+            ],
+            scalars: '$.classroom.teacher["name","age"]',
+          },
+          {
+            category: "struct",
+            name: "Person",
+            objectSchema: {
+              age: { default: 0, kind: "number" },
+              name: { default: "", kind: "string" },
+            },
+            scalarArrays: [
+              {
+                param: {
+                  name: "items",
+                  attr: { default: [], kind: "number[]" },
+                },
+                path: "$.classroom.students[*].items[*]",
+              },
+              {
+                param: {
+                  name: "nicknames",
+                  attr: { default: [], kind: "string[]" },
+                },
+                path: "$.classroom.students[*].nicknames[*]",
+              },
+            ],
+            scalars: '$.classroom.students[*]["name","age"]',
+          },
+        ],
+      },
+    };
+    test("p2", () => {
+      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
+      expect(result.category).toEqual(pathV2.category);
+      //      expect(result.name).toEqual(pathV2.name);
+      expect(result.structArrays).toEqual(pathV2.structArrays);
+      expect(result.scalars).toEqual(pathV2.scalars);
+      expect(result.structs).toEqual(pathV2.structs);
+    });
+    test("jsonPath calls", () => {
+      const mockFn = createMockFunc();
+      createMemoFromPath(pathV2, mockFn);
+      expect(mockFn).toBeCalledWith('$.classroom["className"]');
+      expect(mockFn).toBeCalledWith('$.classroom.teacher["name","age"]');
+      expect(mockFn).toBeCalledWith("$.classroom.teacher.items[*]");
+      expect(mockFn).toBeCalledWith("$.classroom.teacher.nicknames[*]");
+      expect(mockFn).toBeCalledWith('$.classroom.students[*]["name","age"]');
+      expect(mockFn).toBeCalledWith("$.classroom.students[*].items[*]");
+      expect(mockFn).toBeCalledWith("$.classroom.students[*].nicknames[*]");
+      expect(mockFn).toBeCalledTimes(7);
+    });
+    test("memo3", () => {
+      const paramObject = {
+        classroom: {
+          className: "Math 101",
+          teacher: {
+            name: "Mr. Smith",
+            age: 40,
+            items: [1001, 1002],
+            nicknames: ["Smitty"],
+          },
+          students: [
+            {
+              name: "Alice",
+              age: 20,
+              items: [2001, 2002],
+              nicknames: ["Ally"],
+            },
+            {
+              name: "Bob",
+              age: 22,
+              items: [3001],
+              nicknames: ["Bobby", "Rob"],
+            },
+          ],
+        } as const satisfies Class,
+      };
+      const expectedValues: PluginValues[] = [
+        {
+          category: "param",
+          name: "Class",
+          value: "Math 101",
+          param: {
+            name: "className",
+            attr: { default: "", kind: "string" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Mr. Smith",
+          param: {
+            name: "name",
+            attr: { default: "", kind: "string" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: 40,
+          param: {
+            name: "age",
+            attr: { default: 0, kind: "number" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: 1001,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: 1002,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Smitty",
+          param: {
+            name: "nicknames",
+            attr: { default: [], kind: "string[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Alice",
+          param: {
+            name: "name",
+            attr: { default: "", kind: "string" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: 20,
+          param: {
+            name: "age",
+            attr: { default: 0, kind: "number" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Bob",
+          param: {
+            name: "name",
+            attr: { default: "", kind: "string" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          param: {
+            attr: { default: 0, kind: "number" },
+            name: "age",
+          },
+          value: 22,
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: 2001,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: 2002,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          param: {
+            attr: {
+              default: [],
+              kind: "number[]",
+            },
+            name: "items",
+          },
+          value: 3001,
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Ally",
+          param: {
+            name: "nicknames",
+            attr: { default: [], kind: "string[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Bobby",
+          param: {
+            name: "nicknames",
+            attr: { default: [], kind: "string[]" },
+          },
+        },
+        {
+          category: "param",
+          name: "Class",
+          value: "Rob",
+          param: {
+            name: "nicknames",
+            attr: { default: [], kind: "string[]" },
+          },
+        },
+      ];
+      const memo: MemoBundle = createMemoFromPath(pathV2, newJSONPath);
+      const values: PluginValues[] = runMemoBundle("param", paramObject, memo);
+      expect(values).toEqual(expectedValues);
+    });
+  });
 });
