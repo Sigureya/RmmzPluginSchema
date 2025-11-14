@@ -125,10 +125,12 @@ describe("pathToMemo", () => {
       } as const satisfies Address,
     };
 
-    const pathV2: PluginValuesPathWithError = {
+    const pathV2: PluginValuesPathNewVersion = {
+      category: "param",
+      name: "Address",
       scalars: {
         category: "param",
-        name: "address",
+        name: "Address",
         objectSchema: {},
         scalars: undefined,
         scalarArrays: [],
@@ -197,12 +199,7 @@ describe("pathToMemo", () => {
         },
       ];
       const memo: MemoBundle = createMemoFromPath(pathV2, newJSONPath);
-      const values: PluginValues[] = runMemoBundle(
-        "struct",
-        "Address",
-        paramObject,
-        memo
-      );
+      const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
   });
@@ -225,7 +222,7 @@ describe("pathToMemo", () => {
       name: "Person",
       scalars: {
         category: "param",
-        name: "person",
+        name: "Person",
         objectSchema: {},
         scalars: undefined,
         scalarArrays: [],
@@ -265,7 +262,7 @@ describe("pathToMemo", () => {
     test("p2", () => {
       const result = createPluginValuesPathPP("param", paramSchema, makeMap());
       expect(result.category).toEqual(pathV2.category);
-      //    expect(result.name).toEqual(pathV2.name);
+      //      expect(result.name).toEqual(pathV2.name);
       expect(result.structArrays).toEqual(pathV2.structArrays);
       expect(result.scalars).toEqual(pathV2.scalars);
       expect(result.structs).toEqual(pathV2.structs);
@@ -345,12 +342,7 @@ describe("pathToMemo", () => {
         },
       ];
       const memo: MemoBundle = createMemoFromPath(pathV2, newJSONPath);
-      const values: PluginValues[] = runMemoBundle(
-        "struct",
-        "Person",
-        paramObject,
-        memo
-      );
+      const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
   });

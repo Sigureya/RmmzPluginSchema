@@ -4,6 +4,7 @@ import { JSONPathJS } from "jsonpath-js";
 import type {
   PathPair,
   PluginValuesPath2,
+  PluginValuesPathNewVersion,
   StructPropertysPath,
 } from "./createPath/types";
 import type { ArrayPathMemo } from "./memo2/types";
@@ -18,7 +19,7 @@ const newJSONPath = (path: string): JSONPathReader => {
 };
 
 export const createMemoFromPath = (
-  path: PluginValuesPath2,
+  path: PluginValuesPathNewVersion,
   factoryFn: (path: string) => JSONPathReader = newJSONPath
 ): MemoBundle => {
   const top = mm(path.scalars, factoryFn);
@@ -28,9 +29,8 @@ export const createMemoFromPath = (
   const structArrays = path.structArrays.items.map(
     (p): PluginValuesPathMemo4 => mm(p, factoryFn)
   );
-
   return {
-    name: path.scalars.name,
+    name: path.name ?? "dummyXYZ",
     top,
     structs,
     structArrays,
