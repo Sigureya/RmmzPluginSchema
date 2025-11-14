@@ -1,18 +1,36 @@
-import type { ClassifiedPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
-import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  ClassifiedPluginParams,
+  PluginParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import {
+  classifyFileParams,
+  toObjectPluginParams,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalarValuesPath, makeScalarArrayPath } from "./scalarValue";
 import {
   getPathFromStructParam,
   getPathFromStructArraySchema,
 } from "./structValue";
-import type { PluginValuesPath, ValueCategory } from "./types/pathSchemaTypes";
+import type {
+  PluginValuesPathWithError,
+  ValueCategory,
+} from "./types/pathSchemaTypes";
+
+export const createPluginValuesPathPP = (
+  category: ValueCategory,
+  param: PluginParam,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): PluginValuesPathWithError => {
+  const cpp = classifyFileParams([param]);
+  return createPluginValuesPath(category, param.name, cpp, structMap);
+};
 
 export const createPluginValuesPath = (
   category: ValueCategory,
   rootName: string,
   cpp: ClassifiedPluginParams,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPath => {
+): PluginValuesPathWithError => {
   const parent: string = "$";
 
   return {
