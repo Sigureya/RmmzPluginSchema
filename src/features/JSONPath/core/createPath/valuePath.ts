@@ -1,6 +1,7 @@
 import type {
   ClassifiedPluginParams,
-  PluginParam,
+  PluginParamEx,
+  StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   classifyFileParams,
@@ -18,13 +19,38 @@ import type {
 
 export const createPluginValuesPathPP = (
   category: ValueCategory,
-  param: PluginParam,
+  param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): PluginValuesPathNewVersion => {
+  const parent: string = "$";
   const cpp = classifyFileParams([param]);
-  return createPluginValuesPath(category, param.name, cpp, structMap);
+
+  return {
+    name: param.attr.struct,
+    category: category,
+    // ex: root.struct.param
+    structs: getPathFromStructParam(cpp.structs, parent, structMap),
+    // ex: root.array[*].param
+    structArrays: getPathFromStructArraySchema(
+      cpp.structArrays,
+      parent,
+      structMap
+    ),
+    scalars: {
+      category: category,
+      name: param.attr.struct,
+      objectSchema: toObjectPluginParams(cpp.scalars),
+      // ex: root.param
+      scalars: makeScalarValuesPath(cpp.scalars, parent),
+      // ex: root.array[*]
+      scalarArrays: makeScalarArrayPath(cpp.scalarArrays, parent),
+    },
+  };
 };
 
+/**
+ * @deprecated use createPluginValuesPathV2 instead
+ */
 export const createPluginValuesPath = (
   category: ValueCategory,
   rootName: string,
@@ -34,6 +60,7 @@ export const createPluginValuesPath = (
   const parent: string = "$";
 
   return {
+    name: rootName,
     category: category,
     // ex: root.struct.param
     structs: getPathFromStructParam(cpp.structs, parent, structMap),
