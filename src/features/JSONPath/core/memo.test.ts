@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import type {
-  PluginValuesPath,
+  PluginValuesPathWithError,
   PluginValuesPath2,
 } from "./createPath/types/pathSchemaTypes";
 import { buildPluginValuesPathSchemaV3, collectPluginValues } from "./memo";
@@ -20,7 +20,7 @@ const mockData = {
 
 describe("buildPluginValuesPathSchemaV3", () => {
   describe("", () => {
-    const command: PluginValuesPath = {
+    const command: PluginValuesPathWithError = {
       scalars: {
         category: "struct",
         name: "Empty",
@@ -41,7 +41,7 @@ describe("buildPluginValuesPathSchemaV3", () => {
     });
   });
   describe("", () => {
-    const command: PluginValuesPath = {
+    const command: PluginValuesPathWithError = {
       scalars: {
         category: "struct",
         name: "Person",
