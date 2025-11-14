@@ -6,7 +6,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type { PluginValuesPath, StructPropertysPath } from "./core";
+import type { PluginValuesPathWithError, StructPropertysPath } from "./core";
 import { createPluginValuesPath, collectScalarResults } from "./core";
 import type { PluginValues } from "./core/memo2/types";
 import type { PluginValuesPathMemo } from "./core/memo2/types/memo";
@@ -14,7 +14,7 @@ import type { PluginValuesPathMemo } from "./core/memo2/types/memo";
 export const createCommandArgsPath = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPath => {
+): PluginValuesPathWithError => {
   const cpp = classifyPluginParams(schema.args);
   return createPluginValuesPath("command", schema.command, cpp, structMap);
 };
@@ -22,7 +22,7 @@ export const createCommandArgsPath = (
 export const createPluginParamsPath = (
   params: ReadonlyArray<PluginParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPath[] => {
+): PluginValuesPathWithError[] => {
   return params.map((p) => {
     const cpp = classifyPluginParams([p]);
     return createPluginValuesPath("param", p.name, cpp, structMap);
@@ -39,16 +39,19 @@ export const collectPluginValues = (
   });
 };
 export const buildPluginValuesPathSchema2 = (
-  command: ReadonlyArray<PluginValuesPath>
+  command: ReadonlyArray<PluginValuesPathWithError>
 ): PluginValuesPathMemo[] => {
   return command.flatMap(buildPluginValuesPathSchema);
 };
 
 export const buildPluginValuesPathSchema = (
-  command: PluginValuesPath
+  command: PluginValuesPathWithError
 ): PluginValuesPathMemo[] => {
+  const p: PluginValuesPathMemo[] = command.scalars
+    ? createSchemaJsonPathPair(command.scalars)
+    : [];
   return [
-    ...createSchemaJsonPathPair(command.scalars),
+    ...p,
     ...command.structs.items.flatMap(createSchemaJsonPathPair),
     ...command.structArrays.items.flatMap(createSchemaJsonPathPair),
   ];
