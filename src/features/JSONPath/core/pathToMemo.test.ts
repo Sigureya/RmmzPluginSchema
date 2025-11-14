@@ -230,7 +230,125 @@ describe("Person", () => {
       scalarArrays: [],
     },
     structArrays: { items: [], errors: [] },
-    structs: { items: [], errors: [] },
+    structs: {
+      items: [
+        {
+          category: "struct",
+          name: "Person",
+          scalars: `$.person["name","age"]`,
+          objectSchema: {
+            name: { default: "", kind: "string" },
+            age: { default: 0, kind: "number" },
+          },
+          scalarArrays: [
+            {
+              param: { name: "items", attr: { kind: "number[]", default: [] } },
+              path: "$.person.items[*]",
+            },
+            {
+              param: {
+                name: "nicknames",
+                attr: { kind: "string[]", default: [] },
+              },
+              path: "$.person.nicknames[*]",
+            },
+          ],
+        },
+      ],
+      errors: [],
+    },
   };
-  test.skip("p2", () => {});
+  test("p2", () => {
+    const result: PluginValuesPathWithError = createPluginValuesPathPP(
+      "param",
+      paramSchema,
+      makeMap()
+    );
+    expect(result.structArrays).toEqual(pathV2.structArrays);
+    expect(result.scalars).toEqual(pathV2.scalars);
+    expect(result.structs).toEqual(pathV2.structs);
+  });
+  test("memo3", () => {
+    const mockFn = createMockFunc();
+    createMemoFromPath(pathV2, mockFn);
+    expect(mockFn).toBeCalledWith('$.person["name","age"]');
+    expect(mockFn).toBeCalledWith("$.person.items[*]");
+    expect(mockFn).toBeCalledWith("$.person.nicknames[*]");
+    expect(mockFn).toBeCalledTimes(3);
+  });
+  test("memo3", () => {
+    const expectedValues: PluginValues[] = [
+      {
+        category: "struct",
+        name: "Person",
+        param: {
+          name: "name",
+          attr: { default: "", kind: "string" },
+        },
+        value: "Alice",
+      },
+      {
+        category: "struct",
+        name: "Person",
+        value: 30,
+        param: {
+          name: "age",
+          attr: { default: 0, kind: "number" },
+        },
+      },
+      {
+        category: "struct",
+        name: "Person",
+        value: 115,
+        param: {
+          name: "items",
+          attr: { default: [], kind: "number[]" },
+        },
+      },
+      {
+        category: "struct",
+        name: "Person",
+        value: 201,
+        param: {
+          name: "items",
+          attr: { default: [], kind: "number[]" },
+        },
+      },
+      {
+        category: "struct",
+        name: "Person",
+        value: 351,
+        param: {
+          name: "items",
+          attr: { default: [], kind: "number[]" },
+        },
+      },
+      {
+        category: "struct",
+        name: "Person",
+        value: "Ally",
+        param: {
+          name: "nicknames",
+          attr: { default: [], kind: "string[]" },
+        },
+      },
+      {
+        category: "struct",
+        name: "Person",
+        value: "Lice",
+        param: {
+          name: "nicknames",
+          attr: { default: [], kind: "string[]" },
+        },
+      },
+    ];
+    const memo: MemoBundle = createMemoFromPath(pathV2, newJSONPath);
+    const values: PluginValues[] = runMemoBundle(
+      "struct",
+      "Person",
+      paramObject,
+      memo
+    );
+    expect(values).toEqual(expectedValues);
+  });
 });
