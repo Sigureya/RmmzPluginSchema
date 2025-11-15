@@ -1,4 +1,4 @@
-import type { MockedFunction } from "vitest";
+import type { MockedFunction, MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
 import type {
   ClassifiedPluginParamsEx,
@@ -94,6 +94,7 @@ const schoolSchema: ClassifiedPluginParamsEx<School> = {
     },
   ],
 };
+type MockedMap = MockedObject<ReadonlyMap<string, ClassifiedPluginParams>>;
 
 const makeMap = (): ReadonlyMap<string, ClassifiedPluginParams> => {
   return new Map<string, ClassifiedPluginParams>([
@@ -102,6 +103,20 @@ const makeMap = (): ReadonlyMap<string, ClassifiedPluginParams> => {
     ["Class", classRoomSchema],
     ["School", schoolSchema],
   ]);
+};
+const makeMockedMap = (): MockedMap => {
+  const map = makeMap();
+  const mockedMap: MockedMap = {
+    size: map.size,
+    entries: vi.fn(() => map.entries()),
+    forEach: vi.fn((cb) => map.forEach(cb)),
+    get: vi.fn((key: string) => map.get(key)),
+    has: vi.fn((key: string) => map.has(key)),
+    keys: vi.fn(() => map.keys()),
+    values: vi.fn(() => map.values()),
+    [Symbol.iterator]: vi.fn(() => map[Symbol.iterator]()),
+  };
+  return mockedMap;
 };
 
 const createMockFunc = (): MockedFunction<(path: string) => JSONPathJS> => {
@@ -143,26 +158,29 @@ describe("pathToMemo", () => {
       },
     };
 
-    test("p2", () => {
+    test("creates correct path schema", () => {
+      const map = makeMockedMap();
       const result: PluginValuesPathWithError = createPluginValuesPathPP(
         "param",
         paramSchema,
-        makeMap()
+        map
       );
+      expect(map.get).toBeCalledWith("Address");
+      expect(map.get).toBeCalledTimes(1);
       expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.scalars).toEqual(pathSchema.scalars);
       expect(result.structs).toEqual(pathSchema.structs);
       expect(result).toEqual(pathSchema);
     });
 
-    test("calls jsonPath factory", () => {
+    test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
       createMemoFromPath(pathSchema, mockFn);
       expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
       expect(mockFn).toBeCalledTimes(1);
     });
 
-    test("createMemoFromPath", () => {
+    test("createMemoFromPath - return values", () => {
       const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
       expect(memo.top.scalar).toBeUndefined();
       expect(memo.top.arrays).toEqual([]);
@@ -251,6 +269,14 @@ describe("pathToMemo", () => {
         errors: [],
       },
     };
+
+    test("resolves struct schema via map", () => {
+      const map = makeMockedMap();
+      createPluginValuesPathPP("param", paramSchema, map);
+      expect(map.get).toBeCalledWith("Person");
+      expect(map.get).toBeCalledTimes(1);
+    });
+
     test("p2", () => {
       const result = createPluginValuesPathPP("param", paramSchema, makeMap());
       expect(result.category).toEqual(pathSchema.category);
@@ -258,6 +284,7 @@ describe("pathToMemo", () => {
       expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.scalars).toEqual(pathSchema.scalars);
       expect(result.structs).toEqual(pathSchema.structs);
+      expect(result).toEqual(pathSchema);
     });
     test("JSONPath calls", () => {
       const mockFn = createMockFunc();
@@ -431,13 +458,28 @@ describe("pathToMemo", () => {
         ],
       },
     };
-    test("p2", () => {
-      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
-      expect(result.category).toEqual(pathSchema.category);
-      expect(result.name).toEqual(pathSchema.name);
-      expect(result.structArrays).toEqual(pathSchema.structArrays);
-      expect(result.scalars).toEqual(pathSchema.scalars);
-      expect(result.structs).toEqual(pathSchema.structs);
+    describe("createPluginValuesPath", () => {
+      test("map calls", () => {
+        const map = makeMockedMap();
+        createPluginValuesPathPP("param", paramSchema, map);
+        expect(map.get).toHaveBeenNthCalledWith(1, "Class");
+        expect(map.get).toHaveBeenNthCalledWith(2, "Person");
+        expect(map.get).toHaveBeenNthCalledWith(3, "Person");
+        expect(map.get).toBeCalledTimes(3);
+      });
+      test("create path", () => {
+        const result = createPluginValuesPathPP(
+          "param",
+          paramSchema,
+          makeMap()
+        );
+        expect(result.category).toEqual(pathSchema.category);
+        expect(result.name).toEqual(pathSchema.name);
+        expect(result.structArrays).toEqual(pathSchema.structArrays);
+        expect(result.scalars).toEqual(pathSchema.scalars);
+        expect(result.structs).toEqual(pathSchema.structs);
+        expect(result).toEqual(pathSchema);
+      });
     });
     test("jsonPath calls", () => {
       const mockFn = createMockFunc();
@@ -636,5 +678,126 @@ describe("pathToMemo", () => {
       name: "school",
       attr: { kind: "struct", struct: "School" },
     };
+    const pathSchema: PluginValuesPathNewVersion = {
+      category: "param",
+      name: "School",
+      scalars: {
+        category: "param",
+        name: "School",
+        objectSchema: {},
+        scalars: undefined,
+        scalarArrays: [],
+      },
+      structArrays: {
+        errors: [],
+        items: [],
+      },
+      structs: {
+        errors: [],
+        items: [
+          {
+            category: "struct",
+            name: "School",
+            objectSchema: {
+              since: { kind: "number", default: 0 },
+            },
+            scalars: '$.school["since"]',
+            scalarArrays: [],
+          },
+          {
+            category: "struct",
+            name: "Address",
+            objectSchema: {
+              city: { kind: "string", default: "" },
+              street: { kind: "string", default: "" },
+              zipCode: { kind: "string", default: "" },
+            },
+            scalars: '$.school.address["street","city","zipCode"]',
+            scalarArrays: [],
+          },
+          {
+            category: "struct",
+            name: "Class",
+            objectSchema: {
+              className: {
+                default: "",
+                kind: "string",
+              },
+            },
+            scalars: '$.school.classrooms[*]["className"]',
+            scalarArrays: [],
+          },
+          {
+            category: "struct",
+            name: "Person",
+            objectSchema: {
+              age: { kind: "number", default: 0 },
+              name: { kind: "string", default: "" },
+            },
+            scalars: '$.school.classrooms[*].teacher["name","age"]',
+            scalarArrays: [
+              {
+                param: {
+                  name: "items",
+                  attr: { kind: "number[]", default: [] },
+                },
+                path: "$.school.classrooms[*].teacher.items[*]",
+              },
+              {
+                param: {
+                  name: "nicknames",
+                  attr: { kind: "string[]", default: [] },
+                },
+                path: "$.school.classrooms[*].teacher.nicknames[*]",
+              },
+            ],
+          },
+          {
+            category: "struct",
+            name: "Person",
+            objectSchema: {
+              age: { kind: "number", default: 0 },
+              name: { kind: "string", default: "" },
+            },
+            scalars: '$.school.classrooms[*].students[*]["name","age"]',
+            scalarArrays: [
+              {
+                param: {
+                  name: "items",
+                  attr: { kind: "number[]", default: [] },
+                },
+                path: "$.school.classrooms[*].students[*].items[*]",
+              },
+              {
+                param: {
+                  name: "nicknames",
+                  attr: { kind: "string[]", default: [] },
+                },
+                path: "$.school.classrooms[*].students[*].nicknames[*]",
+              },
+            ],
+          },
+        ],
+      },
+    };
+    test("map calls", () => {
+      const map = makeMockedMap();
+      createPluginValuesPathPP("param", paramSchema, map);
+      expect(map.get).toHaveBeenNthCalledWith(1, "School");
+      expect(map.get).toHaveBeenNthCalledWith(2, "Address");
+      expect(map.get).toHaveBeenNthCalledWith(3, "Class");
+      expect(map.get).toHaveBeenNthCalledWith(4, "Person");
+      expect(map.get).toHaveBeenNthCalledWith(5, "Person");
+      expect(map.get).toBeCalledTimes(5);
+    });
+    test("create path", () => {
+      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
+      expect(result.category).toEqual(pathSchema.category);
+      expect(result.name).toEqual(pathSchema.name);
+      expect(result.scalars).toEqual(pathSchema.scalars);
+      expect(result.structArrays).toEqual(pathSchema.structArrays);
+      expect(result.structs).toEqual(pathSchema.structs);
+      expect(result).toEqual(pathSchema);
+    });
   });
 });

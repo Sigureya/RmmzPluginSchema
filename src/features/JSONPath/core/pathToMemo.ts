@@ -21,40 +21,40 @@ export const createMemoFromPath = (
   path: PluginValuesPathNewVersion,
   factoryFn: (path: string) => JSONPathReader = newJSONPath
 ): MemoBundle => {
-  const top = mm(path.scalars, factoryFn);
+  const top = createMemoItem(path.scalars, factoryFn);
   const structs = path.structs.items.map(
-    (p): PluginValuesPathMemo4 => mm(p, factoryFn)
+    (p): PluginValuesPathMemo4 => createMemoItem(p, factoryFn)
   );
   const structArrays = path.structArrays.items.map(
-    (p): PluginValuesPathMemo4 => mm(p, factoryFn)
+    (p): PluginValuesPathMemo4 => createMemoItem(p, factoryFn)
   );
   return {
-    name: path.name ?? "dummyXYZ",
+    name: path.name,
     top,
     structs,
     structArrays,
   };
 };
 
-const mm = (
+const createMemoItem = (
   p: StructPropertysPath,
   factoryFn: (path: string) => JSONPathReader
 ): PluginValuesPathMemo4 => {
   if (p.scalars) {
     return {
       bundleName: p.name,
-      arrays: xxArrayParams(p.scalarArrays, p.name, factoryFn),
+      arrays: createArrayParamsMemo(p.scalarArrays, p.name, factoryFn),
       scalar: createScalarValuesMemo(p.scalars, p.objectSchema, factoryFn),
     };
   }
 
   return {
     bundleName: p.name,
-    arrays: xxArrayParams(p.scalarArrays, p.name, factoryFn),
+    arrays: createArrayParamsMemo(p.scalarArrays, p.name, factoryFn),
   };
 };
 
-const xxArrayParams = (
+const createArrayParamsMemo = (
   paths: ReadonlyArray<PathPair>,
   gn: string,
   factoryFn: (path: string) => JSONPathReader

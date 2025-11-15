@@ -47,37 +47,3 @@ export const createPluginValuesPathPP = (
     },
   };
 };
-
-/**
- * @deprecated use createPluginValuesPathV2 instead
- */
-export const createPluginValuesPath = (
-  category: ValueCategory,
-  rootName: string,
-  cpp: ClassifiedPluginParams,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPathNewVersion => {
-  const parent: string = "$";
-
-  return {
-    name: rootName,
-    category: category,
-    // ex: root.struct.param
-    structs: getPathFromStructParam(cpp.structs, parent, structMap),
-    // ex: root.array[*].param
-    structArrays: getPathFromStructArraySchema(
-      cpp.structArrays,
-      parent,
-      structMap
-    ),
-    scalars: {
-      category: category,
-      name: rootName,
-      objectSchema: toObjectPluginParams(cpp.scalars),
-      // ex: root.param
-      scalars: makeScalarValuesPath(cpp.scalars, parent),
-      // ex: root.array[*]
-      scalarArrays: makeScalarArrayPath(cpp.scalarArrays, parent),
-    },
-  };
-};
