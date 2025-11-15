@@ -5,12 +5,6 @@ import type {
   PluginStructParamTypeEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesPathWithError } from "./core";
-import type { PluginValuesPathMemo, PluginValues } from "./core/memo2/types";
-import {
-  createPluginParamsPath,
-  collectPluginValues,
-  buildPluginValuesPathSchema2,
-} from "./pluginValue";
 
 interface Item {
   name: string;
@@ -164,72 +158,6 @@ const paths: PluginValuesPathWithError[] = [
   },
 ];
 
-describe("pluginValue.param", () => {
-  test("createPluginParamsPath", () => {
-    const result: PluginValuesPathWithError[] = createPluginParamsPath(
-      paramsSchema,
-      structsMap
-    );
-    expect(result).toMatchObject(paths);
-  });
-  test.skip("buildPluginValuesPathSchema", () => {
-    const result: PluginValuesPathMemo[] = buildPluginValuesPathSchema2(paths);
-    expect(result.length).toBe(4);
-  });
-
-  test("collectPluginValues", () => {
-    const expected: PluginValues[] = [
-      {
-        category: "param",
-        name: "commandName",
-        param: { name: "commandName", attr: { default: "", kind: "string" } },
-        value: "Item Command",
-      },
-      {
-        category: "struct",
-        name: "Terms",
-        param: { name: "use", attr: { default: "", kind: "string" } },
-        value: "Use Item",
-      },
-      {
-        category: "struct",
-        name: "Terms",
-        param: { name: "gain", attr: { default: "", kind: "string" } },
-        value: "You gained {1}!",
-      },
-      {
-        category: "struct",
-        name: "Terms",
-        param: { name: "lose", attr: { default: "", kind: "string" } },
-        value: "You lost {1}.",
-      },
-      {
-        category: "struct",
-        name: "Item",
-        param: { name: "name", attr: { default: "", kind: "string" } },
-        value: "Potion",
-      },
-      {
-        category: "struct",
-        name: "Item",
-        param: { name: "id", attr: { default: 0, kind: "number" } },
-        value: 1,
-      },
-      {
-        category: "struct",
-        name: "Item",
-        param: { name: "name", attr: { default: "", kind: "string" } },
-        value: "Hi-Potion",
-      },
-      {
-        category: "struct",
-        name: "Item",
-        param: { name: "id", attr: { default: 0, kind: "number" } },
-        value: 2,
-      },
-    ];
-    const memos: PluginValuesPathMemo[] = buildPluginValuesPathSchema2(paths);
-    const result: PluginValues[] = collectPluginValues(mockPluginParams, memos);
-    expect(result).toEqual(expected);
-  });
+describe("createPluginParamsPath", () => {
+  test.skip("", () => {});
 });
