@@ -37,7 +37,7 @@ export interface PluginValuesPathWithError {
 
 export interface PluginValuesPathNewVersion {
   category: ValueCategory;
-  name?: string;
+  name: string;
   scalars: StructPropertysPath;
   structs: StructPathResult;
   structArrays: StructPathResult;
