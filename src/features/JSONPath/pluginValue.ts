@@ -4,10 +4,26 @@ import type {
   ClassifiedPluginParams,
   PluginParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { classifyPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import {
+  classifyPluginParams,
+  toObjectPluginParams,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type { PluginValuesPathWithError, StructPropertysPath } from "./core";
-import { createPluginValuesPath, collectScalarResults } from "./core";
+import type {
+  PluginValuesPathNewVersion,
+  PluginValuesPathWithError,
+  StructPropertysPath,
+  ValueCategory,
+} from "./core";
+import {
+  collectScalarResults,
+  makeScalarArrayPath,
+  makeScalarValuesPath,
+} from "./core";
+import {
+  getPathFromStructParam,
+  getPathFromStructArraySchema,
+} from "./core/createPath/structValue";
 import type { PluginValues } from "./core/memo2/types";
 import type { PluginValuesPathMemo } from "./core/memo2/types/memo";
 
@@ -75,4 +91,35 @@ const createSchemaJsonPathPair = (
     });
   }
   return list;
+};
+
+const createPluginValuesPath = (
+  category: ValueCategory,
+  rootName: string,
+  cpp: ClassifiedPluginParams,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): PluginValuesPathNewVersion => {
+  const parent: string = "$";
+
+  return {
+    name: rootName,
+    category: category,
+    // ex: root.struct.param
+    structs: getPathFromStructParam(cpp.structs, parent, structMap),
+    // ex: root.array[*].param
+    structArrays: getPathFromStructArraySchema(
+      cpp.structArrays,
+      parent,
+      structMap
+    ),
+    scalars: {
+      category: category,
+      name: rootName,
+      objectSchema: toObjectPluginParams(cpp.scalars),
+      // ex: root.param
+      scalars: makeScalarValuesPath(cpp.scalars, parent),
+      // ex: root.array[*]
+      scalarArrays: makeScalarArrayPath(cpp.scalarArrays, parent),
+    },
+  };
 };
