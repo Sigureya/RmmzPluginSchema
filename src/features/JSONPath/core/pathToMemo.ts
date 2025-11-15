@@ -12,16 +12,16 @@ import type {
   SSS,
 } from "./memo2/types/memo3";
 
-export const createMemoFromPath = (
+export const compileJSONPathSchema = (
   path: PluginValuesPathNewVersion,
   factoryFn: (path: string) => JSONPathReader
 ): MemoBundle => {
-  const top = createMemoItem(path.scalars, factoryFn);
+  const top = compileStructExtractor(path.scalars, factoryFn);
   const structs = path.structs.items.map(
-    (p): PluginValuesPathMemo4 => createMemoItem(p, factoryFn)
+    (p): PluginValuesPathMemo4 => compileStructExtractor(p, factoryFn)
   );
   const structArrays = path.structArrays.items.map(
-    (p): PluginValuesPathMemo4 => createMemoItem(p, factoryFn)
+    (p): PluginValuesPathMemo4 => compileStructExtractor(p, factoryFn)
   );
   return {
     name: path.name,
@@ -31,25 +31,25 @@ export const createMemoFromPath = (
   };
 };
 
-const createMemoItem = (
+const compileStructExtractor = (
   p: StructPropertysPath,
   factoryFn: (path: string) => JSONPathReader
 ): PluginValuesPathMemo4 => {
   if (p.scalars) {
     return {
       bundleName: p.name,
-      arrays: createArrayParamsMemo(p.scalarArrays, p.name, factoryFn),
-      scalar: createScalarValuesMemo(p.scalars, p.objectSchema, factoryFn),
+      arrays: compileArrayPathExtractor(p.scalarArrays, p.name, factoryFn),
+      scalar: compileScalarValueExtractor(p.scalars, p.objectSchema, factoryFn),
     };
   }
 
   return {
     bundleName: p.name,
-    arrays: createArrayParamsMemo(p.scalarArrays, p.name, factoryFn),
+    arrays: compileArrayPathExtractor(p.scalarArrays, p.name, factoryFn),
   };
 };
 
-const createArrayParamsMemo = (
+const compileArrayPathExtractor = (
   paths: ReadonlyArray<PathPair>,
   gn: string,
   factoryFn: (path: string) => JSONPathReader
@@ -63,7 +63,7 @@ const createArrayParamsMemo = (
   );
 };
 
-const createScalarValuesMemo = (
+const compileScalarValueExtractor = (
   path: string,
   schema: Record<string, ScalarParam>,
   factoryFn: (path: string) => JSONPathReader

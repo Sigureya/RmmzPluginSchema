@@ -16,7 +16,7 @@ import { createPluginValuesPathPP } from "./createPath/valuePath";
 import { runMemoBundle } from "./memo2/memo3";
 import type { PluginValues } from "./memo2/types";
 import type { MemoBundle } from "./memo2/types/memo3";
-import { createMemoFromPath } from "./pathToMemo";
+import { compileJSONPathSchema } from "./pathToMemo";
 
 interface Address {
   street: string;
@@ -175,13 +175,13 @@ describe("Address path generation and value extraction", () => {
   describe("createMemoFromPath", () => {
     test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
-      createMemoFromPath(pathSchema, mockFn);
+      compileJSONPathSchema(pathSchema, mockFn);
       expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
       expect(mockFn).toBeCalledTimes(1);
     });
 
     test("creates correct memo structure", () => {
-      const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+      const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
       expect(memo.top.scalar).toBeUndefined();
       expect(memo.top.arrays).toEqual([]);
       expect(memo.structArrays).toEqual([]);
@@ -216,7 +216,7 @@ describe("Address path generation and value extraction", () => {
         value: "12345",
       },
     ];
-    const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+    const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
     const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
     expect(values).toEqual(expectedValues);
   });
@@ -289,7 +289,7 @@ describe("Person path generation and value extraction", () => {
   describe("createMemoFromPath", () => {
     test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
-      createMemoFromPath(pathSchema, mockFn);
+      compileJSONPathSchema(pathSchema, mockFn);
       expect(mockFn).toBeCalledWith('$.person["name","age"]');
       expect(mockFn).toBeCalledWith("$.person.items[*]");
       expect(mockFn).toBeCalledWith("$.person.nicknames[*]");
@@ -369,7 +369,7 @@ describe("Person path generation and value extraction", () => {
           },
         },
       ];
-      const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+      const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
       const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
@@ -483,7 +483,7 @@ describe("classroom path generation and value extraction", () => {
   describe("createMemoFromPath", () => {
     test("creates JSONPath objects for all schema paths", () => {
       const mockFn = createMockFunc();
-      createMemoFromPath(pathSchema, mockFn);
+      compileJSONPathSchema(pathSchema, mockFn);
       expect(mockFn).toBeCalledWith('$.classroom["className"]');
       expect(mockFn).toBeCalledWith('$.classroom.teacher["name","age"]');
       expect(mockFn).toBeCalledWith("$.classroom.teacher.items[*]");
@@ -669,7 +669,7 @@ describe("classroom path generation and value extraction", () => {
         },
       },
     ];
-    const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+    const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
     const values: PluginValues[] = runMemoBundle("param", paramObject, memo);
     expect(values).toEqual(expectedValues);
   });
@@ -805,7 +805,7 @@ describe("School path generation and value extraction", () => {
   describe("createMemoFromPath", () => {
     test("creates JSONPath objects for all schema paths", () => {
       const mockFn = createMockFunc();
-      createMemoFromPath(pathSchema, mockFn);
+      compileJSONPathSchema(pathSchema, mockFn);
       const paths: string[] = [
         '$.school["since"]',
         '$.school.address["street","city","zipCode"]',
@@ -1022,7 +1022,7 @@ describe("School path generation and value extraction", () => {
           value: "Chuck",
         },
       ];
-      const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+      const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
       const values: PluginValues[] = runMemoBundle("param", paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
