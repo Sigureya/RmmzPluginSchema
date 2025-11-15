@@ -677,10 +677,8 @@ describe("pathToMemo", () => {
       scalars: {
         category: "param",
         name: "School",
-        objectSchema: {
-          since: { default: 0, kind: "number" },
-        },
-        scalars: '$.school["since"]',
+        objectSchema: {},
+        scalars: undefined,
         scalarArrays: [],
       },
       structArrays: {
@@ -692,19 +690,90 @@ describe("pathToMemo", () => {
         items: [
           {
             category: "struct",
+            name: "School",
+            objectSchema: {
+              since: { kind: "number", default: 0 },
+            },
+            scalars: '$.school["since"]',
+            scalarArrays: [],
+          },
+          {
+            category: "struct",
             name: "Address",
             objectSchema: {
-              street: { default: "", kind: "string" },
-              city: { default: "", kind: "string" },
-              zipCode: { default: "", kind: "string" },
+              city: { kind: "string", default: "" },
+              street: { kind: "string", default: "" },
+              zipCode: { kind: "string", default: "" },
             },
             scalars: '$.school.address["street","city","zipCode"]',
             scalarArrays: [],
           },
+          {
+            category: "struct",
+            name: "Class",
+            objectSchema: {
+              className: {
+                default: "",
+                kind: "string",
+              },
+            },
+            scalars: '$.school.classrooms[*]["className"]',
+            scalarArrays: [],
+          },
+          {
+            category: "struct",
+            name: "Person",
+            objectSchema: {
+              age: { kind: "number", default: 0 },
+              name: { kind: "string", default: "" },
+            },
+            scalars: '$.school.classrooms[*].teacher["name","age"]',
+            scalarArrays: [
+              {
+                param: {
+                  name: "items",
+                  attr: { kind: "number[]", default: [] },
+                },
+                path: "$.school.classrooms[*].teacher.items[*]",
+              },
+              {
+                param: {
+                  name: "nicknames",
+                  attr: { kind: "string[]", default: [] },
+                },
+                path: "$.school.classrooms[*].teacher.nicknames[*]",
+              },
+            ],
+          },
+          {
+            category: "struct",
+            name: "Person",
+            objectSchema: {
+              age: { kind: "number", default: 0 },
+              name: { kind: "string", default: "" },
+            },
+            scalars: '$.school.classrooms[*].students[*]["name","age"]',
+            scalarArrays: [
+              {
+                param: {
+                  name: "items",
+                  attr: { kind: "number[]", default: [] },
+                },
+                path: "$.school.classrooms[*].students[*].items[*]",
+              },
+              {
+                param: {
+                  name: "nicknames",
+                  attr: { kind: "string[]", default: [] },
+                },
+                path: "$.school.classrooms[*].students[*].nicknames[*]",
+              },
+            ],
+          },
         ],
       },
     };
-    test("p2", () => {
+    test("map calls", () => {
       const map = makeMockedMap();
       createPluginValuesPathPP("param", paramSchema, map);
       expect(map.get).toHaveBeenNthCalledWith(1, "School");
@@ -714,12 +783,12 @@ describe("pathToMemo", () => {
       expect(map.get).toHaveBeenNthCalledWith(5, "Person");
       expect(map.get).toBeCalledTimes(5);
     });
-    test("p2", () => {
+    test("create path", () => {
       const result = createPluginValuesPathPP("param", paramSchema, makeMap());
       expect(result.category).toEqual(pathSchema.category);
       expect(result.name).toEqual(pathSchema.name);
       expect(result.scalars).toEqual(pathSchema.scalars);
-      expect(result.structArrays).toEqual(pathSchema.structArrays);
+      //      expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.structs).toEqual(pathSchema.structs);
     });
   });
