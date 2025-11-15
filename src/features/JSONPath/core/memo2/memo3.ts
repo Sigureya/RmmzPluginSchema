@@ -62,7 +62,7 @@ const extractFromStruct = (
   return [svalues, avalues].flat(2);
 };
 
-export const readScalarValueV3 = (
+const readScalarValueV3 = (
   category: ValueCategory2,
   structName: string,
   json: JSONValue,
