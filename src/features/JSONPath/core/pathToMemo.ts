@@ -1,6 +1,5 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import { JSONPathJS } from "jsonpath-js";
 import type {
   PathPair,
   PluginValuesPathNewVersion,
@@ -13,13 +12,9 @@ import type {
   SSS,
 } from "./memo2/types/memo3";
 
-const newJSONPath = (path: string): JSONPathReader => {
-  return new JSONPathJS(path);
-};
-
 export const createMemoFromPath = (
   path: PluginValuesPathNewVersion,
-  factoryFn: (path: string) => JSONPathReader = newJSONPath
+  factoryFn: (path: string) => JSONPathReader
 ): MemoBundle => {
   const top = createMemoItem(path.scalars, factoryFn);
   const structs = path.structs.items.map(
