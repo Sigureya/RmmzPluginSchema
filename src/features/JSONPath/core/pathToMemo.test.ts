@@ -158,7 +158,7 @@ describe("pathToMemo", () => {
       },
     };
 
-    test("p2", () => {
+    test("creates correct path schema", () => {
       const map = makeMockedMap();
       const result: PluginValuesPathWithError = createPluginValuesPathPP(
         "param",
@@ -173,7 +173,7 @@ describe("pathToMemo", () => {
       expect(result).toEqual(pathSchema);
     });
 
-    test("createMemoFromPath - calls jsonPath factory", () => {
+    test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
       createMemoFromPath(pathSchema, mockFn);
       expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
@@ -269,16 +269,22 @@ describe("pathToMemo", () => {
         errors: [],
       },
     };
-    test("p2", () => {
+
+    test("resolves struct schema via map", () => {
       const map = makeMockedMap();
-      const result = createPluginValuesPathPP("param", paramSchema, map);
+      createPluginValuesPathPP("param", paramSchema, map);
       expect(map.get).toBeCalledWith("Person");
       expect(map.get).toBeCalledTimes(1);
+    });
+
+    test("p2", () => {
+      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
       expect(result.category).toEqual(pathSchema.category);
       expect(result.name).toEqual(pathSchema.name);
       expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.scalars).toEqual(pathSchema.scalars);
       expect(result.structs).toEqual(pathSchema.structs);
+      expect(result).toEqual(pathSchema);
     });
     test("JSONPath calls", () => {
       const mockFn = createMockFunc();
@@ -472,6 +478,7 @@ describe("pathToMemo", () => {
         expect(result.structArrays).toEqual(pathSchema.structArrays);
         expect(result.scalars).toEqual(pathSchema.scalars);
         expect(result.structs).toEqual(pathSchema.structs);
+        expect(result).toEqual(pathSchema);
       });
     });
     test("jsonPath calls", () => {
@@ -788,8 +795,9 @@ describe("pathToMemo", () => {
       expect(result.category).toEqual(pathSchema.category);
       expect(result.name).toEqual(pathSchema.name);
       expect(result.scalars).toEqual(pathSchema.scalars);
-      //      expect(result.structArrays).toEqual(pathSchema.structArrays);
+      expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.structs).toEqual(pathSchema.structs);
+      expect(result).toEqual(pathSchema);
     });
   });
 });
