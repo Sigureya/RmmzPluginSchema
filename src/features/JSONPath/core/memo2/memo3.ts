@@ -26,29 +26,22 @@ export const runMemoBundle = (
   value: JSONValue,
   memo: MemoBundle
 ): PluginValues[] => {
-  const structName = memo.name;
-
-  const topValues: PluginValues[] = memo3(
-    category,
-    structName,
-    value,
-    memo.top
-  );
+  const topValues: PluginValues[] = memo3(category, value, memo.top);
   const structValues: PluginValues[][] = memo.structs.map((m) =>
-    memo3(category, structName, value, m)
+    memo3(category, value, m)
   );
   const structArrayValues: PluginValues[][] = memo.structArrays.map((m) =>
-    memo3(category, structName, value, m)
+    memo3(category, value, m)
   );
   return [topValues, structValues, structArrayValues].flat(2);
 };
 
 const memo3 = (
   category: ValueCategory2,
-  structName: string,
   value: JSONValue,
   memo: PluginValuesPathMemo4
 ): PluginValues[] => {
+  const structName = memo.bundleName;
   const svalues: PluginValueScalar[] = memo.scalar
     ? readScalarValueV3(
         category,

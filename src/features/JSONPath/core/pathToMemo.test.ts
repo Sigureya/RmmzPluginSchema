@@ -173,8 +173,8 @@ describe("pathToMemo", () => {
       const memo: MemoBundle = createMemoFromPath(pathV2, newJSONPath);
       expect(memo.top.scalar).toBeUndefined();
       expect(memo.top.arrays).toEqual([]);
-      expect(memo.structs).toHaveLength(1);
       expect(memo.structArrays).toHaveLength(0);
+      expect(memo.structs).toHaveLength(1);
     });
 
     test("memo3", () => {
@@ -489,7 +489,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Mr. Smith",
           param: {
             name: "name",
@@ -498,7 +498,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: 40,
           param: {
             name: "age",
@@ -507,7 +507,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: 1001,
           param: {
             name: "items",
@@ -516,7 +516,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: 1002,
           param: {
             name: "items",
@@ -525,7 +525,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Smitty",
           param: {
             name: "nicknames",
@@ -534,7 +534,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Alice",
           param: {
             name: "name",
@@ -543,7 +543,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: 20,
           param: {
             name: "age",
@@ -552,7 +552,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Bob",
           param: {
             name: "name",
@@ -561,7 +561,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           param: {
             attr: { default: 0, kind: "number" },
             name: "age",
@@ -570,7 +570,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: 2001,
           param: {
             name: "items",
@@ -579,7 +579,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: 2002,
           param: {
             name: "items",
@@ -588,7 +588,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           param: {
             attr: {
               default: [],
@@ -600,7 +600,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Ally",
           param: {
             name: "nicknames",
@@ -609,7 +609,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Bobby",
           param: {
             name: "nicknames",
@@ -618,7 +618,7 @@ describe("pathToMemo", () => {
         },
         {
           category: "param",
-          name: "Class",
+          name: "Person",
           value: "Rob",
           param: {
             name: "nicknames",
