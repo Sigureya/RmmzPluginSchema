@@ -88,7 +88,7 @@ export const readScalarValueV3 = (
   }, []);
 };
 
-export const readArrayValue2 = (
+const readArrayValue2 = (
   category: ValueCategory2,
   groupName: string,
   json: JSONValue,
