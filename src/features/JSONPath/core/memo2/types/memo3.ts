@@ -5,6 +5,7 @@ import type { ArrayPathMemo } from "./array";
 export interface PluginValuesPathMemo4 {
   scalar?: SSS;
   arrays: ArrayPathMemo[];
+  bundleName: string;
 }
 
 export interface SSS {
@@ -13,6 +14,7 @@ export interface SSS {
 }
 
 export interface MemoBundle {
+  name: string;
   top: PluginValuesPathMemo4;
   structs: PluginValuesPathMemo4[];
   structArrays: PluginValuesPathMemo4[];

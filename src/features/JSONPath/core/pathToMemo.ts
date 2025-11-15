@@ -3,7 +3,7 @@ import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   PathPair,
-  PluginValuesPath2,
+  PluginValuesPathNewVersion,
   StructPropertysPath,
 } from "./createPath/types";
 import type { ArrayPathMemo } from "./memo2/types";
@@ -18,7 +18,7 @@ const newJSONPath = (path: string): JSONPathReader => {
 };
 
 export const createMemoFromPath = (
-  path: PluginValuesPath2,
+  path: PluginValuesPathNewVersion,
   factoryFn: (path: string) => JSONPathReader = newJSONPath
 ): MemoBundle => {
   const top = mm(path.scalars, factoryFn);
@@ -28,8 +28,8 @@ export const createMemoFromPath = (
   const structArrays = path.structArrays.items.map(
     (p): PluginValuesPathMemo4 => mm(p, factoryFn)
   );
-
   return {
+    name: path.name ?? "dummyXYZ",
     top,
     structs,
     structArrays,
@@ -42,24 +42,28 @@ const mm = (
 ): PluginValuesPathMemo4 => {
   if (p.scalars) {
     return {
-      arrays: xxArrayParams(p.scalarArrays, factoryFn),
+      bundleName: p.name,
+      arrays: xxArrayParams(p.scalarArrays, p.name, factoryFn),
       scalar: createScalarValuesMemo(p.scalars, p.objectSchema, factoryFn),
     };
   }
 
   return {
-    arrays: xxArrayParams(p.scalarArrays, factoryFn),
+    bundleName: p.name,
+    arrays: xxArrayParams(p.scalarArrays, p.name, factoryFn),
   };
 };
 
 const xxArrayParams = (
   paths: ReadonlyArray<PathPair>,
+  gn: string,
   factoryFn: (path: string) => JSONPathReader
 ): ArrayPathMemo[] => {
   return paths.map(
     (p): ArrayPathMemo => ({
       jsonPathJS: factoryFn(p.path),
       schema: p.param,
+      parentType: gn,
     })
   );
 };

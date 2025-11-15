@@ -21,41 +21,27 @@ import type {
 } from "./types";
 import type { MemoBundle, PluginValuesPathMemo4 } from "./types/memo3";
 
-export const memo3Ex = (
-  category: ValueCategory2,
-  structName: string,
-  value: JSONValue,
-  memo: PluginValuesPathMemo4[]
-): PluginValues[] => {
-  return memo.flatMap((m) => memo3(category, structName, value, m));
-};
-
 export const runMemoBundle = (
   category: ValueCategory2,
-  structName: string,
   value: JSONValue,
   memo: MemoBundle
 ): PluginValues[] => {
-  const topValues: PluginValues[] = memo3(
-    category,
-    structName,
-    value,
-    memo.top
-  );
+  const topValues: PluginValues[] = memo3(category, value, memo.top);
   const structValues: PluginValues[][] = memo.structs.map((m) =>
-    memo3(category, structName, value, m)
+    memo3(category, value, m)
   );
   const structArrayValues: PluginValues[][] = memo.structArrays.map((m) =>
-    memo3(category, structName, value, m)
+    memo3(category, value, m)
   );
   return [topValues, structValues, structArrayValues].flat(2);
 };
+
 const memo3 = (
   category: ValueCategory2,
-  structName: string,
   value: JSONValue,
   memo: PluginValuesPathMemo4
 ): PluginValues[] => {
+  const structName = memo.bundleName;
   const svalues: PluginValueScalar[] = memo.scalar
     ? readScalarValueV3(
         category,
@@ -67,7 +53,7 @@ const memo3 = (
     : [];
 
   const avalues: (PluginValuesSA[] | PluginValuesNA[])[] = memo.arrays.map(
-    (arrayMemo) => readArrayValue2(category, value, arrayMemo)
+    (arrayMemo) => readArrayValue2(category, structName, value, arrayMemo)
   );
   return [svalues, avalues].flat(2);
 };
@@ -102,8 +88,9 @@ export const readScalarValueV3 = (
   }, []);
 };
 
-export const readArrayValue2 = (
+const readArrayValue2 = (
   category: ValueCategory2,
+  groupName: string,
   json: JSONValue,
   path: ArrayPathMemo
 ): PluginValuesSA[] | PluginValuesNA[] => {
@@ -119,7 +106,7 @@ export const readArrayValue2 = (
       (value): PluginValuesSA => ({
         value: value,
         category: category,
-        name: path.schema.name,
+        name: groupName,
         param: path.schema as PluginParamEx<ParamType>,
       })
     );
@@ -131,7 +118,7 @@ export const readArrayValue2 = (
       (value): PluginValuesNA => ({
         value: value,
         category: category,
-        name: path.schema.name,
+        name: groupName,
         param: path.schema as PluginParamEx<ParamType>,
       })
     );

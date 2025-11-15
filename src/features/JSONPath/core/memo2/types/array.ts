@@ -26,4 +26,5 @@ type NumberArrayParam = Extract<PrimitiveParam, { default: number[] }>;
 export interface ArrayPathMemo {
   jsonPathJS: JSONPathReader;
   schema: PluginParamEx<ArrayParamTypes>;
+  parentType: string;
 }
