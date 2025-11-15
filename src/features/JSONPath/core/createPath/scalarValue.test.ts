@@ -2,7 +2,7 @@ import { describe, test, expect } from "vitest";
 import type { ClassifiedPluginParamsEx } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import { makeScalarValuesPath, makeScalarArrayPath } from "./scalarValue";
-import type { PathPair } from "./types/types";
+import type { ArrayParamPathPair } from "./types/types";
 
 interface ArrayMock {
   numberArray: number[];
@@ -92,10 +92,13 @@ describe("makeScalaArrayParams", () => {
       path: "$.files[*]",
       param: schema.scalarArrays[2],
     },
-  ] as const satisfies PathPair[];
+  ] as const satisfies ArrayParamPathPair[];
 
   test("create path", () => {
-    const path1: PathPair[] = makeScalarArrayPath(schema.scalarArrays, "$");
+    const path1: ArrayParamPathPair[] = makeScalarArrayPath(
+      schema.scalarArrays,
+      "$"
+    );
     expect(path1).toEqual(paths);
   });
   test("find number params", () => {

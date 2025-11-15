@@ -10,7 +10,7 @@ import type {
   ErrorCodes,
   StructPropertysPath,
   StructPathError,
-  StructPathResult,
+  StructPathResultWithError,
 } from "./types";
 
 const ERROR_CODE = {
@@ -149,7 +149,7 @@ function collectFromSchema(
   basePath: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   errors: ErrorCodes
-): StructPathResult {
+): StructPathResultWithError {
   const state: State = {
     items: [],
     errs: [],
@@ -179,7 +179,7 @@ export const getPathFromStructParam = (
   parent: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   errors: ErrorCodes = ERROR_CODE
-): StructPathResult => {
+): StructPathResultWithError => {
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
   const results = params.map((param) =>
     collectFromSchema(
@@ -202,7 +202,7 @@ export const getPathFromStructArraySchema = (
   parent: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   errors: ErrorCodes = ERROR_CODE
-): StructPathResult => {
+): StructPathResultWithError => {
   const reuslts = param.map((p) =>
     collectFromSchema(
       p.attr.struct,
@@ -222,6 +222,6 @@ export const getPathFromStructSchema = (
   parent: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   errors: ErrorCodes = ERROR_CODE
-): StructPathResult => {
+): StructPathResultWithError => {
   return collectFromSchema(structName, parent, structMap, errors);
 };

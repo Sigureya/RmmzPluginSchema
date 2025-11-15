@@ -8,10 +8,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type {
-  PluginValuesPathNewVersion,
-  PluginValuesPathWithError,
-} from "./createPath/types";
+import type { PluginValuesPathNewVersion } from "./createPath/types";
 import { createPluginValuesPathPP } from "./createPath/valuePath";
 import { runMemoBundle } from "./memo2/memo3";
 import type { PluginValues } from "./memo2/types";
@@ -160,7 +157,7 @@ describe("Address path generation and value extraction", () => {
 
   test("createPluginValuesPath", () => {
     const map = makeMockedMap();
-    const result: PluginValuesPathWithError = createPluginValuesPathPP(
+    const result: PluginValuesPathNewVersion = createPluginValuesPathPP(
       "param",
       paramSchema,
       map
@@ -172,7 +169,7 @@ describe("Address path generation and value extraction", () => {
     expect(result.structs).toEqual(pathSchema.structs);
     expect(result).toEqual(pathSchema);
   });
-  describe("createMemoFromPath", () => {
+  describe("compileJSONPathSchema", () => {
     test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);
@@ -286,7 +283,7 @@ describe("Person path generation and value extraction", () => {
     expect(result.structs).toEqual(pathSchema.structs);
     expect(result).toEqual(pathSchema);
   });
-  describe("createMemoFromPath", () => {
+  describe("compileJSONPathSchema", () => {
     test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);
@@ -802,7 +799,7 @@ describe("School path generation and value extraction", () => {
       expect(result).toEqual(pathSchema);
     });
   });
-  describe("createMemoFromPath", () => {
+  describe("compileJSONPathSchema", () => {
     test("creates JSONPath objects for all schema paths", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);

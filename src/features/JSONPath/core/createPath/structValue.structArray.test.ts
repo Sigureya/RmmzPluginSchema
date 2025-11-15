@@ -6,7 +6,7 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
-import type { StructPropertysPath, StructPathResult } from "./types";
+import type { StructPropertysPath, StructPathResultWithError } from "./types";
 
 interface Person {
   name: string;
@@ -94,7 +94,7 @@ describe("getPathFromStructParam", () => {
     const params: ReadonlyArray<PluginParamEx<StructRefParam>> = [
       { name: "classRoom", attr: { kind: "struct", struct: "ClassRoom" } },
     ];
-    const result: StructPathResult = getPathFromStructParam(
+    const result: StructPathResultWithError = getPathFromStructParam(
       params,
       "$",
       structsMap

@@ -8,7 +8,7 @@ import type {
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import { getPathFromStructParam, getPathFromStructSchema } from "./structValue";
-import type { StructPropertysPath, StructPathResult } from "./types";
+import type { StructPropertysPath, StructPathResultWithError } from "./types";
 
 interface MockPerson {
   name: string;
@@ -64,7 +64,7 @@ describe("person", () => {
   });
 
   test("getPathFromStructSchema", () => {
-    const result: StructPathResult = getPathFromStructSchema(
+    const result: StructPathResultWithError = getPathFromStructSchema(
       "MockPerson",
       "$.person",
       new Map([["MockPerson", personSchema]])

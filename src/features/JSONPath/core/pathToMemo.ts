@@ -1,8 +1,8 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  PathPair,
-  PluginValuesPathNewVersion,
+  ArrayParamPathPair,
+  PluginValuesPath2,
   StructPropertysPath,
 } from "./createPath/types";
 import type { ArrayPathMemo } from "./memo2/types";
@@ -13,7 +13,7 @@ import type {
 } from "./memo2/types/memo3";
 
 export const compileJSONPathSchema = (
-  path: PluginValuesPathNewVersion,
+  path: PluginValuesPath2,
   factoryFn: (path: string) => JSONPathReader
 ): MemoBundle => {
   const top = compileStructExtractor(path.scalars, factoryFn);
@@ -50,7 +50,7 @@ const compileStructExtractor = (
 };
 
 const compileArrayPathExtractor = (
-  paths: ReadonlyArray<PathPair>,
+  paths: ReadonlyArray<ArrayParamPathPair>,
   gn: string,
   factoryFn: (path: string) => JSONPathReader
 ): ArrayPathMemo[] => {

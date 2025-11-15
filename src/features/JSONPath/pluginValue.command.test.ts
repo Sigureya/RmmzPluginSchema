@@ -4,7 +4,7 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { StructPropertysPath, StructPathResult } from "./core";
+import type { StructPropertysPath, StructPathResultWithError } from "./core";
 
 interface Effect {
   code: number;
@@ -107,7 +107,7 @@ const scalarsPath: StructPropertysPath = {
   scalars: '$["subject"]',
 };
 
-const structsPath: StructPathResult = {
+const structsPath: StructPathResultWithError = {
   errors: [],
   items: [
     {
@@ -130,7 +130,7 @@ const structsPath: StructPathResult = {
   ],
 };
 
-const structArrays: StructPathResult = {
+const structArrays: StructPathResultWithError = {
   errors: [],
   items: [
     {
