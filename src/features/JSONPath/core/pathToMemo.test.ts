@@ -127,7 +127,7 @@ const newJSONPath = (path: string): JSONPathJS => {
   return new JSONPathJS(path);
 };
 
-describe("address", () => {
+describe("Address path generation and value extraction", () => {
   const paramSchema: PluginParamEx<StructRefParam> = {
     name: "address",
     attr: { kind: "struct", struct: "Address" },
@@ -158,7 +158,7 @@ describe("address", () => {
     },
   };
 
-  test("creates correct path schema", () => {
+  test("createPluginValuesPath", () => {
     const map = makeMockedMap();
     const result: PluginValuesPathWithError = createPluginValuesPathPP(
       "param",
@@ -172,23 +172,23 @@ describe("address", () => {
     expect(result.structs).toEqual(pathSchema.structs);
     expect(result).toEqual(pathSchema);
   });
+  describe("createMemoFromPath", () => {
+    test("calls JSONPath constructor", () => {
+      const mockFn = createMockFunc();
+      createMemoFromPath(pathSchema, mockFn);
+      expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
+      expect(mockFn).toBeCalledTimes(1);
+    });
 
-  test("calls JSONPath constructor", () => {
-    const mockFn = createMockFunc();
-    createMemoFromPath(pathSchema, mockFn);
-    expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
-    expect(mockFn).toBeCalledTimes(1);
+    test("creates correct memo structure", () => {
+      const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+      expect(memo.top.scalar).toBeUndefined();
+      expect(memo.top.arrays).toEqual([]);
+      expect(memo.structArrays).toEqual([]);
+      expect(memo.structs).toHaveLength(1);
+    });
   });
-
-  test("createMemoFromPath - return values", () => {
-    const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
-    expect(memo.top.scalar).toBeUndefined();
-    expect(memo.top.arrays).toEqual([]);
-    expect(memo.structArrays).toEqual([]);
-    expect(memo.structs).toHaveLength(1);
-  });
-
-  test("runMemoBundle", () => {
+  test("extracts correct values via memo", () => {
     const paramObject = {
       address: {
         city: "Sample City",
@@ -222,7 +222,7 @@ describe("address", () => {
   });
 });
 
-describe("Person", () => {
+describe("Person path generation and value extraction", () => {
   const paramSchema: PluginParamEx<StructRefParam> = {
     name: "person",
     attr: { kind: "struct", struct: "Person" },
@@ -277,7 +277,7 @@ describe("Person", () => {
     expect(map.get).toBeCalledTimes(1);
   });
 
-  test("p2", () => {
+  test("creates correct path schema", () => {
     const result = createPluginValuesPathPP("param", paramSchema, makeMap());
     expect(result.category).toEqual(pathSchema.category);
     expect(result.name).toEqual(pathSchema.name);
@@ -286,94 +286,97 @@ describe("Person", () => {
     expect(result.structs).toEqual(pathSchema.structs);
     expect(result).toEqual(pathSchema);
   });
-  test("JSONPath calls", () => {
-    const mockFn = createMockFunc();
-    createMemoFromPath(pathSchema, mockFn);
-    expect(mockFn).toBeCalledWith('$.person["name","age"]');
-    expect(mockFn).toBeCalledWith("$.person.items[*]");
-    expect(mockFn).toBeCalledWith("$.person.nicknames[*]");
-    expect(mockFn).toBeCalledTimes(3);
-  });
-  test("memo3", () => {
-    const paramObject = {
-      person: {
-        name: "Alice",
-        age: 30,
-        items: [115, 201, 351],
-        nicknames: ["Ally", "Lice"],
-      } as const satisfies Person,
-    };
-    const expectedValues: PluginValues[] = [
-      {
-        category: "struct",
-        name: "Person",
-        param: {
-          name: "name",
-          attr: { default: "", kind: "string" },
+  describe("createMemoFromPath", () => {
+    test("calls JSONPath constructor", () => {
+      const mockFn = createMockFunc();
+      createMemoFromPath(pathSchema, mockFn);
+      expect(mockFn).toBeCalledWith('$.person["name","age"]');
+      expect(mockFn).toBeCalledWith("$.person.items[*]");
+      expect(mockFn).toBeCalledWith("$.person.nicknames[*]");
+      expect(mockFn).toBeCalledTimes(3);
+    });
+    test("extracts correct values via memo", () => {
+      const paramObject = {
+        person: {
+          name: "Alice",
+          age: 30,
+          items: [115, 201, 351],
+          nicknames: ["Ally", "Lice"],
+        } as const satisfies Person,
+      };
+      const expectedValues: PluginValues[] = [
+        {
+          category: "struct",
+          name: "Person",
+          param: {
+            name: "name",
+            attr: { default: "", kind: "string" },
+          },
+          value: "Alice",
         },
-        value: "Alice",
-      },
-      {
-        category: "struct",
-        name: "Person",
-        value: 30,
-        param: {
-          name: "age",
-          attr: { default: 0, kind: "number" },
+        {
+          category: "struct",
+          name: "Person",
+          value: 30,
+          param: {
+            name: "age",
+            attr: { default: 0, kind: "number" },
+          },
         },
-      },
-      {
-        category: "struct",
-        name: "Person",
-        value: 115,
-        param: {
-          name: "items",
-          attr: { default: [], kind: "number[]" },
+        {
+          category: "struct",
+          name: "Person",
+          value: 115,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
         },
-      },
-      {
-        category: "struct",
-        name: "Person",
-        value: 201,
-        param: {
-          name: "items",
-          attr: { default: [], kind: "number[]" },
+        {
+          category: "struct",
+          name: "Person",
+          value: 201,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
         },
-      },
-      {
-        category: "struct",
-        name: "Person",
-        value: 351,
-        param: {
-          name: "items",
-          attr: { default: [], kind: "number[]" },
+        {
+          category: "struct",
+          name: "Person",
+          value: 351,
+          param: {
+            name: "items",
+            attr: { default: [], kind: "number[]" },
+          },
         },
-      },
-      {
-        category: "struct",
-        name: "Person",
-        value: "Ally",
-        param: {
-          name: "nicknames",
-          attr: { default: [], kind: "string[]" },
+        {
+          category: "struct",
+          name: "Person",
+          value: "Ally",
+          param: {
+            name: "nicknames",
+            attr: { default: [], kind: "string[]" },
+          },
         },
-      },
-      {
-        category: "struct",
-        name: "Person",
-        value: "Lice",
-        param: {
-          name: "nicknames",
-          attr: { default: [], kind: "string[]" },
+        {
+          category: "struct",
+          name: "Person",
+          value: "Lice",
+          param: {
+            name: "nicknames",
+            attr: { default: [], kind: "string[]" },
+          },
         },
-      },
-    ];
-    const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
-    const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
-    expect(values).toEqual(expectedValues);
+      ];
+      const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+      const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
+      expect(values).toEqual(expectedValues);
+    });
   });
 });
-describe("classroom", () => {
+
+describe("classroom path generation and value extraction", () => {
   const paramSchema: PluginParamEx<StructRefParam> = {
     name: "classroom",
     attr: { kind: "struct", struct: "Class" },
@@ -459,7 +462,7 @@ describe("classroom", () => {
     },
   };
   describe("createPluginValuesPath", () => {
-    test("map calls", () => {
+    test("resolves nested class/person schemas", () => {
       const map = makeMockedMap();
       createPluginValuesPathPP("param", paramSchema, map);
       expect(map.get).toHaveBeenNthCalledWith(1, "Class");
@@ -467,7 +470,7 @@ describe("classroom", () => {
       expect(map.get).toHaveBeenNthCalledWith(3, "Person");
       expect(map.get).toBeCalledTimes(3);
     });
-    test("create path", () => {
+    test("creates correct path schema", () => {
       const result = createPluginValuesPathPP("param", paramSchema, makeMap());
       expect(result.category).toEqual(pathSchema.category);
       expect(result.name).toEqual(pathSchema.name);
@@ -477,19 +480,21 @@ describe("classroom", () => {
       expect(result).toEqual(pathSchema);
     });
   });
-  test("jsonPath calls", () => {
-    const mockFn = createMockFunc();
-    createMemoFromPath(pathSchema, mockFn);
-    expect(mockFn).toBeCalledWith('$.classroom["className"]');
-    expect(mockFn).toBeCalledWith('$.classroom.teacher["name","age"]');
-    expect(mockFn).toBeCalledWith("$.classroom.teacher.items[*]");
-    expect(mockFn).toBeCalledWith("$.classroom.teacher.nicknames[*]");
-    expect(mockFn).toBeCalledWith('$.classroom.students[*]["name","age"]');
-    expect(mockFn).toBeCalledWith("$.classroom.students[*].items[*]");
-    expect(mockFn).toBeCalledWith("$.classroom.students[*].nicknames[*]");
-    expect(mockFn).toBeCalledTimes(7);
+  describe("createMemoFromPath", () => {
+    test("creates JSONPath objects for all schema paths", () => {
+      const mockFn = createMockFunc();
+      createMemoFromPath(pathSchema, mockFn);
+      expect(mockFn).toBeCalledWith('$.classroom["className"]');
+      expect(mockFn).toBeCalledWith('$.classroom.teacher["name","age"]');
+      expect(mockFn).toBeCalledWith("$.classroom.teacher.items[*]");
+      expect(mockFn).toBeCalledWith("$.classroom.teacher.nicknames[*]");
+      expect(mockFn).toBeCalledWith('$.classroom.students[*]["name","age"]');
+      expect(mockFn).toBeCalledWith("$.classroom.students[*].items[*]");
+      expect(mockFn).toBeCalledWith("$.classroom.students[*].nicknames[*]");
+      expect(mockFn).toBeCalledTimes(7);
+    });
   });
-  test("memo3", () => {
+  test("extracts all expected scalar values from ClassRoom object", () => {
     const paramObject = {
       classroom: {
         className: "Math 101",
@@ -669,7 +674,7 @@ describe("classroom", () => {
     expect(values).toEqual(expectedValues);
   });
 });
-describe("school", () => {
+describe("School path generation and value extraction", () => {
   const paramSchema: PluginParamEx<StructRefParam> = {
     name: "school",
     attr: { kind: "struct", struct: "School" },
@@ -776,23 +781,250 @@ describe("school", () => {
       ],
     },
   };
-  test("map calls", () => {
-    const map = makeMockedMap();
-    createPluginValuesPathPP("param", paramSchema, map);
-    expect(map.get).toHaveBeenNthCalledWith(1, "School");
-    expect(map.get).toHaveBeenNthCalledWith(2, "Address");
-    expect(map.get).toHaveBeenNthCalledWith(3, "Class");
-    expect(map.get).toHaveBeenNthCalledWith(4, "Person");
-    expect(map.get).toHaveBeenNthCalledWith(5, "Person");
-    expect(map.get).toBeCalledTimes(5);
+  describe("createPluginValuesPath", () => {
+    test("resolves all referenced struct schemas", () => {
+      const map = makeMockedMap();
+      createPluginValuesPathPP("param", paramSchema, map);
+      expect(map.get).toHaveBeenNthCalledWith(1, "School");
+      expect(map.get).toHaveBeenNthCalledWith(2, "Address");
+      expect(map.get).toHaveBeenNthCalledWith(3, "Class");
+      expect(map.get).toHaveBeenNthCalledWith(4, "Person");
+      expect(map.get).toHaveBeenNthCalledWith(5, "Person");
+      expect(map.get).toBeCalledTimes(5);
+    });
+    test("generates complete School path schema", () => {
+      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
+      expect(result.category).toEqual(pathSchema.category);
+      expect(result.name).toEqual(pathSchema.name);
+      expect(result.scalars).toEqual(pathSchema.scalars);
+      expect(result.structArrays).toEqual(pathSchema.structArrays);
+      expect(result.structs).toEqual(pathSchema.structs);
+      expect(result).toEqual(pathSchema);
+    });
   });
-  test("create path", () => {
-    const result = createPluginValuesPathPP("param", paramSchema, makeMap());
-    expect(result.category).toEqual(pathSchema.category);
-    expect(result.name).toEqual(pathSchema.name);
-    expect(result.scalars).toEqual(pathSchema.scalars);
-    expect(result.structArrays).toEqual(pathSchema.structArrays);
-    expect(result.structs).toEqual(pathSchema.structs);
-    expect(result).toEqual(pathSchema);
+  describe("createMemoFromPath", () => {
+    test("creates JSONPath objects for all schema paths", () => {
+      const mockFn = createMockFunc();
+      createMemoFromPath(pathSchema, mockFn);
+      const paths: string[] = [
+        '$.school["since"]',
+        '$.school.address["street","city","zipCode"]',
+        '$.school.classrooms[*]["className"]',
+        '$.school.classrooms[*].teacher["name","age"]',
+        "$.school.classrooms[*].teacher.items[*]",
+        "$.school.classrooms[*].teacher.nicknames[*]",
+        '$.school.classrooms[*].students[*]["name","age"]',
+        "$.school.classrooms[*].students[*].items[*]",
+        "$.school.classrooms[*].students[*].nicknames[*]",
+      ];
+      expect(mockFn).toBeCalledTimes(paths.length);
+      paths.forEach((path) => {
+        expect(mockFn, `call xx : ${path}`).toBeCalledWith(path);
+      });
+    });
+    test("extracts all expected scalar values from School object", () => {
+      const paramObject = {
+        school: {
+          since: 1995,
+          address: {
+            street: "456 School Rd",
+            city: "Education City",
+            zipCode: "67890",
+          },
+          classrooms: [
+            {
+              className: "History 201",
+              teacher: {
+                name: "Ms. Johnson",
+                age: 35,
+                items: [1101],
+                nicknames: ["Johnny"],
+              },
+              students: [
+                {
+                  name: "Charlie",
+                  age: 21,
+                  items: [2101, 2102],
+                  nicknames: ["Chuck"],
+                },
+              ],
+            },
+          ],
+        } as const satisfies School,
+      };
+      const expectedValues: PluginValues[] = [
+        {
+          category: "param",
+          name: "School",
+          param: {
+            attr: {
+              default: 0,
+              kind: "number",
+            },
+            name: "since",
+          },
+          value: 1995,
+        },
+        {
+          category: "param",
+          name: "Address",
+          param: {
+            attr: {
+              default: "",
+              kind: "string",
+            },
+            name: "street",
+          },
+          value: "456 School Rd",
+        },
+        {
+          category: "param",
+          name: "Address",
+          param: {
+            attr: {
+              default: "",
+              kind: "string",
+            },
+            name: "city",
+          },
+          value: "Education City",
+        },
+        {
+          category: "param",
+          name: "Address",
+          param: {
+            attr: {
+              default: "",
+              kind: "string",
+            },
+            name: "zipCode",
+          },
+          value: "67890",
+        },
+        {
+          category: "param",
+          name: "Class",
+          param: {
+            attr: {
+              default: "",
+              kind: "string",
+            },
+            name: "className",
+          },
+          value: "History 201",
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: "",
+              kind: "string",
+            },
+            name: "name",
+          },
+          value: "Ms. Johnson",
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: 0,
+              kind: "number",
+            },
+            name: "age",
+          },
+          value: 35,
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: [],
+              kind: "number[]",
+            },
+            name: "items",
+          },
+          value: 1101,
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: [],
+              kind: "string[]",
+            },
+            name: "nicknames",
+          },
+          value: "Johnny",
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: "",
+              kind: "string",
+            },
+            name: "name",
+          },
+          value: "Charlie",
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: 0,
+              kind: "number",
+            },
+            name: "age",
+          },
+          value: 21,
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: [],
+              kind: "number[]",
+            },
+            name: "items",
+          },
+          value: 2101,
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: [],
+              kind: "number[]",
+            },
+            name: "items",
+          },
+          value: 2102,
+        },
+        {
+          category: "param",
+          name: "Person",
+          param: {
+            attr: {
+              default: [],
+              kind: "string[]",
+            },
+            name: "nicknames",
+          },
+          value: "Chuck",
+        },
+      ];
+      const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
+      const values: PluginValues[] = runMemoBundle("param", paramObject, memo);
+      expect(values).toEqual(expectedValues);
+    });
   });
 });
