@@ -173,14 +173,14 @@ describe("pathToMemo", () => {
       expect(result).toEqual(pathSchema);
     });
 
-    test("calls jsonPath factory", () => {
+    test("createMemoFromPath - calls jsonPath factory", () => {
       const mockFn = createMockFunc();
       createMemoFromPath(pathSchema, mockFn);
       expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
       expect(mockFn).toBeCalledTimes(1);
     });
 
-    test("createMemoFromPath", () => {
+    test("createMemoFromPath - return values", () => {
       const memo: MemoBundle = createMemoFromPath(pathSchema, newJSONPath);
       expect(memo.top.scalar).toBeUndefined();
       expect(memo.top.arrays).toEqual([]);
