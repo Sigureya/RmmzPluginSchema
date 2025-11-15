@@ -127,7 +127,7 @@ const newJSONPath = (path: string): JSONPathJS => {
   return new JSONPathJS(path);
 };
 
-describe("address", () => {
+describe("Address path generation and value extraction", () => {
   const paramSchema: PluginParamEx<StructRefParam> = {
     name: "address",
     attr: { kind: "struct", struct: "Address" },
@@ -222,7 +222,7 @@ describe("address", () => {
   });
 });
 
-describe("Person", () => {
+describe("Person path generation and value extraction", () => {
   const paramSchema: PluginParamEx<StructRefParam> = {
     name: "person",
     attr: { kind: "struct", struct: "Person" },
