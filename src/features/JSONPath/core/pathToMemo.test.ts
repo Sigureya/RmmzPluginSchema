@@ -131,10 +131,10 @@ describe("Address path generation and value extraction", () => {
   };
 
   const pathSchema: PluginValuesPathNewVersion = {
-    category: "param",
-    name: "Address",
+    rootCategory: "param",
+    rootName: "address",
     scalars: {
-      category: "param",
+      category: "struct",
       name: "Address",
       objectSchema: {},
       scalarsPath: undefined,
@@ -195,18 +195,24 @@ describe("Address path generation and value extraction", () => {
     };
     const expectedValues: PluginValues[] = [
       {
+        rootType: "param",
+        roootName: "address",
         category: "struct",
         name: "Address",
         param: { name: "street", attr: { kind: "string", default: "" } },
         value: "123 Sample St",
       },
       {
+        rootType: "param",
+        roootName: "address",
         category: "struct",
         name: "Address",
         param: { name: "city", attr: { kind: "string", default: "" } },
         value: "Sample City",
       },
       {
+        rootType: "param",
+        roootName: "address",
         category: "struct",
         name: "Address",
         param: { name: "zipCode", attr: { kind: "string", default: "" } },
@@ -214,7 +220,8 @@ describe("Address path generation and value extraction", () => {
       },
     ];
     const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
-    const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
+    expect(memo.rootName).toBe("address");
+    const values: PluginValues[] = runMemoBundle(paramObject, memo);
     expect(values).toEqual(expectedValues);
   });
 });
@@ -225,10 +232,10 @@ describe("Person path generation and value extraction", () => {
     attr: { kind: "struct", struct: "Person" },
   };
   const pathSchema: PluginValuesPathNewVersion = {
-    category: "param",
-    name: "Person",
+    rootCategory: "param",
+    rootName: "person",
     scalars: {
-      category: "param",
+      category: "struct",
       name: "Person",
       objectSchema: {},
       scalarsPath: undefined,
@@ -276,8 +283,8 @@ describe("Person path generation and value extraction", () => {
 
   test("creates correct path schema", () => {
     const result = createPluginValuesPathPP("param", paramSchema, makeMap());
-    expect(result.category).toEqual(pathSchema.category);
-    expect(result.name).toEqual(pathSchema.name);
+    expect(result.rootCategory).toEqual(pathSchema.rootCategory);
+    expect(result.rootName).toEqual(pathSchema.rootName);
     expect(result.structArrays).toEqual(pathSchema.structArrays);
     expect(result.scalars).toEqual(pathSchema.scalars);
     expect(result.structs).toEqual(pathSchema.structs);
@@ -303,6 +310,8 @@ describe("Person path generation and value extraction", () => {
       };
       const expectedValues: PluginValues[] = [
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           param: {
@@ -312,6 +321,8 @@ describe("Person path generation and value extraction", () => {
           value: "Alice",
         },
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           value: 30,
@@ -321,6 +332,8 @@ describe("Person path generation and value extraction", () => {
           },
         },
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           value: 115,
@@ -330,6 +343,8 @@ describe("Person path generation and value extraction", () => {
           },
         },
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           value: 201,
@@ -339,6 +354,8 @@ describe("Person path generation and value extraction", () => {
           },
         },
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           value: 351,
@@ -348,6 +365,8 @@ describe("Person path generation and value extraction", () => {
           },
         },
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           value: "Ally",
@@ -357,6 +376,8 @@ describe("Person path generation and value extraction", () => {
           },
         },
         {
+          rootType: "param",
+          roootName: "person",
           category: "struct",
           name: "Person",
           value: "Lice",
@@ -367,7 +388,7 @@ describe("Person path generation and value extraction", () => {
         },
       ];
       const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
-      const values: PluginValues[] = runMemoBundle("struct", paramObject, memo);
+      const values: PluginValues[] = runMemoBundle(paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
   });
@@ -380,10 +401,10 @@ describe("classroom path generation and value extraction", () => {
   };
 
   const pathSchema: PluginValuesPathNewVersion = {
-    category: "param",
-    name: "Class",
+    rootCategory: "param",
+    rootName: "classroom",
     scalars: {
-      category: "param",
+      category: "struct",
       name: "Class",
       objectSchema: {},
       scalarsPath: undefined,
@@ -469,8 +490,8 @@ describe("classroom path generation and value extraction", () => {
     });
     test("creates correct path schema", () => {
       const result = createPluginValuesPathPP("param", paramSchema, makeMap());
-      expect(result.category).toEqual(pathSchema.category);
-      expect(result.name).toEqual(pathSchema.name);
+      expect(result.rootCategory).toEqual(pathSchema.rootCategory);
+      expect(result.rootName).toEqual(pathSchema.rootName);
       expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.scalars).toEqual(pathSchema.scalars);
       expect(result.structs).toEqual(pathSchema.structs);
@@ -519,7 +540,9 @@ describe("classroom path generation and value extraction", () => {
     };
     const expectedValues: PluginValues[] = [
       {
-        category: "param",
+        roootName: "classroom",
+        rootType: "param",
+        category: "struct",
         name: "Class",
         value: "Math 101",
         param: {
@@ -528,7 +551,9 @@ describe("classroom path generation and value extraction", () => {
         },
       },
       {
-        category: "param",
+        rootType: "param",
+        roootName: "classroom",
+        category: "struct",
         name: "Person",
         value: "Mr. Smith",
         param: {
@@ -537,7 +562,9 @@ describe("classroom path generation and value extraction", () => {
         },
       },
       {
-        category: "param",
+        roootName: "classroom",
+        rootType: "param",
+        category: "struct",
         name: "Person",
         value: 40,
         param: {
@@ -546,7 +573,9 @@ describe("classroom path generation and value extraction", () => {
         },
       },
       {
-        category: "param",
+        roootName: "classroom",
+        rootType: "param",
+        category: "struct",
         name: "Person",
         value: 1001,
         param: {
@@ -555,79 +584,91 @@ describe("classroom path generation and value extraction", () => {
         },
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
         value: 1002,
         param: {
+          attr: {
+            default: [],
+            kind: "number[]",
+          },
           name: "items",
-          attr: { default: [], kind: "number[]" },
         },
+        roootName: "classroom",
+        rootType: "param",
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
         value: "Smitty",
         param: {
+          attr: {
+            kind: "string[]",
+            default: [],
+          },
           name: "nicknames",
-          attr: { default: [], kind: "string[]" },
         },
+        roootName: "classroom",
+        rootType: "param",
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
         value: "Alice",
         param: {
+          attr: {
+            default: "",
+            kind: "string",
+          },
           name: "name",
-          attr: { default: "", kind: "string" },
         },
+        roootName: "classroom",
+        rootType: "param",
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
+        param: {
+          attr: {
+            default: 0,
+            kind: "number",
+          },
+          name: "age",
+        },
+        roootName: "classroom",
+        rootType: "param",
         value: 20,
-        param: {
-          name: "age",
-          attr: { default: 0, kind: "number" },
-        },
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
-        value: "Bob",
         param: {
+          attr: {
+            default: "",
+            kind: "string",
+          },
           name: "name",
-          attr: { default: "", kind: "string" },
         },
+        roootName: "classroom",
+        rootType: "param",
+        value: "Bob",
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
         param: {
-          attr: { default: 0, kind: "number" },
+          attr: {
+            default: 0,
+            kind: "number",
+          },
           name: "age",
         },
+        roootName: "classroom",
+        rootType: "param",
         value: 22,
       },
       {
-        category: "param",
-        name: "Person",
-        value: 2001,
-        param: {
-          name: "items",
-          attr: { default: [], kind: "number[]" },
-        },
-      },
-      {
-        category: "param",
-        name: "Person",
-        value: 2002,
-        param: {
-          name: "items",
-          attr: { default: [], kind: "number[]" },
-        },
-      },
-      {
-        category: "param",
+        category: "struct",
         name: "Person",
         param: {
           attr: {
@@ -636,38 +677,83 @@ describe("classroom path generation and value extraction", () => {
           },
           name: "items",
         },
+        roootName: "classroom",
+        rootType: "param",
+        value: 2001,
+      },
+      {
+        category: "struct",
+        name: "Person",
+        param: {
+          attr: {
+            default: [],
+            kind: "number[]",
+          },
+          name: "items",
+        },
+        roootName: "classroom",
+        rootType: "param",
+        value: 2002,
+      },
+      {
+        category: "struct",
+        name: "Person",
+        param: {
+          attr: {
+            default: [],
+            kind: "number[]",
+          },
+          name: "items",
+        },
+        roootName: "classroom",
+        rootType: "param",
         value: 3001,
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
+        param: {
+          attr: {
+            default: [],
+            kind: "string[]",
+          },
+          name: "nicknames",
+        },
+        roootName: "classroom",
+        rootType: "param",
         value: "Ally",
-        param: {
-          name: "nicknames",
-          attr: { default: [], kind: "string[]" },
-        },
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
+        param: {
+          attr: {
+            default: [],
+            kind: "string[]",
+          },
+          name: "nicknames",
+        },
+        roootName: "classroom",
+        rootType: "param",
         value: "Bobby",
-        param: {
-          name: "nicknames",
-          attr: { default: [], kind: "string[]" },
-        },
       },
       {
-        category: "param",
+        category: "struct",
         name: "Person",
-        value: "Rob",
         param: {
+          attr: {
+            default: [],
+            kind: "string[]",
+          },
           name: "nicknames",
-          attr: { default: [], kind: "string[]" },
         },
+        roootName: "classroom",
+        rootType: "param",
+        value: "Rob",
       },
     ];
     const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
-    const values: PluginValues[] = runMemoBundle("param", paramObject, memo);
+    const values: PluginValues[] = runMemoBundle(paramObject, memo);
     expect(values).toEqual(expectedValues);
   });
 });
@@ -677,10 +763,10 @@ describe("School path generation and value extraction", () => {
     attr: { kind: "struct", struct: "School" },
   };
   const pathSchema: PluginValuesPathNewVersion = {
-    category: "param",
-    name: "School",
+    rootCategory: "param",
+    rootName: "school",
     scalars: {
-      category: "param",
+      category: "struct",
       name: "School",
       objectSchema: {},
       scalarsPath: undefined,
@@ -791,8 +877,8 @@ describe("School path generation and value extraction", () => {
     });
     test("generates complete School path schema", () => {
       const result = createPluginValuesPathPP("param", paramSchema, makeMap());
-      expect(result.category).toEqual(pathSchema.category);
-      expect(result.name).toEqual(pathSchema.name);
+      expect(result.rootCategory).toEqual(pathSchema.rootCategory);
+      expect(result.rootName).toEqual(pathSchema.rootName);
       expect(result.scalars).toEqual(pathSchema.scalars);
       expect(result.structArrays).toEqual(pathSchema.structArrays);
       expect(result.structs).toEqual(pathSchema.structs);
@@ -851,7 +937,9 @@ describe("School path generation and value extraction", () => {
       };
       const expectedValues: PluginValues[] = [
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "School",
           param: {
             attr: {
@@ -863,7 +951,9 @@ describe("School path generation and value extraction", () => {
           value: 1995,
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Address",
           param: {
             attr: {
@@ -875,7 +965,9 @@ describe("School path generation and value extraction", () => {
           value: "456 School Rd",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Address",
           param: {
             attr: {
@@ -887,7 +979,9 @@ describe("School path generation and value extraction", () => {
           value: "Education City",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Address",
           param: {
             attr: {
@@ -899,7 +993,9 @@ describe("School path generation and value extraction", () => {
           value: "67890",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Class",
           param: {
             attr: {
@@ -911,7 +1007,9 @@ describe("School path generation and value extraction", () => {
           value: "History 201",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -923,7 +1021,9 @@ describe("School path generation and value extraction", () => {
           value: "Ms. Johnson",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -935,7 +1035,9 @@ describe("School path generation and value extraction", () => {
           value: 35,
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -947,7 +1049,9 @@ describe("School path generation and value extraction", () => {
           value: 1101,
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -959,7 +1063,9 @@ describe("School path generation and value extraction", () => {
           value: "Johnny",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -971,7 +1077,9 @@ describe("School path generation and value extraction", () => {
           value: "Charlie",
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -983,7 +1091,9 @@ describe("School path generation and value extraction", () => {
           value: 21,
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -995,7 +1105,9 @@ describe("School path generation and value extraction", () => {
           value: 2101,
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -1007,7 +1119,9 @@ describe("School path generation and value extraction", () => {
           value: 2102,
         },
         {
-          category: "param",
+          roootName: "school",
+          rootType: "param",
+          category: "struct",
           name: "Person",
           param: {
             attr: {
@@ -1020,7 +1134,7 @@ describe("School path generation and value extraction", () => {
         },
       ];
       const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
-      const values: PluginValues[] = runMemoBundle("param", paramObject, memo);
+      const values: PluginValues[] = runMemoBundle(paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
   });

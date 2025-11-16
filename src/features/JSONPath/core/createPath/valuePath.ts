@@ -26,8 +26,8 @@ export const createPluginValuesPathPP = (
   const cpp = classifyFileParams([param]);
 
   return {
-    name: param.attr.struct,
-    category: category,
+    rootName: param.name,
+    rootCategory: category,
     // ex: root.struct.param
     structs: getPathFromStructParam(cpp.structs, parent, structMap),
     // ex: root.array[*].param
@@ -37,7 +37,7 @@ export const createPluginValuesPathPP = (
       structMap
     ),
     scalars: {
-      category: category,
+      category: "struct",
       name: param.attr.struct,
       objectSchema: toObjectPluginParams(cpp.scalars),
       // ex: root.param

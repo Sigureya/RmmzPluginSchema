@@ -24,7 +24,8 @@ export const compileJSONPathSchema = (
     (p): PluginValuesPathMemo4 => compileStructExtractor(p, factoryFn)
   );
   return {
-    name: path.name,
+    rootCategory: path.rootCategory,
+    rootName: path.rootName,
     top,
     structs,
     structArrays,

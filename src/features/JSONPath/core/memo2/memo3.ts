@@ -12,7 +12,6 @@ import {
   isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  ValueCategory2,
   PluginValueScalar,
   PluginValuesSA,
   PluginValuesNA,
@@ -22,33 +21,28 @@ import type {
 import type { MemoBundle, PluginValuesPathMemo4 } from "./types/memo3";
 
 export const runMemoBundle = (
-  category: ValueCategory2,
   value: JSONValue,
   memo: MemoBundle
 ): PluginValues[] => {
-  const topValues: PluginValues[] = extractFromStruct(
-    category,
-    value,
-    memo.top
-  );
+  const topValues: PluginValues[] = extractFromStruct(memo, value, memo.top);
   const structValues: PluginValues[][] = memo.structs.map((m) =>
-    extractFromStruct(category, value, m)
+    extractFromStruct(memo, value, m)
   );
   const structArrayValues: PluginValues[][] = memo.structArrays.map((m) =>
-    extractFromStruct(category, value, m)
+    extractFromStruct(memo, value, m)
   );
   return [topValues, structValues, structArrayValues].flat(2);
 };
 
 const extractFromStruct = (
-  category: ValueCategory2,
+  bundle: MemoBundle,
   value: JSONValue,
   memo: PluginValuesPathMemo4
 ): PluginValues[] => {
   const structName = memo.bundleName;
   const svalues: PluginValueScalar[] = memo.scalar
     ? readScalarValueV3(
-        category,
+        bundle,
         structName,
         value,
         memo.scalar.jsonPathJS,
@@ -57,13 +51,13 @@ const extractFromStruct = (
     : [];
 
   const avalues: (PluginValuesSA[] | PluginValuesNA[])[] = memo.arrays.map(
-    (arrayMemo) => readArrayValue2(category, structName, value, arrayMemo)
+    (arrayMemo) => readArrayValue2(bundle, structName, value, arrayMemo)
   );
   return [svalues, avalues].flat(2);
 };
 
 const readScalarValueV3 = (
-  category: ValueCategory2,
+  bundle: MemoBundle,
   structName: string,
   json: JSONValue,
   jsonPath: JSONPathReader,
@@ -83,7 +77,9 @@ const readScalarValueV3 = (
       return acc;
     }
     acc.push({
-      category: category,
+      roootName: bundle.rootName,
+      rootType: bundle.rootCategory,
+      category: "struct",
       name: structName,
       value: value,
       param: { name: lastSegment, attr: schema },
@@ -93,7 +89,7 @@ const readScalarValueV3 = (
 };
 
 const readArrayValue2 = (
-  category: ValueCategory2,
+  bundle: MemoBundle,
   groupName: string,
   json: JSONValue,
   path: ArrayPathMemo
@@ -109,7 +105,9 @@ const readArrayValue2 = (
     return s.map(
       (value): PluginValuesSA => ({
         value: value,
-        category: category,
+        category: "struct",
+        rootType: bundle.rootCategory,
+        roootName: bundle.rootName,
         name: groupName,
         param: path.schema as PluginParamEx<ParamType>,
       })
@@ -120,8 +118,10 @@ const readArrayValue2 = (
     type ParamType = Extract<PrimitiveParam, { default: number[] }>;
     return s.map(
       (value): PluginValuesNA => ({
+        roootName: bundle.rootName,
+        rootType: bundle.rootCategory,
         value: value,
-        category: category,
+        category: "struct",
         name: groupName,
         param: path.schema as PluginParamEx<ParamType>,
       })
