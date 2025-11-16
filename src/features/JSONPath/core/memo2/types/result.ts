@@ -3,6 +3,8 @@ import type { PluginParam } from "@RmmzPluginSchema/rmmz/plugin";
 export type ValueCategory2 = "struct" | "command" | "param";
 
 export interface PluginValues {
+  rootType: ValueCategory2;
+  roootName: string;
   value: number | string | boolean;
   category: ValueCategory2;
   name: string;
