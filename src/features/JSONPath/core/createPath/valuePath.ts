@@ -41,7 +41,7 @@ export const createPluginValuesPathPP = (
       name: param.attr.struct,
       objectSchema: toObjectPluginParams(cpp.scalars),
       // ex: root.param
-      scalars: makeScalarValuesPath(cpp.scalars, parent),
+      scalarsPath: makeScalarValuesPath(cpp.scalars, parent),
       // ex: root.array[*]
       scalarArrays: makeScalarArrayPath(cpp.scalarArrays, parent),
     },

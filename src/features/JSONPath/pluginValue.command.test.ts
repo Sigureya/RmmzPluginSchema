@@ -104,7 +104,7 @@ const scalarsPath: StructPropertysPath = {
       path: "$.targets[*]",
     },
   ],
-  scalars: '$["subject"]',
+  scalarsPath: '$["subject"]',
 };
 
 const structsPath: StructPathResultWithError = {
@@ -115,7 +115,7 @@ const structsPath: StructPathResultWithError = {
       name: "Damage",
       objectSchema: { exprFunc: { default: "", kind: "string" } },
       scalarArrays: [],
-      scalars: '$.damage["exprFunc"]',
+      scalarsPath: '$.damage["exprFunc"]',
     },
     {
       category: "struct",
@@ -125,7 +125,7 @@ const structsPath: StructPathResultWithError = {
         success: { default: "", kind: "string" },
       },
       scalarArrays: [],
-      scalars: '$.message["success","failure"]',
+      scalarsPath: '$.message["success","failure"]',
     },
   ],
 };
@@ -141,7 +141,7 @@ const structArrays: StructPathResultWithError = {
         value: { default: 0, kind: "number" },
       },
       scalarArrays: [],
-      scalars: '$.effects[*]["code","value"]',
+      scalarsPath: '$.effects[*]["code","value"]',
     },
   ],
 };

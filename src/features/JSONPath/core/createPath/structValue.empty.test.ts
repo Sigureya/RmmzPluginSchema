@@ -44,7 +44,7 @@ describe("empty struct", () => {
       {
         category: "struct",
         name: "NotEmptyStruct",
-        scalars: `$.notEmptyStruct["actorId"]`,
+        scalarsPath: `$.notEmptyStruct["actorId"]`,
         scalarArrays: [],
         objectSchema: {
           actorId: { kind: "actor", default: 0 },
@@ -78,7 +78,7 @@ describe("empty struct", () => {
         category: "struct",
         name: "EmptyStructArray",
         objectSchema: {},
-        scalars: undefined,
+        scalarsPath: undefined,
         scalarArrays: [
           {
             path: "$.emptyStructArray.numberArray[*]",

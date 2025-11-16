@@ -36,7 +36,7 @@ describe("person", () => {
     {
       category: "struct",
       name: "MockPerson",
-      scalars: `$.person["name","age","b"]`,
+      scalarsPath: `$.person["name","age","b"]`,
       scalarArrays: [
         {
           path: "$.person.numberArray[*]",
@@ -75,7 +75,7 @@ describe("person", () => {
   test("isvalid path", () => {
     expected.forEach((item) => {
       expect(() => {
-        new JSONPathJS(item.scalars);
+        new JSONPathJS(item.scalarsPath);
       }).not.toThrow();
       item.scalarArrays.forEach((path) => {
         expect(() => {
