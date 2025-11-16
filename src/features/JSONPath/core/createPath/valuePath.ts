@@ -2,6 +2,7 @@ import type {
   ClassifiedPluginParams,
   PluginParamEx,
   ScalarParam,
+  StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
@@ -43,7 +44,7 @@ export const eee = (
 
 export const createPluginValuesPathPP = (
   category: ValueCategory,
-  param: PluginParamEx<StructRefParam>,
+  param: PluginParamEx<StructRefParam | StructArrayRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): PluginValuesPathNewVersion => {
   const parent: string = "$";
