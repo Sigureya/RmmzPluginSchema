@@ -1,6 +1,11 @@
 import type { PluginParam } from "@RmmzPluginSchema/rmmz/plugin";
 
-export type ValueCategory2 = "struct" | "command" | "param";
+export type ValueCategory2 =
+  | "struct"
+  | "command"
+  | "param"
+  | "args"
+  | "primitive";
 
 export interface PluginValues {
   rootType: ValueCategory2;
