@@ -137,7 +137,7 @@ describe("Address path generation and value extraction", () => {
       category: "param",
       name: "Address",
       objectSchema: {},
-      scalars: undefined,
+      scalarsPath: undefined,
       scalarArrays: [],
     },
     structArrays: { items: [], errors: [] },
@@ -146,7 +146,7 @@ describe("Address path generation and value extraction", () => {
         {
           category: "struct",
           name: "Address",
-          scalars: `$.address["street","city","zipCode"]`,
+          scalarsPath: `$.address["street","city","zipCode"]`,
           scalarArrays: [],
           objectSchema: toObjectPluginParams(addressSchema.scalars),
         },
@@ -231,7 +231,7 @@ describe("Person path generation and value extraction", () => {
       category: "param",
       name: "Person",
       objectSchema: {},
-      scalars: undefined,
+      scalarsPath: undefined,
       scalarArrays: [],
     },
     structArrays: { items: [], errors: [] },
@@ -240,7 +240,7 @@ describe("Person path generation and value extraction", () => {
         {
           category: "struct",
           name: "Person",
-          scalars: `$.person["name","age"]`,
+          scalarsPath: `$.person["name","age"]`,
           objectSchema: {
             name: { default: "", kind: "string" },
             age: { default: 0, kind: "number" },
@@ -386,7 +386,7 @@ describe("classroom path generation and value extraction", () => {
       category: "param",
       name: "Class",
       objectSchema: {},
-      scalars: undefined,
+      scalarsPath: undefined,
       scalarArrays: [],
     },
     structArrays: {
@@ -403,7 +403,7 @@ describe("classroom path generation and value extraction", () => {
             className: { default: "", kind: "string" },
           },
           scalarArrays: [],
-          scalars: '$.classroom["className"]',
+          scalarsPath: '$.classroom["className"]',
         },
         {
           category: "struct",
@@ -428,7 +428,7 @@ describe("classroom path generation and value extraction", () => {
               path: "$.classroom.teacher.nicknames[*]",
             },
           ],
-          scalars: '$.classroom.teacher["name","age"]',
+          scalarsPath: '$.classroom.teacher["name","age"]',
         },
         {
           category: "struct",
@@ -453,7 +453,7 @@ describe("classroom path generation and value extraction", () => {
               path: "$.classroom.students[*].nicknames[*]",
             },
           ],
-          scalars: '$.classroom.students[*]["name","age"]',
+          scalarsPath: '$.classroom.students[*]["name","age"]',
         },
       ],
     },
@@ -683,7 +683,7 @@ describe("School path generation and value extraction", () => {
       category: "param",
       name: "School",
       objectSchema: {},
-      scalars: undefined,
+      scalarsPath: undefined,
       scalarArrays: [],
     },
     structArrays: {
@@ -699,7 +699,7 @@ describe("School path generation and value extraction", () => {
           objectSchema: {
             since: { kind: "number", default: 0 },
           },
-          scalars: '$.school["since"]',
+          scalarsPath: '$.school["since"]',
           scalarArrays: [],
         },
         {
@@ -710,7 +710,7 @@ describe("School path generation and value extraction", () => {
             street: { kind: "string", default: "" },
             zipCode: { kind: "string", default: "" },
           },
-          scalars: '$.school.address["street","city","zipCode"]',
+          scalarsPath: '$.school.address["street","city","zipCode"]',
           scalarArrays: [],
         },
         {
@@ -722,7 +722,7 @@ describe("School path generation and value extraction", () => {
               kind: "string",
             },
           },
-          scalars: '$.school.classrooms[*]["className"]',
+          scalarsPath: '$.school.classrooms[*]["className"]',
           scalarArrays: [],
         },
         {
@@ -732,7 +732,7 @@ describe("School path generation and value extraction", () => {
             age: { kind: "number", default: 0 },
             name: { kind: "string", default: "" },
           },
-          scalars: '$.school.classrooms[*].teacher["name","age"]',
+          scalarsPath: '$.school.classrooms[*].teacher["name","age"]',
           scalarArrays: [
             {
               param: {
@@ -757,7 +757,7 @@ describe("School path generation and value extraction", () => {
             age: { kind: "number", default: 0 },
             name: { kind: "string", default: "" },
           },
-          scalars: '$.school.classrooms[*].students[*]["name","age"]',
+          scalarsPath: '$.school.classrooms[*].students[*]["name","age"]',
           scalarArrays: [
             {
               param: {

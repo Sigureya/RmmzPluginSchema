@@ -35,11 +35,15 @@ const compileStructExtractor = (
   p: StructPropertysPath,
   factoryFn: (path: string) => JSONPathReader
 ): PluginValuesPathMemo4 => {
-  if (p.scalars) {
+  if (p.scalarsPath) {
     return {
       bundleName: p.name,
       arrays: compileArrayPathExtractor(p.scalarArrays, p.name, factoryFn),
-      scalar: compileScalarValueExtractor(p.scalars, p.objectSchema, factoryFn),
+      scalar: compileScalarValueExtractor(
+        p.scalarsPath,
+        p.objectSchema,
+        factoryFn
+      ),
     };
   }
 

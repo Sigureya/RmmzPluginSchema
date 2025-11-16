@@ -44,7 +44,7 @@ function createNode(
     objectSchema: toObjectPluginParams(structSchema.scalars),
     name: structName,
     scalarArrays: makeScalarArrayPath(structSchema.scalarArrays, path),
-    scalars:
+    scalarsPath:
       structSchema.scalars.length > 0
         ? makeScalarValuesPath(structSchema.scalars, path)
         : undefined,

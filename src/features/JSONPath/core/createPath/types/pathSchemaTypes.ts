@@ -12,7 +12,7 @@ export interface ArrayParamPathPair {
 export interface StructPropertysPath {
   name: string;
   category: ValueCategory;
-  scalars: string | undefined;
+  scalarsPath: string | undefined;
   scalarArrays: ArrayParamPathPair[];
   objectSchema: Record<string, ScalarParam>;
 }

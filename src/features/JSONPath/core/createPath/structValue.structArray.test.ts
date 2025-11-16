@@ -77,7 +77,7 @@ describe("getPathFromStructParam", () => {
       name: { default: "", kind: "string" },
     },
     scalarArrays: [],
-    scalars: '$.classRoom.students[*]["name","age"]',
+    scalarsPath: '$.classRoom.students[*]["name","age"]',
   };
   const path2: StructPropertysPath = {
     category: "struct",
@@ -87,7 +87,7 @@ describe("getPathFromStructParam", () => {
       itemName: { default: "", kind: "string" },
     },
     scalarArrays: [],
-    scalars: '$.classRoom.items[*]["itemId","itemName"]',
+    scalarsPath: '$.classRoom.items[*]["itemId","itemName"]',
   };
 
   test("classRoom.students", () => {
