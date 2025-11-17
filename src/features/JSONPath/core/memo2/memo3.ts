@@ -24,7 +24,9 @@ export const runMemoBundle = (
   value: JSONValue,
   memo: MemoBundle
 ): PluginValues[] => {
-  const topValues: PluginValues[] = extractFromStruct(memo, value, memo.top);
+  const topValues: PluginValues[] = memo.top
+    ? extractFromStruct(memo, value, memo.top)
+    : [];
   const structValues: PluginValues[][] = memo.structs.map((m) =>
     extractFromStruct(memo, value, m)
   );

@@ -18,7 +18,7 @@ export interface MemoBundle {
   rootName: string;
   rootCategory: ValueCategory2;
 
-  top: PluginValuesPathMemo4;
+  top: PluginValuesPathMemo4 | undefined;
   structs: PluginValuesPathMemo4[];
   structArrays: PluginValuesPathMemo4[];
 }
