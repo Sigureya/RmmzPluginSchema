@@ -56,6 +56,12 @@ export const hasStructAttr = (
   return isStructParam(param.attr) || isStructArrayParam(param.attr);
 };
 
+export const isStructAttr = (
+  param: PluginParam
+): param is PluginParamEx<StructRefParam> => {
+  return isStructParam(param.attr);
+};
+
 export const hasScalarAttr = (
   param: PluginParam
 ): param is PluginParamEx<ScalarParam> => {
