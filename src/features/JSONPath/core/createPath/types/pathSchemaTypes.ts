@@ -44,7 +44,7 @@ export interface PluginValuesPathWithError {
 export interface PluginValuesPathNewVersion extends PluginValuesPath2 {
   rootCategory: ValueCategory;
   rootName: string;
-  scalars: StructPropertysPath;
+  scalars?: StructPropertysPath;
   structs: StructPathResultWithError;
   structArrays: StructPathResultWithError;
 }
@@ -77,7 +77,7 @@ export interface PluginValuesPath2 {
   rootCategory: ValueCategory;
   rootName: string;
 
-  scalars: StructPropertysPath;
+  scalars?: StructPropertysPath;
   structs: StructPathResult2;
   structArrays: StructPathResult2;
 }

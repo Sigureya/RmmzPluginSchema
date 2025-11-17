@@ -2,18 +2,9 @@ import type {
   ClassifiedPluginParams,
   PluginParamEx,
   ScalarParam,
-  StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  classifyFileParams,
-  toObjectPluginParams,
-} from "@RmmzPluginSchema/rmmz/plugin";
-import { makeScalarValuesPath, makeScalarArrayPath } from "./scalarValue";
-import {
-  getPathFromStructParam,
-  getPathFromStructArraySchema,
-} from "./structValue";
+import { getPathFromStructParam } from "./structValue";
 import type {
   PluginValuesPathNewVersion,
   PrimitivePluginValuesPath,
@@ -44,31 +35,17 @@ export const eee = (
 
 export const createPluginValuesPathPP = (
   category: ValueCategory,
-  param: PluginParamEx<StructRefParam | StructArrayRefParam>,
+  param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
 ): PluginValuesPathNewVersion => {
-  const parent: string = "$";
-  const cpp = classifyFileParams([param]);
-
   return {
     rootName: param.name,
     rootCategory: category,
-    // ex: root.struct.param
-    structs: getPathFromStructParam(cpp.structs, parent, structMap),
-    // ex: root.array[*].param
-    structArrays: getPathFromStructArraySchema(
-      cpp.structArrays,
-      parent,
-      structMap
-    ),
-    scalars: {
-      category: "struct",
-      name: param.attr.struct,
-      objectSchema: toObjectPluginParams(cpp.scalars),
-      // ex: root.param
-      scalarsPath: makeScalarValuesPath(cpp.scalars, parent),
-      // ex: root.array[*]
-      scalarArrays: makeScalarArrayPath(cpp.scalarArrays, parent),
+    scalars: undefined,
+    structArrays: {
+      items: [],
+      errors: [],
     },
+    structs: getPathFromStructParam([param], "$", structMap),
   };
 };
