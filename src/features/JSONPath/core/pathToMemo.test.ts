@@ -10,9 +10,8 @@ import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { PluginValuesPathNewVersion } from "./createPath/types";
 import { createPluginValuesPathPP } from "./createPath/valuePath";
-import { runMemoBundle } from "./memo2/memo3";
-import type { PluginValues } from "./memo2/types";
-import type { MemoBundle } from "./memo2/types/memo3";
+import { runMemoBundle } from "./extractor/extractor";
+import type { ExtractorBundle, PluginValues } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
 interface Address {
@@ -172,7 +171,10 @@ describe("Address path generation and value extraction", () => {
     });
 
     test("creates correct memo structure", () => {
-      const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
+      const memo: ExtractorBundle = compileJSONPathSchema(
+        pathSchema,
+        newJSONPath
+      );
       expect(memo.top).toBe(null);
       expect(memo.structArrays).toEqual([]);
       expect(memo.structs).toHaveLength(1);
@@ -212,7 +214,10 @@ describe("Address path generation and value extraction", () => {
         value: "12345",
       },
     ];
-    const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
+    const memo: ExtractorBundle = compileJSONPathSchema(
+      pathSchema,
+      newJSONPath
+    );
     expect(memo.rootName).toBe("address");
     const values: PluginValues[] = runMemoBundle(paramObject, memo);
     expect(values).toEqual(expectedValues);
@@ -374,7 +379,10 @@ describe("Person path generation and value extraction", () => {
           },
         },
       ];
-      const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
+      const memo: ExtractorBundle = compileJSONPathSchema(
+        pathSchema,
+        newJSONPath
+      );
       const values: PluginValues[] = runMemoBundle(paramObject, memo);
       expect(values).toEqual(expectedValues);
     });
@@ -733,7 +741,10 @@ describe("classroom path generation and value extraction", () => {
         value: "Rob",
       },
     ];
-    const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
+    const memo: ExtractorBundle = compileJSONPathSchema(
+      pathSchema,
+      newJSONPath
+    );
     const values: PluginValues[] = runMemoBundle(paramObject, memo);
     expect(values).toEqual(expectedValues);
   });
@@ -1108,7 +1119,10 @@ describe("School path generation and value extraction", () => {
           value: "Chuck",
         },
       ];
-      const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
+      const memo: ExtractorBundle = compileJSONPathSchema(
+        pathSchema,
+        newJSONPath
+      );
       const values: PluginValues[] = runMemoBundle(paramObject, memo);
       expect(values).toEqual(expectedValues);
     });

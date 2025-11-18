@@ -12,17 +12,18 @@ import {
   isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  PluginValueScalar,
-  PluginValuesSA,
-  PluginValuesNA,
-  ArrayPathMemo,
+  ExtractorBundle,
   PluginValues,
+  PluginValuesPathMemo4,
+  PluginValueScalar,
+  PluginValuesStringArray,
+  PluginValuesNumberArray,
+  ArrayPathExtractor,
 } from "./types";
-import type { MemoBundle, PluginValuesPathMemo4 } from "./types/memo3";
 
 export const runMemoBundle = (
   value: JSONValue,
-  memo: MemoBundle
+  memo: ExtractorBundle
 ): PluginValues[] => {
   const topValues: PluginValues[] = memo.top
     ? extractFromStruct(memo, value, memo.top)
@@ -37,7 +38,7 @@ export const runMemoBundle = (
 };
 
 const extractFromStruct = (
-  bundle: MemoBundle,
+  bundle: ExtractorBundle,
   value: JSONValue,
   memo: PluginValuesPathMemo4
 ): PluginValues[] => {
@@ -52,14 +53,15 @@ const extractFromStruct = (
       )
     : [];
 
-  const avalues: (PluginValuesSA[] | PluginValuesNA[])[] = memo.arrays.map(
-    (arrayMemo) => readArrayValue2(bundle, structName, value, arrayMemo)
-  );
+  const avalues: (PluginValuesStringArray[] | PluginValuesNumberArray[])[] =
+    memo.arrays.map((arrayMemo) =>
+      readArrayValue2(bundle, structName, value, arrayMemo)
+    );
   return [svalues, avalues].flat(2);
 };
 
 const readScalarValueV3 = (
-  bundle: MemoBundle,
+  bundle: ExtractorBundle,
   structName: string,
   json: JSONValue,
   jsonPath: JSONPathReader,
@@ -91,11 +93,11 @@ const readScalarValueV3 = (
 };
 
 const readArrayValue2 = (
-  bundle: MemoBundle,
+  bundle: ExtractorBundle,
   groupName: string,
   json: JSONValue,
-  path: ArrayPathMemo
-): PluginValuesSA[] | PluginValuesNA[] => {
+  path: ArrayPathExtractor
+): PluginValuesStringArray[] | PluginValuesNumberArray[] => {
   const values: JSONValue = path.jsonPathJS.find(json);
   if (!Array.isArray(values)) {
     return [];
@@ -105,7 +107,7 @@ const readArrayValue2 = (
     const s: string[] = values.filter((v) => typeof v === "string");
     type ParamType = Extract<PrimitiveParam, { default: string[] }>;
     return s.map(
-      (value): PluginValuesSA => ({
+      (value): PluginValuesStringArray => ({
         value: value,
         category: "struct",
         rootType: bundle.rootCategory,
@@ -119,7 +121,7 @@ const readArrayValue2 = (
     const s: number[] = values.filter((v) => typeof v === "number");
     type ParamType = Extract<PrimitiveParam, { default: number[] }>;
     return s.map(
-      (value): PluginValuesNA => ({
+      (value): PluginValuesNumberArray => ({
         roootName: bundle.rootName,
         rootType: bundle.rootCategory,
         value: value,

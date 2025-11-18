@@ -1,20 +1,20 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayPathMemo } from "./array";
+import type { ArrayPathExtractor } from "./array";
 import type { ValueCategory2 } from "./result";
 
 export interface PluginValuesPathMemo4 {
-  scalar?: SSS;
-  arrays: ArrayPathMemo[];
+  scalar?: ScalarValueExtractor;
+  arrays: ArrayPathExtractor[];
   bundleName: string;
 }
 
-export interface SSS {
+export interface ScalarValueExtractor {
   jsonPathJS: JSONPathReader;
   record: Record<string, ScalarParam>;
 }
 
-export interface MemoBundle {
+export interface ExtractorBundle {
   rootName: string;
   rootCategory: ValueCategory2;
 

@@ -4,15 +4,15 @@ import type {
   ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPathPP2 } from "./createPath/valuePath";
-import type { MemoBundle } from "./memo2/types/memo3";
+import type { ExtractorBundle } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
 export const ccc = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader
-): MemoBundle[] => {
-  return schema.args.map((arg): MemoBundle => {
+): ExtractorBundle[] => {
+  return schema.args.map((arg): ExtractorBundle => {
     const path = createPluginValuesPathPP2(
       "args",
       schema.command,

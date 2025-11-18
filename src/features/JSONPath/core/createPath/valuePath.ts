@@ -19,7 +19,7 @@ import {
 import type {
   PluginValuesPathNewVersion,
   PrimitivePluginValuesPath,
-} from "./types/pathSchemaTypes";
+} from "./types";
 
 export const createPluginValuesPathPP2 = (
   category: "param" | "args",

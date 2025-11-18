@@ -6,14 +6,14 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValues, ValueCategory2 } from "./result";
 
-export interface PluginValuesSA extends PluginValues {
+export interface PluginValuesStringArray extends PluginValues {
   value: string;
   category: ValueCategory2;
   name: string;
   param: PluginParamEx<StringArrayParam>;
 }
 
-export interface PluginValuesNA extends PluginValues {
+export interface PluginValuesNumberArray extends PluginValues {
   value: number;
   category: ValueCategory2;
   name: string;
@@ -23,7 +23,7 @@ export interface PluginValuesNA extends PluginValues {
 type StringArrayParam = Extract<PrimitiveParam, { default: string[] }>;
 type NumberArrayParam = Extract<PrimitiveParam, { default: number[] }>;
 
-export interface ArrayPathMemo {
+export interface ArrayPathExtractor {
   jsonPathJS: JSONPathReader;
   schema: PluginParamEx<ArrayParamTypes>;
   parentType: string;
