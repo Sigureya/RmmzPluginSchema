@@ -13,3 +13,5 @@ export interface CommandExtracrResult {
   commandName: string;
   values: PluginValues[];
 }
+
+export type CommandPairXXX = [`${string}:${string}`, CommandArgExtractors];
