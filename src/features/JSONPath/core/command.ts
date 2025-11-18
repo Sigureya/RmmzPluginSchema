@@ -15,7 +15,7 @@ import { runMemoBundleEx } from "./extractor/extractor";
 import type { ExtractorBundle } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const createPluginCommandExtractor = (
+export const compilePluginCommandExtractor = (
   pluginName: string,
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
