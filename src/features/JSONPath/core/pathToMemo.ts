@@ -5,17 +5,17 @@ import type {
   PluginValuesPath2,
   StructPropertysPath,
 } from "./createPath/types";
-import type { ArrayPathMemo } from "./memo2/types";
 import type {
-  MemoBundle,
+  ExtractorBundle,
   PluginValuesPathMemo4,
-  SSS,
-} from "./memo2/types/memo3";
+  ArrayPathExtractor,
+  ScalarValueExtractor,
+} from "./extractor/types";
 
 export const compileJSONPathSchema = (
   path: PluginValuesPath2,
   factoryFn: (path: string) => JSONPathReader
-): MemoBundle => {
+): ExtractorBundle => {
   const top = path.scalars
     ? compileStructExtractor(path.scalars, factoryFn)
     : undefined;
@@ -60,9 +60,9 @@ const compileArrayPathExtractor = (
   paths: ReadonlyArray<ArrayParamPathPair>,
   gn: string,
   factoryFn: (path: string) => JSONPathReader
-): ArrayPathMemo[] => {
+): ArrayPathExtractor[] => {
   return paths.map(
-    (p): ArrayPathMemo => ({
+    (p): ArrayPathExtractor => ({
       jsonPathJS: factoryFn(p.path),
       schema: p.param,
       parentType: gn,
@@ -74,7 +74,7 @@ const compileScalarValueExtractor = (
   path: string,
   schema: Record<string, ScalarParam>,
   factoryFn: (path: string) => JSONPathReader
-): SSS => ({
+): ScalarValueExtractor => ({
   jsonPathJS: factoryFn(path),
   record: schema,
 });
