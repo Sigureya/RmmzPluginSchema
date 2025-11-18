@@ -7,6 +7,7 @@ import type {
   ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
+  CommandPairXXX,
   CommandArgExtractors,
   CommandExtracrResult,
 } from "./commandTypes";
@@ -14,6 +15,21 @@ import { createPluginValuesPathPP2 } from "./createPath/valuePath";
 import { runMemoBundleEx } from "./extractor/extractor";
 import type { ExtractorBundle } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
+
+export const compilePluginCommandExtractorEx = (
+  pluginName: string,
+  schema: PluginCommandSchemaArray,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  factoryFn: (path: string) => JSONPathReader
+): CommandPairXXX => {
+  const xxx = compilePluginCommandExtractor(
+    pluginName,
+    schema,
+    structMap,
+    factoryFn
+  );
+  return [`${pluginName}:${schema.command}`, xxx];
+};
 
 export const compilePluginCommandExtractor = (
   pluginName: string,
