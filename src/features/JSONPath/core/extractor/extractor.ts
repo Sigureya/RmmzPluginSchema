@@ -21,10 +21,21 @@ import type {
   ArrayPathExtractor,
 } from "./types";
 
+export const runMemoBundleEx = (
+  value: JSONValue,
+  memo: ReadonlyArray<ExtractorBundle>
+): PluginValues[] => {
+  return memo.map((m) => es2(value, m)).flat(3);
+};
+
 export const runMemoBundle = (
   value: JSONValue,
   memo: ExtractorBundle
 ): PluginValues[] => {
+  return es2(value, memo).flat(2);
+};
+
+const es2 = (value: JSONValue, memo: ExtractorBundle) => {
   const topValues: PluginValues[] = memo.top
     ? extractFromStruct(memo, value, memo.top)
     : [];
@@ -34,7 +45,7 @@ export const runMemoBundle = (
   const structArrayValues: PluginValues[][] = memo.structArrays.map((m) =>
     extractFromStruct(memo, value, m)
   );
-  return [topValues, structValues, structArrayValues].flat(2);
+  return [topValues, structValues, structArrayValues];
 };
 
 const extractFromStruct = (
