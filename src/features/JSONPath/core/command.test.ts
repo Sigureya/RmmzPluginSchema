@@ -4,15 +4,13 @@ import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArray,
-  PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import {
-  createPluginCommandExtractor,
+  compilePluginCommandExtractor,
   extractPluginCommandArgs,
 } from "./command";
 import type { CommandExtracrResult } from "./commandTypes";
-import type { StructPropertysPath, StructPathResultItems } from "./createPath";
 import type { PluginValues } from "./extractor/types";
 
 interface Effect {
@@ -70,17 +68,6 @@ const schemaMessage: ClassifiedPluginParamsEx<Message> = {
   structs: [],
 };
 
-const commandAction: PluginCommandSchemaArrayEx<Action> = {
-  command: "Action",
-  args: [
-    { name: "subject", attr: { kind: "number", default: 0 } },
-    { name: "targets", attr: { kind: "number[]", default: [] } },
-    { name: "damage", attr: { kind: "struct", struct: "Damage" } },
-    { name: "effects", attr: { kind: "struct[]", struct: "Effect" } },
-    { name: "message", attr: { kind: "struct", struct: "Message" } },
-  ],
-};
-
 const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
   string,
   ClassifiedPluginParams
@@ -100,58 +87,6 @@ const mockData = {
   damage: { exprFunc: "a  b", landomTable: [201, 211, 233] },
   message: { success: "Hit!", failure: "Miss!" },
 } as const satisfies Action;
-
-const scalarsPath: StructPropertysPath = {
-  name: "Action",
-  category: "command",
-  objectSchema: {
-    subject: { default: 0, kind: "number" },
-  },
-  scalarArrays: [
-    {
-      param: { attr: { default: [], kind: "number[]" }, name: "targets" },
-      path: "$.targets[*]",
-    },
-  ],
-  scalarsPath: '$["subject"]',
-};
-
-const structsPath: StructPathResultItems = {
-  items: [
-    {
-      category: "struct",
-      name: "Damage",
-      objectSchema: { exprFunc: { default: "", kind: "string" } },
-      scalarArrays: [],
-      scalarsPath: '$.damage["exprFunc"]',
-    },
-    {
-      category: "struct",
-      name: "Message",
-      objectSchema: {
-        failure: { default: "", kind: "string" },
-        success: { default: "", kind: "string" },
-      },
-      scalarArrays: [],
-      scalarsPath: '$.message["success","failure"]',
-    },
-  ],
-};
-
-const structArrays: StructPathResultItems = {
-  items: [
-    {
-      category: "struct",
-      name: "Effect",
-      objectSchema: {
-        code: { default: 0, kind: "number" },
-        value: { default: 0, kind: "number" },
-      },
-      scalarArrays: [],
-      scalarsPath: '$.effects[*]["code","value"]',
-    },
-  ],
-};
 
 const createMockFunc = (): MockedFunction<(path: string) => JSONPathJS> => {
   return vi.fn(newJSONPath);
@@ -175,7 +110,7 @@ describe("command extractor", () => {
 
   test("create memo", () => {
     const mockFn = createMockFunc();
-    createPluginCommandExtractor("PluginName", schema, structsMap, mockFn);
+    compilePluginCommandExtractor("PluginName", schema, structsMap, mockFn);
     expect(mockFn).toHaveBeenCalledTimes(5);
     expect(mockFn).toHaveBeenNthCalledWith(1, "$.subject");
     expect(mockFn).toHaveBeenNthCalledWith(2, "$.targets[*]");
@@ -183,17 +118,8 @@ describe("command extractor", () => {
     expect(mockFn).toHaveBeenNthCalledWith(4, '$.effects[*]["code","value"]');
     expect(mockFn).toHaveBeenNthCalledWith(5, '$.message["success","failure"]');
   });
+
   test("extract values", () => {
-    const commandArgs = {
-      subject: 1,
-      targets: [2, 3],
-      effects: [
-        { code: 10, value: 100 },
-        { code: 20, value: 200 },
-      ],
-      damage: { exprFunc: "a  b", landomTable: [201, 211, 233] },
-      message: { success: "Hit!", failure: "Miss!" },
-    } as const satisfies Action;
     const values: PluginValues[] = [
       {
         category: "struct",
@@ -307,13 +233,13 @@ describe("command extractor", () => {
       },
     ];
 
-    const memo = createPluginCommandExtractor(
+    const memo = compilePluginCommandExtractor(
       "",
       schema,
       structsMap,
       (paht) => new JSONPathJS(paht)
     );
-    const result = extractPluginCommandArgs(commandArgs, memo);
+    const result = extractPluginCommandArgs(mockData, memo);
     expect(result.values).toEqual(values);
   });
 });
@@ -328,29 +254,20 @@ describe("", () => {
       },
     ],
   };
-  test("", () => {
+  test("create memo", () => {
     const mockFn = createMockFunc();
-    createPluginCommandExtractor("ppp", schema, structsMap, mockFn);
+    compilePluginCommandExtractor("", schema, structsMap, mockFn);
     expect(mockFn).toHaveBeenCalledTimes(1);
     expect(mockFn).toHaveBeenNthCalledWith(1, '$.message["success","failure"]');
   });
-  test("", () => {
-    const memo = createPluginCommandExtractor(
+
+  test("extract values", () => {
+    const memo = compilePluginCommandExtractor(
       "PluginName",
       schema,
       structsMap,
       (paht) => new JSONPathJS(paht)
     );
-    const commandArgs = {
-      subject: 1,
-      targets: [2, 3],
-      effects: [
-        { code: 10, value: 100 },
-        { code: 20, value: 200 },
-      ],
-      damage: { exprFunc: "a  b", landomTable: [201, 211, 233] },
-      message: { success: "Hit!", failure: "Miss!" },
-    } as const satisfies Action;
     const values: PluginValues[] = [
       {
         category: "struct",
@@ -376,7 +293,7 @@ describe("", () => {
       },
     ];
     const result: CommandExtracrResult = extractPluginCommandArgs(
-      commandArgs,
+      mockData,
       memo
     );
     expect(result.values).toEqual(values);
