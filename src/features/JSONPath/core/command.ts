@@ -1,13 +1,36 @@
-import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
+import type {
+  JSONPathReader,
+  JSONValue,
+} from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   PluginCommandSchemaArray,
   ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  CommandArgExtractors,
+  CommandExtracrResult,
+} from "./commandTypes";
 import { createPluginValuesPathPP2 } from "./createPath/valuePath";
+import { runMemoBundleEx } from "./extractor/extractor";
 import type { ExtractorBundle } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const ccc = (
+export const createPluginCommandExtractor = (
+  pluginName: string,
+  schema: PluginCommandSchemaArray,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  factoryFn: (path: string) => JSONPathReader
+): CommandArgExtractors => {
+  return {
+    pluginName,
+    commandName: schema.command,
+    desc: schema.desc ?? "",
+    text: schema.text ?? "",
+    extractors: createExtractors(schema, structMap, factoryFn),
+  };
+};
+
+const createExtractors = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader
@@ -21,4 +44,15 @@ export const ccc = (
     );
     return compileJSONPathSchema(path, factoryFn);
   });
+};
+
+export const extractPluginCommandArgs = (
+  value: JSONValue,
+  extractor: CommandArgExtractors
+): CommandExtracrResult => {
+  return {
+    pluginName: extractor.pluginName,
+    commandName: extractor.commandName,
+    values: runMemoBundleEx(value, extractor.extractors),
+  };
 };
