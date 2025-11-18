@@ -133,13 +133,7 @@ describe("Address path generation and value extraction", () => {
   const pathSchema: PluginValuesPathNewVersion = {
     rootCategory: "param",
     rootName: "address",
-    scalars: {
-      category: "struct",
-      name: "Address",
-      objectSchema: {},
-      scalarsPath: undefined,
-      scalarArrays: [],
-    },
+    scalars: undefined,
     structArrays: { items: [], errors: [] },
     structs: {
       items: [
@@ -165,7 +159,7 @@ describe("Address path generation and value extraction", () => {
     expect(map.get).toBeCalledWith("Address");
     expect(map.get).toBeCalledTimes(1);
     expect(result.structArrays).toEqual(pathSchema.structArrays);
-    expect(result.scalars).toEqual(pathSchema.scalars);
+    expect(result.scalars).toBeUndefined();
     expect(result.structs).toEqual(pathSchema.structs);
     expect(result).toEqual(pathSchema);
   });
@@ -179,8 +173,7 @@ describe("Address path generation and value extraction", () => {
 
     test("creates correct memo structure", () => {
       const memo: MemoBundle = compileJSONPathSchema(pathSchema, newJSONPath);
-      expect(memo.top.scalar).toBeUndefined();
-      expect(memo.top.arrays).toEqual([]);
+      expect(memo.top).toBe(null);
       expect(memo.structArrays).toEqual([]);
       expect(memo.structs).toHaveLength(1);
     });
@@ -234,13 +227,7 @@ describe("Person path generation and value extraction", () => {
   const pathSchema: PluginValuesPathNewVersion = {
     rootCategory: "param",
     rootName: "person",
-    scalars: {
-      category: "struct",
-      name: "Person",
-      objectSchema: {},
-      scalarsPath: undefined,
-      scalarArrays: [],
-    },
+    scalars: undefined,
     structArrays: { items: [], errors: [] },
     structs: {
       items: [
@@ -286,7 +273,7 @@ describe("Person path generation and value extraction", () => {
     expect(result.rootCategory).toEqual(pathSchema.rootCategory);
     expect(result.rootName).toEqual(pathSchema.rootName);
     expect(result.structArrays).toEqual(pathSchema.structArrays);
-    expect(result.scalars).toEqual(pathSchema.scalars);
+    expect(result.scalars).toBeUndefined();
     expect(result.structs).toEqual(pathSchema.structs);
     expect(result).toEqual(pathSchema);
   });
@@ -403,13 +390,7 @@ describe("classroom path generation and value extraction", () => {
   const pathSchema: PluginValuesPathNewVersion = {
     rootCategory: "param",
     rootName: "classroom",
-    scalars: {
-      category: "struct",
-      name: "Class",
-      objectSchema: {},
-      scalarsPath: undefined,
-      scalarArrays: [],
-    },
+    scalars: undefined,
     structArrays: {
       errors: [],
       items: [],
@@ -493,7 +474,7 @@ describe("classroom path generation and value extraction", () => {
       expect(result.rootCategory).toEqual(pathSchema.rootCategory);
       expect(result.rootName).toEqual(pathSchema.rootName);
       expect(result.structArrays).toEqual(pathSchema.structArrays);
-      expect(result.scalars).toEqual(pathSchema.scalars);
+      expect(result.scalars).toBeUndefined();
       expect(result.structs).toEqual(pathSchema.structs);
       expect(result).toEqual(pathSchema);
     });
@@ -765,13 +746,7 @@ describe("School path generation and value extraction", () => {
   const pathSchema: PluginValuesPathNewVersion = {
     rootCategory: "param",
     rootName: "school",
-    scalars: {
-      category: "struct",
-      name: "School",
-      objectSchema: {},
-      scalarsPath: undefined,
-      scalarArrays: [],
-    },
+    scalars: undefined,
     structArrays: {
       errors: [],
       items: [],

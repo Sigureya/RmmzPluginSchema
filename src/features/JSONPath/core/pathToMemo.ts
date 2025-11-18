@@ -16,7 +16,9 @@ export const compileJSONPathSchema = (
   path: PluginValuesPath2,
   factoryFn: (path: string) => JSONPathReader
 ): MemoBundle => {
-  const top = compileStructExtractor(path.scalars, factoryFn);
+  const top = path.scalars
+    ? compileStructExtractor(path.scalars, factoryFn)
+    : undefined;
   const structs = path.structs.items.map(
     (p): PluginValuesPathMemo4 => compileStructExtractor(p, factoryFn)
   );
