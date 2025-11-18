@@ -175,7 +175,7 @@ describe("Address path generation and value extraction", () => {
         pathSchema,
         newJSONPath
       );
-      expect(memo.top).toBe(null);
+      expect(memo.top).toBeUndefined();
       expect(memo.structArrays).toEqual([]);
       expect(memo.structs).toHaveLength(1);
     });
