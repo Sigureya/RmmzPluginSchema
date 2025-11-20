@@ -8,11 +8,11 @@ export interface CommandArgExtractors {
   extractors: ExtractorBundle[];
 }
 
-export interface CommandExtracrResult {
+export interface CommandExtractResult {
   pluginName: string;
   commandName: string;
   values: PluginValues[];
 }
 
 export type CommandMapKey = `${string}:${string}`;
-export type CommandPairXXX = [CommandMapKey, CommandArgExtractors];
+export type CommandExtractorEntry = [CommandMapKey, CommandArgExtractors];
