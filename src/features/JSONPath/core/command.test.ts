@@ -10,7 +10,7 @@ import {
   compilePluginCommandExtractor,
   extractPluginCommandArgs,
 } from "./command";
-import type { CommandExtracrResult } from "./commandTypes";
+import type { CommandExtractResult } from "./commandTypes";
 import type { PluginValues } from "./extractor/types";
 
 interface Effect {
@@ -292,7 +292,7 @@ describe("", () => {
         value: "Miss!",
       },
     ];
-    const result: CommandExtracrResult = extractPluginCommandArgs(
+    const result: CommandExtractResult = extractPluginCommandArgs(
       mockData,
       memo
     );

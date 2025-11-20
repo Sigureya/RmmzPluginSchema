@@ -1,7 +1,7 @@
 import type { PluginSchemaArray } from "./params";
 import type { PluginDependencies } from "./parse";
 
-export interface PluginSchemaV2 {
+export interface PluginSchema {
   pluginName: string;
   target: string;
   meta: Record<string, string>;

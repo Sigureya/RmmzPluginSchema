@@ -5,7 +5,7 @@ import type {
   PrimitiveParam,
 } from "./types";
 
-export const createStructMapclassifyed = (
+export const createClassifiedStructMap = (
   bundle: ReadonlyArray<PluginStructSchemaArray>
 ): Map<string, ClassifiedPluginParams> => {
   return new Map(

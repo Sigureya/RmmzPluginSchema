@@ -2,17 +2,17 @@ import type {
   JSONPathReader,
   JSONValue,
 } from "@RmmzPluginSchema/libs/jsonPath";
-import type { PluginSchemaV2 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  type PluginCommandSchemaArray,
-  type ClassifiedPluginParams,
-  createStructMapclassifyed,
+import type {
+  PluginSchema,
+  PluginCommandSchemaArray,
+  ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   CommandArgExtractors,
-  CommandExtracrResult,
+  CommandExtractResult,
   CommandMapKey,
-  CommandPairXXX,
+  CommandExtractorEntry,
 } from "./commandTypes";
 import { createPluginValuesPathPP2 } from "./createPath/valuePath";
 import { runMemoBundleEx } from "./extractor/extractor";
@@ -50,21 +50,23 @@ const createExtractors = (
   });
 };
 
-export const compilePluginCommandExtractorsEx = (
-  plugins: ReadonlyArray<PluginSchemaV2>,
+export const compileCommandExtractorsFromPlugins = (
+  plugins: ReadonlyArray<PluginSchema>,
   factoryFn: (path: string) => JSONPathReader
 ): Map<CommandMapKey, CommandArgExtractors> => {
-  return new Map(plugins.flatMap((p) => compile(p, factoryFn)));
+  return new Map(
+    plugins.flatMap((p) => compilePluginCommandPairs(p, factoryFn))
+  );
 };
 
-const compile = (
-  plugin: PluginSchemaV2,
+const compilePluginCommandPairs = (
+  plugin: PluginSchema,
   factoryFn: (path: string) => JSONPathReader
-): CommandPairXXX[] => {
+): CommandExtractorEntry[] => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
-  const structMap: MapType = createStructMapclassifyed(plugin.schema.structs);
+  const structMap: MapType = createClassifiedStructMap(plugin.schema.structs);
   return plugin.schema.commands.map(
-    (cmd): CommandPairXXX => [
+    (cmd): CommandExtractorEntry => [
       `${plugin.pluginName}:${cmd.command}`,
       compilePluginCommandExtractor(
         plugin.pluginName,
@@ -79,7 +81,7 @@ const compile = (
 export const extractPluginCommandArgs = (
   value: JSONValue,
   extractor: CommandArgExtractors
-): CommandExtracrResult => {
+): CommandExtractResult => {
   return {
     pluginName: extractor.pluginName,
     commandName: extractor.commandName,
