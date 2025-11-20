@@ -1,4 +1,4 @@
-import type { PluginSchema, PluginSchemaArray } from "./core";
+import type { PluginSchema } from "./core";
 import { compilePluginToObject } from "./core/compilePlugin";
 import { compilePluginAsArraySchema } from "./core/compilePluginAsArraySchema";
 import { parsePlugin } from "./core/parse/parse";
