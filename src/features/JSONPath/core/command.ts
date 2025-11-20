@@ -50,6 +50,29 @@ const createExtractors = (
   });
 };
 
+export const extractPluginCommandArgs = (
+  value: JSONValue,
+  extractor: CommandArgExtractors
+): CommandExtractResult => {
+  return {
+    pluginName: extractor.pluginName,
+    commandName: extractor.commandName,
+    values: runMemoBundleEx(value, extractor.extractors),
+  };
+};
+
+export const extractCommandArgsByKey = (
+  value: JSONValue,
+  key: CommandMapKey,
+  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>
+): CommandExtractResult | undefined => {
+  const extractor = map.get(key);
+  if (!extractor) {
+    return undefined;
+  }
+  return extractPluginCommandArgs(value, extractor);
+};
+
 export const compileCommandExtractorsFromPlugins = (
   plugins: ReadonlyArray<PluginSchema>,
   factoryFn: (path: string) => JSONPathReader
@@ -76,15 +99,4 @@ const compilePluginCommandPairs = (
       ),
     ]
   );
-};
-
-export const extractPluginCommandArgs = (
-  value: JSONValue,
-  extractor: CommandArgExtractors
-): CommandExtractResult => {
-  return {
-    pluginName: extractor.pluginName,
-    commandName: extractor.commandName,
-    values: runMemoBundleEx(value, extractor.extractors),
-  };
 };
