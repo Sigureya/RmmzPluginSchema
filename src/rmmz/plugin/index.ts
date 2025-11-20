@@ -3,4 +3,4 @@ export type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
 } from "./core/params/types/classifyTypes";
-export { pluginSourceToJSON } from "./plugin";
+export { pluginSourceToArraySchema, pluginSourceToJSON } from "./plugin";
