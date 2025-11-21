@@ -1,6 +1,6 @@
-import { PrimitiveParam, ScalaParam, ArrayParam, StructRefParam, StructArrayRefParam, PluginStructSchemaArray } from '../../../../rmmz/plugin';
+import { PrimitiveParam, ScalarParam, ArrayParam, StructRefParam, StructArrayRefParam, PluginStructSchemaArray } from '../../../../rmmz/plugin';
 export interface PluginParamGroups<T extends PrimitiveParam = PrimitiveParam> {
-    single: NamedAttribute<ScalaParam>[];
+    single: NamedAttribute<ScalarParam>[];
     array: NamedAttribute<Extract<T, ArrayParam>>[];
     struct: NamedAttribute<StructRefParam>[];
     structArray: NamedAttribute<StructArrayRefParam>[];

@@ -3,6 +3,7 @@ export * from './arraySchemaFilterByParamEx';
 export * from './classify';
 export * from './convert';
 export * from './lookupRpgDataKind';
+export * from './structMap';
 export * from './typeTest';
 export type * from './types';
 export { collectDependentStructNames } from './arraySchemaDependent';

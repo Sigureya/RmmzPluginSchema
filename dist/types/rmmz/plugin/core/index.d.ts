@@ -1,5 +1,5 @@
 export * from './params';
 export type * from './pluginJSONTypes';
+export type { PluginSchema } from './pluginJSON2type';
 export { compileAttributes } from './attributes';
-export { createStructMap } from './aaCreartStructMap';
 export { structDependencies } from './params/structDependencies';
