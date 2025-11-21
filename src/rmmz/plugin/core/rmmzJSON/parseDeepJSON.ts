@@ -1,5 +1,7 @@
-export const parseDeepJSON = (json: string): unknown => {
-  const parsed = JSON.parse(json);
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
+
+export const parseDeepJSON = (json: string): JSONValue => {
+  const parsed: JSONValue = JSON.parse(json);
   if (Array.isArray(parsed)) {
     return parsed.map(parseDeepValue);
   }
@@ -11,7 +13,7 @@ export const parseDeepJSON = (json: string): unknown => {
   return parsed;
 };
 
-const parseDeepValue = (value: unknown): unknown => {
+const parseDeepValue = (value: JSONValue): JSONValue => {
   if (typeof value !== "string") {
     return value;
   }
@@ -24,7 +26,10 @@ const parseDeepValue = (value: unknown): unknown => {
     // オブジェクトの場合、各プロパティを再帰的にparseDeepValue
     if (typeof parsed === "object" && parsed !== null) {
       return Object.fromEntries(
-        Object.entries(parsed).map(([k, v]) => [k, parseDeepValue(v)])
+        Object.entries(parsed).map(([k, v]) => [
+          k,
+          parseDeepValue(v as JSONValue),
+        ])
       );
     }
     return parsed;
