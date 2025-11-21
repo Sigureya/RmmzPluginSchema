@@ -123,7 +123,7 @@ export {
   K as compilePluginCommandExtractor,
   L as createPluginValuesPathPP,
   J as createPluginValuesPathPP2,
-  F as eee,
+  F as createPrimiteveParamPath,
   O as extractCommandArgsByKey,
   D as extractPluginCommandArgs,
   k as getPathFromStructArraySchema,
