@@ -4,7 +4,7 @@ import type {
   PluginValuesPathNewVersion,
   PrimitivePluginValuesPath,
 } from "./types";
-import { eee } from "./valuePath";
+import { createPrimiteveParamPath } from "./valuePath";
 
 describe("eee", () => {
   const param: PluginParamEx<ScalarParam> = {
@@ -33,7 +33,11 @@ describe("eee", () => {
         errors: [],
       },
     };
-    const result: PluginValuesPathNewVersion = eee("param", "testParam", param);
+    const result: PluginValuesPathNewVersion = createPrimiteveParamPath(
+      "param",
+      "testParam",
+      param
+    );
     expect(result).toEqual(expected);
   });
 });

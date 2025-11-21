@@ -36,7 +36,11 @@ export const createPluginValuesPathPP2 = (
   if (isArrayAttr(param)) {
     return att(category, rootName, param);
   }
-  return eee(category, rootName, param as PluginParamEx<ScalarParam>);
+  return createPrimiteveParamPath(
+    category,
+    rootName,
+    param as PluginParamEx<ScalarParam>
+  );
 };
 
 const att = (
@@ -64,7 +68,7 @@ const att = (
   };
 };
 
-export const eee = (
+export const createPrimiteveParamPath = (
   category: "param" | "args",
   rootName: string,
   param: PluginParamEx<ScalarParam>
