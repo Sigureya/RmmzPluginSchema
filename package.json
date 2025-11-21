@@ -13,12 +13,12 @@
       "require": "./dist/main/main.cjs.js"
     },
     "./rmmz": {
-      "types": "./dist/rmmz/index.d.ts",
+      "types": "./dist/types/rmmz/index.d.ts",
       "import": "./dist/rmmz/rmmz.es.js",
       "require": "./dist/rmmz/rmmz.cjs.js"
     },
     "./features": {
-      "types": "./dist/features/index.d.ts",
+      "types": "./dist/types/features/index.d.ts",
       "import": "./dist/features/features.es.js",
       "require": "./dist/features/features.cjs.js"
     }
