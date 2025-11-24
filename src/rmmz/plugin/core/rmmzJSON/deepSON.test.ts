@@ -1,12 +1,13 @@
 import { describe, expect, test } from "vitest";
-import { parseDeepJSON } from "./parseDeepJSON";
+import { parseDeepJSON, parseDeepRecord } from "./parseDeepJSON";
 import { stringifyDeepJSON } from "./stringifyDeepJSON";
+
 interface Person {
   name: string;
   age: number;
 }
 
-type XXJSONType<T> = Record<keyof T, string>;
+type JSONType<T> = Record<keyof T, string>;
 
 interface NestedPerson {
   person: Person;
@@ -22,17 +23,31 @@ interface Family {
   members: Person[];
 }
 
-describe("stringifyDeepJSON", () => {
+describe("parseDeepRecord", () => {
+  test("simple object", () => {
+    const record: JSONType<Person> = {
+      name: "bob",
+      age: "30",
+    };
+    const expected: Person = {
+      name: "bob",
+      age: 30,
+    };
+    const parsed = parseDeepRecord(record);
+    expect(parsed).toEqual(expected);
+  });
+});
+
+describe("parse <-> stringify", () => {
   describe("simple object", () => {
     const data: Person = {
       name: "bob",
       age: 30,
     };
-
     const json = JSON.stringify({
       name: "bob",
       age: "30",
-    } satisfies XXJSONType<Person>);
+    } satisfies JSONType<Person>);
     test("", () => {
       const result: string = stringifyDeepJSON(data);
       expect(result).toEqual(json);
@@ -57,11 +72,11 @@ describe("stringifyDeepJSON", () => {
       person: JSON.stringify({
         name: "bob",
         age: "30",
-      } satisfies XXJSONType<Person>),
+      } satisfies JSONType<Person>),
       address: JSON.stringify({
         city: "New York",
         country: "USA",
-      } satisfies XXJSONType<Address>),
+      } satisfies JSONType<Address>),
     } satisfies Record<keyof NestedPerson, string>);
     test("nested object", () => {
       const result = stringifyDeepJSON(data);
@@ -72,7 +87,8 @@ describe("stringifyDeepJSON", () => {
       expect(parsed).toEqual(data);
     });
   });
-  describe("array", () => {
+
+  describe("simple array", () => {
     const data: number[] = [1, 2, 3];
     const json: string = JSON.stringify(["1", "2", "3"]);
     test("number array", () => {
@@ -84,13 +100,13 @@ describe("stringifyDeepJSON", () => {
       expect(parsed).toEqual(data);
     });
   });
-  describe("", () => {
+  describe("simple array of object", () => {
     const baseData = [{ name: "bob", age: 30 }] as const satisfies Person[];
     const jsonLikeData = [
       { name: "bob", age: "30" } satisfies Record<keyof Person, string>,
     ];
     const expected = JSON.stringify(jsonLikeData.map((v) => JSON.stringify(v)));
-    test("", () => {
+    test("stringifyDeepJSON", () => {
       const result: string = stringifyDeepJSON(baseData);
       expect(result).toEqual(expected);
     });
@@ -99,7 +115,7 @@ describe("stringifyDeepJSON", () => {
       expect(parsed).toEqual(baseData);
     });
   });
-  describe("", () => {
+  describe("nested array", () => {
     const family: Family = {
       members: [
         { name: "bob", age: 30 },

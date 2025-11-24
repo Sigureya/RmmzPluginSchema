@@ -6,11 +6,19 @@ export const parseDeepJSON = (json: string): JSONValue => {
     return parsed.map(parseDeepValue);
   }
   if (typeof parsed === "object" && parsed !== null) {
-    return Object.fromEntries(
-      Object.entries(parsed).map(([k, v]) => [k, parseDeepValue(v)])
-    );
+    return parseUnknownRecord(parsed);
   }
   return parsed;
+};
+
+export const parseDeepRecord = (record: Record<string, string>): JSONValue => {
+  return parseUnknownRecord(record);
+};
+
+const parseUnknownRecord = (record: Record<string, JSONValue>) => {
+  return Object.fromEntries(
+    Object.entries(record).map(([k, v]) => [k, parseDeepValue(v)])
+  );
 };
 
 const parseDeepValue = (value: JSONValue): JSONValue => {
