@@ -11,3 +11,9 @@ export const convertPluginsJSToJSON = (src: string): string[] => {
     .filter((line) => !isIgnoredLine(line))
     .map((line) => (line.endsWith("];") ? line.slice(0, -1) : line));
 };
+
+export const parsePluginParamObject = (src: string): unknown => {
+  const lines = convertPluginsJSToJSON(src);
+  const jsonText = lines.join("\n");
+  return JSON.parse(jsonText);
+};
