@@ -1,6 +1,6 @@
 import { o as R, v as $, B as q, D as Q, E as X, n as rr, r as er } from "../shared/structMap.es.js";
 import { a as be, c as ge, b as _e, g as Pe, f as ye, h as he, i as Ie, z as Le, q as Ne, k as Ce, j as Me, l as Fe, A as Te, x as xe, y as ve, m as De, C as je, w as Re, s as ke, p as Be, u as we, e as Ge, d as Je, t as Ve } from "../shared/structMap.es.js";
-const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "battlebacks2", xr = "characters", vr = "enemies", Dr = "faces", jr = "parallaxes", Rr = "pictures", kr = "sv_actors", Br = "sv_enemies", wr = "system", Gr = "tilesets", Jr = "titles1", Vr = "titles2", Ur = "System.json", zr = "Actors.json", Kr = "Classes.json", Wr = "Skills.json", Zr = "Items.json", Yr = "Weapons.json", Hr = "Armors.json", $r = "Enemies.json", qr = "Troops.json", Qr = "States.json", Xr = "Animations.json", re = "Tilesets.json", ee = "CommonEvents.json", ae = "MapInfos.json", te = "data", se = "img", ne = "audio", ce = "js", ar = (r, e) => {
+const ar = (r, e) => {
   const a = function(t) {
     return Object.fromEntries(t.map((s) => [s.struct, s.params.filter(R)]));
   }(r);
@@ -16,19 +16,20 @@ const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "b
   }(Object.keys(a), a, new Set(e));
 }, y = (r, e) => {
   const a = r.structs.filter((c) => c.params.some((m) => e(m))), t = new Set(a.map((c) => c.struct)), s = ar(r.structs, t);
-  return { structs: tr(r.structs, s, e), commands: sr(r.commands, s, e), params: C(r.params, s, e) };
+  return {
+    structs: tr(r.structs, s, e),
+    commands: sr(r.commands, s, e),
+    params: C(r.params, s, e)
+  };
 }, C = (r, e, a) => r.filter((t) => R(t) ? e.has(t.attr.struct) : a(t)), tr = (r, e, a) => r.reduce((t, s) => {
   const c = C(s.params, e, a);
   return c.length === 0 || t.push({ struct: s.struct, params: c }), t;
 }, []), sr = (r, e, a) => r.reduce((t, s) => {
   const c = C(s.args, e, a);
-  return c.length === 0 || t.push({
-    ...s.desc ? { desc: s.desc } : {},
-    ...s.text ? { text: s.text } : {},
-    command: s.command,
-    args: c
-  }), t;
-}, []), me = (r) => y(r, $), oe = (r) => y(r, q), ie = (r) => y(r, Q), ue = (r) => y(r, X), nr = {
+  return c.length === 0 || t.push({ ...s.desc ? {
+    desc: s.desc
+  } : {}, ...s.text ? { text: s.text } : {}, command: s.command, args: c }), t;
+}, []), Lr = (r) => y(r, $), Nr = (r) => y(r, q), Cr = (r) => y(r, Q), Mr = (r) => y(r, X), nr = {
   variable: 1,
   switch: 2,
   actor: 0,
@@ -43,12 +44,12 @@ const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "b
   common_event: 0
 }, cr = ["data", "system", "system"], mr = (r) => {
   const e = nr[r];
-  return e === void 0 ? {
+  return e === void 0 ? { author: "rmmz", module: "unknown", kind: r } : {
     author: "rmmz",
-    module: "unknown",
-    kind: r
-  } : { author: "rmmz", module: cr[e], kind: [r, "variable", "switch"][e] };
-}, le = (r) => {
+    module: cr[e],
+    kind: [r, "variable", "switch"][e]
+  };
+}, Fr = (r) => {
   const e = mr(r.kind);
   return e.author === r.author && e.module === r.module && e.kind === r.kind;
 }, k = (r, e, a) => {
@@ -57,10 +58,10 @@ const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "b
     const c = s.struct;
     return a.add(c), [c, ...k(c, e, a)];
   }) : [];
-}, de = (r, e) => k(r, e, /* @__PURE__ */ new Set()), B = (r) => {
+}, Tr = (r, e) => k(r, e, /* @__PURE__ */ new Set()), B = (r) => {
   const e = JSON.parse(r);
   return Array.isArray(e) ? e.map(b) : typeof e == "object" && e !== null ? w(e) : e;
-}, pe = (r) => w(r), w = (r) => Object.fromEntries(Object.entries(r).map(([e, a]) => [e, b(a)])), b = (r) => {
+}, xr = (r) => w(r), w = (r) => Object.fromEntries(Object.entries(r).map(([e, a]) => [e, b(a)])), b = (r) => {
   if (typeof r != "string") return r;
   try {
     const e = JSON.parse(r);
@@ -68,7 +69,7 @@ const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "b
   } catch {
     return r;
   }
-}, fe = (r) => JSON.stringify(or(r)), A = (r) => typeof r == "object" && r !== null && !Array.isArray(r), or = (r) => Array.isArray(r) ? ir(r) : A(r) ? g(r) : {}, g = (r) => A(r) ? Object.fromEntries(Object.entries(r).map(([e, a]) => {
+}, vr = (r) => JSON.stringify(or(r)), A = (r) => typeof r == "object" && r !== null && !Array.isArray(r), or = (r) => Array.isArray(r) ? ir(r) : A(r) ? g(r) : {}, g = (r) => A(r) ? Object.fromEntries(Object.entries(r).map(([e, a]) => {
   if (Array.isArray(a)) {
     const t = a.map((s) => A(s) ? JSON.stringify(g(s)) : String(s));
     return [e, JSON.stringify(t)];
@@ -378,7 +379,7 @@ const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "b
   desc: e.desc,
   text: e.text,
   args: T(e.args)
-})), hr = (r) => r.map((e) => ({ struct: e.name, params: T(e.params) })), Ee = (r) => ((e) => gr(W(e)))(r), Ae = (r, e) => {
+})), hr = (r) => r.map((e) => ({ struct: e.name, params: T(e.params) })), Dr = (r) => ((e) => gr(W(e)))(r), jr = (r, e) => {
   const a = W(e);
   return {
     meta: a.meta,
@@ -387,43 +388,43 @@ const Lr = "bgm", Nr = "se", Cr = "me", Mr = "bgs", Fr = "battlebacks1", Tr = "b
     schema: (t = a, { commands: yr(t.commands), params: T(t.params), structs: hr(t.structs) })
   };
   var t;
-};
+}, Rr = "bgm", kr = "se", Br = "me", wr = "bgs", Gr = "battlebacks1", Jr = "battlebacks2", Vr = "characters", Ur = "enemies", zr = "faces", Kr = "parallaxes", Wr = "pictures", Zr = "sv_actors", Yr = "sv_enemies", Hr = "system", $r = "tilesets", qr = "titles1", Qr = "titles2", Xr = "System.json", re = "Actors.json", ee = "Classes.json", ae = "Skills.json", te = "Items.json", se = "Weapons.json", ne = "Armors.json", ce = "Enemies.json", me = "Troops.json", oe = "States.json", ie = "Animations.json", ue = "Tilesets.json", le = "CommonEvents.json", de = "MapInfos.json", pe = "data", fe = "img", Ee = "audio", Ae = "js";
 export {
-  zr as FILENAME_ACTORS,
-  Xr as FILENAME_ANIMATIONS,
-  Hr as FILENAME_ARMORS,
-  Kr as FILENAME_CLASSES,
-  ee as FILENAME_COMMON_EVENTS,
-  $r as FILENAME_ENEMIES,
-  Zr as FILENAME_ITEMS,
-  ae as FILENAME_MAP_INFOS,
-  Wr as FILENAME_SKILLS,
-  Qr as FILENAME_STATES,
-  Ur as FILENAME_SYSTEM,
-  re as FILENAME_TILESET,
-  qr as FILENAME_TROOPS,
-  Yr as FILENAME_WEAPONS,
-  ne as FOLDER_AUDIO,
-  Lr as FOLDER_AUDIO_BGM,
-  Mr as FOLDER_AUDIO_BGS,
-  Cr as FOLDER_AUDIO_ME,
-  Nr as FOLDER_AUDIO_SE,
-  te as FOLDER_DATA,
-  se as FOLDER_IMG,
-  Fr as FOLDER_IMG_BATTLEBACK1,
-  Tr as FOLDER_IMG_BATTLEBACK2,
-  xr as FOLDER_IMG_CHACTERS,
-  vr as FOLDER_IMG_ENEMIES,
-  Dr as FOLDER_IMG_FACES,
-  jr as FOLDER_IMG_PARALLACES,
-  Rr as FOLDER_IMG_PICTURES,
-  kr as FOLDER_IMG_SV_ACTORS,
-  Br as FOLDER_IMG_SV_ENEMIES,
-  wr as FOLDER_IMG_SYSTEM,
-  Gr as FOLDER_IMG_TILESETS,
-  Jr as FOLDER_IMG_TITLES1,
-  Vr as FOLDER_IMG_TITLES2,
-  ce as FOLDER_JS,
+  re as FILENAME_ACTORS,
+  ie as FILENAME_ANIMATIONS,
+  ne as FILENAME_ARMORS,
+  ee as FILENAME_CLASSES,
+  le as FILENAME_COMMON_EVENTS,
+  ce as FILENAME_ENEMIES,
+  te as FILENAME_ITEMS,
+  de as FILENAME_MAP_INFOS,
+  ae as FILENAME_SKILLS,
+  oe as FILENAME_STATES,
+  Xr as FILENAME_SYSTEM,
+  ue as FILENAME_TILESET,
+  me as FILENAME_TROOPS,
+  se as FILENAME_WEAPONS,
+  Ee as FOLDER_AUDIO,
+  Rr as FOLDER_AUDIO_BGM,
+  wr as FOLDER_AUDIO_BGS,
+  Br as FOLDER_AUDIO_ME,
+  kr as FOLDER_AUDIO_SE,
+  pe as FOLDER_DATA,
+  fe as FOLDER_IMG,
+  Gr as FOLDER_IMG_BATTLEBACK1,
+  Jr as FOLDER_IMG_BATTLEBACK2,
+  Vr as FOLDER_IMG_CHACTERS,
+  Ur as FOLDER_IMG_ENEMIES,
+  zr as FOLDER_IMG_FACES,
+  Kr as FOLDER_IMG_PARALLACES,
+  Wr as FOLDER_IMG_PICTURES,
+  Zr as FOLDER_IMG_SV_ACTORS,
+  Yr as FOLDER_IMG_SV_ENEMIES,
+  Hr as FOLDER_IMG_SYSTEM,
+  $r as FOLDER_IMG_TILESETS,
+  qr as FOLDER_IMG_TITLES1,
+  Qr as FOLDER_IMG_TITLES2,
+  Ae as FOLDER_JS,
   be as classifyFileParams,
   ge as classifyPluginParams,
   _e as classifyTextParams,
@@ -433,11 +434,11 @@ export {
   ye as convertStructSchema,
   he as createClassifiedStructMap,
   Ie as createStructMap,
-  ue as filterPluginSchemaByFileParam,
-  oe as filterPluginSchemaByNumberParam,
+  Mr as filterPluginSchemaByFileParam,
+  Nr as filterPluginSchemaByNumberParam,
   y as filterPluginSchemaByParam,
-  me as filterPluginSchemaByStringParam,
-  ie as filterPluginSchemaByVariableParam,
+  Lr as filterPluginSchemaByStringParam,
+  Cr as filterPluginSchemaByVariableParam,
   Le as hasNumberValueParam,
   Ne as hasScalarAttr,
   R as hasStructAttr,
@@ -450,7 +451,7 @@ export {
   q as isNumberAttr,
   xe as isNumberValueParam,
   ve as isNumberValueParamEx,
-  le as isRmmzDataKind,
+  Fr as isRmmzDataKind,
   De as isScalarParam,
   je as isStringArrayParam,
   Re as isStringValueParam,
@@ -462,12 +463,12 @@ export {
   mr as lookupKind,
   we as paramHasText,
   B as parseDeepJSON,
-  pe as parseDeepRecord,
-  Ae as pluginSourceToArraySchema,
-  Ee as pluginSourceToJSON,
+  xr as parseDeepRecord,
+  jr as pluginSourceToArraySchema,
+  Dr as pluginSourceToJSON,
   sr as rebuildCommands,
-  fe as stringifyDeepJSON,
-  de as structDependencies,
+  vr as stringifyDeepJSON,
+  Tr as structDependencies,
   Ge as toArrayPluginParam,
   Je as toObjectPluginParams,
   Ve as toObjectPluginParamsOld
