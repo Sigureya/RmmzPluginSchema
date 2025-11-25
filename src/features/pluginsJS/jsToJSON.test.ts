@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { convertPluginsJSToJSON } from "./jsToJSON";
+import type { PluginParamsObject } from "./types";
 
 describe("convertPluginsJSToJSON", () => {
   describe("old style input", () => {
@@ -24,7 +25,7 @@ describe("convertPluginsJSToJSON", () => {
       expect(result).toEqual(expectedOutput);
     });
     test("jsonParse", () => {
-      const expected = [
+      const expected: PluginParamsObject[] = [
         {
           name: "MockPlugin",
           status: true,
