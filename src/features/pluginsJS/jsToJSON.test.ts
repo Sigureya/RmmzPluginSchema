@@ -2,7 +2,12 @@ import { describe, test, expect } from "vitest";
 import { convertPluginsJSToJSON } from "./jsToJSON";
 
 describe("convertPluginsJSToJSON", () => {
-  const expectedOutput = `{"name":"MockPlugin","status":true,"description":"desc text","parameters":{}}`;
+  const expectedOutput = [
+    "[",
+    `{"name":"MockPlugin","status":true,"description":"desc text","parameters":{}},`,
+    `{"name":"TestPlugin","status":true,"description":"test text","parameters":{}}`,
+    "]",
+  ];
 
   test("removes comment lines from JS source", () => {
     const input = [
@@ -11,19 +16,28 @@ describe("convertPluginsJSToJSON", () => {
       "var $plugins =",
       "[",
       `{"name":"MockPlugin","status":true,"description":"desc text","parameters":{}},`,
+      `{"name":"TestPlugin","status":true,"description":"test text","parameters":{}}`,
       "];",
     ];
     const result = convertPluginsJSToJSON(input.join("\n"));
-    expect(result).toEqual([expectedOutput]);
+    expect(result).toEqual(expectedOutput);
   });
   test("jsonParse", () => {
-    const expected = {
-      name: "MockPlugin",
-      status: true,
-      description: "desc text",
-      parameters: {},
-    };
-    const value = JSON.parse(expectedOutput);
+    const expected = [
+      {
+        name: "MockPlugin",
+        status: true,
+        description: "desc text",
+        parameters: {},
+      },
+      {
+        description: "test text",
+        name: "TestPlugin",
+        parameters: {},
+        status: true,
+      },
+    ];
+    const value = JSON.parse(expectedOutput.join("\n"));
     expect(value).toEqual(expected);
   });
 });
