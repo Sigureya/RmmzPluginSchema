@@ -1,6 +1,3 @@
-export type { PluginParamsRecord as PluginParamsObject } from "./types";
-export {
-  convertPluginsJSToJSON,
-  parsePluginParamRecord as parsePluginParamObject,
-} from "./jsToJSON";
+export * from "./jsToJSON";
+export type * from "./types";
 export { validatePluginJS } from "./validate";
