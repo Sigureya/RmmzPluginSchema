@@ -1,10 +1,10 @@
 import { describe, test, expect } from "vitest";
-import type { PluginParamsObject } from "./types";
+import type { PluginParamsRecord } from "./types";
 import { validatePluginJS } from "./validate";
 
 describe("validatePluginJS", () => {
   test("returns true for valid PluginParamsObject", () => {
-    const validObj: PluginParamsObject = {
+    const validObj: PluginParamsRecord = {
       name: "TestPlugin",
       status: true,
       description: "A test plugin",
@@ -31,7 +31,7 @@ describe("validatePluginJS", () => {
   });
 
   test("returns false if missing name", () => {
-    const obj: Partial<PluginParamsObject> = {
+    const obj: Partial<PluginParamsRecord> = {
       status: true,
       description: "desc",
       parameters: { a: "b" },
@@ -40,7 +40,7 @@ describe("validatePluginJS", () => {
   });
 
   test("returns false if missing status", () => {
-    const obj: Partial<PluginParamsObject> = {
+    const obj: Partial<PluginParamsRecord> = {
       name: "Test",
       description: "desc",
       parameters: { a: "b" },
@@ -49,7 +49,7 @@ describe("validatePluginJS", () => {
   });
 
   test("returns false if missing description", () => {
-    const obj: Partial<PluginParamsObject> = {
+    const obj: Partial<PluginParamsRecord> = {
       name: "Test",
       status: true,
       parameters: { a: "b" },
@@ -58,7 +58,7 @@ describe("validatePluginJS", () => {
   });
 
   test("returns false if parameters is missing", () => {
-    const obj: Partial<PluginParamsObject> = {
+    const obj: Partial<PluginParamsRecord> = {
       name: "Test",
       status: true,
       description: "desc",

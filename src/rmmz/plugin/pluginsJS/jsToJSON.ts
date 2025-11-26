@@ -1,4 +1,4 @@
-import type { PluginParamsObject } from "./types";
+import type { PluginParamsRecord } from "./types";
 import { validatePluginJS } from "./validate";
 
 const commentRegex = /\s*\/\//;
@@ -15,7 +15,7 @@ export const convertPluginsJSToJSON = (src: string): string[] => {
   return src.split("\n").filter((line) => !isIgnoredLine(line));
 };
 
-export const parsePluginParamObject = (src: string): PluginParamsObject[] => {
+export const parsePluginParamRecord = (src: string): PluginParamsRecord[] => {
   const lines = convertPluginsJSToJSON(src);
   const jsonText = `[${lines.join("")}]`;
   const array = JSON.parse(jsonText);
