@@ -1,6 +1,6 @@
-import type { PluginParamsObject } from "./types";
+import type { PluginParamsRecord } from "./types";
 
-export const validatePluginJS = (data: unknown): data is PluginParamsObject => {
+export const validatePluginJS = (data: unknown): data is PluginParamsRecord => {
   if (Array.isArray(data)) {
     return false;
   }

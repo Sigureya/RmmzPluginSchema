@@ -11,7 +11,9 @@ export const parseDeepJSON = (json: string): JSONValue => {
   return parsed;
 };
 
-export const parseDeepRecord = (record: Record<string, string>): JSONValue => {
+export const parseDeepRecord = (
+  record: Record<string, string>
+): Record<string, JSONValue> => {
   return parseUnknownRecord(record);
 };
 

@@ -1,6 +1,11 @@
 export * from "./core";
+export * from "./pluginsJS";
 export type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
 } from "./core/params/types/classifyTypes";
-export { pluginSourceToArraySchema, pluginSourceToJSON } from "./plugin";
+export {
+  parsePluginParamObject,
+  pluginSourceToArraySchema,
+  pluginSourceToJSON,
+} from "./plugin";
