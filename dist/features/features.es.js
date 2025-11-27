@@ -121,6 +121,7 @@ const M = (a, t, r, e = y) => {
 export {
   Q as compileCommandExtractorsFromPlugins,
   K as compilePluginCommandExtractor,
+  G as compilePluginCommandPairs,
   L as createPluginValuesPathPP,
   J as createPluginValuesPathPP2,
   F as createPrimiteveParamPath,
