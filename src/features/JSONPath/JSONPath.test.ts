@@ -7,10 +7,7 @@ import type {
   CommandExtractResult,
   CommandMapKey,
 } from "./core";
-import {
-  compileCommandExtractorsFromPlugins,
-  extractCommandArgsByKey,
-} from "./core";
+import { compilePluginCommandPairs, extractCommandArgsByKey } from "./core";
 
 interface AddItemCommandArgs {
   itemId: number;
@@ -74,9 +71,8 @@ describe("JSONPath", () => {
   });
   test("extractCommandArgsByKey", () => {
     type MapType = Map<CommandMapKey, CommandArgExtractors>;
-    const r: MapType = compileCommandExtractorsFromPlugins(
-      [schema],
-      (path) => new JSONPathJS(path)
+    const r: MapType = new Map(
+      compilePluginCommandPairs(schema, (path) => new JSONPathJS(path))
     );
     const args = {
       itemId: 5,
