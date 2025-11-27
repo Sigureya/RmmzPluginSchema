@@ -82,7 +82,7 @@ export const compileCommandExtractorsFromPlugins = (
   );
 };
 
-const compilePluginCommandPairs = (
+export const compilePluginCommandPairs = (
   plugin: PluginSchema,
   factoryFn: (path: string) => JSONPathReader
 ): CommandExtractorEntry[] => {
