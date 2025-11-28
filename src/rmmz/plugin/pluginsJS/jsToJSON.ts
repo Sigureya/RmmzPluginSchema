@@ -2,12 +2,12 @@ import type { PluginParamsRecord } from "./types";
 import { validatePluginJS } from "./validate";
 
 const commentRegex = /\s*\/\//;
-const varLineRegex = /\s*[var|let|const]\s+\$plugins\s*=\s*/;
-const braketRegex = /^\s*[\[\]]/;
+const varLineRegex = /\s*[var|let|const]\s+[^\s]+\s*=/;
+const braketRegex = /^\s{0,3}[\[|\]\;]/;
 
 const isIgnoredLine = (line: string): boolean => {
   return (
-    commentRegex.test(line) || varLineRegex.test(line) || braketRegex.test(line)
+    commentRegex.test(line) || braketRegex.test(line) || varLineRegex.test(line)
   );
 };
 
