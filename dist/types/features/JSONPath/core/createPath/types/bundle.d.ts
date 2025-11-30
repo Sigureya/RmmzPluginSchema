@@ -1,15 +1,15 @@
 import { ParamKinds, ScalarParam } from '../../../../../rmmz/plugin';
-import { PluginValuesPath2 } from './base';
+import { PluginValuesPathBase } from './base';
 import { ValueCategory } from './category';
 import { StructPropertysPath, StructPathResultWithError } from './struct';
-export interface PluginValuesPathNewVersion extends PluginValuesPath2 {
+export interface PluginValuesPath extends PluginValuesPathBase {
     rootCategory: ValueCategory;
     rootName: string;
     scalars?: StructPropertysPath;
     structs: StructPathResultWithError;
     structArrays: StructPathResultWithError;
 }
-export interface PrimitivePluginValuesPath extends PluginValuesPath2 {
+export interface PrimitivePluginValuesPath extends PluginValuesPathBase {
     rootCategory: "param" | "args";
     rootName: string;
     scalars: {

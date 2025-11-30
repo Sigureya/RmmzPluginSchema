@@ -12,7 +12,7 @@ export interface CommandArgExtractors {
 export interface CommandExtractResult {
   pluginName: string;
   commandName: string;
-  values: PluginValues[];
+  args: PluginValues[];
 }
 
 export type CommandMapKey = `${string}:${string}`;

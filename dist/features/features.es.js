@@ -1,17 +1,17 @@
-import { d as P, p as N, s as A, k as $, C as S, A as b, h as C } from "../shared/structMap.es.js";
-const v = (a, t) => {
+import { d as S, p as b, s as C, k as v, C as x, A as j, h as d } from "../shared/structMap.es.js";
+const M = (a, r) => {
   if (a.length !== 0)
-    return `${t}[${a.map((r) => `"${r.name}"`).join(",")}]`;
-}, j = (a, t) => a.map((r) => ({ path: `${t}.${r.name}[*]`, param: r })), y = { undefinedStruct: "undefined_struct", cyclicStruct: "cyclic_struct" };
-function x(a, t, r) {
+    return `${r}[${a.map((t) => `"${t.name}"`).join(",")}]`;
+}, k = (a, r) => a.map((t) => ({ path: `${r}.${t.name}[*]`, param: t })), y = { undefinedStruct: "undefined_struct", cyclicStruct: "cyclic_struct" };
+function J(a, r, t) {
   if (a.frames.length === 0) return a;
   const e = a.frames[a.frames.length - 1], m = a.frames.slice(0, -1);
   if (e.ancestry.includes(e.schemaName)) return { frames: m, items: a.items, errs: [...a.errs, {
-    code: r.cyclicStruct,
+    code: t.cyclicStruct,
     path: e.basePath
   }] };
-  const s = t.get(e.schemaName);
-  if (!s) return { frames: m, items: a.items, errs: [...a.errs, { code: r.undefinedStruct, path: e.basePath }] };
+  const s = r.get(e.schemaName);
+  if (!s) return { frames: m, items: a.items, errs: [...a.errs, { code: t.undefinedStruct, path: e.basePath }] };
   const c = function(o, n) {
     const u = o.ancestry.concat(o.schemaName), l = o.basePath;
     return [...n.structs.map((i) => ({ schemaName: i.attr.struct, basePath: `${l}.${i.name}`, ancestry: u })), ...n.structArrays.map((i) => ({
@@ -22,7 +22,7 @@ function x(a, t, r) {
   }(e, s);
   if (s.scalars.length > 0 || s.scalarArrays.length > 0) {
     const o = function(n, { path: u, structName: l }) {
-      return { category: "struct", objectSchema: P(n.scalars), name: l, scalarArrays: j(n.scalarArrays, u), scalarsPath: n.scalars.length > 0 ? v(n.scalars, u) : void 0 };
+      return { category: "struct", objectSchema: S(n.scalars), name: l, scalarArrays: k(n.scalarArrays, u), scalarsPath: n.scalars.length > 0 ? M(n.scalars, u) : void 0 };
     }(s, {
       path: e.basePath,
       structName: e.schemaName
@@ -31,51 +31,51 @@ function x(a, t, r) {
   }
   return m.push(...c), { frames: m, items: a.items, errs: a.errs };
 }
-function g(a, t, r, e) {
+function g(a, r, t, e) {
   const m = {
     items: [],
     errs: [],
-    frames: [{ schemaName: a, basePath: t, ancestry: [] }]
-  }, s = Math.max(1, 3 * r.size + 5), c = Array.from({ length: s }).reduce((o) => o.frames.length === 0 ? o : x(o, r, e), m);
+    frames: [{ schemaName: a, basePath: r, ancestry: [] }]
+  }, s = Math.max(1, 3 * t.size + 5), c = Array.from({ length: s }).reduce((o) => o.frames.length === 0 ? o : J(o, t, e), m);
   return {
     items: c.items,
     errors: c.errs
   };
 }
-const M = (a, t, r, e = y) => {
-  const m = a.map((s) => g(s.attr.struct, `${t}.${s.name}`, r, e));
+const T = (a, r, t, e = y) => {
+  const m = a.map((s) => g(s.attr.struct, `${r}.${s.name}`, t, e));
   return { items: m.flatMap((s) => s.items), errors: m.flatMap((s) => s.errors) };
-}, k = (a, t, r, e = y) => {
-  const m = a.map((s) => g(s.attr.struct, `${t}.${s.name}[*]`, r, e));
+}, E = (a, r, t, e = y) => {
+  const m = a.map((s) => g(s.attr.struct, `${r}.${s.name}[*]`, t, e));
   return { items: m.flatMap((s) => s.items), errors: m.flatMap((s) => s.errors) };
-}, I = (a, t, r, e = y) => g(a, t, r, e), J = (a, t, r, e) => N(r) ? d(a, r, e) : A(r) ? V(a, r, e) : $(r) ? T(a, t, r) : F(a, t, r), T = (a, t, r) => ({ rootCategory: a, rootName: t, scalars: {
+}, Q = (a, r, t, e = y) => g(a, r, t, e), P = (a, r, t, e) => b(t) ? N(a, t, e) : C(t) ? _(a, t, e) : v(t) ? F(a, r, t) : V(a, r, t), F = (a, r, t) => ({ rootCategory: a, rootName: r, scalars: {
   category: a,
   name: "array",
   objectSchema: {},
   scalarsPath: void 0,
-  scalarArrays: [{ path: `$.${r.name}[*]`, param: r }]
-}, structs: { items: [], errors: [] }, structArrays: { items: [], errors: [] } }), F = (a, t, r) => ({
+  scalarArrays: [{ path: `$.${t.name}[*]`, param: t }]
+}, structs: { items: [], errors: [] }, structArrays: { items: [], errors: [] } }), V = (a, r, t) => ({
   rootCategory: a,
-  rootName: t,
+  rootName: r,
   scalars: {
     category: "primitive",
-    name: r.attr.kind,
-    objectSchema: { [r.name]: r.attr },
-    scalarsPath: `$.${r.name}`,
+    name: t.attr.kind,
+    objectSchema: { [t.name]: t.attr },
+    scalarsPath: `$.${t.name}`,
     scalarArrays: []
   },
   structArrays: { items: [], errors: [] },
   structs: { items: [], errors: [] }
-}), L = (a, t, r) => d(a, t, r), d = (a, t, r) => ({ rootName: t.name, rootCategory: a, scalars: void 0, structArrays: { items: [], errors: [] }, structs: M([t], "$", r) }), V = (a, t, r) => ({
-  structArrays: k([t], "$", r),
-  rootName: t.name,
+}), R = (a, r, t) => N(a, r, t), N = (a, r, t) => ({ rootName: r.name, rootCategory: a, scalars: void 0, structArrays: { items: [], errors: [] }, structs: T([r], "$", t) }), _ = (a, r, t) => ({
+  structArrays: E([r], "$", t),
+  rootName: r.name,
   rootCategory: a,
   scalars: void 0,
   structs: { items: [], errors: [] }
-}), _ = (a, t) => t.map((r) => w(a, r)).flat(3), w = (a, t) => [t.top ? h(t, a, t.top) : [], t.structs.map((r) => h(t, a, r)), t.structArrays.map((r) => h(t, a, r))], h = (a, t, r) => {
-  const e = r.bundleName;
-  return [r.scalar ? z(a, e, t, r.scalar.jsonPathJS, r.scalar.record) : [], r.arrays.map((m) => E(a, e, t, m))].flat(2);
-}, z = (a, t, r, e, m) => e.pathSegments(r).reduce((s, { value: c, segments: o }) => {
+}), w = (a, r) => r.map((t) => z(a, t)).flat(3), z = (a, r) => [r.top ? p(r, a, r.top) : [], r.structs.map((t) => p(r, a, t)), r.structArrays.map((t) => p(r, a, t))], p = (a, r, t) => {
+  const e = t.bundleName;
+  return [t.scalar ? B(a, e, r, t.scalar.jsonPathJS, t.scalar.record) : [], t.arrays.map((m) => q(a, e, r, m))].flat(2);
+}, B = (a, r, t, e, m) => e.pathSegments(t).reduce((s, { value: c, segments: o }) => {
   if (typeof c == "object") return s;
   const n = o[o.length - 1];
   if (typeof n == "number") return s;
@@ -84,52 +84,69 @@ const M = (a, t, r, e = y) => {
     roootName: a.rootName,
     rootType: a.rootCategory,
     category: "struct",
-    name: t,
+    name: r,
     value: c,
     param: { name: n, attr: u }
   }), s;
-}, []), E = (a, t, r, e) => {
-  const m = e.jsonPathJS.find(r);
+}, []), q = (a, r, t, e) => {
+  const m = e.jsonPathJS.find(t);
   if (!Array.isArray(m)) return [];
   const s = e.schema.attr;
-  return S(s) ? m.filter((c) => typeof c == "string").map((c) => ({ value: c, category: "struct", rootType: a.rootCategory, roootName: a.rootName, name: t, param: e.schema })) : b(s) ? m.filter((c) => typeof c == "number").map((c) => ({ roootName: a.rootName, rootType: a.rootCategory, value: c, category: "struct", name: t, param: e.schema })) : [];
-}, p = (a, t) => a.scalarsPath ? { bundleName: a.name, arrays: f(a.scalarArrays, a.name, t), scalar: B(a.scalarsPath, a.objectSchema, t) } : {
-  bundleName: a.name,
-  arrays: f(a.scalarArrays, a.name, t)
-}, f = (a, t, r) => a.map((e) => ({ jsonPathJS: r(e.path), schema: e.param, parentType: t })), B = (a, t, r) => ({ jsonPathJS: r(a), record: t }), K = (a, t, r, e) => ({
-  pluginName: a,
-  commandName: t.command,
-  desc: t.desc ?? "",
-  text: t.text ?? "",
-  extractors: q(t, r, e)
-}), q = (a, t, r) => a.args.map((e) => ((m, s) => {
-  const c = m.scalars ? p(m.scalars, s) : void 0, o = m.structs.items.map((u) => p(u, s)), n = m.structArrays.items.map((u) => p(u, s));
+  return x(s) ? m.filter((c) => typeof c == "string").map((c) => ({ value: c, category: "struct", rootType: a.rootCategory, roootName: a.rootName, name: r, param: e.schema })) : j(s) ? m.filter((c) => typeof c == "number").map((c) => ({ roootName: a.rootName, rootType: a.rootCategory, value: c, category: "struct", name: r, param: e.schema })) : [];
+}, A = (a, r) => {
+  const t = a.scalars ? h(a.scalars, r) : void 0, e = a.structs.items.map((s) => h(s, r)), m = a.structArrays.items.map((s) => h(s, r));
   return {
-    rootCategory: m.rootCategory,
-    rootName: m.rootName,
-    top: c,
-    structs: o,
-    structArrays: n
+    rootCategory: a.rootCategory,
+    rootName: a.rootName,
+    top: t,
+    structs: e,
+    structArrays: m
   };
-})(J("args", a.command, e, t), r)), D = (a, t) => ({ pluginName: t.pluginName, commandName: t.commandName, values: _(a, t.extractors) }), O = (a, t, r) => {
-  const e = r.get(t);
-  if (e) return D(a, e);
-}, Q = (a, t) => new Map(a.flatMap((r) => G(r, t))), G = (a, t) => {
-  const r = C(a.schema.structs);
-  return a.schema.commands.map((e) => [`${a.pluginName}:${e.command}`, K(a.pluginName, e, r, t)]);
-};
+}, h = (a, r) => a.scalarsPath ? { bundleName: a.name, arrays: f(a.scalarArrays, a.name, r), scalar: D(a.scalarsPath, a.objectSchema, r) } : {
+  bundleName: a.name,
+  arrays: f(a.scalarArrays, a.name, r)
+}, f = (a, r, t) => a.map((e) => ({ jsonPathJS: t(e.path), schema: e.param, parentType: r })), D = (a, r, t) => ({ jsonPathJS: t(a), record: r }), $ = (a, r, t, e) => ({
+  pluginName: a,
+  commandName: r.command,
+  desc: r.desc ?? "",
+  text: r.text ?? "",
+  extractors: K(r, t, e)
+}), K = (a, r, t) => a.args.map((e) => {
+  const m = P("args", a.command, e, r);
+  return A(m, t);
+}), G = (a, r) => ({
+  pluginName: r.pluginName,
+  commandName: r.commandName,
+  args: w(a, r.extractors)
+}), U = (a, r, t) => {
+  const e = t.get(r);
+  if (e) return G(a, e);
+}, W = (a, r) => new Map(a.flatMap((t) => H(t, r))), H = (a, r) => {
+  const t = d(a.schema.structs);
+  return a.schema.commands.map((e) => [`${a.pluginName}:${e.command}`, $(a.pluginName, e, t, r)]);
+}, X = (a, r, t) => {
+  const e = d(r.structs);
+  return {
+    params: I(r, e, t),
+    commands: L(a, r.commands, e, t)
+  };
+}, I = (a, r, t) => a.params.map((e) => {
+  const m = P("param", e.name, e, r);
+  return A(m, t);
+}), L = (a, r, t, e) => r.map((m) => [`${a}:${m.command}`, $(a, m, t, e)]);
 export {
-  Q as compileCommandExtractorsFromPlugins,
-  K as compilePluginCommandExtractor,
-  G as compilePluginCommandPairs,
-  L as createPluginValuesPathPP,
-  J as createPluginValuesPathPP2,
-  F as createPrimiteveParamPath,
-  O as extractCommandArgsByKey,
-  D as extractPluginCommandArgs,
-  k as getPathFromStructArraySchema,
-  M as getPathFromStructParam,
-  I as getPathFromStructSchema,
-  j as makeScalarArrayPath,
-  v as makeScalarValuesPath
+  W as compileCommandExtractorsFromPlugins,
+  $ as compilePluginCommandExtractor,
+  H as compilePluginCommandPairs,
+  X as createPluginValueExtractor,
+  P as createPluginValuesPath,
+  V as createPrimiteveParamPath,
+  R as createStructParamPath,
+  U as extractCommandArgsByKey,
+  G as extractPluginCommandArgs,
+  E as getPathFromStructArraySchema,
+  T as getPathFromStructParam,
+  Q as getPathFromStructSchema,
+  k as makeScalarArrayPath,
+  M as makeScalarValuesPath
 };

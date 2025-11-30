@@ -239,7 +239,7 @@ describe("command extractor", () => {
       (paht) => new JSONPathJS(paht)
     );
     const result = extractPluginCommandArgs(mockData, memo);
-    expect(result.values).toEqual(values);
+    expect(result.args).toEqual(values);
   });
 });
 
@@ -295,7 +295,7 @@ describe("", () => {
       mockData,
       memo
     );
-    expect(result.values).toEqual(values);
+    expect(result.args).toEqual(values);
     expect(result.pluginName).toBe("PluginName");
     expect(result.commandName).toBe("Action");
   });

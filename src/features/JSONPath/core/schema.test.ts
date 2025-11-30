@@ -136,7 +136,7 @@ describe("JSONPath", () => {
     const values: CommandExtractResult = {
       pluginName: "MockPlugin",
       commandName: "AddItem",
-      values: [
+      args: [
         {
           category: "struct",
           name: "item",

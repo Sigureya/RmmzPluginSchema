@@ -52,7 +52,7 @@ export const extractPluginCommandArgs = (
   return {
     pluginName: extractor.pluginName,
     commandName: extractor.commandName,
-    values: extractAllPluginValues(value, extractor.extractors),
+    args: extractAllPluginValues(value, extractor.extractors),
   };
 };
 
