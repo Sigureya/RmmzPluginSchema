@@ -74,12 +74,12 @@ describe("JSONPath", () => {
   test("extractCommandArgsByKey", () => {
     type MapType = Map<CommandMapKey, CommandArgExtractors>;
 
-    const ss2: PluginExtractorBundle = createPluginValueExtractor(
+    const bundle: PluginExtractorBundle = createPluginValueExtractor(
       "MockPlugin",
       schema.schema,
       (path) => new JSONPathJS(path)
     );
-    const commandMap: MapType = new Map(ss2.commands);
+    const commandMap: MapType = new Map(bundle.commands);
     const args = {
       itemId: 5,
       quantity: 10,
