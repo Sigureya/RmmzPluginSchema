@@ -7,7 +7,7 @@ import type {
   CommandMapKey,
   CommandArgExtractors,
   CommandExtractResult,
-} from "./commandTypes";
+} from "./extractor/types";
 import { createPluginValueExtractor } from "./schema";
 import type { PluginExtractorBundle } from "./types";
 
@@ -26,6 +26,24 @@ const pluginAnnoations: string[] = [
   "@type number",
   "@default 1",
   "@desc Adds an item to the inventory.",
+  "",
+  "@param itemMessage",
+  "@type string",
+  "@default You obtained an item!",
+  "@desc Message displayed when an item is added.",
+  "",
+  "@param effect",
+  "@type struct<Effect>",
+  "@text Effect details",
+  "*/",
+
+  "/*~struct~Effect:",
+  "@param power",
+  "@type number",
+  "@default 100",
+  "@param effectMessage",
+  "@type string",
+  "@default It was super effective!",
   "*/",
 ];
 
@@ -34,8 +52,39 @@ const schema: PluginSchema = {
   pluginName: "MockPlugin",
   target: "MZ",
   schema: {
-    params: [],
-    structs: [],
+    params: [
+      {
+        name: "itemMessage",
+        attr: {
+          default: "You obtained an item!",
+          kind: "string",
+          desc: "Message displayed when an item is added.",
+        },
+      },
+      {
+        name: "effect",
+        attr: {
+          kind: "struct",
+          struct: "Effect",
+          text: "Effect details",
+        },
+      },
+    ],
+    structs: [
+      {
+        struct: "Effect",
+        params: [
+          {
+            name: "power",
+            attr: { kind: "number", default: 100 },
+          },
+          {
+            name: "effectMessage",
+            attr: { kind: "string", default: "It was super effective!" },
+          },
+        ],
+      },
+    ],
     commands: [
       {
         command: "AddItem",
@@ -71,14 +120,14 @@ describe("JSONPath", () => {
     );
     expect(result).toEqual(schema);
   });
+  const bundle: PluginExtractorBundle = createPluginValueExtractor(
+    "MockPlugin",
+    schema.schema,
+    (path) => new JSONPathJS(path)
+  );
   test("extractCommandArgsByKey", () => {
     type MapType = Map<CommandMapKey, CommandArgExtractors>;
 
-    const bundle: PluginExtractorBundle = createPluginValueExtractor(
-      "MockPlugin",
-      schema.schema,
-      (path) => new JSONPathJS(path)
-    );
     const commandMap: MapType = new Map(bundle.commands);
     const args = {
       itemId: 5,
