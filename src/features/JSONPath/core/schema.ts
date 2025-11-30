@@ -6,13 +6,13 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginCommandExtractor } from "./command";
+import { createPluginValuesPath } from "./createPath";
 import type {
-  CommandArgExtractors,
+  ExtractorBundle,
   CommandExtractorEntry,
   CommandMapKey,
-} from "./commandTypes";
-import { createPluginValuesPath } from "./createPath";
-import type { ExtractorBundle } from "./extractor/types";
+  CommandArgExtractors,
+} from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 import type { PluginExtractorBundle } from "./types";
 
