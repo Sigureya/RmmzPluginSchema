@@ -1,5 +1,5 @@
-import { o as R, v as H, B as q, D as Q, E as X, n as tt, r as et } from "../shared/structMap.es.js";
-import { a as Fe, c as ve, b as Te, g as xe, f as je, h as De, i as Re, z as ke, q as Be, k as we, j as Ge, l as Je, A as Ve, x as Ue, y as ze, m as Ke, C as We, w as Ze, s as Ye, p as $e, u as He, e as qe, d as Qe, t as Xe } from "../shared/structMap.es.js";
+import { o as R, v as $, B as q, D as Q, E as X, n as tt, r as et } from "../shared/structMap.es.js";
+import { a as Fe, c as ve, b as Te, g as xe, f as je, h as De, i as Re, z as ke, q as Be, k as we, j as Ge, l as Je, A as Ve, x as Ue, y as ze, m as Ke, C as We, w as Ze, s as Ye, p as He, u as $e, e as qe, d as Qe, t as Xe } from "../shared/structMap.es.js";
 const at = (t, e) => {
   const a = function(r) {
     return Object.fromEntries(r.map((s) => [s.struct, s.params.filter(R)]));
@@ -29,7 +29,7 @@ const at = (t, e) => {
   return c.length === 0 || r.push({ ...s.desc ? {
     desc: s.desc
   } : {}, ...s.text ? { text: s.text } : {}, command: s.command, args: c }), r;
-}, []), kt = (t) => _(t, H), Bt = (t) => _(t, q), wt = (t) => _(t, Q), Gt = (t) => _(t, X), nt = {
+}, []), kt = (t) => _(t, $), Bt = (t) => _(t, q), wt = (t) => _(t, Q), Gt = (t) => _(t, X), nt = {
   variable: 1,
   switch: 2,
   actor: 0,
@@ -60,22 +60,22 @@ const at = (t, e) => {
   }) : [];
 }, Vt = (t, e) => k(t, e, /* @__PURE__ */ new Set()), B = (t) => {
   const e = JSON.parse(t);
-  return Array.isArray(e) ? e.map(g) : typeof e == "object" && e !== null ? w(e) : e;
-}, mt = (t) => w(t), w = (t) => Object.fromEntries(Object.entries(t).map(([e, a]) => [e, g(a)])), g = (t) => {
+  return Array.isArray(e) ? e.map(b) : typeof e == "object" && e !== null ? w(e) : e;
+}, mt = (t) => w(t), w = (t) => Object.fromEntries(Object.entries(t).map(([e, a]) => [e, b(a)])), b = (t) => {
   if (typeof t != "string") return t;
   try {
     const e = JSON.parse(t);
-    return Array.isArray(e) ? e.map(g) : typeof e == "object" && e !== null ? Object.fromEntries(Object.entries(e).map(([a, r]) => [a, g(r)])) : e;
+    return Array.isArray(e) ? e.map(b) : typeof e == "object" && e !== null ? Object.fromEntries(Object.entries(e).map(([a, r]) => [a, b(r)])) : e;
   } catch {
     return t;
   }
-}, Ut = (t) => JSON.stringify(it(t)), A = (t) => typeof t == "object" && t !== null && !Array.isArray(t), it = (t) => Array.isArray(t) ? ut(t) : A(t) ? b(t) : {}, b = (t) => A(t) ? Object.fromEntries(Object.entries(t).map(([e, a]) => {
+}, Ut = (t) => JSON.stringify(it(t)), A = (t) => typeof t == "object" && t !== null && !Array.isArray(t), it = (t) => Array.isArray(t) ? ut(t) : A(t) ? g(t) : {}, g = (t) => A(t) ? Object.fromEntries(Object.entries(t).map(([e, a]) => {
   if (Array.isArray(a)) {
-    const r = a.map((s) => A(s) ? JSON.stringify(b(s)) : String(s));
+    const r = a.map((s) => A(s) ? JSON.stringify(g(s)) : String(s));
     return [e, JSON.stringify(r)];
   }
-  return A(a) ? [e, JSON.stringify(b(a))] : [e, String(a)];
-})) : {}, ut = (t) => t.map((e) => typeof e == "object" && e !== null ? JSON.stringify(b(e)) : String(e)), G = (t, e) => Object.entries(e).reduce((a, [r, s]) => {
+  return A(a) ? [e, JSON.stringify(g(a))] : [e, String(a)];
+})) : {}, ut = (t) => t.map((e) => typeof e == "object" && e !== null ? JSON.stringify(g(e)) : String(e)), G = (t, e) => Object.entries(e).reduce((a, [r, s]) => {
   if (r in t) {
     const c = t[r];
     if (typeof c == "string") return { ...a, [r]: s(c) };
@@ -207,8 +207,8 @@ const at = (t, e) => {
     const e = { default: (a) => B(a), text: n, desc: n, parent: n, dir: n };
     return { dir: "", ...y("file[]", t.attr, e) };
   }
-}, Et = (t) => !Array.isArray(t) && typeof t == "object" && t !== null && !!(At(t) && Ot(t) && St(t) && "parameters" in t) && gt(t), At = (t) => "name" in t && typeof t.name == "string", Ot = (t) => "status" in t && typeof t.status == "boolean", St = (t) => "description" in t && typeof t.description == "string", gt = (t) => typeof t.parameters == "object" && t.parameters !== null && Object.values(t.parameters).every((e) => typeof e == "string"), bt = /\s*\/\//, yt = /\s*[var|let|const]\s+\$plugins\s*=\s*/, Pt = /^\s*[\[\]]/, _t = (t) => t.split(`
-`).filter((e) => !((a) => bt.test(a) || yt.test(a) || Pt.test(a))(e)), ht = (t) => {
+}, Et = (t) => !Array.isArray(t) && typeof t == "object" && t !== null && !!(At(t) && Ot(t) && St(t) && "parameters" in t) && bt(t), At = (t) => "name" in t && typeof t.name == "string", Ot = (t) => "status" in t && typeof t.status == "boolean", St = (t) => "description" in t && typeof t.description == "string", bt = (t) => typeof t.parameters == "object" && t.parameters !== null && Object.values(t.parameters).every((e) => typeof e == "string"), gt = /\s*\/\//, yt = /\s*[var|let|const]\s+[^\s]+\s*=/, Pt = /^\s{0,3}[\[|\]\;]/, _t = (t) => t.split(`
+`).filter((e) => !((a) => gt.test(a) || Pt.test(a) || yt.test(a))(e)), ht = (t) => {
   const e = `[${_t(t).join("")}]`, a = JSON.parse(e);
   if (!Array.isArray(a)) throw new Error("Parsed value is not an array");
   if (a.every(Et)) return a;
@@ -243,8 +243,8 @@ const at = (t, e) => {
       locale: void 0,
       lines: [],
       blockType: O
-    }, d = o.reduce((m, $) => {
-      const E = $.trim(), T = E.match(/^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/);
+    }, d = o.reduce((m, H) => {
+      const E = H.trim(), T = E.match(/^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/);
       return T ? lt(m, T) : E === "/*:" ? pt(m) : E === "*/" ? m.lines.length > 0 ? C(m) : m : { ...m, lines: m.lines.concat([E]) };
     }, f);
     return { structs: d.structs, bodies: d.bodies };
@@ -391,10 +391,10 @@ const at = (t, e) => {
   name: e.name,
   status: e.status,
   parameters: mt(e.parameters)
-})), Zt = "bgm", Yt = "se", $t = "me", Ht = "bgs", qt = "battlebacks1", Qt = "battlebacks2", Xt = "characters", te = "enemies", ee = "faces", ae = "parallaxes", re = "pictures", se = "sv_actors", ne = "sv_enemies", ce = "system", oe = "tilesets", me = "titles1", ie = "titles2", ue = "System.json", le = "Actors.json", pe = "Classes.json", de = "Skills.json", fe = "Items.json", Ee = "Weapons.json", Ae = "Armors.json", Oe = "Enemies.json", Se = "Troops.json", ge = "States.json", be = "Animations.json", ye = "Tilesets.json", Pe = "CommonEvents.json", _e = "MapInfos.json", he = "data", Ne = "img", Ie = "audio", Le = "js";
+})), Zt = "bgm", Yt = "se", Ht = "me", $t = "bgs", qt = "battlebacks1", Qt = "battlebacks2", Xt = "characters", te = "enemies", ee = "faces", ae = "parallaxes", re = "pictures", se = "sv_actors", ne = "sv_enemies", ce = "system", oe = "tilesets", me = "titles1", ie = "titles2", ue = "System.json", le = "Actors.json", pe = "Classes.json", de = "Skills.json", fe = "Items.json", Ee = "Weapons.json", Ae = "Armors.json", Oe = "Enemies.json", Se = "Troops.json", be = "States.json", ge = "Animations.json", ye = "Tilesets.json", Pe = "CommonEvents.json", _e = "MapInfos.json", he = "data", Ne = "img", Ie = "audio", Le = "js";
 export {
   le as FILENAME_ACTORS,
-  be as FILENAME_ANIMATIONS,
+  ge as FILENAME_ANIMATIONS,
   Ae as FILENAME_ARMORS,
   pe as FILENAME_CLASSES,
   Pe as FILENAME_COMMON_EVENTS,
@@ -402,15 +402,15 @@ export {
   fe as FILENAME_ITEMS,
   _e as FILENAME_MAP_INFOS,
   de as FILENAME_SKILLS,
-  ge as FILENAME_STATES,
+  be as FILENAME_STATES,
   ue as FILENAME_SYSTEM,
   ye as FILENAME_TILESET,
   Se as FILENAME_TROOPS,
   Ee as FILENAME_WEAPONS,
   Ie as FOLDER_AUDIO,
   Zt as FOLDER_AUDIO_BGM,
-  Ht as FOLDER_AUDIO_BGS,
-  $t as FOLDER_AUDIO_ME,
+  $t as FOLDER_AUDIO_BGS,
+  Ht as FOLDER_AUDIO_ME,
   Yt as FOLDER_AUDIO_SE,
   he as FOLDER_DATA,
   Ne as FOLDER_IMG,
@@ -446,7 +446,7 @@ export {
   ke as hasNumberValueParam,
   Be as hasScalarAttr,
   R as hasStructAttr,
-  H as hasTextAttr,
+  $ as hasTextAttr,
   we as isArrayAttr,
   Ge as isArrayParam,
   Je as isArrayParamEx,
@@ -461,11 +461,11 @@ export {
   Ze as isStringValueParam,
   Ye as isStructArrayAttr,
   et as isStructArrayParam,
-  $e as isStructAttr,
+  He as isStructAttr,
   tt as isStructParam,
   Q as isVariableAttr,
   ot as lookupKind,
-  He as paramHasText,
+  $e as paramHasText,
   B as parseDeepJSON,
   mt as parseDeepRecord,
   Wt as parsePluginParamObject,
