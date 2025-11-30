@@ -2,12 +2,14 @@ import { describe, test, expect } from "vitest";
 import type { PluginSchema } from "@RmmzPluginSchema/rmmz/plugin";
 import { pluginSourceToArraySchema } from "@RmmzPluginSchema/rmmz/plugin/plugin";
 import { JSONPathJS } from "jsonpath-js";
+import { extractCommandArgsByKey } from "./command";
 import type {
+  CommandMapKey,
   CommandArgExtractors,
   CommandExtractResult,
-  CommandMapKey,
-} from "./core";
-import { compilePluginCommandPairs, extractCommandArgsByKey } from "./core";
+} from "./commandTypes";
+import { createPluginValueExtractor } from "./schema";
+import type { PluginExtractorBundle } from "./types";
 
 interface AddItemCommandArgs {
   itemId: number;
@@ -71,9 +73,13 @@ describe("JSONPath", () => {
   });
   test("extractCommandArgsByKey", () => {
     type MapType = Map<CommandMapKey, CommandArgExtractors>;
-    const r: MapType = new Map(
-      compilePluginCommandPairs(schema, (path) => new JSONPathJS(path))
+
+    const bundle: PluginExtractorBundle = createPluginValueExtractor(
+      "MockPlugin",
+      schema.schema,
+      (path) => new JSONPathJS(path)
     );
+    const commandMap: MapType = new Map(bundle.commands);
     const args = {
       itemId: 5,
       quantity: 10,
@@ -113,7 +119,11 @@ describe("JSONPath", () => {
         },
       ],
     };
-    const result = extractCommandArgsByKey(args, "MockPlugin:AddItem", r);
+    const result = extractCommandArgsByKey(
+      args,
+      "MockPlugin:AddItem",
+      commandMap
+    );
     expect(result).not.toBeUndefined();
     expect(result?.commandName).toBe("AddItem");
     expect(result?.pluginName).toBe("MockPlugin");

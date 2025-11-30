@@ -68,6 +68,9 @@ export const extractCommandArgsByKey = (
   return extractPluginCommandArgs(value, extractor);
 };
 
+/**
+ * @deprecated
+ */
 export const compileCommandExtractorsFromPlugins = (
   plugins: ReadonlyArray<PluginSchema>,
   factoryFn: (path: string) => JSONPathReader
@@ -77,6 +80,9 @@ export const compileCommandExtractorsFromPlugins = (
   );
 };
 
+/**
+ * @deprecated
+ */
 export const compilePluginCommandPairs = (
   plugin: PluginSchema,
   factoryFn: (path: string) => JSONPathReader
