@@ -1,5 +1,4 @@
-import type { CommandExtractorEntry } from "./commandTypes";
-import type { ExtractorBundle } from "./extractor/types/bundle";
+import type { ExtractorBundle, CommandExtractorEntry } from "./extractor/types";
 
 export interface PluginExtractorBundle {
   params: ExtractorBundle[];
