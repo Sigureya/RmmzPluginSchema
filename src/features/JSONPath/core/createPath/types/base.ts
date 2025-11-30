@@ -1,7 +1,7 @@
 import type { ValueCategory } from "./category";
 import type { StructPropertysPath, StructPathResultItems } from "./struct";
 
-export interface PluginValuesPath2 {
+export interface PluginValuesPathBase {
   rootCategory: ValueCategory;
   rootName: string;
 

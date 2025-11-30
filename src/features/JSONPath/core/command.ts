@@ -14,8 +14,8 @@ import type {
   CommandMapKey,
   CommandExtractorEntry,
 } from "./commandTypes";
-import { createPluginValuesPathPP2 } from "./createPath/valuePath";
-import { runMemoBundleEx } from "./extractor/extractor";
+import { createPluginValuesPath } from "./createPath/valuePath";
+import { extractAllPluginValues } from "./extractor/extractor";
 import type { ExtractorBundle } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
@@ -40,12 +40,7 @@ const createExtractors = (
   factoryFn: (path: string) => JSONPathReader
 ): ExtractorBundle[] => {
   return schema.args.map((arg): ExtractorBundle => {
-    const path = createPluginValuesPathPP2(
-      "args",
-      schema.command,
-      arg,
-      structMap
-    );
+    const path = createPluginValuesPath("args", schema.command, arg, structMap);
     return compileJSONPathSchema(path, factoryFn);
   });
 };
@@ -57,7 +52,7 @@ export const extractPluginCommandArgs = (
   return {
     pluginName: extractor.pluginName,
     commandName: extractor.commandName,
-    values: runMemoBundleEx(value, extractor.extractors),
+    values: extractAllPluginValues(value, extractor.extractors),
   };
 };
 

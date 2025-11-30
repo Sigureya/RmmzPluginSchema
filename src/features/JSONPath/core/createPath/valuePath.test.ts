@@ -1,9 +1,6 @@
 import { describe, test, expect } from "vitest";
 import type { PluginParamEx, ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type {
-  PluginValuesPathNewVersion,
-  PrimitivePluginValuesPath,
-} from "./types";
+import type { PluginValuesPathBase, PrimitivePluginValuesPath } from "./types";
 import { createPrimiteveParamPath } from "./valuePath";
 
 describe("eee", () => {
@@ -33,7 +30,7 @@ describe("eee", () => {
         errors: [],
       },
     };
-    const result: PluginValuesPathNewVersion = createPrimiteveParamPath(
+    const result: PluginValuesPathBase = createPrimiteveParamPath(
       "param",
       "testParam",
       param

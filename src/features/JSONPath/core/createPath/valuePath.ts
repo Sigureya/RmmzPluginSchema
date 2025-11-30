@@ -17,24 +17,25 @@ import {
   getPathFromStructParam,
 } from "./structValue";
 import type {
-  PluginValuesPathNewVersion,
+  PluginValuesPath,
+  PluginValuesPathBase,
   PrimitivePluginValuesPath,
 } from "./types";
 
-export const createPluginValuesPathPP2 = (
+export const createPluginValuesPath = (
   category: "param" | "args",
   rootName: string,
   param: PluginParam,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPathNewVersion => {
+): PluginValuesPathBase => {
   if (isStructAttr(param)) {
-    return sss(category, param, structMap);
+    return createStructPath(category, param, structMap);
   }
   if (isStructArrayAttr(param)) {
-    return aaaa(category, param, structMap);
+    return createStructArrayPath(category, param, structMap);
   }
   if (isArrayAttr(param)) {
-    return att(category, rootName, param);
+    return createPrimitiveArrayPath(category, rootName, param);
   }
   return createPrimiteveParamPath(
     category,
@@ -43,11 +44,11 @@ export const createPluginValuesPathPP2 = (
   );
 };
 
-const att = (
+const createPrimitiveArrayPath = (
   category: "param" | "args",
   rootName: string,
   param: PluginParamEx<Exclude<ArrayParamTypes, StructArrayRefParam>>
-): PluginValuesPathNewVersion => {
+): PluginValuesPath => {
   return {
     rootCategory: category,
     rootName: rootName,
@@ -90,19 +91,19 @@ export const createPrimiteveParamPath = (
   };
 };
 
-export const createPluginValuesPathPP = (
+export const createStructParamPath = (
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPathNewVersion => {
-  return sss(category, param, structMap);
+): PluginValuesPathBase => {
+  return createStructPath(category, param, structMap);
 };
 
-const sss = (
+const createStructPath = (
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-) => {
+): PluginValuesPath => {
   return {
     rootName: param.name,
     rootCategory: category,
@@ -115,11 +116,11 @@ const sss = (
   };
 };
 
-const aaaa = (
+const createStructArrayPath = (
   category: "param" | "args",
   param: PluginParamEx<StructArrayRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPathNewVersion => {
+): PluginValuesPath => {
   return {
     structArrays: getPathFromStructArraySchema([param], "$", structMap),
     rootName: param.name,

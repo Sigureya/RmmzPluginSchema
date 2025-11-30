@@ -8,9 +8,12 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type { PluginValuesPathNewVersion } from "./createPath/types";
-import { createPluginValuesPathPP } from "./createPath/valuePath";
-import { runMemoBundle } from "./extractor/extractor";
+import type {
+  PluginValuesPath,
+  PluginValuesPathBase,
+} from "./createPath/types";
+import { createStructParamPath } from "./createPath/valuePath";
+import { extractAllPluginValues } from "./extractor/extractor";
 import type { ExtractorBundle, PluginValues } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
@@ -129,7 +132,7 @@ describe("Address path generation and value extraction", () => {
     attr: { kind: "struct", struct: "Address" },
   };
 
-  const pathSchema: PluginValuesPathNewVersion = {
+  const pathSchema: PluginValuesPath = {
     rootCategory: "param",
     rootName: "address",
     scalars: undefined,
@@ -150,7 +153,7 @@ describe("Address path generation and value extraction", () => {
 
   test("createPluginValuesPath", () => {
     const map = makeMockedMap();
-    const result: PluginValuesPathNewVersion = createPluginValuesPathPP(
+    const result: PluginValuesPathBase = createStructParamPath(
       "param",
       paramSchema,
       map
@@ -219,7 +222,7 @@ describe("Address path generation and value extraction", () => {
       newJSONPath
     );
     expect(memo.rootName).toBe("address");
-    const values: PluginValues[] = runMemoBundle(paramObject, memo);
+    const values: PluginValues[] = extractAllPluginValues(paramObject, [memo]);
     expect(values).toEqual(expectedValues);
   });
 });
@@ -229,7 +232,7 @@ describe("Person path generation and value extraction", () => {
     name: "person",
     attr: { kind: "struct", struct: "Person" },
   };
-  const pathSchema: PluginValuesPathNewVersion = {
+  const pathSchema: PluginValuesPath = {
     rootCategory: "param",
     rootName: "person",
     scalars: undefined,
@@ -268,13 +271,13 @@ describe("Person path generation and value extraction", () => {
 
   test("resolves struct schema via map", () => {
     const map = makeMockedMap();
-    createPluginValuesPathPP("param", paramSchema, map);
+    createStructParamPath("param", paramSchema, map);
     expect(map.get).toBeCalledWith("Person");
     expect(map.get).toBeCalledTimes(1);
   });
 
   test("creates correct path schema", () => {
-    const result = createPluginValuesPathPP("param", paramSchema, makeMap());
+    const result = createStructParamPath("param", paramSchema, makeMap());
     expect(result.rootCategory).toEqual(pathSchema.rootCategory);
     expect(result.rootName).toEqual(pathSchema.rootName);
     expect(result.structArrays).toEqual(pathSchema.structArrays);
@@ -383,7 +386,9 @@ describe("Person path generation and value extraction", () => {
         pathSchema,
         newJSONPath
       );
-      const values: PluginValues[] = runMemoBundle(paramObject, memo);
+      const values: PluginValues[] = extractAllPluginValues(paramObject, [
+        memo,
+      ]);
       expect(values).toEqual(expectedValues);
     });
   });
@@ -395,7 +400,7 @@ describe("classroom path generation and value extraction", () => {
     attr: { kind: "struct", struct: "Class" },
   };
 
-  const pathSchema: PluginValuesPathNewVersion = {
+  const pathSchema: PluginValuesPath = {
     rootCategory: "param",
     rootName: "classroom",
     scalars: undefined,
@@ -471,14 +476,14 @@ describe("classroom path generation and value extraction", () => {
   describe("createPluginValuesPath", () => {
     test("resolves nested class/person schemas", () => {
       const map = makeMockedMap();
-      createPluginValuesPathPP("param", paramSchema, map);
+      createStructParamPath("param", paramSchema, map);
       expect(map.get).toHaveBeenNthCalledWith(1, "Class");
       expect(map.get).toHaveBeenNthCalledWith(2, "Person");
       expect(map.get).toHaveBeenNthCalledWith(3, "Person");
       expect(map.get).toBeCalledTimes(3);
     });
     test("creates correct path schema", () => {
-      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
+      const result = createStructParamPath("param", paramSchema, makeMap());
       expect(result.rootCategory).toEqual(pathSchema.rootCategory);
       expect(result.rootName).toEqual(pathSchema.rootName);
       expect(result.structArrays).toEqual(pathSchema.structArrays);
@@ -745,7 +750,7 @@ describe("classroom path generation and value extraction", () => {
       pathSchema,
       newJSONPath
     );
-    const values: PluginValues[] = runMemoBundle(paramObject, memo);
+    const values: PluginValues[] = extractAllPluginValues(paramObject, [memo]);
     expect(values).toEqual(expectedValues);
   });
 });
@@ -754,7 +759,7 @@ describe("School path generation and value extraction", () => {
     name: "school",
     attr: { kind: "struct", struct: "School" },
   };
-  const pathSchema: PluginValuesPathNewVersion = {
+  const pathSchema: PluginValuesPath = {
     rootCategory: "param",
     rootName: "school",
     scalars: undefined,
@@ -853,7 +858,7 @@ describe("School path generation and value extraction", () => {
   describe("createPluginValuesPath", () => {
     test("resolves all referenced struct schemas", () => {
       const map = makeMockedMap();
-      createPluginValuesPathPP("param", paramSchema, map);
+      createStructParamPath("param", paramSchema, map);
       expect(map.get).toHaveBeenNthCalledWith(1, "School");
       expect(map.get).toHaveBeenNthCalledWith(2, "Address");
       expect(map.get).toHaveBeenNthCalledWith(3, "Class");
@@ -862,7 +867,7 @@ describe("School path generation and value extraction", () => {
       expect(map.get).toBeCalledTimes(5);
     });
     test("generates complete School path schema", () => {
-      const result = createPluginValuesPathPP("param", paramSchema, makeMap());
+      const result = createStructParamPath("param", paramSchema, makeMap());
       expect(result.rootCategory).toEqual(pathSchema.rootCategory);
       expect(result.rootName).toEqual(pathSchema.rootName);
       expect(result.scalars).toEqual(pathSchema.scalars);
@@ -1123,7 +1128,9 @@ describe("School path generation and value extraction", () => {
         pathSchema,
         newJSONPath
       );
-      const values: PluginValues[] = runMemoBundle(paramObject, memo);
+      const values: PluginValues[] = extractAllPluginValues(paramObject, [
+        memo,
+      ]);
       expect(values).toEqual(expectedValues);
     });
   });
