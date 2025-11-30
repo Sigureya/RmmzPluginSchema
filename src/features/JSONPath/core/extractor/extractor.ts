@@ -21,21 +21,17 @@ import type {
   ArrayPathExtractor,
 } from "./types";
 
-export const runMemoBundleEx = (
+export const extractAllPluginValues = (
   value: JSONValue,
   memo: ReadonlyArray<ExtractorBundle>
 ): PluginValues[] => {
-  return memo.map((m) => es2(value, m)).flat(3);
+  return memo.map((m) => extractBundleGroups(value, m)).flat(3);
 };
 
-export const runMemoBundle = (
+const extractBundleGroups = (
   value: JSONValue,
   memo: ExtractorBundle
-): PluginValues[] => {
-  return es2(value, memo).flat(2);
-};
-
-const es2 = (value: JSONValue, memo: ExtractorBundle) => {
+): [PluginValues[], PluginValues[][], PluginValues[][]] => {
   const topValues: PluginValues[] = memo.top
     ? extractFromStruct(memo, value, memo.top)
     : [];

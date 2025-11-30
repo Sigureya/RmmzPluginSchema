@@ -2,7 +2,7 @@ import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   ArrayParamPathPair,
-  PluginValuesPath2,
+  PluginValuesPathBase,
   StructPropertysPath,
 } from "./createPath/types";
 import type {
@@ -13,7 +13,7 @@ import type {
 } from "./extractor/types";
 
 export const compileJSONPathSchema = (
-  path: PluginValuesPath2,
+  path: PluginValuesPathBase,
   factoryFn: (path: string) => JSONPathReader
 ): ExtractorBundle => {
   const top = path.scalars
