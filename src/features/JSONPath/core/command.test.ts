@@ -10,8 +10,7 @@ import {
   compilePluginCommandExtractor,
   extractPluginCommandArgs,
 } from "./command";
-import type { CommandExtractResult } from "./commandTypes";
-import type { PluginValues } from "./extractor/types";
+import type { PluginValues, CommandExtractResult } from "./extractor/types";
 
 interface Effect {
   code: number;

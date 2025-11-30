@@ -8,15 +8,15 @@ import type {
   ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
+import { createPluginValuesPath } from "./createPath/valuePath";
+import { extractAllPluginValues } from "./extractor/extractor";
 import type {
   CommandArgExtractors,
   CommandExtractResult,
   CommandMapKey,
   CommandExtractorEntry,
-} from "./commandTypes";
-import { createPluginValuesPath } from "./createPath/valuePath";
-import { extractAllPluginValues } from "./extractor/extractor";
-import type { ExtractorBundle } from "./extractor/types";
+  ExtractorBundle,
+} from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
 export const compilePluginCommandExtractor = (

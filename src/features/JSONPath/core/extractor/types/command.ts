@@ -1,4 +1,5 @@
-import type { ExtractorBundle, PluginValues } from "./extractor/types";
+import type { ExtractorBundle } from "./bundle";
+import type { PluginValues } from "./result";
 
 export interface CommandArgExtractors {
   pluginName: string;
