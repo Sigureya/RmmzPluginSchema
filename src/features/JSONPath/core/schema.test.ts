@@ -37,13 +37,14 @@ const pluginAnnoations: string[] = [
   "@text Effect details",
   "*/",
 
-  "/*~struct~Effect:",
+  `/*~struct~Effect:`,
   "@param power",
   "@type number",
   "@default 100",
   "@param effectMessage",
   "@type string",
   "@default It was super effective!",
+  "",
   "*/",
 ];
 
@@ -67,6 +68,7 @@ const schema: PluginSchema = {
           kind: "struct",
           struct: "Effect",
           text: "Effect details",
+          default: {},
         },
       },
     ],
@@ -118,6 +120,10 @@ describe("JSONPath", () => {
       "MockPlugin",
       pluginAnnoations.join("\n")
     );
+    expect(result.schema.structs).toEqual(schema.schema.structs);
+    expect(result.schema.commands).toEqual(schema.schema.commands);
+    expect(result.schema.params).toEqual(schema.schema.params);
+    expect(result.pluginName).toBe("MockPlugin");
     expect(result).toEqual(schema);
   });
   const bundle: PluginExtractorBundle = createPluginValueExtractor(

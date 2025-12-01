@@ -14,6 +14,8 @@ import type {
   DataKind_RpgUnion,
   DataKind_SystemUnion,
   PrimitiveParam,
+  StructRefParam,
+  StructArrayRefParam,
 } from "./params";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
@@ -185,6 +187,64 @@ const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
   return compileParam(kind, 0, tokens.attr, DATA_ID);
 };
 
+const createDefaultStruct = (tokens: PluginParamTokens) => {
+  if (!tokens.attr.default) {
+    return {};
+  }
+  const value = parseDeepJSON(tokens.attr.default);
+  if (Array.isArray(value)) {
+    return {};
+  }
+  if (typeof value === "object" && value !== null) {
+    return value;
+  }
+  return {};
+};
+
+const compileStructParam = (tokens: PluginParamTokens): StructRefParam => {
+  const defaultValue: Record<string, unknown> = createDefaultStruct(tokens);
+  const STRUCT_REF = {
+    text: attrString,
+    struct: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const;
+  return {
+    struct: tokens.attr.struct || "",
+    ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
+  };
+};
+
+const createDefaultStructArray = (tokens: PluginParamTokens) => {
+  if (!tokens.attr.default) {
+    return [];
+  }
+  const value = parseDeepJSON(tokens.attr.default);
+  if (Array.isArray(value)) {
+    if (value.every((v) => typeof v === "object" && v !== null)) {
+      return value;
+    }
+  }
+  return [];
+};
+
+const compileStructArrayParam = (
+  tokens: PluginParamTokens
+): StructArrayRefParam => {
+  const defaultValue = createDefaultStructArray(tokens);
+  const STRUCT_ARRAY = {
+    text: attrString,
+    struct: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const;
+  return {
+    struct: tokens.attr.struct || "",
+    ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
+    default: defaultValue,
+  };
+};
+
 const TABLE2 = {
   number: (tokens) => compileNumberParam(tokens),
   "number[]": compileNumberArrayParam,
@@ -221,6 +281,8 @@ const TABLE2 = {
   boolean: compileBooleanParam,
   file: compileFileParam,
   "file[]": compileFileArrayParam,
+  struct: compileStructParam,
+  "struct[]": compileStructArrayParam,
 } as const satisfies Partial<{
   [K in PrimitiveParam["kind"]]: (tokens: PluginParamTokens) => PrimitiveParam;
 }>;

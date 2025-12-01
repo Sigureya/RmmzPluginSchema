@@ -1,19 +1,12 @@
 import { describe, test, expect, vi } from "vitest";
 import type {
-  JSONPathReader,
-  JSONValue,
-} from "@RmmzPluginSchema/libs/jsonPath";
-import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
-  PluginParamEx,
-  ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   PluginValues,
   ParamExtractResult,
-  PluginParamExtractor,
   PluginParamsSchema,
 } from "./extractor/types";
 import { compilePluginParamExtractor, extractPluginParam } from "./param";
@@ -21,12 +14,6 @@ import { compilePluginParamExtractor, extractPluginParam } from "./param";
 interface Person {
   name: string;
   age: number;
-}
-
-interface Config {
-  enable: boolean;
-  threshold: number;
-  person: Person;
 }
 
 const schemaPerson: ClassifiedPluginParamsEx<Person> = {
