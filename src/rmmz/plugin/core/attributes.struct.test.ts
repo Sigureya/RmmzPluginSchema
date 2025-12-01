@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { StructRefParam, StructArrayRefParam } from "./params";
-import type { PluginParamTokens } from "./parse/types/types";
+import type { PluginParamTokens } from "./parse";
 import { stringifyDeepJSON } from "./rmmzJSON";
 
 interface Person {
