@@ -8,8 +8,16 @@ import type {
   StructPluginParam,
   PluginCommandSchemaArray,
   PluginCommandSchemaArrayEx3,
+  PluginParamEx,
+  PrimitiveTextParam,
 } from "./types";
-import { hasStructAttr } from "./typeTest";
+import { hasStructAttr, hasTextAttr } from "./typeTest";
+
+export const filterPluginParamByText = (
+  schema: PluginSchemaArray
+): PluginSchemaArrayEx2<PluginParamEx<PrimitiveTextParam>> => {
+  return filterPluginSchemaByParam(schema, hasTextAttr);
+};
 
 export const filterPluginSchemaByParam = <T extends PluginParam>(
   schema: PluginSchemaArray,
