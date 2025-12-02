@@ -2,12 +2,12 @@ import { collectDependentStructNames } from "./arraySchemaDependent";
 import type {
   PluginParam,
   PluginSchemaArray,
-  PluginSchemaArrayEx2,
+  PluginSchemaArrayFiltered,
   PluginStructSchemaArray,
-  PluginStructSchemaArrayFilterd,
+  PluginStructSchemaArrayFiltered,
   StructPluginParam,
   PluginCommandSchemaArray,
-  PluginCommandSchemaArrayEx3,
+  PluginCommandSchemaArrayFiltered,
   PluginParamEx,
   PrimitiveTextParam,
 } from "./types";
@@ -15,14 +15,14 @@ import { hasStructAttr, hasTextAttr } from "./typeTest";
 
 export const filterPluginParamByText = (
   schema: PluginSchemaArray
-): PluginSchemaArrayEx2<PluginParamEx<PrimitiveTextParam>> => {
+): PluginSchemaArrayFiltered<PluginParamEx<PrimitiveTextParam>> => {
   return filterPluginSchemaByParam(schema, hasTextAttr);
 };
 
 export const filterPluginSchemaByParam = <T extends PluginParam>(
   schema: PluginSchemaArray,
   predicate: (param: PluginParam) => param is T
-): PluginSchemaArrayEx2<T> => {
+): PluginSchemaArrayFiltered<T> => {
   const base: PluginStructSchemaArray[] = schema.structs.filter((s) => {
     return s.params.some((p) => predicate(p));
   });
@@ -31,7 +31,7 @@ export const filterPluginSchemaByParam = <T extends PluginParam>(
     schema.structs,
     directTypeNames
   );
-  const newStructs: PluginStructSchemaArrayFilterd<T | StructPluginParam>[] =
+  const newStructs: PluginStructSchemaArrayFiltered<T | StructPluginParam>[] =
     rebuildStructs(schema.structs, depTypesName, predicate);
   return {
     structs: newStructs,
@@ -56,8 +56,8 @@ const rebuildStructs = <T extends PluginParam>(
   structs: ReadonlyArray<PluginStructSchemaArray>,
   structNames: ReadonlySet<string>,
   predicate: (param: PluginParam) => param is T
-): PluginStructSchemaArrayFilterd<T | StructPluginParam>[] => {
-  type XX = PluginStructSchemaArrayFilterd<T | StructPluginParam>;
+): PluginStructSchemaArrayFiltered<T | StructPluginParam>[] => {
+  type XX = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
 
   return structs
     .map((struct): XX => {
@@ -73,8 +73,8 @@ export const rebuildCommands = <T extends PluginParam>(
   commands: ReadonlyArray<PluginCommandSchemaArray>,
   structNames: ReadonlySet<string>,
   predicate: (param: PluginParam) => param is T
-): PluginCommandSchemaArrayEx3<T | StructPluginParam>[] => {
-  type R = PluginCommandSchemaArrayEx3<T | StructPluginParam>;
+): PluginCommandSchemaArrayFiltered<T | StructPluginParam>[] => {
+  type R = PluginCommandSchemaArrayFiltered<T | StructPluginParam>;
   return commands
     .map((cmd): R => {
       return {

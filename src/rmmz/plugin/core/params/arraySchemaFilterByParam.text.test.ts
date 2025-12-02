@@ -3,7 +3,41 @@ import { filterPluginParamByText } from "./arraySchemaFilterByParam";
 import type { PluginSchemaArray } from "./types";
 
 describe("filterPluginParamByText", () => {
-  describe("", () => {
+  describe("keeps params that have a text attribute", () => {
+    test("", () => {
+      const schema: PluginSchemaArray = {
+        params: [
+          {
+            name: "gameTitle",
+            attr: {
+              kind: "string",
+              default: "My RPG",
+              text: "Title of the game",
+            },
+          },
+        ],
+        structs: [],
+        commands: [
+          {
+            command: "Play scrolling text",
+            args: [
+              {
+                name: "text",
+                attr: {
+                  kind: "multiline_string",
+                  default: "",
+                  text: "Text to scroll on the screen",
+                },
+              },
+            ],
+          },
+        ],
+      };
+      const result = filterPluginParamByText(schema);
+      expect(result).toEqual(schema);
+    });
+  });
+  describe("removes params that do not have a text attribute", () => {
     test("", () => {
       const schema: PluginSchemaArray = {
         structs: [
