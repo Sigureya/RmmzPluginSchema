@@ -58,18 +58,15 @@ const rebuildStructs = <T extends PluginParam>(
   predicate: (param: PluginParam) => param is T
 ): PluginStructSchemaArrayFilterd<T | StructPluginParam>[] => {
   type XX = PluginStructSchemaArrayFilterd<T | StructPluginParam>;
-  return structs.reduce<XX[]>((acc, struct) => {
-    const params: (T | StructPluginParam)[] = rebuildParams(
-      struct.params,
-      structNames,
-      predicate
-    );
-    if (params.length === 0) {
-      return acc;
-    }
-    acc.push({ struct: struct.struct, params: params });
-    return acc;
-  }, []);
+
+  return structs
+    .map((struct): XX => {
+      return {
+        struct: struct.struct,
+        params: rebuildParams(struct.params, structNames, predicate),
+      };
+    })
+    .filter((s) => s.params.length > 0);
 };
 
 export const rebuildCommands = <T extends PluginParam>(
