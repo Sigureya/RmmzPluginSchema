@@ -32,6 +32,8 @@ export type PrimitiveStringParam =
   | ComboParam
   | SelectParam;
 
+export type PrimitiveTextParam = StringParam | StringArrayParam;
+
 export type PrimitiveParam =
   | BooleanParam
   | NumberParam
