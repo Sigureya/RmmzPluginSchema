@@ -1,35 +1,35 @@
-import { o as R, v as $, B as q, D as Q, E as X, n as tt, r as et } from "../shared/structMap.es.js";
+import { o as k, v as $, B as q, D as Q, E as X, n as rr, r as er } from "../shared/structMap.es.js";
 import { a as Fe, c as ve, b as Te, g as xe, f as je, h as De, i as Re, z as ke, q as Be, k as we, j as Ge, l as Je, A as Ve, x as Ue, y as ze, m as Ke, C as We, w as Ze, s as Ye, p as He, u as $e, e as qe, d as Qe, t as Xe } from "../shared/structMap.es.js";
-const at = (t, e) => {
-  const a = function(r) {
-    return Object.fromEntries(r.map((s) => [s.struct, s.params.filter(R)]));
-  }(t);
-  return function(r, s, c) {
-    return r.reduce((o) => {
+const ar = (r, e) => {
+  const a = function(t) {
+    return Object.fromEntries(t.map((s) => [s.struct, s.params.filter(k)]));
+  }(r);
+  return function(t, s, c) {
+    return t.reduce((o) => {
       if (!o.changed) return o;
-      const f = r.filter((d) => !o.names.has(d) && s[d].some((m) => o.names.has(m.attr.struct)));
+      const f = t.filter((p) => !o.names.has(p) && s[p].some((m) => o.names.has(m.attr.struct)));
       return f.length === 0 ? { names: o.names, changed: !1 } : { names: /* @__PURE__ */ new Set([...o.names, ...f]), changed: !0 };
     }, {
       names: c,
       changed: !0
     }).names;
   }(Object.keys(a), a, new Set(e));
-}, _ = (t, e) => {
-  const a = t.structs.filter((c) => c.params.some((o) => e(o))), r = new Set(a.map((c) => c.struct)), s = at(t.structs, r);
+}, h = (r, e) => {
+  const a = r.structs.filter((c) => c.params.some((o) => e(o))), t = new Set(a.map((c) => c.struct)), s = ar(r.structs, t);
   return {
-    structs: rt(t.structs, s, e),
-    commands: st(t.commands, s, e),
-    params: M(t.params, s, e)
+    structs: tr(r.structs, s, e),
+    commands: sr(r.commands, s, e),
+    params: C(r.params, s, e)
   };
-}, M = (t, e, a) => t.filter((r) => R(r) ? e.has(r.attr.struct) : a(r)), rt = (t, e, a) => t.reduce((r, s) => {
-  const c = M(s.params, e, a);
-  return c.length === 0 || r.push({ struct: s.struct, params: c }), r;
-}, []), st = (t, e, a) => t.reduce((r, s) => {
-  const c = M(s.args, e, a);
-  return c.length === 0 || r.push({ ...s.desc ? {
+}, C = (r, e, a) => r.filter((t) => k(t) ? e.has(t.attr.struct) : a(t)), tr = (r, e, a) => r.reduce((t, s) => {
+  const c = C(s.params, e, a);
+  return c.length === 0 || t.push({ struct: s.struct, params: c }), t;
+}, []), sr = (r, e, a) => r.reduce((t, s) => {
+  const c = C(s.args, e, a);
+  return c.length === 0 || t.push({ ...s.desc ? {
     desc: s.desc
-  } : {}, ...s.text ? { text: s.text } : {}, command: s.command, args: c }), r;
-}, []), kt = (t) => _(t, $), Bt = (t) => _(t, q), wt = (t) => _(t, Q), Gt = (t) => _(t, X), nt = {
+  } : {}, ...s.text ? { text: s.text } : {}, command: s.command, args: c }), t;
+}, []), kr = (r) => h(r, $), Br = (r) => h(r, q), wr = (r) => h(r, Q), Gr = (r) => h(r, X), nr = {
   variable: 1,
   switch: 2,
   actor: 0,
@@ -42,153 +42,153 @@ const at = (t, e) => {
   troop: 0,
   enemy: 0,
   common_event: 0
-}, ct = ["data", "system", "system"], ot = (t) => {
-  const e = nt[t];
-  return e === void 0 ? { author: "rmmz", module: "unknown", kind: t } : {
+}, cr = ["data", "system", "system"], or = (r) => {
+  const e = nr[r];
+  return e === void 0 ? { author: "rmmz", module: "unknown", kind: r } : {
     author: "rmmz",
-    module: ct[e],
-    kind: [t, "variable", "switch"][e]
+    module: cr[e],
+    kind: [r, "variable", "switch"][e]
   };
-}, Jt = (t) => {
-  const e = ot(t.kind);
-  return e.author === t.author && e.module === t.module && e.kind === t.kind;
-}, k = (t, e, a) => {
-  const r = e.get(t);
-  return r ? r.filter((s) => ((c, o) => !(!tt(c) && !et(c) || !c.struct || o.has(c.struct)))(s, a)).flatMap((s) => {
+}, Jr = (r) => {
+  const e = or(r.kind);
+  return e.author === r.author && e.module === r.module && e.kind === r.kind;
+}, B = (r, e, a) => {
+  const t = e.get(r);
+  return t ? t.filter((s) => ((c, o) => !(!rr(c) && !er(c) || !c.struct || o.has(c.struct)))(s, a)).flatMap((s) => {
     const c = s.struct;
-    return a.add(c), [c, ...k(c, e, a)];
+    return a.add(c), [c, ...B(c, e, a)];
   }) : [];
-}, Vt = (t, e) => k(t, e, /* @__PURE__ */ new Set()), B = (t) => {
-  const e = JSON.parse(t);
+}, Vr = (r, e) => B(r, e, /* @__PURE__ */ new Set()), A = (r) => {
+  const e = JSON.parse(r);
   return Array.isArray(e) ? e.map(b) : typeof e == "object" && e !== null ? w(e) : e;
-}, mt = (t) => w(t), w = (t) => Object.fromEntries(Object.entries(t).map(([e, a]) => [e, b(a)])), b = (t) => {
-  if (typeof t != "string") return t;
+}, mr = (r) => w(r), w = (r) => Object.fromEntries(Object.entries(r).map(([e, a]) => [e, b(a)])), b = (r) => {
+  if (typeof r != "string") return r;
   try {
-    const e = JSON.parse(t);
-    return Array.isArray(e) ? e.map(b) : typeof e == "object" && e !== null ? Object.fromEntries(Object.entries(e).map(([a, r]) => [a, b(r)])) : e;
+    const e = JSON.parse(r);
+    return Array.isArray(e) ? e.map(b) : typeof e == "object" && e !== null ? Object.fromEntries(Object.entries(e).map(([a, t]) => [a, b(t)])) : e;
   } catch {
-    return t;
+    return r;
   }
-}, Ut = (t) => JSON.stringify(it(t)), A = (t) => typeof t == "object" && t !== null && !Array.isArray(t), it = (t) => Array.isArray(t) ? ut(t) : A(t) ? g(t) : {}, g = (t) => A(t) ? Object.fromEntries(Object.entries(t).map(([e, a]) => {
+}, Ur = (r) => JSON.stringify(ir(r)), O = (r) => typeof r == "object" && r !== null && !Array.isArray(r), ir = (r) => Array.isArray(r) ? ur(r) : O(r) ? g(r) : {}, g = (r) => O(r) ? Object.fromEntries(Object.entries(r).map(([e, a]) => {
   if (Array.isArray(a)) {
-    const r = a.map((s) => A(s) ? JSON.stringify(g(s)) : String(s));
-    return [e, JSON.stringify(r)];
+    const t = a.map((s) => O(s) ? JSON.stringify(g(s)) : String(s));
+    return [e, JSON.stringify(t)];
   }
-  return A(a) ? [e, JSON.stringify(g(a))] : [e, String(a)];
-})) : {}, ut = (t) => t.map((e) => typeof e == "object" && e !== null ? JSON.stringify(g(e)) : String(e)), G = (t, e) => Object.entries(e).reduce((a, [r, s]) => {
-  if (r in t) {
-    const c = t[r];
-    if (typeof c == "string") return { ...a, [r]: s(c) };
+  return O(a) ? [e, JSON.stringify(g(a))] : [e, String(a)];
+})) : {}, ur = (r) => r.map((e) => typeof e == "object" && e !== null ? JSON.stringify(g(e)) : String(e)), G = (r, e) => Object.entries(e).reduce((a, [t, s]) => {
+  if (t in r) {
+    const c = r[t];
+    if (typeof c == "string") return { ...a, [t]: s(c) };
   }
   return a;
-}, {}), p = (t, e, a, r) => ({ default: e, ...G(a, r), kind: t }), y = (t, e, a) => ({
+}, {}), d = (r, e, a, t) => ({ default: e, ...G(a, t), kind: r }), P = (r, e, a) => ({
   default: [],
   ...G(e, a),
-  kind: t
-}), J = "BODY", V = "STRUCT", O = "NONE", lt = (t, e) => {
-  const a = t.lines.length > 0 ? C(t) : t, r = e[1] || void 0;
-  return { ...a, structName: r, blockType: r ? V : "INVALID", locale: e[2], lines: [] };
-}, pt = (t) => ({
-  ...t.lines.length > 0 ? C(t) : t,
+  kind: r
+}), J = "BODY", V = "STRUCT", S = "NONE", lr = (r, e) => {
+  const a = r.lines.length > 0 ? F(r) : r, t = e[1] || void 0;
+  return { ...a, structName: t, blockType: t ? V : "INVALID", locale: e[2], lines: [] };
+}, dr = (r) => ({
+  ...r.lines.length > 0 ? F(r) : r,
   blockType: J,
   structName: void 0,
   locale: void 0,
   lines: []
-}), C = (t) => t.blockType === J ? {
-  ...t,
-  bodies: t.bodies.concat([{ lines: [...t.lines] }]),
+}), F = (r) => r.blockType === J ? {
+  ...r,
+  bodies: r.bodies.concat([{ lines: [...r.lines] }]),
   lines: [],
-  blockType: O
-} : t.structName && t.blockType === V ? {
-  ...t,
-  structs: t.structs.concat([{ struct: t.structName, locale: t.locale, lines: [...t.lines] }]),
-  blockType: O,
+  blockType: S
+} : r.structName && r.blockType === V ? {
+  ...r,
+  structs: r.structs.concat([{ struct: r.structName, locale: r.locale, lines: [...r.lines] }]),
+  blockType: S,
   structName: void 0,
   locale: void 0,
   lines: []
-} : { ...t, blockType: O, structName: void 0, lines: [] }, dt = (t) => t.currentOption ? {
-  items: t.items.concat({ option: t.currentOption, value: t.currentOption })
-} : t, U = "help", I = "kind", h = "text", x = "struct", z = (t) => {
-  if (I in t.attr) {
-    const e = ft[t.attr.kind];
-    if (e) return e(t);
+} : { ...r, blockType: S, structName: void 0, lines: [] }, pr = (r) => r.currentOption ? {
+  items: r.items.concat({ option: r.currentOption, value: r.currentOption })
+} : r, U = "help", L = "kind", N = "text", j = "struct", z = (r) => {
+  if (L in r.attr) {
+    const e = fr[r.attr.kind];
+    if (e) return e(r);
   }
-  return p("any", "", t.attr, P);
-}, n = (t) => t, K = (t) => t.replace("[", "").replace("]", "").split(",").map((e) => parseFloat(e.replaceAll('"', "").trim())).filter((e) => !isNaN(e)), P = {
+  return d("any", "", r.attr, _);
+}, n = (r) => r, K = (r) => r.replace("[", "").replace("]", "").split(",").map((e) => parseFloat(e.replaceAll('"', "").trim())).filter((e) => !isNaN(e)), _ = {
   default: n,
   text: n,
   desc: n,
   parent: n
-}, j = (t) => p("string", "", t.attr, P), D = (t) => {
-  const e = { default: (a) => B(a), text: n, desc: n, parent: n };
-  return y("string[]", t.attr, e);
-}, i = (t, e) => {
+}, D = (r) => d("string", "", r.attr, _), R = (r) => {
+  const e = { default: (a) => A(a), text: n, desc: n, parent: n };
+  return P("string[]", r.attr, e);
+}, i = (r, e) => {
   const a = {
     default: K,
     text: n,
     desc: n,
     parent: n
   };
-  return y(e, t.attr, a);
-}, u = (t, e) => {
-  const a = { default: (r) => parseInt(r, 10), text: n, desc: n, parent: n };
-  return p(e, 0, t.attr, a);
-}, ft = {
-  number: (t) => ((e) => {
+  return P(e, r.attr, a);
+}, u = (r, e) => {
+  const a = { default: (t) => parseInt(t, 10), text: n, desc: n, parent: n };
+  return d(e, 0, r.attr, a);
+}, fr = {
+  number: (r) => ((e) => {
     const a = {
-      default: (r) => parseFloat(r),
+      default: (t) => parseFloat(t),
       text: n,
       desc: n,
-      decimals: (r) => parseInt(r, 10),
-      min: (r) => parseFloat(r),
-      max: (r) => parseFloat(r),
+      decimals: (t) => parseInt(t, 10),
+      min: (t) => parseFloat(t),
+      max: (t) => parseFloat(t),
       parent: n
     };
-    return p("number", 0, e.attr, a);
-  })(t),
-  "number[]": (t) => {
+    return d("number", 0, e.attr, a);
+  })(r),
+  "number[]": (r) => {
     const e = { default: K, text: n, desc: n, decimals: (a) => parseInt(a, 10), min: (a) => parseFloat(a), max: (a) => parseFloat(a), parent: n };
-    return y("number[]", t.attr, e);
+    return P("number[]", r.attr, e);
   },
-  string: j,
-  "string[]": D,
-  multiline_string: j,
-  "multiline_string[]": D,
-  combo: (t) => {
+  string: D,
+  "string[]": R,
+  multiline_string: D,
+  "multiline_string[]": R,
+  combo: (r) => {
     var a;
-    const e = ((a = t.options) == null ? void 0 : a.map((r) => r.option)) ?? [];
-    return { ...p("combo", "", t.attr, P), options: e };
+    const e = ((a = r.options) == null ? void 0 : a.map((t) => t.option)) ?? [];
+    return { ...d("combo", "", r.attr, _), options: e };
   },
-  select: (t) => {
+  select: (r) => {
     var a;
-    const e = ((a = t.options) == null ? void 0 : a.map((r) => ({ option: r.option, value: r.value }))) ?? [];
-    return { ...p("select", "", t.attr, P), options: e };
+    const e = ((a = r.options) == null ? void 0 : a.map((t) => ({ option: t.option, value: t.value }))) ?? [];
+    return { ...d("select", "", r.attr, _), options: e };
   },
-  actor: (t) => u(t, "actor"),
-  "actor[]": (t) => i(t, "actor[]"),
-  class: (t) => u(t, "class"),
-  "class[]": (t) => i(t, "class[]"),
-  skill: (t) => u(t, "skill"),
-  "skill[]": (t) => i(t, "skill[]"),
-  item: (t) => u(t, "item"),
-  "item[]": (t) => i(t, "item[]"),
-  weapon: (t) => u(t, "weapon"),
-  "weapon[]": (t) => i(t, "weapon[]"),
-  armor: (t) => u(t, "armor"),
-  "armor[]": (t) => i(t, "armor[]"),
-  state: (t) => u(t, "state"),
-  "state[]": (t) => i(t, "state[]"),
-  enemy: (t) => u(t, "enemy"),
-  "enemy[]": (t) => i(t, "enemy[]"),
-  common_event: (t) => u(t, "common_event"),
-  "common_event[]": (t) => i(t, "common_event[]"),
-  switch: (t) => u(t, "switch"),
-  "switch[]": (t) => i(t, "switch[]"),
-  variable: (t) => u(t, "variable"),
-  "variable[]": (t) => i(t, "variable[]"),
-  troop: (t) => u(t, "troop"),
-  "troop[]": (t) => i(t, "troop[]"),
-  boolean: (t) => {
+  actor: (r) => u(r, "actor"),
+  "actor[]": (r) => i(r, "actor[]"),
+  class: (r) => u(r, "class"),
+  "class[]": (r) => i(r, "class[]"),
+  skill: (r) => u(r, "skill"),
+  "skill[]": (r) => i(r, "skill[]"),
+  item: (r) => u(r, "item"),
+  "item[]": (r) => i(r, "item[]"),
+  weapon: (r) => u(r, "weapon"),
+  "weapon[]": (r) => i(r, "weapon[]"),
+  armor: (r) => u(r, "armor"),
+  "armor[]": (r) => i(r, "armor[]"),
+  state: (r) => u(r, "state"),
+  "state[]": (r) => i(r, "state[]"),
+  enemy: (r) => u(r, "enemy"),
+  "enemy[]": (r) => i(r, "enemy[]"),
+  common_event: (r) => u(r, "common_event"),
+  "common_event[]": (r) => i(r, "common_event[]"),
+  switch: (r) => u(r, "switch"),
+  "switch[]": (r) => i(r, "switch[]"),
+  variable: (r) => u(r, "variable"),
+  "variable[]": (r) => i(r, "variable[]"),
+  troop: (r) => u(r, "troop"),
+  "troop[]": (r) => i(r, "troop[]"),
+  boolean: (r) => {
     const e = {
       default: (a) => a === "true",
       text: n,
@@ -197,43 +197,59 @@ const at = (t, e) => {
       off: n,
       parent: n
     };
-    return p("boolean", !0, t.attr, e);
+    return d("boolean", !0, r.attr, e);
   },
-  file: (t) => {
+  file: (r) => {
     const e = { default: n, text: n, desc: n, parent: n, dir: n };
-    return { dir: "", ...p("file", "", t.attr, e) };
+    return { dir: "", ...d("file", "", r.attr, e) };
   },
-  "file[]": (t) => {
-    const e = { default: (a) => B(a), text: n, desc: n, parent: n, dir: n };
-    return { dir: "", ...y("file[]", t.attr, e) };
+  "file[]": (r) => {
+    const e = { default: (a) => A(a), text: n, desc: n, parent: n, dir: n };
+    return { dir: "", ...P("file[]", r.attr, e) };
+  },
+  struct: (r) => {
+    const e = ((t) => {
+      if (!t.attr.default) return {};
+      const s = A(t.attr.default);
+      return Array.isArray(s) ? {} : typeof s == "object" && s !== null ? s : {};
+    })(r), a = { text: n, desc: n, parent: n };
+    return { struct: r.attr.struct || "", ...d("struct", e, r.attr, a) };
+  },
+  "struct[]": (r) => {
+    const e = ((t) => {
+      if (!t.attr.default) return [];
+      const s = A(t.attr.default);
+      return Array.isArray(s) && s.every((c) => typeof c == "object" && c !== null) ? s : [];
+    })(r), a = { text: n, desc: n, parent: n };
+    return { struct: r.attr.struct || "", ...d("struct[]", e, r.attr, a), default: e };
   }
-}, Et = (t) => !Array.isArray(t) && typeof t == "object" && t !== null && !!(At(t) && Ot(t) && St(t) && "parameters" in t) && bt(t), At = (t) => "name" in t && typeof t.name == "string", Ot = (t) => "status" in t && typeof t.status == "boolean", St = (t) => "description" in t && typeof t.description == "string", bt = (t) => typeof t.parameters == "object" && t.parameters !== null && Object.values(t.parameters).every((e) => typeof e == "string"), gt = /\s*\/\//, yt = /\s*[var|let|const]\s+[^\s]+\s*=/, Pt = /^\s{0,3}[\[|\]\;]/, _t = (t) => t.split(`
-`).filter((e) => !((a) => gt.test(a) || Pt.test(a) || yt.test(a))(e)), ht = (t) => {
-  const e = `[${_t(t).join("")}]`, a = JSON.parse(e);
+}, Er = (r) => !Array.isArray(r) && typeof r == "object" && r !== null && !!(Ar(r) && Or(r) && Sr(r) && "parameters" in r) && yr(r), Ar = (r) => "name" in r && typeof r.name == "string", Or = (r) => "status" in r && typeof r.status == "boolean", Sr = (r) => "description" in r && typeof r.description == "string", yr = (r) => typeof r.parameters == "object" && r.parameters !== null && Object.values(r.parameters).every((e) => typeof e == "string"), br = /\s*\/\//, gr = /\s*[var|let|const]\s+[^\s]+\s*=/, Pr = /^\s{0,3}[\[|\]\;]/, _r = (r) => r.split(`
+`).filter((e) => !((a) => br.test(a) || Pr.test(a) || gr.test(a))(e)), hr = (r) => {
+  const e = `[${_r(r).join("")}]`, a = JSON.parse(e);
   if (!Array.isArray(a)) throw new Error("Parsed value is not an array");
-  if (a.every(Et)) return a;
+  if (a.every(Er)) return a;
   throw new Error("Parsed value is not PluginParamsObject array");
-}, L = (t) => ({ ...typeof t.desc == "string" ? { desc: t.desc } : {}, ...typeof t.text == "string" ? { text: t.text } : {} }), S = (t) => {
-  const e = Nt(t), a = Lt(e);
-  return It(a);
-}, Nt = (t) => {
-  if (t.currentParam && t.currentOption) {
-    const e = t.currentParam.attr.kind;
-    if (e === "select" || e === "combo") return { ...t, currentParam: {
-      ...t.currentParam,
-      options: dt(t.currentOption).items
+}, M = (r) => ({ ...typeof r.desc == "string" ? { desc: r.desc } : {}, ...typeof r.text == "string" ? { text: r.text } : {} }), y = (r) => {
+  const e = Nr(r), a = Lr(e);
+  return Ir(a);
+}, Nr = (r) => {
+  if (r.currentParam && r.currentOption) {
+    const e = r.currentParam.attr.kind;
+    if (e === "select" || e === "combo") return { ...r, currentParam: {
+      ...r.currentParam,
+      options: pr(r.currentOption).items
     } };
   }
-  return t;
-}, It = (t) => t.currentParam ? { ...t, params: [...t.params, t.currentParam], currentParam: null, currentContext: null } : t, Lt = (t) => {
-  if (!t.currentCommand) return t;
-  const e = t.currentParam ? [...t.currentCommand.args, t.currentParam] : t.currentCommand.args, a = {
-    ...L(t.currentCommand),
-    command: t.currentCommand.command,
+  return r;
+}, Ir = (r) => r.currentParam ? { ...r, params: [...r.params, r.currentParam], currentParam: null, currentContext: null } : r, Lr = (r) => {
+  if (!r.currentCommand) return r;
+  const e = r.currentParam ? [...r.currentCommand.args, r.currentParam] : r.currentCommand.args, a = {
+    ...M(r.currentCommand),
+    command: r.currentCommand.command,
     args: e
   };
-  return { ...t, commands: [...t.commands, a], currentCommand: null, currentParam: null, currentContext: null, currentOption: null };
-}, W = (t) => {
+  return { ...r, commands: [...r.commands, a], currentCommand: null, currentParam: null, currentContext: null, currentOption: null };
+}, W = (r) => {
   const e = ((c) => {
     const o = c.split(`
 `), f = {
@@ -242,15 +258,15 @@ const at = (t, e) => {
       structName: void 0,
       locale: void 0,
       lines: [],
-      blockType: O
-    }, d = o.reduce((m, H) => {
-      const E = H.trim(), T = E.match(/^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/);
-      return T ? lt(m, T) : E === "/*:" ? pt(m) : E === "*/" ? m.lines.length > 0 ? C(m) : m : { ...m, lines: m.lines.concat([E]) };
+      blockType: S
+    }, p = o.reduce((m, H) => {
+      const E = H.trim(), x = E.match(/^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/);
+      return x ? lr(m, x) : E === "/*:" ? dr(m) : E === "*/" ? m.lines.length > 0 ? F(m) : m : { ...m, lines: m.lines.concat([E]) };
     }, f);
-    return { structs: d.structs, bodies: d.bodies };
-  })(t), a = e.structs.map((c) => Mt(c)), r = Ct(e);
-  if (!r) return { params: [], commands: [], meta: {}, helpLines: [], structs: a };
-  const s = Z(r, Y);
+    return { structs: p.structs, bodies: p.bodies };
+  })(r), a = e.structs.map((c) => Mr(c)), t = Cr(e);
+  if (!t) return { params: [], commands: [], meta: {}, helpLines: [], structs: a };
+  const s = Z(t, Y);
   return {
     params: s.params,
     commands: s.commands,
@@ -258,22 +274,22 @@ const at = (t, e) => {
     helpLines: s.helpLines,
     structs: a
   };
-}, Mt = (t) => {
-  const e = Z(t, Y);
-  return { name: t.struct, params: e.params };
-}, Ct = (t) => {
-  if (t.bodies.length !== 0) return t.bodies[0];
-}, Z = (t, e) => {
-  const a = t.lines.reduce((r, s) => {
+}, Mr = (r) => {
+  const e = Z(r, Y);
+  return { name: r.struct, params: e.params };
+}, Cr = (r) => {
+  if (r.bodies.length !== 0) return r.bodies[0];
+}, Z = (r, e) => {
+  const a = r.lines.reduce((t, s) => {
     const c = s.trimEnd().replace(/^[\*\s]*/, "");
-    if (!c.startsWith("@")) return r.currentContext === U ? { ...r, helpLines: r.helpLines.concat(c) } : r;
+    if (!c.startsWith("@")) return t.currentContext === U ? { ...t, helpLines: t.helpLines.concat(c) } : t;
     const o = c.match(/^@(\S+)\s*(.*)$/);
-    if (!o) return r;
-    const [, f, d] = o, m = e[f];
-    return m ? m(r, d.trim()) : r;
-  }, Ft());
-  return S(a);
-}, Ft = () => ({
+    if (!o) return t;
+    const [, f, p] = o, m = e[f];
+    return m ? m(t, p.trim()) : t;
+  }, Fr());
+  return y(a);
+}, Fr = () => ({
   helpLines: [],
   params: [],
   commands: [],
@@ -283,144 +299,144 @@ const at = (t, e) => {
   currentOption: null,
   dependencies: { base: [], orderBefore: [], orderAfter: [] },
   meta: {}
-}), l = (t, e, a) => t.currentParam && !(e in t.currentParam.attr) ? { ...t, currentParam: { ...t.currentParam, attr: { ...t.currentParam.attr, [e]: a } } } : t, N = (t, e, a) => ({
-  ...t,
-  meta: { [e]: a, ...t.meta }
+}), l = (r, e, a) => r.currentParam && !(e in r.currentParam.attr) ? { ...r, currentParam: { ...r.currentParam, attr: { ...r.currentParam.attr, [e]: a } } } : r, I = (r, e, a) => ({
+  ...r,
+  meta: { [e]: a, ...r.meta }
 }), Y = {
-  param: (t, e) => {
-    const a = S(t);
-    return a.params.some((r) => r.name === e) ? a : { ...a, currentContext: "param", currentParam: { name: e, attr: {} } };
+  param: (r, e) => {
+    const a = y(r);
+    return a.params.some((t) => t.name === e) ? a : { ...a, currentContext: "param", currentParam: { name: e, attr: {} } };
   },
-  text: (t, e) => t.currentParam ? l(t, h, e) : t.currentCommand && !(h in t.currentCommand) ? { ...t, currentCommand: {
-    ...L(t.currentCommand),
-    command: t.currentCommand.command,
-    args: t.currentCommand.args,
-    [h]: e
-  } } : t,
-  desc: (t, e) => t.currentParam ? l(t, "desc", e) : t.currentCommand ? { ...t, currentCommand: { ...t.currentCommand, desc: e } } : t,
-  command: (t, e) => {
-    const a = S(t);
-    return a.commands.some((r) => r.command === e) ? a : { ...a, currentCommand: { command: e, args: [] }, currentParam: null };
+  text: (r, e) => r.currentParam ? l(r, N, e) : r.currentCommand && !(N in r.currentCommand) ? { ...r, currentCommand: {
+    ...M(r.currentCommand),
+    command: r.currentCommand.command,
+    args: r.currentCommand.args,
+    [N]: e
+  } } : r,
+  desc: (r, e) => r.currentParam ? l(r, "desc", e) : r.currentCommand ? { ...r, currentCommand: { ...r.currentCommand, desc: e } } : r,
+  command: (r, e) => {
+    const a = y(r);
+    return a.commands.some((t) => t.command === e) ? a : { ...a, currentCommand: { command: e, args: [] }, currentParam: null };
   },
-  arg: (t, e) => {
-    if (!t.currentCommand) return t;
-    if (!t.currentParam) return {
-      ...t,
+  arg: (r, e) => {
+    if (!r.currentCommand) return r;
+    if (!r.currentParam) return {
+      ...r,
       currentParam: { name: e, attr: {} }
     };
-    const a = { ...L(t.currentCommand), command: t.currentCommand.command, args: t.currentCommand.args.concat(t.currentParam) };
+    const a = { ...M(r.currentCommand), command: r.currentCommand.command, args: r.currentCommand.args.concat(r.currentParam) };
     return {
-      ...t,
-      commands: t.commands,
+      ...r,
+      commands: r.commands,
       currentCommand: a,
       currentContext: "arg",
       currentParam: { name: e, attr: {} }
     };
   },
-  help: (t) => ({ ...S(t), currentContext: U }),
-  option: (t, e) => {
-    if (!t.currentParam) return t;
-    const a = ((r, s) => r.currentOption ? { items: r.items.concat({ option: r.currentOption, value: r.currentOption }), currentOption: s } : { items: r.items, currentOption: s })(t.currentOption ?? {
+  help: (r) => ({ ...y(r), currentContext: U }),
+  option: (r, e) => {
+    if (!r.currentParam) return r;
+    const a = ((t, s) => t.currentOption ? { items: t.items.concat({ option: t.currentOption, value: t.currentOption }), currentOption: s } : { items: t.items, currentOption: s })(r.currentOption ?? {
       items: []
     }, e);
-    return { ...t, currentOption: a };
+    return { ...r, currentOption: a };
   },
-  value: (t, e) => {
-    if (!t.currentOption) return t;
-    const a = ((r, s) => r.currentOption ? { items: r.items.concat({ option: r.currentOption, value: s }) } : {
-      items: r.items
-    })(t.currentOption, e);
-    return { ...t, currentOption: a };
+  value: (r, e) => {
+    if (!r.currentOption) return r;
+    const a = ((t, s) => t.currentOption ? { items: t.items.concat({ option: t.currentOption, value: s }) } : {
+      items: t.items
+    })(r.currentOption, e);
+    return { ...r, currentOption: a };
   },
-  type: (t, e) => {
+  type: (r, e) => {
     if (((a) => a.endsWith(">") && a.startsWith("struct<"))(e)) {
-      const a = e.slice(7, -1), r = l(t, x, a);
-      return l(r, I, x);
+      const a = e.slice(7, -1), t = l(r, j, a);
+      return l(t, L, j);
     }
-    return t.currentParam ? l(t, I, e) : t;
+    return r.currentParam ? l(r, L, e) : r;
   },
-  default: (t, e) => l(t, "default", e),
-  on: (t, e) => l(t, "on", e),
-  off: (t, e) => l(t, "off", e),
-  min: (t, e) => l(t, "min", e),
-  max: (t, e) => l(t, "max", e),
-  base: (t, e) => {
-    return { ...t, dependencies: (a = t.dependencies, r = e, { orderAfter: a.orderAfter, orderBefore: a.orderBefore, base: a.base.concat(r) }) };
-    var a, r;
+  default: (r, e) => l(r, "default", e),
+  on: (r, e) => l(r, "on", e),
+  off: (r, e) => l(r, "off", e),
+  min: (r, e) => l(r, "min", e),
+  max: (r, e) => l(r, "max", e),
+  base: (r, e) => {
+    return { ...r, dependencies: (a = r.dependencies, t = e, { orderAfter: a.orderAfter, orderBefore: a.orderBefore, base: a.base.concat(t) }) };
+    var a, t;
   },
-  orderAfter: (t, e) => {
-    return { ...t, dependencies: (a = t.dependencies, r = e, { base: a.base, orderBefore: a.orderBefore, orderAfter: a.orderAfter.concat(r) }) };
-    var a, r;
+  orderAfter: (r, e) => {
+    return { ...r, dependencies: (a = r.dependencies, t = e, { base: a.base, orderBefore: a.orderBefore, orderAfter: a.orderAfter.concat(t) }) };
+    var a, t;
   },
-  orderBefore: (t, e) => {
+  orderBefore: (r, e) => {
     return {
-      ...t,
-      dependencies: (a = t.dependencies, r = e, { base: a.base, orderAfter: a.orderAfter, orderBefore: a.orderBefore.concat(r) })
+      ...r,
+      dependencies: (a = r.dependencies, t = e, { base: a.base, orderAfter: a.orderAfter, orderBefore: a.orderBefore.concat(t) })
     };
-    var a, r;
+    var a, t;
   },
-  author: (t, e) => N(t, "author", e),
-  plugindesc: (t, e) => N(t, "plugindesc", e),
-  url: (t, e) => N(t, "url", e)
-}, vt = (t) => ({
+  author: (r, e) => I(r, "author", e),
+  plugindesc: (r, e) => I(r, "plugindesc", e),
+  url: (r, e) => I(r, "url", e)
+}, vr = (r) => ({
   target: "MZ",
-  meta: t.meta,
-  commands: Tt(t.commands),
-  params: F(t.params),
-  structs: xt(t.structs)
-}), F = (t) => Object.fromEntries(t.map((e) => [e.name, z(e)])), Tt = (t) => Object.fromEntries(t.map((e) => [e.command, {
-  desc: e.desc,
-  text: e.text,
-  args: F(e.args)
-}])), xt = (t) => Object.fromEntries(t.map((e) => [e.name, { params: F(e.params) }])), v = (t) => t.map((e) => ({ name: e.name, attr: z(e) })), jt = (t) => t.map((e) => ({
-  command: e.command,
+  meta: r.meta,
+  commands: Tr(r.commands),
+  params: v(r.params),
+  structs: xr(r.structs)
+}), v = (r) => Object.fromEntries(r.map((e) => [e.name, z(e)])), Tr = (r) => Object.fromEntries(r.map((e) => [e.command, {
   desc: e.desc,
   text: e.text,
   args: v(e.args)
-})), Dt = (t) => t.map((e) => ({ struct: e.name, params: v(e.params) })), zt = (t) => ((e) => vt(W(e)))(t), Kt = (t, e) => {
+}])), xr = (r) => Object.fromEntries(r.map((e) => [e.name, { params: v(e.params) }])), T = (r) => r.map((e) => ({ name: e.name, attr: z(e) })), jr = (r) => r.map((e) => ({
+  command: e.command,
+  desc: e.desc,
+  text: e.text,
+  args: T(e.args)
+})), Dr = (r) => r.map((e) => ({ struct: e.name, params: T(e.params) })), zr = (r) => ((e) => vr(W(e)))(r), Kr = (r, e) => {
   const a = W(e);
   return {
     meta: a.meta,
-    pluginName: t,
+    pluginName: r,
     target: "MZ",
-    schema: (r = a, { commands: jt(r.commands), params: v(r.params), structs: Dt(r.structs) })
+    schema: (t = a, { commands: jr(t.commands), params: T(t.params), structs: Dr(t.structs) })
   };
-  var r;
-}, Wt = (t) => ht(t).map((e) => ({
+  var t;
+}, Wr = (r) => hr(r).map((e) => ({
   description: e.description,
   name: e.name,
   status: e.status,
-  parameters: mt(e.parameters)
-})), Zt = "bgm", Yt = "se", Ht = "me", $t = "bgs", qt = "battlebacks1", Qt = "battlebacks2", Xt = "characters", te = "enemies", ee = "faces", ae = "parallaxes", re = "pictures", se = "sv_actors", ne = "sv_enemies", ce = "system", oe = "tilesets", me = "titles1", ie = "titles2", ue = "System.json", le = "Actors.json", pe = "Classes.json", de = "Skills.json", fe = "Items.json", Ee = "Weapons.json", Ae = "Armors.json", Oe = "Enemies.json", Se = "Troops.json", be = "States.json", ge = "Animations.json", ye = "Tilesets.json", Pe = "CommonEvents.json", _e = "MapInfos.json", he = "data", Ne = "img", Ie = "audio", Le = "js";
+  parameters: mr(e.parameters)
+})), Zr = "bgm", Yr = "se", Hr = "me", $r = "bgs", qr = "battlebacks1", Qr = "battlebacks2", Xr = "characters", re = "enemies", ee = "faces", ae = "parallaxes", te = "pictures", se = "sv_actors", ne = "sv_enemies", ce = "system", oe = "tilesets", me = "titles1", ie = "titles2", ue = "System.json", le = "Actors.json", de = "Classes.json", pe = "Skills.json", fe = "Items.json", Ee = "Weapons.json", Ae = "Armors.json", Oe = "Enemies.json", Se = "Troops.json", ye = "States.json", be = "Animations.json", ge = "Tilesets.json", Pe = "CommonEvents.json", _e = "MapInfos.json", he = "data", Ne = "img", Ie = "audio", Le = "js";
 export {
   le as FILENAME_ACTORS,
-  ge as FILENAME_ANIMATIONS,
+  be as FILENAME_ANIMATIONS,
   Ae as FILENAME_ARMORS,
-  pe as FILENAME_CLASSES,
+  de as FILENAME_CLASSES,
   Pe as FILENAME_COMMON_EVENTS,
   Oe as FILENAME_ENEMIES,
   fe as FILENAME_ITEMS,
   _e as FILENAME_MAP_INFOS,
-  de as FILENAME_SKILLS,
-  be as FILENAME_STATES,
+  pe as FILENAME_SKILLS,
+  ye as FILENAME_STATES,
   ue as FILENAME_SYSTEM,
-  ye as FILENAME_TILESET,
+  ge as FILENAME_TILESET,
   Se as FILENAME_TROOPS,
   Ee as FILENAME_WEAPONS,
   Ie as FOLDER_AUDIO,
-  Zt as FOLDER_AUDIO_BGM,
-  $t as FOLDER_AUDIO_BGS,
-  Ht as FOLDER_AUDIO_ME,
-  Yt as FOLDER_AUDIO_SE,
+  Zr as FOLDER_AUDIO_BGM,
+  $r as FOLDER_AUDIO_BGS,
+  Hr as FOLDER_AUDIO_ME,
+  Yr as FOLDER_AUDIO_SE,
   he as FOLDER_DATA,
   Ne as FOLDER_IMG,
-  qt as FOLDER_IMG_BATTLEBACK1,
-  Qt as FOLDER_IMG_BATTLEBACK2,
-  Xt as FOLDER_IMG_CHACTERS,
-  te as FOLDER_IMG_ENEMIES,
+  qr as FOLDER_IMG_BATTLEBACK1,
+  Qr as FOLDER_IMG_BATTLEBACK2,
+  Xr as FOLDER_IMG_CHACTERS,
+  re as FOLDER_IMG_ENEMIES,
   ee as FOLDER_IMG_FACES,
   ae as FOLDER_IMG_PARALLACES,
-  re as FOLDER_IMG_PICTURES,
+  te as FOLDER_IMG_PICTURES,
   se as FOLDER_IMG_SV_ACTORS,
   ne as FOLDER_IMG_SV_ENEMIES,
   ce as FOLDER_IMG_SYSTEM,
@@ -431,21 +447,21 @@ export {
   Fe as classifyFileParams,
   ve as classifyPluginParams,
   Te as classifyTextParams,
-  at as collectDependentStructNames,
+  ar as collectDependentStructNames,
   z as compileAttributes,
   xe as convertPluginCommandSchema,
-  _t as convertPluginsJSToJSON,
+  _r as convertPluginsJSToJSON,
   je as convertStructSchema,
   De as createClassifiedStructMap,
   Re as createStructMap,
-  Gt as filterPluginSchemaByFileParam,
-  Bt as filterPluginSchemaByNumberParam,
-  _ as filterPluginSchemaByParam,
-  kt as filterPluginSchemaByStringParam,
-  wt as filterPluginSchemaByVariableParam,
+  Gr as filterPluginSchemaByFileParam,
+  Br as filterPluginSchemaByNumberParam,
+  h as filterPluginSchemaByParam,
+  kr as filterPluginSchemaByStringParam,
+  wr as filterPluginSchemaByVariableParam,
   ke as hasNumberValueParam,
   Be as hasScalarAttr,
-  R as hasStructAttr,
+  k as hasStructAttr,
   $ as hasTextAttr,
   we as isArrayAttr,
   Ge as isArrayParam,
@@ -455,28 +471,28 @@ export {
   q as isNumberAttr,
   Ue as isNumberValueParam,
   ze as isNumberValueParamEx,
-  Jt as isRmmzDataKind,
+  Jr as isRmmzDataKind,
   Ke as isScalarParam,
   We as isStringArrayParam,
   Ze as isStringValueParam,
   Ye as isStructArrayAttr,
-  et as isStructArrayParam,
+  er as isStructArrayParam,
   He as isStructAttr,
-  tt as isStructParam,
+  rr as isStructParam,
   Q as isVariableAttr,
-  ot as lookupKind,
+  or as lookupKind,
   $e as paramHasText,
-  B as parseDeepJSON,
-  mt as parseDeepRecord,
-  Wt as parsePluginParamObject,
-  ht as parsePluginParamRecord,
-  Kt as pluginSourceToArraySchema,
-  zt as pluginSourceToJSON,
-  st as rebuildCommands,
-  Ut as stringifyDeepJSON,
-  Vt as structDependencies,
+  A as parseDeepJSON,
+  mr as parseDeepRecord,
+  Wr as parsePluginParamObject,
+  hr as parsePluginParamRecord,
+  Kr as pluginSourceToArraySchema,
+  zr as pluginSourceToJSON,
+  sr as rebuildCommands,
+  Ur as stringifyDeepJSON,
+  Vr as structDependencies,
   qe as toArrayPluginParam,
   Qe as toObjectPluginParams,
   Xe as toObjectPluginParamsOld,
-  Et as validatePluginJS
+  Er as validatePluginJS
 };
