@@ -1,6 +1,6 @@
 import type {
   PluginCommandSchemaArray,
-  PluginCommandSchemaArrayEx3,
+  PluginCommandSchemaArrayFiltered,
 } from "./arrayCommands";
 import type {
   PluginParam,
@@ -9,7 +9,7 @@ import type {
 } from "./arrayParamItems";
 import type {
   PluginStructSchemaArray,
-  PluginStructSchemaArrayFilterd,
+  PluginStructSchemaArrayFiltered,
 } from "./arrayStructs";
 import type { PrimitiveStringParam } from "./paramUnion";
 import type {
@@ -26,21 +26,21 @@ export interface PluginSchemaArray {
   structs: PluginStructSchemaArray[];
 }
 
-export interface PluginSchemaArrayEx2<T extends PluginParam>
+export interface PluginSchemaArrayFiltered<T extends PluginParam>
   extends PluginSchemaArray {
-  commands: PluginCommandSchemaArrayEx3<T | StructPluginParam>[];
+  commands: PluginCommandSchemaArrayFiltered<T | StructPluginParam>[];
   params: (T | StructPluginParam)[];
-  structs: PluginStructSchemaArrayFilterd<T | StructPluginParam>[];
+  structs: PluginStructSchemaArrayFiltered<T | StructPluginParam>[];
 }
 
-export type PluginVariableSchema = PluginSchemaArrayEx2<
+export type PluginVariableSchema = PluginSchemaArrayFiltered<
   PluginParamEx<RpgVariableParam | RpgVariableArrayParam>
 >;
 
-export type PluginFileParamsSchema = PluginSchemaArrayEx2<
+export type PluginFileParamsSchema = PluginSchemaArrayFiltered<
   PluginParamEx<FileParam | FileArrayParam>
 >;
 
-export type PluginTextSchema = PluginSchemaArrayEx2<
+export type PluginTextSchema = PluginSchemaArrayFiltered<
   PluginParamEx<PrimitiveStringParam | StringArrayParam>
 >;
