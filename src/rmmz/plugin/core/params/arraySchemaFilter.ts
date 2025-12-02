@@ -65,8 +65,12 @@ export const filterPluginSchemaByParam = <T extends PluginParam>(
     schema.structs,
     directTypeNames
   );
-  const newStructs: PluginStructSchemaArrayFiltered<T | StructPluginParam>[] =
-    rebuildStructs(schema.structs, depTypesName, predicate);
+  type StructType = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
+  const newStructs: StructType[] = rebuildStructs(
+    schema.structs,
+    depTypesName,
+    predicate
+  );
   return {
     structs: newStructs,
     commands: rebuildCommands(schema.commands, depTypesName, predicate),
