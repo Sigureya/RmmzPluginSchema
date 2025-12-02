@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { filterPluginParamByText } from "./arraySchemaFilterByParam";
+import { filterPluginParamByText } from "./arraySchemaFilter";
 import type { PluginSchemaArray, PluginStructSchemaArrayEx } from "./types";
 
 interface MockData {

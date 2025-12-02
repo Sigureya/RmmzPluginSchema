@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { filterPluginSchemaByParam } from "./arraySchemaFilterByParam";
+import { filterPluginSchemaByParam } from "./arraySchemaFilter";
 import type {
   NumberArrayParam,
   NumberParam,
