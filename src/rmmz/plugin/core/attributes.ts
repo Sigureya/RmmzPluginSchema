@@ -205,7 +205,6 @@ const compileStructParam = (tokens: PluginParamTokens): StructRefParam => {
   const defaultValue: Record<string, unknown> = createDefaultStruct(tokens);
   const STRUCT_REF = {
     text: attrString,
-    struct: attrString,
     desc: attrString,
     parent: attrString,
   } as const;
@@ -234,7 +233,6 @@ const compileStructArrayParam = (
   const defaultValue = createDefaultStructArray(tokens);
   const STRUCT_ARRAY = {
     text: attrString,
-    struct: attrString,
     desc: attrString,
     parent: attrString,
   } as const;
