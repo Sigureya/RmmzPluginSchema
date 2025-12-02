@@ -78,21 +78,14 @@ export const rebuildCommands = <T extends PluginParam>(
   predicate: (param: PluginParam) => param is T
 ): PluginCommandSchemaArrayEx3<T | StructPluginParam>[] => {
   type R = PluginCommandSchemaArrayEx3<T | StructPluginParam>;
-  return commands.reduce<R[]>((acc, cmd): R[] => {
-    const args: (T | StructPluginParam)[] = rebuildParams(
-      cmd.args,
-      structNames,
-      predicate
-    );
-    if (args.length === 0) {
-      return acc;
-    }
-    acc.push({
-      ...(cmd.desc ? { desc: cmd.desc } : {}),
-      ...(cmd.text ? { text: cmd.text } : {}),
-      command: cmd.command,
-      args: args,
-    });
-    return acc;
-  }, []);
+  return commands
+    .map((cmd): R => {
+      return {
+        ...(cmd.desc ? { desc: cmd.desc } : {}),
+        ...(cmd.text ? { text: cmd.text } : {}),
+        command: cmd.command,
+        args: rebuildParams(cmd.args, structNames, predicate),
+      };
+    })
+    .filter((cmd) => cmd.args.length > 0);
 };
