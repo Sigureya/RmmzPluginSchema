@@ -1,5 +1,5 @@
 import type {
-  PluginCommandSchemaArrayEx3,
+  PluginCommandSchemaArrayFiltered,
   PluginCommandTypeEx,
   PluginParam,
   PluginParamEx,
@@ -47,7 +47,7 @@ export const convertStructSchema = <T extends PluginStructSchemaArray>(
 };
 
 export const convertPluginCommandSchema = <T extends PluginParam>(
-  command: PluginCommandSchemaArrayEx3<T>
+  command: PluginCommandSchemaArrayFiltered<T>
 ): PluginCommandTypeEx<object> => {
   return {
     ...textAndDesc(command),
@@ -57,7 +57,7 @@ export const convertPluginCommandSchema = <T extends PluginParam>(
 };
 
 const textAndDesc = (
-  command: PluginCommandSchemaArrayEx3<PluginParam>
+  command: PluginCommandSchemaArrayFiltered<PluginParam>
 ): { text?: string; desc?: string } => {
   return {
     ...(command.text ? { text: command.text } : {}),

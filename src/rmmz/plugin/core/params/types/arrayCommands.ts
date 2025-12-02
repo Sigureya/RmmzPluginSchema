@@ -15,7 +15,7 @@ export interface PluginCommandSchemaArrayEx<ArgStruct> {
   args: PluginStructParamTypeEx<ArgStruct>[];
 }
 
-export interface PluginCommandSchemaArrayEx3<T extends PluginParam>
+export interface PluginCommandSchemaArrayFiltered<T extends PluginParam>
   extends PluginCommandSchemaArray {
   command: string;
   desc?: string;

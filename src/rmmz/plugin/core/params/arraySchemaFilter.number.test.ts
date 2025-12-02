@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { filterPluginSchemaByParam } from "./arraySchemaFilterByParam";
+import { filterPluginSchemaByParam } from "./arraySchemaFilter";
 import type {
   PluginCommandSchemaArray,
   PluginCommandSchemaArrayEx,
@@ -121,7 +121,7 @@ describe("filterPluginSchemaByParam", () => {
       expect(result.structs).toEqual(plugin.structs);
       expect(result.params).toEqual(plugin.params);
     });
-    test("", () => {
+    test("filter out all when no number param", () => {
       const mockFn = vi.fn((p: PluginParam) => isNumberParam(p));
       const plugin: PluginSchemaArray = {
         commands: [showTextSchema, emptyCommandSchema],
