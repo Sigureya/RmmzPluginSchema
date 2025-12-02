@@ -14,6 +14,7 @@ import type {
   RpgVariableArrayParam,
   FileParam,
   FileArrayParam,
+  PrimitiveTextParam,
 } from "./types";
 
 export const isArrayParam = <T extends PrimitiveParam>(
@@ -88,9 +89,7 @@ export const paramHasText = (
 
 export const hasTextAttr = <P extends PrimitiveParam>(
   param: PluginParamEx<P>
-): param is PluginParamEx<
-  Extract<P, PrimitiveStringParam | StringArrayParam>
-> => {
+): param is PluginParamEx<Extract<P, PrimitiveTextParam>> => {
   return TABLE[param.attr.kind]?.hasText === true;
 };
 
