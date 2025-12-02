@@ -58,8 +58,10 @@ export const filterPluginSchemaByParam = <T extends PluginParam>(
   const base: PluginStructSchemaArray[] = schema.structs.filter((s) => {
     return s.params.some((p) => predicate(p));
   });
-  const directTypeNames = new Set<string>(base.map((s) => s.struct));
-  const depTypesName: Set<string> = collectDependentStructNames(
+  const directTypeNames: ReadonlySet<string> = new Set(
+    base.map((s): string => s.struct)
+  );
+  const depTypesName: ReadonlySet<string> = collectDependentStructNames(
     schema.structs,
     directTypeNames
   );
@@ -89,10 +91,10 @@ const rebuildStructs = <T extends PluginParam>(
   structNames: ReadonlySet<string>,
   predicate: (param: PluginParam) => param is T
 ): PluginStructSchemaArrayFiltered<T | StructPluginParam>[] => {
-  type XX = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
+  type Struct = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
 
   return structs
-    .map((struct): XX => {
+    .map((struct): Struct => {
       return {
         struct: struct.struct,
         params: rebuildParams(struct.params, structNames, predicate),
@@ -106,9 +108,9 @@ export const rebuildCommands = <T extends PluginParam>(
   structNames: ReadonlySet<string>,
   predicate: (param: PluginParam) => param is T
 ): PluginCommandSchemaArrayFiltered<T | StructPluginParam>[] => {
-  type R = PluginCommandSchemaArrayFiltered<T | StructPluginParam>;
+  type Command = PluginCommandSchemaArrayFiltered<T | StructPluginParam>;
   return commands
-    .map((cmd): R => {
+    .map((cmd): Command => {
       return {
         ...(cmd.desc ? { desc: cmd.desc } : {}),
         ...(cmd.text ? { text: cmd.text } : {}),
