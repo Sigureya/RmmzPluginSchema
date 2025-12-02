@@ -10,13 +10,45 @@ import type {
   PluginCommandSchemaArrayFiltered,
   PluginParamEx,
   PrimitiveTextParam,
+  PrimitiveParam,
+  FileArrayParam,
+  FileParam,
+  PluginFileParamsSchema,
+  PluginVariableSchema,
+  RpgVariableArrayParam,
+  RpgVariableParam,
 } from "./types";
-import { hasStructAttr, hasTextAttr } from "./typeTest";
+import {
+  hasStructAttr,
+  hasTextAttr,
+  isFileAttr,
+  isNumberAttr,
+  isVariableAttr,
+} from "./typeTest";
 
 export const filterPluginParamByText = (
   schema: PluginSchemaArray
 ): PluginSchemaArrayFiltered<PluginParamEx<PrimitiveTextParam>> => {
   return filterPluginSchemaByParam(schema, hasTextAttr);
+};
+
+export const filterPluginSchemaByNumberParam = (schema: PluginSchemaArray) => {
+  type Type = Extract<PrimitiveParam, { default: number[] | number }>;
+  return filterPluginSchemaByParam<PluginParamEx<Type>>(schema, isNumberAttr);
+};
+
+export const filterPluginSchemaByVariableParam = (
+  schema: PluginSchemaArray
+): PluginVariableSchema => {
+  type Type = RpgVariableParam | RpgVariableArrayParam;
+  return filterPluginSchemaByParam<PluginParamEx<Type>>(schema, isVariableAttr);
+};
+
+export const filterPluginSchemaByFileParam = (
+  schema: PluginSchemaArray
+): PluginFileParamsSchema => {
+  type Type = FileParam | FileArrayParam;
+  return filterPluginSchemaByParam<PluginParamEx<Type>>(schema, isFileAttr);
 };
 
 export const filterPluginSchemaByParam = <T extends PluginParam>(
