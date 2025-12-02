@@ -51,7 +51,7 @@ const extractFromStruct = (
 ): PluginValues[] => {
   const structName = memo.bundleName;
   const svalues: PluginValueScalar[] = memo.scalar
-    ? readScalarValueV3(
+    ? readScalarValue(
         bundle,
         structName,
         value,
@@ -62,12 +62,12 @@ const extractFromStruct = (
 
   const avalues: (PluginValuesStringArray[] | PluginValuesNumberArray[])[] =
     memo.arrays.map((arrayMemo) =>
-      readArrayValue2(bundle, structName, value, arrayMemo)
+      readArrayValue(bundle, structName, value, arrayMemo)
     );
   return [svalues, avalues].flat(2);
 };
 
-const readScalarValueV3 = (
+const readScalarValue = (
   bundle: ExtractorBundle,
   structName: string,
   json: JSONValue,
@@ -99,7 +99,7 @@ const readScalarValueV3 = (
   }, []);
 };
 
-const readArrayValue2 = (
+const readArrayValue = (
   bundle: ExtractorBundle,
   groupName: string,
   json: JSONValue,
