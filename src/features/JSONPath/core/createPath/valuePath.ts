@@ -4,7 +4,6 @@ import type {
   ScalarParam,
   StructRefParam,
   StructArrayRefParam,
-  PluginParam,
   ClassifiedPluginParamsEx2,
   ArrayParamItemType2,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -25,45 +24,33 @@ export const createPluginValuesPath = <
 >(
   category: "param" | "args",
   rootName: string,
-  param: PluginParam,
+  param: PluginParamEx<S | A | StructRefParam | StructArrayRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-):
-  | PluginValuesPathEx<S, A>
-  | PrimitivePluginValuesPath<S>
-  | PluginValuesPathEx<ScalarParam, ArrayParamItemType2> => {
+): PluginValuesPathEx<S, A> => {
   if (isStructAttr(param)) {
-    return createStructPath(
-      category,
-      param,
-      structMap
-    ) satisfies PluginValuesPathEx<S, A>;
+    return createStructPath(category, param, structMap);
   }
   if (isStructArrayAttr(param)) {
-    return createStructArrayPath(
-      category,
-      param,
-      structMap
-    ) satisfies PluginValuesPathEx<S, A>;
+    return createStructArrayPath(category, param, structMap);
   }
   if (isArrayAttr(param)) {
-    return createPrimitiveArrayPath(
-      category,
-      rootName,
-      param
-    ) satisfies PluginValuesPathEx<ScalarParam, ArrayParamItemType2>;
+    return createPrimitiveArrayPath<S, A>(category, rootName, param);
   }
-  return createPrimiteveParamPath<ScalarParam>(
+  return createPrimiteveParamPath<S>(
     category,
     rootName,
-    param as PluginParamEx<ScalarParam>
-  ) satisfies PrimitivePluginValuesPath<ScalarParam>;
+    param as PluginParamEx<S>
+  ) satisfies PrimitivePluginValuesPath<S>;
 };
 
-const createPrimitiveArrayPath = <T extends ArrayParamItemType2>(
+const createPrimitiveArrayPath = <
+  S extends ScalarParam,
+  T extends ArrayParamItemType2
+>(
   category: "param" | "args",
   rootName: string,
-  param: PluginParamEx<Exclude<T, StructArrayRefParam>>
-): PluginValuesPathEx<ScalarParam, T> => {
+  param: PluginParamEx<T>
+): PluginValuesPathEx<S, T> => {
   return {
     rootCategory: category,
     rootName: rootName,
