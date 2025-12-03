@@ -1,16 +1,11 @@
-import type {
-  JSONValue,
-  JSONPathReader,
-} from "@RmmzPluginSchema/libs/jsonPath";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   ScalarParam,
+  ArrayParamTypes,
   PrimitiveParam,
-  PluginParamEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  isStringArrayParam,
-  isNumberArrayParam,
-} from "@RmmzPluginSchema/rmmz/plugin";
+import { readArrayValue } from "./array";
+import { readScalarValue } from "./scalar";
 import type {
   ExtractorBundle,
   PluginValues,
@@ -18,7 +13,6 @@ import type {
   PluginValueScalar,
   PluginValuesStringArray,
   PluginValuesNumberArray,
-  ArrayPathExtractor,
 } from "./types";
 
 export const extractAllPluginValues = (
@@ -28,9 +22,9 @@ export const extractAllPluginValues = (
   return memo.map((m) => extractBundleGroups(value, m)).flat(3);
 };
 
-const extractBundleGroups = (
+const extractBundleGroups = <S extends ScalarParam, A extends ArrayParamTypes>(
   value: JSONValue,
-  memo: ExtractorBundle
+  memo: ExtractorBundle<S, A>
 ): [PluginValues[], PluginValues[][], PluginValues[][]] => {
   const topValues: PluginValues[] = memo.top
     ? extractFromStruct(memo, value, memo.top)
@@ -44,13 +38,13 @@ const extractBundleGroups = (
   return [topValues, structValues, structArrayValues];
 };
 
-const extractFromStruct = (
-  bundle: ExtractorBundle,
+const extractFromStruct = <S extends ScalarParam, A extends ArrayParamTypes>(
+  bundle: ExtractorBundle<S, A>,
   value: JSONValue,
-  memo: PluginValuesPathMemo4
+  memo: PluginValuesPathMemo4<S, A>
 ): PluginValues[] => {
   const structName = memo.bundleName;
-  const svalues: PluginValueScalar[] = memo.scalar
+  const svalues: PluginValueScalar<S>[] = memo.scalar
     ? readScalarValue(
         bundle,
         structName,
@@ -65,78 +59,4 @@ const extractFromStruct = (
       readArrayValue(bundle, structName, value, arrayMemo)
     );
   return [svalues, avalues].flat(2);
-};
-
-const readScalarValue = (
-  bundle: ExtractorBundle,
-  structName: string,
-  json: JSONValue,
-  jsonPath: JSONPathReader,
-  record: Record<string, ScalarParam>
-): PluginValueScalar[] => {
-  const values = jsonPath.pathSegments(json);
-  return values.reduce<PluginValueScalar[]>((acc, { value, segments }) => {
-    if (typeof value === "object") {
-      return acc;
-    }
-    const lastSegment = segments[segments.length - 1];
-    if (typeof lastSegment === "number") {
-      return acc;
-    }
-    const schema = record[lastSegment];
-    if (!schema) {
-      return acc;
-    }
-    acc.push({
-      roootName: bundle.rootName,
-      rootType: bundle.rootCategory,
-      category: "struct",
-      name: structName,
-      value: value,
-      param: { name: lastSegment, attr: schema },
-    });
-    return acc;
-  }, []);
-};
-
-const readArrayValue = (
-  bundle: ExtractorBundle,
-  groupName: string,
-  json: JSONValue,
-  path: ArrayPathExtractor
-): PluginValuesStringArray[] | PluginValuesNumberArray[] => {
-  const values: JSONValue = path.jsonPathJS.find(json);
-  if (!Array.isArray(values)) {
-    return [];
-  }
-  const attr = path.schema.attr;
-  if (isStringArrayParam(attr)) {
-    const s: string[] = values.filter((v) => typeof v === "string");
-    type ParamType = Extract<PrimitiveParam, { default: string[] }>;
-    return s.map(
-      (value): PluginValuesStringArray => ({
-        value: value,
-        category: "struct",
-        rootType: bundle.rootCategory,
-        roootName: bundle.rootName,
-        name: groupName,
-        param: path.schema as PluginParamEx<ParamType>,
-      })
-    );
-  }
-  if (isNumberArrayParam(attr)) {
-    const s: number[] = values.filter((v) => typeof v === "number");
-    type ParamType = Extract<PrimitiveParam, { default: number[] }>;
-    return s.map(
-      (value): PluginValuesNumberArray => ({
-        roootName: bundle.rootName,
-        rootType: bundle.rootCategory,
-        value: value,
-        category: "struct",
-        name: groupName,
-        param: path.schema as PluginParamEx<ParamType>,
-      })
-    );
-  }
-  return [];
 };
