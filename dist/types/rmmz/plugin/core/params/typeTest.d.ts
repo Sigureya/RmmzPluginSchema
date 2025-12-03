@@ -1,4 +1,4 @@
-import { PrimitiveParam, ArrayParam, ParamKinds, ScalarParam, StructRefParam, PluginParam, PluginParamEx, StructArrayRefParam, PrimitiveStringParam, StringArrayParam, ArrayParamTypes, RpgVariableParam, RpgVariableArrayParam, FileParam, FileArrayParam } from './types';
+import { PrimitiveParam, ArrayParam, ParamKinds, ScalarParam, StructRefParam, PluginParam, PluginParamEx, StructArrayRefParam, PrimitiveStringParam, StringArrayParam, ArrayParamTypes, RpgVariableParam, RpgVariableArrayParam, FileParam, FileArrayParam, PrimitiveTextParam } from './types';
 export declare const isArrayParam: <T extends PrimitiveParam>(param: T) => param is Extract<T, ArrayParam>;
 export declare const isArrayAttr: <T extends PrimitiveParam>(param: PluginParamEx<T>) => param is PluginParamEx<Extract<T, ArrayParam>>;
 export declare const isArrayParamEx: <T extends PrimitiveParam, K extends ParamKinds>(param: T, kind: K) => param is Extract<T, ArrayParam & {
@@ -12,7 +12,7 @@ export declare const hasScalarAttr: (param: PluginParam) => param is PluginParam
 export declare const isStructArrayParam: (param: PrimitiveParam) => param is StructArrayRefParam;
 export declare const isStructArrayAttr: (param: PluginParam) => param is PluginParamEx<StructArrayRefParam>;
 export declare const paramHasText: (param: PrimitiveParam) => param is PrimitiveStringParam | StringArrayParam;
-export declare const hasTextAttr: <P extends PrimitiveParam>(param: PluginParamEx<P>) => param is PluginParamEx<Extract<P, PrimitiveStringParam | StringArrayParam>>;
+export declare const hasTextAttr: <P extends PrimitiveParam>(param: PluginParamEx<P>) => param is PluginParamEx<Extract<P, PrimitiveTextParam>>;
 export declare const isStringValueParam: (param: ScalarParam) => param is Extract<PrimitiveParam, {
     default: string;
 }>;

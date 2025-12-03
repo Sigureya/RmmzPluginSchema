@@ -1,0 +1,7 @@
+import { PluginParam, PluginSchemaArray, PluginSchemaArrayFiltered, StructPluginParam, PluginCommandSchemaArray, PluginCommandSchemaArrayFiltered, PluginParamEx, PrimitiveTextParam, PluginFileParamsSchema, PluginVariableSchema, RpgVariableArrayParam, RpgVariableParam } from './types';
+export declare const filterPluginParamByText: (schema: PluginSchemaArray) => PluginSchemaArrayFiltered<PluginParamEx<PrimitiveTextParam>>;
+export declare const filterPluginSchemaByNumberParam: (schema: PluginSchemaArray) => PluginSchemaArrayFiltered<PluginParamEx<RpgVariableParam | RpgVariableArrayParam | import('./types').RpgSwitchParam | import('./types').RpgSwitchArrayParam | import('./types').NumberParam | import('./types').NumberArrayParam | import('./types').RpgDataIdParam | import('./types').RpgDataIdArrayParam | import('./types').SystemDataIdParam | import('./types').SystemDataIdArrayParam, string>>;
+export declare const filterPluginSchemaByVariableParam: (schema: PluginSchemaArray) => PluginVariableSchema;
+export declare const filterPluginSchemaByFileParam: (schema: PluginSchemaArray) => PluginFileParamsSchema;
+export declare const filterPluginSchemaByParam: <T extends PluginParam>(schema: PluginSchemaArray, predicate: (param: PluginParam) => param is T) => PluginSchemaArrayFiltered<T>;
+export declare const rebuildCommands: <T extends PluginParam>(commands: ReadonlyArray<PluginCommandSchemaArray>, structNames: ReadonlySet<string>, predicate: (param: PluginParam) => param is T) => PluginCommandSchemaArrayFiltered<T | StructPluginParam>[];
