@@ -1,12 +1,12 @@
 import { describe, test, expect } from "vitest";
 import type {
   ClassifiedPluginParamsEx,
-  ClassifiedPluginParams,
   PluginParamEx,
   StructRefParam,
   NumberParam,
   NumberArrayParam,
   StringParam,
+  ClassifiedPluginParamsEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
 import type { StructPropertysPath, StructPathResultWithError } from "./types";
@@ -27,7 +27,10 @@ interface ClassRoom {
   items: Item[];
 }
 
-const personSchema: ClassifiedPluginParamsEx<Person> = {
+const personSchema: ClassifiedPluginParamsEx<
+  Person,
+  NumberParam | StringParam
+> = {
   scalarArrays: [],
   structs: [],
   structArrays: [],
@@ -53,7 +56,7 @@ const classRoomSchema: ClassifiedPluginParamsEx<ClassRoom> = {
   ],
 };
 
-const itemSchema: ClassifiedPluginParamsEx<Item> = {
+const itemSchema: ClassifiedPluginParamsEx<Item, NumberParam | StringParam> = {
   scalarArrays: [],
   structs: [],
   structArrays: [],
@@ -63,9 +66,12 @@ const itemSchema: ClassifiedPluginParamsEx<Item> = {
   ],
 };
 
-const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
+const structsMap: ReadonlyMap<
   string,
-  ClassifiedPluginParams
+  ClassifiedPluginParamsEx2<NumberParam | StringParam, NumberArrayParam>
+> = new Map<
+  string,
+  ClassifiedPluginParamsEx2<NumberParam | StringParam, NumberArrayParam>
 >([
   ["Person", personSchema],
   ["ClassRoom", classRoomSchema],
@@ -73,10 +79,7 @@ const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
 ]);
 
 describe("getPathFromStructParam", () => {
-  type Struct = StructPropertysPathEx3<
-    NumberParam | StringParam,
-    NumberArrayParam
-  >;
+  type Struct = StructPropertysPathEx3<NumberParam | StringParam, never>;
   const path1: Struct = {
     category: "struct",
     name: "Person",
