@@ -3,7 +3,7 @@ import type {
   ScalarParam,
   ArrayParamTypes,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayParamPathPair } from "./types";
+import type { ArrayParamPathPairEx } from "./types";
 
 export const makeScalarValuesPath = (
   scalas: ReadonlyArray<PluginParamEx<ScalarParam>>,
@@ -16,12 +16,12 @@ export const makeScalarValuesPath = (
   return `${parent}[${itesm}]`;
 };
 
-export const makeScalarArrayPath = (
-  scalaArrays: ReadonlyArray<PluginParamEx<ArrayParamTypes>>,
+export const makeScalarArrayPath = <T extends PluginParamEx<ArrayParamTypes>>(
+  scalaArrays: ReadonlyArray<T>,
   parent: string
-): ArrayParamPathPair[] => {
+): ArrayParamPathPairEx<T>[] => {
   return scalaArrays.map(
-    (param): ArrayParamPathPair => ({
+    (param): ArrayParamPathPairEx<T> => ({
       path: `${parent}.${param.name}[*]`,
       param: param,
     })
