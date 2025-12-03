@@ -68,6 +68,11 @@ export type ScalarParam = Exclude<
 
 export type ArrayParamTypes = Extract<PrimitiveParam, ArrayParam>;
 
+export type ArrayParamItemType2 = Exclude<
+  ArrayParamTypes,
+  { default: object[] }
+>;
+
 // 各パラメータ型のユニオン
 export type StructParam =
   | PrimitiveParam
