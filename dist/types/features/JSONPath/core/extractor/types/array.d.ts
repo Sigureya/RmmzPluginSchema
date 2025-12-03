@@ -7,11 +7,11 @@ export interface PluginValuesStringArray extends PluginValues {
     name: string;
     param: PluginParamEx<StringArrayParam>;
 }
-export interface PluginValuesNumberArray extends PluginValues {
+export interface PluginValuesNumberArray<T extends NumberArrayParam = NumberArrayParam> extends PluginValues {
     value: number;
     category: ValueCategory2;
     name: string;
-    param: PluginParamEx<NumberArrayParam>;
+    param: PluginParamEx<T>;
 }
 type StringArrayParam = Extract<PrimitiveParam, {
     default: string[];
@@ -19,9 +19,9 @@ type StringArrayParam = Extract<PrimitiveParam, {
 type NumberArrayParam = Extract<PrimitiveParam, {
     default: number[];
 }>;
-export interface ArrayPathExtractor {
+export interface ArrayPathExtractor<T extends ArrayParamTypes = ArrayParamTypes> {
     jsonPathJS: JSONPathReader;
-    schema: PluginParamEx<ArrayParamTypes>;
+    schema: PluginParamEx<T>;
     parentType: string;
 }
 export {};

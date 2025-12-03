@@ -7,48 +7,31 @@ const ar = (r, e) => {
   return function(t, s, c) {
     return t.reduce((o) => {
       if (!o.changed) return o;
-      const f = t.filter((p) => !o.names.has(p) && s[p].some((m) => o.names.has(m.attr.struct)));
+      const f = t.filter((d) => !o.names.has(d) && s[d].some((m) => o.names.has(m.attr.struct)));
       return f.length === 0 ? { names: o.names, changed: !1 } : { names: /* @__PURE__ */ new Set([...o.names, ...f]), changed: !0 };
     }, {
       names: c,
       changed: !0
     }).names;
   }(Object.keys(a), a, new Set(e));
-}, h = (r, e) => {
+}, kr = (r) => h(r, $), Br = (r) => h(r, q), wr = (r) => h(r, Q), Gr = (r) => h(r, X), h = (r, e) => {
   const a = r.structs.filter((c) => c.params.some((o) => e(o))), t = new Set(a.map((c) => c.struct)), s = ar(r.structs, t);
   return {
     structs: tr(r.structs, s, e),
     commands: sr(r.commands, s, e),
     params: C(r.params, s, e)
   };
-}, C = (r, e, a) => r.filter((t) => k(t) ? e.has(t.attr.struct) : a(t)), tr = (r, e, a) => r.reduce((t, s) => {
-  const c = C(s.params, e, a);
-  return c.length === 0 || t.push({ struct: s.struct, params: c }), t;
-}, []), sr = (r, e, a) => r.reduce((t, s) => {
-  const c = C(s.args, e, a);
-  return c.length === 0 || t.push({ ...s.desc ? {
-    desc: s.desc
-  } : {}, ...s.text ? { text: s.text } : {}, command: s.command, args: c }), t;
-}, []), kr = (r) => h(r, $), Br = (r) => h(r, q), wr = (r) => h(r, Q), Gr = (r) => h(r, X), nr = {
-  variable: 1,
-  switch: 2,
-  actor: 0,
-  item: 0,
-  weapon: 0,
-  armor: 0,
-  skill: 0,
-  class: 0,
-  state: 0,
-  troop: 0,
-  enemy: 0,
-  common_event: 0
-}, cr = ["data", "system", "system"], or = (r) => {
+}, C = (r, e, a) => r.filter((t) => k(t) ? e.has(t.attr.struct) : a(t)), tr = (r, e, a) => r.map((t) => ({
+  struct: t.struct,
+  params: C(t.params, e, a)
+})).filter((t) => t.params.length > 0), sr = (r, e, a) => r.map((t) => ({
+  ...t.desc ? { desc: t.desc } : {},
+  ...t.text ? { text: t.text } : {},
+  command: t.command,
+  args: C(t.args, e, a)
+})).filter((t) => t.args.length > 0), nr = { variable: 1, switch: 2, actor: 0, item: 0, weapon: 0, armor: 0, skill: 0, class: 0, state: 0, troop: 0, enemy: 0, common_event: 0 }, cr = ["data", "system", "system"], or = (r) => {
   const e = nr[r];
-  return e === void 0 ? { author: "rmmz", module: "unknown", kind: r } : {
-    author: "rmmz",
-    module: cr[e],
-    kind: [r, "variable", "switch"][e]
-  };
+  return e === void 0 ? { author: "rmmz", module: "unknown", kind: r } : { author: "rmmz", module: cr[e], kind: [r, "variable", "switch"][e] };
 }, Jr = (r) => {
   const e = or(r.kind);
   return e.author === r.author && e.module === r.module && e.kind === r.kind;
@@ -81,14 +64,14 @@ const ar = (r, e) => {
     if (typeof c == "string") return { ...a, [t]: s(c) };
   }
   return a;
-}, {}), d = (r, e, a, t) => ({ default: e, ...G(a, t), kind: r }), P = (r, e, a) => ({
+}, {}), p = (r, e, a, t) => ({ default: e, ...G(a, t), kind: r }), P = (r, e, a) => ({
   default: [],
   ...G(e, a),
   kind: r
 }), J = "BODY", V = "STRUCT", S = "NONE", lr = (r, e) => {
   const a = r.lines.length > 0 ? F(r) : r, t = e[1] || void 0;
   return { ...a, structName: t, blockType: t ? V : "INVALID", locale: e[2], lines: [] };
-}, dr = (r) => ({
+}, pr = (r) => ({
   ...r.lines.length > 0 ? F(r) : r,
   blockType: J,
   structName: void 0,
@@ -106,20 +89,20 @@ const ar = (r, e) => {
   structName: void 0,
   locale: void 0,
   lines: []
-} : { ...r, blockType: S, structName: void 0, lines: [] }, pr = (r) => r.currentOption ? {
+} : { ...r, blockType: S, structName: void 0, lines: [] }, dr = (r) => r.currentOption ? {
   items: r.items.concat({ option: r.currentOption, value: r.currentOption })
 } : r, U = "help", L = "kind", N = "text", j = "struct", z = (r) => {
   if (L in r.attr) {
     const e = fr[r.attr.kind];
     if (e) return e(r);
   }
-  return d("any", "", r.attr, _);
+  return p("any", "", r.attr, _);
 }, n = (r) => r, K = (r) => r.replace("[", "").replace("]", "").split(",").map((e) => parseFloat(e.replaceAll('"', "").trim())).filter((e) => !isNaN(e)), _ = {
   default: n,
   text: n,
   desc: n,
   parent: n
-}, D = (r) => d("string", "", r.attr, _), R = (r) => {
+}, D = (r) => p("string", "", r.attr, _), R = (r) => {
   const e = { default: (a) => A(a), text: n, desc: n, parent: n };
   return P("string[]", r.attr, e);
 }, i = (r, e) => {
@@ -132,7 +115,7 @@ const ar = (r, e) => {
   return P(e, r.attr, a);
 }, u = (r, e) => {
   const a = { default: (t) => parseInt(t, 10), text: n, desc: n, parent: n };
-  return d(e, 0, r.attr, a);
+  return p(e, 0, r.attr, a);
 }, fr = {
   number: (r) => ((e) => {
     const a = {
@@ -144,7 +127,7 @@ const ar = (r, e) => {
       max: (t) => parseFloat(t),
       parent: n
     };
-    return d("number", 0, e.attr, a);
+    return p("number", 0, e.attr, a);
   })(r),
   "number[]": (r) => {
     const e = { default: K, text: n, desc: n, decimals: (a) => parseInt(a, 10), min: (a) => parseFloat(a), max: (a) => parseFloat(a), parent: n };
@@ -157,12 +140,12 @@ const ar = (r, e) => {
   combo: (r) => {
     var a;
     const e = ((a = r.options) == null ? void 0 : a.map((t) => t.option)) ?? [];
-    return { ...d("combo", "", r.attr, _), options: e };
+    return { ...p("combo", "", r.attr, _), options: e };
   },
   select: (r) => {
     var a;
     const e = ((a = r.options) == null ? void 0 : a.map((t) => ({ option: t.option, value: t.value }))) ?? [];
-    return { ...d("select", "", r.attr, _), options: e };
+    return { ...p("select", "", r.attr, _), options: e };
   },
   actor: (r) => u(r, "actor"),
   "actor[]": (r) => i(r, "actor[]"),
@@ -197,11 +180,11 @@ const ar = (r, e) => {
       off: n,
       parent: n
     };
-    return d("boolean", !0, r.attr, e);
+    return p("boolean", !0, r.attr, e);
   },
   file: (r) => {
     const e = { default: n, text: n, desc: n, parent: n, dir: n };
-    return { dir: "", ...d("file", "", r.attr, e) };
+    return { dir: "", ...p("file", "", r.attr, e) };
   },
   "file[]": (r) => {
     const e = { default: (a) => A(a), text: n, desc: n, parent: n, dir: n };
@@ -213,7 +196,7 @@ const ar = (r, e) => {
       const s = A(t.attr.default);
       return Array.isArray(s) ? {} : typeof s == "object" && s !== null ? s : {};
     })(r), a = { text: n, desc: n, parent: n };
-    return { struct: r.attr.struct || "", ...d("struct", e, r.attr, a) };
+    return { struct: r.attr.struct || "", ...p("struct", e, r.attr, a) };
   },
   "struct[]": (r) => {
     const e = ((t) => {
@@ -221,7 +204,7 @@ const ar = (r, e) => {
       const s = A(t.attr.default);
       return Array.isArray(s) && s.every((c) => typeof c == "object" && c !== null) ? s : [];
     })(r), a = { text: n, desc: n, parent: n };
-    return { struct: r.attr.struct || "", ...d("struct[]", e, r.attr, a), default: e };
+    return { struct: r.attr.struct || "", ...p("struct[]", e, r.attr, a), default: e };
   }
 }, Er = (r) => !Array.isArray(r) && typeof r == "object" && r !== null && !!(Ar(r) && Or(r) && Sr(r) && "parameters" in r) && yr(r), Ar = (r) => "name" in r && typeof r.name == "string", Or = (r) => "status" in r && typeof r.status == "boolean", Sr = (r) => "description" in r && typeof r.description == "string", yr = (r) => typeof r.parameters == "object" && r.parameters !== null && Object.values(r.parameters).every((e) => typeof e == "string"), br = /\s*\/\//, gr = /\s*[var|let|const]\s+[^\s]+\s*=/, Pr = /^\s{0,3}[\[|\]\;]/, _r = (r) => r.split(`
 `).filter((e) => !((a) => br.test(a) || Pr.test(a) || gr.test(a))(e)), hr = (r) => {
@@ -237,7 +220,7 @@ const ar = (r, e) => {
     const e = r.currentParam.attr.kind;
     if (e === "select" || e === "combo") return { ...r, currentParam: {
       ...r.currentParam,
-      options: pr(r.currentOption).items
+      options: dr(r.currentOption).items
     } };
   }
   return r;
@@ -259,11 +242,11 @@ const ar = (r, e) => {
       locale: void 0,
       lines: [],
       blockType: S
-    }, p = o.reduce((m, H) => {
+    }, d = o.reduce((m, H) => {
       const E = H.trim(), x = E.match(/^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/);
-      return x ? lr(m, x) : E === "/*:" ? dr(m) : E === "*/" ? m.lines.length > 0 ? F(m) : m : { ...m, lines: m.lines.concat([E]) };
+      return x ? lr(m, x) : E === "/*:" ? pr(m) : E === "*/" ? m.lines.length > 0 ? F(m) : m : { ...m, lines: m.lines.concat([E]) };
     }, f);
-    return { structs: p.structs, bodies: p.bodies };
+    return { structs: d.structs, bodies: d.bodies };
   })(r), a = e.structs.map((c) => Mr(c)), t = Cr(e);
   if (!t) return { params: [], commands: [], meta: {}, helpLines: [], structs: a };
   const s = Z(t, Y);
@@ -285,8 +268,8 @@ const ar = (r, e) => {
     if (!c.startsWith("@")) return t.currentContext === U ? { ...t, helpLines: t.helpLines.concat(c) } : t;
     const o = c.match(/^@(\S+)\s*(.*)$/);
     if (!o) return t;
-    const [, f, p] = o, m = e[f];
-    return m ? m(t, p.trim()) : t;
+    const [, f, d] = o, m = e[f];
+    return m ? m(t, d.trim()) : t;
   }, Fr());
   return y(a);
 }, Fr = () => ({
@@ -407,17 +390,17 @@ const ar = (r, e) => {
   name: e.name,
   status: e.status,
   parameters: mr(e.parameters)
-})), Zr = "bgm", Yr = "se", Hr = "me", $r = "bgs", qr = "battlebacks1", Qr = "battlebacks2", Xr = "characters", re = "enemies", ee = "faces", ae = "parallaxes", te = "pictures", se = "sv_actors", ne = "sv_enemies", ce = "system", oe = "tilesets", me = "titles1", ie = "titles2", ue = "System.json", le = "Actors.json", de = "Classes.json", pe = "Skills.json", fe = "Items.json", Ee = "Weapons.json", Ae = "Armors.json", Oe = "Enemies.json", Se = "Troops.json", ye = "States.json", be = "Animations.json", ge = "Tilesets.json", Pe = "CommonEvents.json", _e = "MapInfos.json", he = "data", Ne = "img", Ie = "audio", Le = "js";
+})), Zr = "bgm", Yr = "se", Hr = "me", $r = "bgs", qr = "battlebacks1", Qr = "battlebacks2", Xr = "characters", re = "enemies", ee = "faces", ae = "parallaxes", te = "pictures", se = "sv_actors", ne = "sv_enemies", ce = "system", oe = "tilesets", me = "titles1", ie = "titles2", ue = "System.json", le = "Actors.json", pe = "Classes.json", de = "Skills.json", fe = "Items.json", Ee = "Weapons.json", Ae = "Armors.json", Oe = "Enemies.json", Se = "Troops.json", ye = "States.json", be = "Animations.json", ge = "Tilesets.json", Pe = "CommonEvents.json", _e = "MapInfos.json", he = "data", Ne = "img", Ie = "audio", Le = "js";
 export {
   le as FILENAME_ACTORS,
   be as FILENAME_ANIMATIONS,
   Ae as FILENAME_ARMORS,
-  de as FILENAME_CLASSES,
+  pe as FILENAME_CLASSES,
   Pe as FILENAME_COMMON_EVENTS,
   Oe as FILENAME_ENEMIES,
   fe as FILENAME_ITEMS,
   _e as FILENAME_MAP_INFOS,
-  pe as FILENAME_SKILLS,
+  de as FILENAME_SKILLS,
   ye as FILENAME_STATES,
   ue as FILENAME_SYSTEM,
   ge as FILENAME_TILESET,
@@ -454,10 +437,10 @@ export {
   je as convertStructSchema,
   De as createClassifiedStructMap,
   Re as createStructMap,
+  kr as filterPluginParamByText,
   Gr as filterPluginSchemaByFileParam,
   Br as filterPluginSchemaByNumberParam,
   h as filterPluginSchemaByParam,
-  kr as filterPluginSchemaByStringParam,
   wr as filterPluginSchemaByVariableParam,
   ke as hasNumberValueParam,
   Be as hasScalarAttr,

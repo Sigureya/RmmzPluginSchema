@@ -1,4 +1,4 @@
 import { PluginParamEx, ScalarParam, ArrayParamTypes } from '../../../../rmmz/plugin';
-import { ArrayParamPathPair } from './types';
+import { ArrayParamPathPairEx } from './types';
 export declare const makeScalarValuesPath: (scalas: ReadonlyArray<PluginParamEx<ScalarParam>>, parent: string) => string | undefined;
-export declare const makeScalarArrayPath: (scalaArrays: ReadonlyArray<PluginParamEx<ArrayParamTypes>>, parent: string) => ArrayParamPathPair[];
+export declare const makeScalarArrayPath: <T extends PluginParamEx<ArrayParamTypes>>(scalaArrays: ReadonlyArray<T>, parent: string) => ArrayParamPathPairEx<T>[];

@@ -4,7 +4,7 @@ export interface PluginStructSchemaArray {
     struct: string;
     params: PluginParam[];
 }
-export interface PluginStructSchemaArrayFilterd<T extends PluginParam> {
+export interface PluginStructSchemaArrayFiltered<T extends PluginParam> {
     struct: string;
     params: T[];
 }
