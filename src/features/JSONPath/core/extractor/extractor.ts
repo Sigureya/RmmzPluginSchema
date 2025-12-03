@@ -2,7 +2,6 @@ import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   ScalarParam,
   ArrayParamTypes,
-  PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { readArrayValue } from "./array";
 import { readScalarValue } from "./scalar";
