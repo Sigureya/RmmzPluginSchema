@@ -4,9 +4,13 @@ import type {
   ClassifiedPluginParams,
   PluginParamEx,
   StructRefParam,
+  NumberParam,
+  NumberArrayParam,
+  StringParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
 import type { StructPropertysPath, StructPathResultWithError } from "./types";
+import type { StructPropertysPathEx3 } from "./types/template";
 
 interface Person {
   name: string;
@@ -69,7 +73,11 @@ const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
 ]);
 
 describe("getPathFromStructParam", () => {
-  const path1: StructPropertysPath = {
+  type Struct = StructPropertysPathEx3<
+    NumberParam | StringParam,
+    NumberArrayParam
+  >;
+  const path1: Struct = {
     category: "struct",
     name: "Person",
     objectSchema: {
@@ -79,7 +87,7 @@ describe("getPathFromStructParam", () => {
     scalarArrays: [],
     scalarsPath: '$.classRoom.students[*]["name","age"]',
   };
-  const path2: StructPropertysPath = {
+  const path2: Struct = {
     category: "struct",
     name: "Item",
     objectSchema: {
