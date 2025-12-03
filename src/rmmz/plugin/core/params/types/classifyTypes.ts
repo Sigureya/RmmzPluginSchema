@@ -29,16 +29,6 @@ export interface ClassifiedPluginParamsEx2<
   scalarArrays: PluginParamEx<A>[];
 }
 
-export interface ClassifiedPluginParamsEx3<
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
-> extends ScalaStruct {
-  structs: PluginParamEx<StructRefParam>[];
-  structArrays: PluginParamEx<StructArrayRefParam>[];
-  scalars: S[];
-  scalarArrays: A[];
-}
-
 export type ParamTypesEx4<T, Attr extends PrimitiveParam> = Extract<
   PluginStructParamTypeEx<T>,
   { attr: Attr; name: string }

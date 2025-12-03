@@ -2,9 +2,9 @@ import type {
   ArrayParamTypes,
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx2,
-  ClassifiedPluginParamsEx3,
   PluginParamEx,
   ScalarParam,
+  ScalaStruct,
   StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -21,6 +21,16 @@ const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
   cyclicStruct: "cyclic_struct",
 } as const satisfies ErrorCodes;
+
+interface ClassifiedPluginParamsEx3<
+  S extends PluginParamEx<ScalarParam>,
+  A extends PluginParamEx<ArrayParamTypes>
+> extends ScalaStruct {
+  structs: PluginParamEx<StructRefParam>[];
+  structArrays: PluginParamEx<StructArrayRefParam>[];
+  scalars: S[];
+  scalarArrays: A[];
+}
 
 interface Frame {
   schemaName: string;
