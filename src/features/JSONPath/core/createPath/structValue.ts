@@ -1,6 +1,7 @@
 import type {
   ArrayParamTypes,
   ClassifiedPluginParams,
+  ClassifiedPluginParamsEx2,
   ClassifiedPluginParamsEx3,
   PluginParamEx,
   ScalarParam,
@@ -33,11 +34,8 @@ interface State2<Scalar extends ScalarParam, Array extends ArrayParamTypes> {
   errs: StructPathError[];
 }
 
-function createNode<
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
->(
-  structSchema: ClassifiedPluginParamsEx3<S, A>,
+function createNode<S extends ScalarParam, A extends ArrayParamTypes>(
+  structSchema: ClassifiedPluginParamsEx2<S, A>,
   {
     path,
     structName,
@@ -45,7 +43,7 @@ function createNode<
     path: string;
     structName: string;
   }
-): StructPropertysPathEx3<S["attr"], A["attr"]> {
+): StructPropertysPathEx3<S, A> {
   return {
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
@@ -88,10 +86,7 @@ function createChildFrames(
 
 function stepState<Scalar extends ScalarParam, Array extends ArrayParamTypes>(
   state: State2<Scalar, Array>,
-  structMap: ReadonlyMap<
-    string,
-    ClassifiedPluginParamsEx3<PluginParamEx<Scalar>, PluginParamEx<Array>>
-  >,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<Scalar, Array>>,
   errors: ErrorCodes
 ): State2<Scalar, Array> {
   if (state.frames.length === 0) {
@@ -157,16 +152,13 @@ function stepState<Scalar extends ScalarParam, Array extends ArrayParamTypes>(
   };
 }
 
-function collectFromSchema<
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
->(
+function collectFromSchema<S extends ScalarParam, A extends ArrayParamTypes>(
   schemaName: string,
   basePath: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
   errors: ErrorCodes
 ): StructPathResultWithError {
-  type StateType = State2<S["attr"], A["attr"]>;
+  type StateType = State2<S, A>;
   const state: StateType = {
     items: [],
     errs: [],
