@@ -1,15 +1,16 @@
 import { describe, test, expect } from "vitest";
-import type { PluginParamEx, ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesPathBase, PrimitivePluginValuesPath } from "./types";
+import type { NumberParam, PluginParamEx } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PrimitivePluginValuesPath } from "./types";
 import { createPrimiteveParamPath } from "./valuePath";
 
 describe("eee", () => {
-  const param: PluginParamEx<ScalarParam> = {
+  const param: PluginParamEx<NumberParam> = {
     name: "testParam",
     attr: { kind: "number", default: 0 },
   };
   test("primitive param", () => {
-    const expected: PrimitivePluginValuesPath = {
+    type ResultType = PrimitivePluginValuesPath<NumberParam>;
+    const expected: ResultType = {
       rootCategory: "param",
       rootName: "testParam",
       scalars: {
@@ -30,7 +31,7 @@ describe("eee", () => {
         errors: [],
       },
     };
-    const result: PluginValuesPathBase = createPrimiteveParamPath(
+    const result: ResultType = createPrimiteveParamPath(
       "param",
       "testParam",
       param

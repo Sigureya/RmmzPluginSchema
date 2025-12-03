@@ -6,6 +6,7 @@ import type {
   StructRefParam,
   StructArrayRefParam,
   PluginParam,
+  ClassifiedPluginParamsEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isArrayAttr,
@@ -17,7 +18,6 @@ import {
   getPathFromStructParam,
 } from "./structValue";
 import type {
-  PluginValuesPath,
   PluginValuesPathBase,
   PluginValuesPathEx,
   PrimitivePluginValuesPath,
@@ -45,11 +45,11 @@ export const createPluginValuesPath = (
   );
 };
 
-const createPrimitiveArrayPath = (
+const createPrimitiveArrayPath = <T extends ArrayParamTypes>(
   category: "param" | "args",
   rootName: string,
-  param: PluginParamEx<Exclude<ArrayParamTypes, StructArrayRefParam>>
-): PluginValuesPath => {
+  param: PluginParamEx<Exclude<T, StructArrayRefParam>>
+): PluginValuesPathEx<ScalarParam, T> => {
   return {
     rootCategory: category,
     rootName: rootName,
@@ -70,11 +70,11 @@ const createPrimitiveArrayPath = (
   };
 };
 
-export const createPrimiteveParamPath = (
+export const createPrimiteveParamPath = <T extends ScalarParam>(
   category: "param" | "args",
   rootName: string,
-  param: PluginParamEx<ScalarParam>
-): PrimitivePluginValuesPath => {
+  param: PluginParamEx<T>
+): PrimitivePluginValuesPath<T> => {
   return {
     rootCategory: category,
     rootName: rootName,
@@ -92,19 +92,22 @@ export const createPrimiteveParamPath = (
   };
 };
 
-export const createStructParamPath = (
+export const createStructParamPath = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
 ): PluginValuesPathBase => {
   return createStructPath(category, param, structMap);
 };
 
-const createStructPath = (
+const createStructPath = <S extends ScalarParam, A extends ArrayParamTypes>(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPath => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
+): PluginValuesPathEx<S, A> => {
   return {
     rootName: param.name,
     rootCategory: category,
@@ -123,10 +126,10 @@ const createStructArrayPath = <
 >(
   category: "param" | "args",
   param: PluginParamEx<StructArrayRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
 ): PluginValuesPathEx<S, A> => {
   return {
-    structArrays: getPathFromStructArraySchema([param], "$", structMap),
+    structArrays: getPathFromStructArraySchema(param, "$", structMap),
     rootName: param.name,
     rootCategory: category,
     scalars: undefined,
