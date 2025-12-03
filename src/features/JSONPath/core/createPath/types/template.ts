@@ -7,7 +7,7 @@ import type { ArrayParamPathPairEx } from "./array";
 import type { ValueCategory } from "./category";
 import type { StructPathError } from "./errorTypes";
 
-export interface TemplateXXX<
+export interface StructPropertysPathEx3<
   Scalar extends ScalarParam,
   Array extends ArrayParamTypes
 > {
@@ -22,14 +22,14 @@ export interface TemplateG<
   Scalar extends ScalarParam,
   Array extends ArrayParamTypes
 > {
-  items: TemplateXXX<Scalar, Array>[];
+  items: StructPropertysPathEx3<Scalar, Array>[];
 }
 
 export interface TemplateGE<
   Scalar extends ScalarParam,
   Array extends ArrayParamTypes
 > {
-  items: TemplateXXX<Scalar, Array>[];
+  items: StructPropertysPathEx3<Scalar, Array>[];
   errors: StructPathError[];
 }
 
@@ -37,7 +37,7 @@ export interface TemplateE<
   Scalar extends ScalarParam,
   Array extends ArrayParamTypes
 > {
-  scalars: TemplateXXX<Scalar, Array>;
+  scalars: StructPropertysPathEx3<Scalar, Array>;
   structs: TemplateGE<Scalar, Array>;
   structArrays: TemplateGE<Scalar, Array>;
 }

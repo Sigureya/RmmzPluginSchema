@@ -3,9 +3,12 @@ import type {
   ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { StructPathError } from "./errorTypes";
-import type { TemplateE, TemplateG, TemplateXXX } from "./template";
+import type { TemplateE, TemplateG, StructPropertysPathEx3 } from "./template";
 
-export type StructPropertysPath = TemplateXXX<ScalarParam, ArrayParamTypes>;
+export type StructPropertysPath = StructPropertysPathEx3<
+  ScalarParam,
+  ArrayParamTypes
+>;
 
 export interface StructPathResultWithError {
   items: StructPropertysPath[];
