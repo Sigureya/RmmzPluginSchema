@@ -17,10 +17,10 @@ export function toObjectPluginParamsOld(
   return Object.fromEntries(e);
 }
 
-export function toObjectPluginParams(
-  params: ReadonlyArray<PluginParamEx<ScalarParam>>
-): Record<string, ScalarParam> {
-  const e = params.map((p): [string, ScalarParam] => [p.name, p.attr]);
+export function toObjectPluginParams<S extends ScalarParam>(
+  params: ReadonlyArray<PluginParamEx<S>>
+): Record<string, S> {
+  const e = params.map((p): [string, S] => [p.name, p.attr]);
   return Object.fromEntries(e);
 }
 

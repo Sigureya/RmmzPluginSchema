@@ -1,7 +1,10 @@
 import { describe, test, expect } from "vitest";
 import type {
   ClassifiedPluginParams,
+  ClassifiedPluginParamsEx2,
+  NumberArrayParam,
   PluginParamEx,
+  ScalarParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
@@ -22,7 +25,7 @@ describe("empty struct", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["EmptyStruct", schema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     expect(result.items).toEqual([]);
   });
   test("", () => {
@@ -39,7 +42,7 @@ describe("empty struct", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["NotEmptyStruct", schema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     const expected: StructPropertysPath[] = [
       {
         category: "struct",
@@ -54,7 +57,7 @@ describe("empty struct", () => {
     expect(result.items).toEqual(expected);
   });
   test("struct array", () => {
-    const schema: ClassifiedPluginParams = {
+    const schema: ClassifiedPluginParamsEx2<ScalarParam, NumberArrayParam> = {
       scalars: [],
       scalarArrays: [
         {
@@ -72,7 +75,7 @@ describe("empty struct", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["EmptyStructArray", schema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     const expected: StructPropertysPath[] = [
       {
         category: "struct",

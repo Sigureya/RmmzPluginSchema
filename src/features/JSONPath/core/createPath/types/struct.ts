@@ -1,27 +1,24 @@
-import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayParamPathPair } from "./array";
-import type { ValueCategory } from "./category";
-import type { StructPathError } from "./errorTypes";
+import type {
+  ArrayParamTypes,
+  ScalarParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  TemplateE,
+  TemplateG,
+  StructPropertysPathEx3,
+  TemplateGE,
+} from "./template";
 
-export interface StructPropertysPath {
-  name: string;
-  category: ValueCategory;
-  scalarsPath: string | undefined;
-  scalarArrays: ArrayParamPathPair[];
-  objectSchema: Record<string, ScalarParam>;
-}
+export type StructPropertysPath = StructPropertysPathEx3<
+  ScalarParam,
+  ArrayParamTypes
+>;
 
-export interface StructPathResultWithError {
-  items: StructPropertysPath[];
-  errors: StructPathError[];
-}
+export type StructPathResultWithError = TemplateGE<
+  ScalarParam,
+  ArrayParamTypes
+>;
 
-export interface PluginValuesPathWithError {
-  scalars: StructPropertysPath;
-  structs: StructPathResultWithError;
-  structArrays: StructPathResultWithError;
-}
+export type PluginValuesPathWithError = TemplateE<ScalarParam, ArrayParamTypes>;
 
-export interface StructPathResultItems {
-  items: StructPropertysPath[];
-}
+export type StructPathResultItems = TemplateG<ScalarParam, ArrayParamTypes>;

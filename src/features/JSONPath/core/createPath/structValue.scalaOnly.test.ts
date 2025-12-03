@@ -4,6 +4,7 @@ import type {
   PluginParamEx,
   StructRefParam,
   ClassifiedPluginParams,
+  ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
@@ -48,7 +49,7 @@ describe("person", () => {
           param: personSchema.scalarArrays[1],
         },
       ],
-      objectSchema: toObjectPluginParams(personSchema.scalars),
+      objectSchema: toObjectPluginParams<ScalarParam>(personSchema.scalars),
     },
   ] as const satisfies StructPropertysPath[];
   test("getPathFromStruct", () => {
@@ -59,7 +60,7 @@ describe("person", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["MockPerson", personSchema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     expect(result.items).toEqual(expected);
   });
 

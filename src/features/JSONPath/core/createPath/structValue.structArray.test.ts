@@ -1,12 +1,16 @@
 import { describe, test, expect } from "vitest";
 import type {
   ClassifiedPluginParamsEx,
-  ClassifiedPluginParams,
   PluginParamEx,
   StructRefParam,
+  NumberParam,
+  NumberArrayParam,
+  StringParam,
+  ClassifiedPluginParamsEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
 import type { StructPropertysPath, StructPathResultWithError } from "./types";
+import type { StructPropertysPathEx3 } from "./types/template";
 
 interface Person {
   name: string;
@@ -23,7 +27,10 @@ interface ClassRoom {
   items: Item[];
 }
 
-const personSchema: ClassifiedPluginParamsEx<Person> = {
+const personSchema: ClassifiedPluginParamsEx<
+  Person,
+  NumberParam | StringParam
+> = {
   scalarArrays: [],
   structs: [],
   structArrays: [],
@@ -49,7 +56,7 @@ const classRoomSchema: ClassifiedPluginParamsEx<ClassRoom> = {
   ],
 };
 
-const itemSchema: ClassifiedPluginParamsEx<Item> = {
+const itemSchema: ClassifiedPluginParamsEx<Item, NumberParam | StringParam> = {
   scalarArrays: [],
   structs: [],
   structArrays: [],
@@ -59,9 +66,12 @@ const itemSchema: ClassifiedPluginParamsEx<Item> = {
   ],
 };
 
-const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
+const structsMap: ReadonlyMap<
   string,
-  ClassifiedPluginParams
+  ClassifiedPluginParamsEx2<NumberParam | StringParam, NumberArrayParam>
+> = new Map<
+  string,
+  ClassifiedPluginParamsEx2<NumberParam | StringParam, NumberArrayParam>
 >([
   ["Person", personSchema],
   ["ClassRoom", classRoomSchema],
@@ -69,7 +79,8 @@ const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
 ]);
 
 describe("getPathFromStructParam", () => {
-  const path1: StructPropertysPath = {
+  type Struct = StructPropertysPathEx3<NumberParam | StringParam, never>;
+  const path1: Struct = {
     category: "struct",
     name: "Person",
     objectSchema: {
@@ -79,7 +90,7 @@ describe("getPathFromStructParam", () => {
     scalarArrays: [],
     scalarsPath: '$.classRoom.students[*]["name","age"]',
   };
-  const path2: StructPropertysPath = {
+  const path2: Struct = {
     category: "struct",
     name: "Item",
     objectSchema: {
@@ -91,11 +102,12 @@ describe("getPathFromStructParam", () => {
   };
 
   test("classRoom.students", () => {
-    const params: ReadonlyArray<PluginParamEx<StructRefParam>> = [
-      { name: "classRoom", attr: { kind: "struct", struct: "ClassRoom" } },
-    ];
+    const param: PluginParamEx<StructRefParam> = {
+      name: "classRoom",
+      attr: { kind: "struct", struct: "ClassRoom" },
+    };
     const result: StructPathResultWithError = getPathFromStructParam(
-      params,
+      param,
       "$",
       structsMap
     );

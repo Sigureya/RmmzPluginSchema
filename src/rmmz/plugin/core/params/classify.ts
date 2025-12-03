@@ -10,10 +10,10 @@ import type {
   PluginParam,
   FileParam,
   FileArrayParam,
-  ClassifiedPluginParamsEx2,
   PrimitiveStringParam,
   ClassifiedPluginFileParams,
   ClassifiedTextParams,
+  ClassifiedPluginParamsEx2,
 } from "./types";
 import {
   isStructParam,

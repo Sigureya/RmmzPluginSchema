@@ -39,7 +39,7 @@ describe("cyclic struct", () => {
       attr: { kind: "struct", struct: "LoopMock" },
     } as const satisfies PluginParamEx<StructRefParam>;
     const result: StructPathResultWithError = getPathFromStructParam(
-      [param],
+      param,
       "$",
       structMap
     );
@@ -63,7 +63,7 @@ describe("undefined struct", () => {
       attr: { kind: "struct", struct: "UndefinedStruct" },
     } as const satisfies PluginParamEx<StructRefParam>;
     const result: StructPathResultWithError = getPathFromStructParam(
-      [param],
+      param,
       "$",
       structMap
     );
