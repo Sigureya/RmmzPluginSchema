@@ -70,11 +70,11 @@ const compileArrayPathExtractor = (
   );
 };
 
-const compileScalarValueExtractor = (
+const compileScalarValueExtractor = <S extends ScalarParam>(
   path: string,
-  schema: Record<string, ScalarParam>,
+  schema: Record<string, S>,
   factoryFn: (path: string) => JSONPathReader
-): ScalarValueExtractor => ({
+): ScalarValueExtractor<S> => ({
   jsonPathJS: factoryFn(path),
   record: schema,
 });
