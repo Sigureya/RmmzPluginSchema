@@ -91,11 +91,12 @@ describe("getPathFromStructParam", () => {
   };
 
   test("classRoom.students", () => {
-    const params: ReadonlyArray<PluginParamEx<StructRefParam>> = [
-      { name: "classRoom", attr: { kind: "struct", struct: "ClassRoom" } },
-    ];
+    const param: PluginParamEx<StructRefParam> = {
+      name: "classRoom",
+      attr: { kind: "struct", struct: "ClassRoom" },
+    };
     const result: StructPathResultWithError = getPathFromStructParam(
-      params,
+      param,
       "$",
       structsMap
     );

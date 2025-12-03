@@ -1,6 +1,9 @@
 import type {
+  ArrayParamTypes,
   ClassifiedPluginParams,
+  ClassifiedPluginParamsEx3,
   PluginParamEx,
+  ScalarParam,
   StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -8,10 +11,10 @@ import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalarArrayPath, makeScalarValuesPath } from "./scalarValue";
 import type {
   ErrorCodes,
-  StructPropertysPath,
   StructPathError,
   StructPathResultWithError,
 } from "./types";
+import type { StructPropertysPathEx3, TemplateGE } from "./types/template";
 
 const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
@@ -23,14 +26,18 @@ interface Frame {
   basePath: string;
   ancestry: string[];
 }
-interface State {
-  frames: Array<Frame>;
-  items: StructPropertysPath[];
+
+interface State2<Scalar extends ScalarParam, Array extends ArrayParamTypes> {
+  frames: Frame[];
+  items: StructPropertysPathEx3<Scalar, Array>[];
   errs: StructPathError[];
 }
 
-function createNode(
-  structSchema: ClassifiedPluginParams,
+function createNode<
+  S extends PluginParamEx<ScalarParam>,
+  A extends PluginParamEx<ArrayParamTypes>
+>(
+  structSchema: ClassifiedPluginParamsEx3<S, A>,
   {
     path,
     structName,
@@ -38,7 +45,7 @@ function createNode(
     path: string;
     structName: string;
   }
-): StructPropertysPath {
+): StructPropertysPathEx3<S["attr"], A["attr"]> {
   return {
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
@@ -79,11 +86,14 @@ function createChildFrames(
   return [...structFrames, ...structArrayFrames].reverse(); // LIFO スタックなので、desired の逆順で push
 }
 
-function stepState(
-  state: State,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+function stepState<Scalar extends ScalarParam, Array extends ArrayParamTypes>(
+  state: State2<Scalar, Array>,
+  structMap: ReadonlyMap<
+    string,
+    ClassifiedPluginParamsEx3<PluginParamEx<Scalar>, PluginParamEx<Array>>
+  >,
   errors: ErrorCodes
-): State {
+): State2<Scalar, Array> {
   if (state.frames.length === 0) {
     return state;
   }
@@ -125,10 +135,13 @@ function stepState(
   if (structSchema.scalars.length > 0 || structSchema.scalarArrays.length > 0) {
     // 現在ノードを追加（pre-order）
 
-    const current: StructPropertysPath = createNode(structSchema, {
-      path: frame.basePath,
-      structName: frame.schemaName,
-    });
+    const current: StructPropertysPathEx3<Scalar, Array> = createNode(
+      structSchema,
+      {
+        path: frame.basePath,
+        structName: frame.schemaName,
+      }
+    );
     newFrames.push(...childrenDesired);
     return {
       frames: newFrames,
@@ -144,13 +157,17 @@ function stepState(
   };
 }
 
-function collectFromSchema(
+function collectFromSchema<
+  S extends PluginParamEx<ScalarParam>,
+  A extends PluginParamEx<ArrayParamTypes>
+>(
   schemaName: string,
   basePath: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
   errors: ErrorCodes
 ): StructPathResultWithError {
-  const state: State = {
+  type StateType = State2<S["attr"], A["attr"]>;
+  const state: StateType = {
     items: [],
     errs: [],
     frames: [
@@ -166,7 +183,7 @@ function collectFromSchema(
   const maxPass: number = Math.max(1, structMap.size * 3 + 5);
 
   // reduce を使って stepState を繰り返す（for/while を使わない）
-  const finalState = Array.from({ length: maxPass }).reduce<State>(
+  const finalState = Array.from({ length: maxPass }).reduce<StateType>(
     (s) => (s.frames.length === 0 ? s : stepState(s, structMap, errors)),
     state
   );
@@ -175,34 +192,29 @@ function collectFromSchema(
 }
 
 export const getPathFromStructParam = (
-  params: ReadonlyArray<PluginParamEx<StructRefParam>>,
+  params: PluginParamEx<StructRefParam>,
   parent: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   errors: ErrorCodes = ERROR_CODE
 ): StructPathResultWithError => {
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
-  const results = params.map((param) =>
-    collectFromSchema(
-      param.attr.struct,
-      `${parent}.${param.name}`,
-      structMap,
-      errors
-    )
+  return collectFromSchema(
+    params.attr.struct,
+    `${parent}.${params.name}`,
+    structMap,
+    errors
   );
-
-  // itemsとerrorsをまとめて返す
-  return {
-    items: results.flatMap((r) => r.items),
-    errors: results.flatMap((r) => r.errors),
-  };
 };
 
-export const getPathFromStructArraySchema = (
+export const getPathFromStructArraySchema = <
+  S extends PluginParamEx<ScalarParam>,
+  A extends PluginParamEx<ArrayParamTypes>
+>(
   param: ReadonlyArray<PluginParamEx<StructArrayRefParam>>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
   errors: ErrorCodes = ERROR_CODE
-): StructPathResultWithError => {
+): TemplateGE<S["attr"], A["attr"]> => {
   const reuslts = param.map((p) =>
     collectFromSchema(
       p.attr.struct,

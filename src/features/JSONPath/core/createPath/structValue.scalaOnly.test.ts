@@ -59,7 +59,7 @@ describe("person", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["MockPerson", personSchema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     expect(result.items).toEqual(expected);
   });
 

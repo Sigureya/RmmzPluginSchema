@@ -22,7 +22,7 @@ describe("empty struct", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["EmptyStruct", schema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     expect(result.items).toEqual([]);
   });
   test("", () => {
@@ -39,7 +39,7 @@ describe("empty struct", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["NotEmptyStruct", schema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     const expected: StructPropertysPath[] = [
       {
         category: "struct",
@@ -72,7 +72,7 @@ describe("empty struct", () => {
     const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
       ["EmptyStructArray", schema],
     ]);
-    const result = getPathFromStructParam([param], "$", structMap);
+    const result = getPathFromStructParam(param, "$", structMap);
     const expected: StructPropertysPath[] = [
       {
         category: "struct",

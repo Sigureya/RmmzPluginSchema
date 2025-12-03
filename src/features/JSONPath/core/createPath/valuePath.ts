@@ -19,6 +19,7 @@ import {
 import type {
   PluginValuesPath,
   PluginValuesPathBase,
+  PluginValuesPathEx,
   PrimitivePluginValuesPath,
 } from "./types";
 
@@ -112,15 +113,18 @@ const createStructPath = (
       items: [],
       errors: [],
     },
-    structs: getPathFromStructParam([param], "$", structMap),
+    structs: getPathFromStructParam(param, "$", structMap),
   };
 };
 
-const createStructArrayPath = (
+const createStructArrayPath = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
   category: "param" | "args",
   param: PluginParamEx<StructArrayRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>
-): PluginValuesPath => {
+): PluginValuesPathEx<S, A> => {
   return {
     structArrays: getPathFromStructArraySchema([param], "$", structMap),
     rootName: param.name,
