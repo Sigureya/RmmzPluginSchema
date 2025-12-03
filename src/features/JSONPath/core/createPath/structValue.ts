@@ -10,11 +10,7 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalarArrayPath, makeScalarValuesPath } from "./scalarValue";
-import type {
-  ErrorCodes,
-  StructPathError,
-  StructPathResultWithError,
-} from "./types";
+import type { ErrorCodes, StructPathError } from "./types";
 import type { StructPropertysPathEx3, TemplateGE } from "./types/template";
 
 const ERROR_CODE = {
@@ -167,7 +163,7 @@ function collectFromSchema<S extends ScalarParam, A extends ArrayParamTypes>(
   basePath: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
   errors: ErrorCodes
-): StructPathResultWithError {
+): TemplateGE<S, A> {
   type StateType = State2<S, A>;
   const state: StateType = {
     items: [],
@@ -212,15 +208,15 @@ export const getPathFromStructParam = <
 };
 
 export const getPathFromStructArraySchema = <
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
+  S extends ScalarParam,
+  A extends ArrayParamTypes
 >(
   param: PluginParamEx<StructArrayRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
   errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S["attr"], A["attr"]> => {
-  return collectFromSchema(
+): TemplateGE<S, A> => {
+  return collectFromSchema<S, A>(
     param.attr.struct,
     `${parent}.${param.name}[*]`,
     structMap,
