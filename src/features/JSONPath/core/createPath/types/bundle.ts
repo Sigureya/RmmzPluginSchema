@@ -1,6 +1,5 @@
 import type {
   ArrayParamTypes,
-  ParamKinds,
   ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesPathBase } from "./base";
@@ -27,13 +26,14 @@ export interface PluginValuesPathEx<
   structArrays: StructPathResultWithError;
 }
 
-export interface PrimitivePluginValuesPath extends PluginValuesPathBase {
+export interface PrimitivePluginValuesPath<T extends ScalarParam>
+  extends PluginValuesPathBase {
   rootCategory: "param" | "args";
   rootName: string;
   scalars: {
     category: "primitive";
-    name: ParamKinds;
-    objectSchema: Record<string, ScalarParam>;
+    name: T["kind"];
+    objectSchema: Record<string, T>;
     scalarsPath: `$.${string}`;
     scalarArrays: [];
   };
