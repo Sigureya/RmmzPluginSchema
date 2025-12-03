@@ -191,12 +191,15 @@ function collectFromSchema<
   return { items: finalState.items, errors: finalState.errs };
 }
 
-export const getPathFromStructParam = (
+export const getPathFromStructParam = <
+  S extends PluginParamEx<ScalarParam>,
+  A extends PluginParamEx<ArrayParamTypes>
+>(
   params: PluginParamEx<StructRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
   errors: ErrorCodes = ERROR_CODE
-): StructPathResultWithError => {
+): TemplateGE<S["attr"], A["attr"]> => {
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
   return collectFromSchema(
     params.attr.struct,
@@ -210,30 +213,27 @@ export const getPathFromStructArraySchema = <
   S extends PluginParamEx<ScalarParam>,
   A extends PluginParamEx<ArrayParamTypes>
 >(
-  param: ReadonlyArray<PluginParamEx<StructArrayRefParam>>,
+  param: PluginParamEx<StructArrayRefParam>,
   parent: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
   errors: ErrorCodes = ERROR_CODE
 ): TemplateGE<S["attr"], A["attr"]> => {
-  const reuslts = param.map((p) =>
-    collectFromSchema(
-      p.attr.struct,
-      `${parent}.${p.name}[*]`,
-      structMap,
-      errors
-    )
+  return collectFromSchema(
+    param.attr.struct,
+    `${parent}.${param.name}[*]`,
+    structMap,
+    errors
   );
-  return {
-    items: reuslts.flatMap((r) => r.items),
-    errors: reuslts.flatMap((r) => r.errors),
-  };
 };
 
-export const getPathFromStructSchema = (
+export const getPathFromStructSchema = <
+  S extends PluginParamEx<ScalarParam>,
+  A extends PluginParamEx<ArrayParamTypes>
+>(
   structName: string,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
   errors: ErrorCodes = ERROR_CODE
-): StructPathResultWithError => {
+): TemplateGE<S["attr"], A["attr"]> => {
   return collectFromSchema(structName, parent, structMap, errors);
 };
