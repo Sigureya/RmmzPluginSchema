@@ -13,7 +13,7 @@ import type {
   PrimitiveStringParam,
   ClassifiedPluginFileParams,
   ClassifiedTextParams,
-  ClassifiedPluginParamsEx3,
+  ClassifiedPluginParamsEx2,
 } from "./types";
 import {
   isStructParam,
@@ -61,7 +61,7 @@ const classifyPluginParamsCore = <
   arrayPredicate: (
     param: PluginParamEx<ArrayParamTypes>
   ) => param is PluginParamEx<A>
-): ClassifiedPluginParamsEx3<PluginParamEx<T>, PluginParamEx<A>> => {
+): ClassifiedPluginParamsEx2<T, A> => {
   const structs: PluginParamEx<StructRefParam>[] = [];
   const structArrays: PluginParamEx<StructArrayRefParam>[] = [];
   const scalas: PluginParamEx<T>[] = [];
