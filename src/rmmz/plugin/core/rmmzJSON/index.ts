@@ -1,2 +1,2 @@
 export { parseDeepJSON, parseDeepRecord } from "./parseDeepJSON";
-export { stringifyDeepJSON } from "./stringifyDeepJSON";
+export { stringifyDeepJSON, stringifyDeepRecord } from "./stringifyDeepJSON";
