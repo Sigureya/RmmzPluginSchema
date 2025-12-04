@@ -6,7 +6,6 @@ import type {
   StructArrayRefParam,
   ScalarParam,
   ArrayParamTypes,
-  ClassifiedPluginParams,
   PluginParam,
   FileParam,
   FileArrayParam,
@@ -14,6 +13,8 @@ import type {
   ClassifiedPluginFileParams,
   ClassifiedTextParams,
   ClassifiedPluginParamsEx2,
+  PluginParamEx2,
+  ClassifiedPluginParams,
 } from "./types";
 import {
   isStructParam,
@@ -22,15 +23,24 @@ import {
   hasTextAttr,
 } from "./typeTest";
 
-export const classifyPluginParams = (
+export function classifyPluginParams(
   params: ReadonlyArray<PluginParam>
-): ClassifiedPluginParams => {
+): ClassifiedPluginParams;
+
+export function classifyPluginParams<
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(params: ReadonlyArray<PluginParamEx2<S, A>>): ClassifiedPluginParamsEx2<S, A>;
+
+export function classifyPluginParams(
+  params: ReadonlyArray<PluginParam>
+): ClassifiedPluginParams {
   return classifyPluginParamsCore(
     params,
     (p): p is PluginParamEx<ScalarParam> => true,
     (p): p is PluginParamEx<ArrayParamTypes> => true
   );
-};
+}
 
 export const classifyFileParams = (
   params: ReadonlyArray<PluginParam>

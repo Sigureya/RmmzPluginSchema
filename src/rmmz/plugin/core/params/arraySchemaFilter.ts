@@ -8,15 +8,14 @@ import type {
   StructPluginParam,
   PluginCommandSchemaArray,
   PluginCommandSchemaArrayFiltered,
-  PluginParamEx,
-  PrimitiveTextParam,
   PrimitiveParam,
   FileArrayParam,
   FileParam,
-  PluginFileParamsSchema,
-  PluginVariableSchema,
   RpgVariableArrayParam,
   RpgVariableParam,
+  ArrayParamTypes,
+  ScalarParam,
+  PluginParamEx2,
 } from "./types";
 import {
   hasStructAttr,
@@ -26,51 +25,54 @@ import {
   isVariableAttr,
 } from "./typeTest";
 
-export const filterPluginParamByText = (
-  schema: PluginSchemaArray
-): PluginSchemaArrayFiltered<PluginParamEx<PrimitiveTextParam>> => {
+export const filterPluginParamByText = (schema: PluginSchemaArray) => {
   return filterPluginSchemaByParam(schema, hasTextAttr);
 };
 
 export const filterPluginSchemaByNumberParam = (schema: PluginSchemaArray) => {
-  type Type = Extract<PrimitiveParam, { default: number[] | number }>;
-  return filterPluginSchemaByParam<PluginParamEx<Type>>(schema, isNumberAttr);
+  return filterPluginSchemaByParam<
+    Extract<PrimitiveParam, { default: number }>,
+    Extract<PrimitiveParam, { default: number[] }>
+  >(schema, isNumberAttr);
 };
 
 export const filterPluginSchemaByVariableParam = (
   schema: PluginSchemaArray
-): PluginVariableSchema => {
-  type Type = RpgVariableParam | RpgVariableArrayParam;
-  return filterPluginSchemaByParam<PluginParamEx<Type>>(schema, isVariableAttr);
+): PluginSchemaArrayFiltered<
+  PluginParamEx2<RpgVariableParam, RpgVariableArrayParam>
+> => {
+  return filterPluginSchemaByParam<RpgVariableParam, RpgVariableArrayParam>(
+    schema,
+    isVariableAttr
+  );
 };
 
 export const filterPluginSchemaByFileParam = (
   schema: PluginSchemaArray
-): PluginFileParamsSchema => {
-  type Type = FileParam | FileArrayParam;
-  return filterPluginSchemaByParam<PluginParamEx<Type>>(schema, isFileAttr);
+): PluginSchemaArrayFiltered<PluginParamEx2<FileParam, FileArrayParam>> => {
+  return filterPluginSchemaByParam<FileParam, FileArrayParam>(
+    schema,
+    isFileAttr
+  );
 };
 
-export const filterPluginSchemaByParam = <T extends PluginParam>(
+export const filterPluginSchemaByParam = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
   schema: PluginSchemaArray,
-  predicate: (param: PluginParam) => param is T
-): PluginSchemaArrayFiltered<T> => {
+  predicate: (param: PluginParam) => param is PluginParamEx2<S, A>
+): PluginSchemaArrayFiltered<PluginParamEx2<S, A>> => {
   const base: PluginStructSchemaArray[] = schema.structs.filter((s) => {
     return s.params.some((p) => predicate(p));
   });
-  const directTypeNames: ReadonlySet<string> = new Set(
-    base.map((s): string => s.struct)
-  );
-  const depTypesName: ReadonlySet<string> = collectDependentStructNames(
+  const directTypeNames = new Set<string>(base.map((s) => s.struct));
+  const depTypesName: Set<string> = collectDependentStructNames(
     schema.structs,
     directTypeNames
   );
-  type StructType = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
-  const newStructs: StructType[] = rebuildStructs(
-    schema.structs,
-    depTypesName,
-    predicate
-  );
+  const newStructs: PluginStructSchemaArrayFiltered<PluginParamEx2<S, A>>[] =
+    rebuildStructs(schema.structs, depTypesName, predicate);
   return {
     structs: newStructs,
     commands: rebuildCommands(schema.commands, depTypesName, predicate),
@@ -95,10 +97,10 @@ const rebuildStructs = <T extends PluginParam>(
   structNames: ReadonlySet<string>,
   predicate: (param: PluginParam) => param is T
 ): PluginStructSchemaArrayFiltered<T | StructPluginParam>[] => {
-  type Struct = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
+  type XX = PluginStructSchemaArrayFiltered<T | StructPluginParam>;
 
   return structs
-    .map((struct): Struct => {
+    .map((struct): XX => {
       return {
         struct: struct.struct,
         params: rebuildParams(struct.params, structNames, predicate),
@@ -112,9 +114,9 @@ export const rebuildCommands = <T extends PluginParam>(
   structNames: ReadonlySet<string>,
   predicate: (param: PluginParam) => param is T
 ): PluginCommandSchemaArrayFiltered<T | StructPluginParam>[] => {
-  type Command = PluginCommandSchemaArrayFiltered<T | StructPluginParam>;
+  type R = PluginCommandSchemaArrayFiltered<T | StructPluginParam>;
   return commands
-    .map((cmd): Command => {
+    .map((cmd): R => {
       return {
         ...(cmd.desc ? { desc: cmd.desc } : {}),
         ...(cmd.text ? { text: cmd.text } : {}),
