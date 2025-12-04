@@ -5,9 +5,17 @@ export type PrimitiveStringParam = StringParam | AnyStringParam | ComboParam | S
 export type PrimitiveTextParam = StringParam | StringArrayParam;
 export type PrimitiveParam = BooleanParam | NumberParam | NumberArrayParam | RpgDataIdParam | RpgDataIdArrayParam | ComboParam | SelectParam | StringParam | StringArrayParam | SystemDataIdParam | SystemDataIdArrayParam | RpgVariableParam | RpgVariableArrayParam | RpgSwitchParam | RpgSwitchArrayParam | FileParam | FileArrayParam | StructRefParam | StructArrayRefParam | AnyStringParam;
 export type ParamKinds = Exclude<PrimitiveParam, ArrayParam | StructArrayRefParam>["kind"];
-export type ScalarParam = Exclude<PrimitiveParam, ArrayParam | StructArrayRefParam | KindOfStructBase>;
-export type ArrayParamTypes = Extract<PrimitiveParam, ArrayParam>;
-export type ArrayParamItemType2 = Exclude<ArrayParamTypes, {
+export type PluginScalarParam = Exclude<PrimitiveParam, ArrayParam | StructArrayRefParam | KindOfStructBase>;
+/**
+ * @deprecated use PluginScalarParam instead
+ */
+export type ScalarParam = PluginScalarParam;
+export type PluginArrayParamType = Extract<PrimitiveParam, ArrayParam>;
+/**
+ * @deprecated use PluginArrayParamType instead
+ */
+export type ArrayParamTypes = PluginArrayParamType;
+export type ArrayParamItemType2 = Exclude<PluginArrayParamType, {
     default: object[];
 }>;
 export type StructParam = PrimitiveParam | StructDefParam<object> | StructArrayDefParam<object>;

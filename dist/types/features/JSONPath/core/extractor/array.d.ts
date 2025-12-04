@@ -1,4 +1,4 @@
 import { JSONValue } from '../../../../libs/jsonPath';
-import { ScalarParam, ArrayParamTypes } from '../../../../rmmz/plugin';
-import { ExtractorBundle, ArrayPathExtractor, PluginValuesStringArray, PluginValuesNumberArray } from './types';
-export declare const readArrayValue: <T extends ScalarParam, NA extends ArrayParamTypes, SA extends ArrayParamTypes>(bundle: ExtractorBundle<T, NA | SA>, groupName: string, json: JSONValue, path: ArrayPathExtractor<NA>) => PluginValuesStringArray[] | PluginValuesNumberArray[];
+import { PluginScalarParam, PluginArrayParamType } from '../../../../rmmz/plugin';
+import { PluginValuesExtractorBundle, PluginArrayPathExtractor, PluginValuesStringArray, PluginValuesNumberArray } from './types';
+export declare const readArrayValue: <T extends PluginScalarParam, NA extends PluginArrayParamType, SA extends PluginArrayParamType>(bundle: PluginValuesExtractorBundle<T, NA | SA>, groupName: string, json: JSONValue, path: PluginArrayPathExtractor<NA>) => PluginValuesStringArray[] | PluginValuesNumberArray[];

@@ -1,9 +1,9 @@
 import { ValueCategory } from './category';
-import { StructPropertysPath, StructPathResultItems } from './struct';
+import { StructPropertysPathOld, StructPathResultItems } from './struct';
 export interface PluginValuesPathBase {
     rootCategory: ValueCategory;
     rootName: string;
-    scalars?: StructPropertysPath;
+    scalars?: StructPropertysPathOld;
     structs: StructPathResultItems;
     structArrays: StructPathResultItems;
 }
