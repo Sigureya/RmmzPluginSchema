@@ -27,8 +27,7 @@ export const compileJSONPathSchema = <
     ? compileStructExtractor(path.scalars, factoryFn)
     : undefined;
   const structs = path.structs.items.map(
-    (p): PluginValuesPathMemo4<S, A> =>
-      compileStructExtractor<S, A>(p, factoryFn)
+    (p): PluginValuesPathMemo4<S, A> => compileStructExtractor(p, factoryFn)
   );
   const structArrays = path.structArrays.items.map(
     (p): PluginValuesPathMemo4<S, A> => compileStructExtractor(p, factoryFn)

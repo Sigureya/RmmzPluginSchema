@@ -6,6 +6,7 @@ import type {
   StructArrayRefParam,
   ClassifiedPluginParamsEx2,
   ArrayParamItemType2,
+  PluginParamEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isArrayAttr,
@@ -24,7 +25,7 @@ export const createPluginValuesPath = <
 >(
   category: "param" | "args",
   rootName: string,
-  param: PluginParamEx<S | A | StructRefParam | StructArrayRefParam>,
+  param: PluginParamEx2<S, A>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
 ): PluginValuesPathEx<S, A> => {
   if (isStructAttr(param)) {
