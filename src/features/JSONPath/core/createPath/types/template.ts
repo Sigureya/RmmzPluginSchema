@@ -3,7 +3,7 @@ import type {
   PluginParamEx,
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayParamPathPairEx } from "./array";
+import type { ArrayParamPathPair } from "./array";
 import type { ValueCategory } from "./category";
 import type { StructPathError } from "./errorTypes";
 
@@ -14,7 +14,7 @@ export interface StructPropertiesPath<
   name: string;
   category: ValueCategory;
   scalarsPath: string | undefined;
-  scalarArrays: ArrayParamPathPairEx<PluginParamEx<Array>>[];
+  scalarArrays: ArrayParamPathPair<PluginParamEx<Array>>[];
   objectSchema: Record<string, Scalar>;
 }
 

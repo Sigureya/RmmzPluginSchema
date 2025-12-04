@@ -9,7 +9,7 @@ import type {
   TemplateGE,
 } from "./template";
 
-export type StructPropertysPath = StructPropertiesPath<
+export type StructPropertysPathOld = StructPropertiesPath<
   PluginScalarParam,
   PluginArrayParamType
 >;

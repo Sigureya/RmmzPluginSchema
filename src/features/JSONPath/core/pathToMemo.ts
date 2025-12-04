@@ -5,7 +5,7 @@ import type {
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  ArrayParamPathPairEx,
+  ArrayParamPathPair,
   PluginValuesPathSchema,
 } from "./createPath/types";
 import type { StructPropertiesPath } from "./createPath/types/template";
@@ -67,7 +67,7 @@ const compileStructExtractor = <
 };
 
 const compileArrayPathExtractor = <A extends PluginArrayParamType>(
-  paths: ReadonlyArray<ArrayParamPathPairEx<PluginParamEx<A>>>,
+  paths: ReadonlyArray<ArrayParamPathPair<PluginParamEx<A>>>,
   gn: string,
   factoryFn: (path: string) => JSONPathReader
 ): PluginArrayPathExtractor<A>[] => {

@@ -4,7 +4,7 @@ import type {
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { StructPropertysPath, StructPathResultWithError } from "./core";
+import type { StructPropertysPathOld, StructPathResultWithError } from "./core";
 
 interface Effect {
   code: number;
@@ -92,7 +92,7 @@ const mockData = {
   message: { success: "Hit!", failure: "Miss!" },
 } as const satisfies Action;
 
-const scalarsPath: StructPropertysPath = {
+const scalarsPath: StructPropertysPathOld = {
   name: "Action",
   category: "command",
   objectSchema: {

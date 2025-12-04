@@ -4,13 +4,16 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesPathBase } from "./base";
 import type { ValueCategory } from "./category";
-import type { StructPropertysPath, StructPathResultWithError } from "./struct";
+import type {
+  StructPropertysPathOld,
+  StructPathResultWithError,
+} from "./struct";
 import type { StructPropertiesPath, TemplateGE } from "./template";
 
 export interface PluginValuesPath extends PluginValuesPathBase {
   rootCategory: ValueCategory;
   rootName: string;
-  scalars?: StructPropertysPath;
+  scalars?: StructPropertysPathOld;
   structs: StructPathResultWithError;
   structArrays: StructPathResultWithError;
 }

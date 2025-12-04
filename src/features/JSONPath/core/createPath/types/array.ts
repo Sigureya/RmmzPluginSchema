@@ -3,13 +3,8 @@ import type {
   PluginArrayParamType,
 } from "@RmmzPluginSchema/rmmz/plugin";
 
-export interface ArrayParamPathPair {
-  path: `${string}[*]`;
-  param: PluginParamEx<PluginArrayParamType>;
-}
-
-export interface ArrayParamPathPairEx<
-  T extends PluginParamEx<PluginArrayParamType>
+export interface ArrayParamPathPair<
+  T extends PluginParamEx<PluginArrayParamType> = PluginParamEx<PluginArrayParamType>
 > {
   path: `${string}[*]`;
   param: T;
