@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { parseDeepJSON, parseDeepRecord } from "./parseDeepJSON";
-import { stringifyDeepJSON } from "./stringifyDeepJSON";
+import { stringifyDeepJSON, stringifyDeepRecord } from "./stringifyDeepJSON";
 
 interface Person {
   name: string;
@@ -24,17 +24,21 @@ interface Family {
 }
 
 describe("parseDeepRecord", () => {
+  const record: JSONType<Person> = {
+    name: "bob",
+    age: "30",
+  };
+  const expected: Person = {
+    name: "bob",
+    age: 30,
+  };
   test("simple object", () => {
-    const record: JSONType<Person> = {
-      name: "bob",
-      age: "30",
-    };
-    const expected: Person = {
-      name: "bob",
-      age: 30,
-    };
     const parsed = parseDeepRecord(record);
     expect(parsed).toEqual(expected);
+  });
+  test("stringifyDeepRecord", () => {
+    const strigified = stringifyDeepRecord(expected);
+    expect(strigified).toEqual(record);
   });
 });
 
@@ -68,7 +72,7 @@ describe("parse <-> stringify", () => {
         country: "USA",
       },
     };
-    const expected: string = JSON.stringify({
+    const json: string = JSON.stringify({
       person: JSON.stringify({
         name: "bob",
         age: "30",
@@ -80,11 +84,25 @@ describe("parse <-> stringify", () => {
     } satisfies Record<keyof NestedPerson, string>);
     test("nested object", () => {
       const result = stringifyDeepJSON(data);
-      expect(result).toEqual(expected);
+      expect(result).toEqual(json);
     });
     test("parseDeepJSON", () => {
-      const parsed = parseDeepJSON(expected);
+      const parsed = parseDeepJSON(json);
       expect(parsed).toEqual(data);
+    });
+    test("stringifyDeepRecord", () => {
+      const expected2: Record<string, string> = {
+        person: JSON.stringify({
+          name: "bob",
+          age: "30",
+        } satisfies JSONType<Person>),
+        address: JSON.stringify({
+          city: "New York",
+          country: "USA",
+        } satisfies JSONType<Address>),
+      };
+      const result = stringifyDeepRecord(data);
+      expect(result).toEqual(expected2);
     });
   });
 

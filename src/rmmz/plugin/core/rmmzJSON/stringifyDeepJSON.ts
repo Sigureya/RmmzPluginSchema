@@ -1,3 +1,9 @@
+export const stringifyDeepRecord = <T>(
+  obj: Record<keyof T, string | object | boolean | number>
+): Record<keyof T, string> => {
+  return fn(obj) as Record<keyof T, string>;
+};
+
 export const stringifyDeepJSON = (obj: unknown): string => {
   return JSON.stringify(fn(obj));
 };
