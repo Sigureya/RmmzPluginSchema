@@ -1,4 +1,5 @@
 import { describe, test, expect, vi } from "vitest";
+import type { BooleanParam, NumberParam } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   stringifyDeepJSON,
   type ClassifiedPluginParams,
@@ -33,7 +34,10 @@ const schemaPerson: ClassifiedPluginParamsEx<Person> = {
   structs: [],
 };
 
-const pluginParamsSchema: PluginParamsSchema = {
+const pluginParamsSchema: PluginParamsSchema<
+  NumberParam | BooleanParam,
+  never
+> = {
   pluginName: "TestPlugin",
   schema: {
     params: [

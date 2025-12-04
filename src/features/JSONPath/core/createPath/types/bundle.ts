@@ -5,7 +5,7 @@ import type {
 import type { PluginValuesPathBase } from "./base";
 import type { ValueCategory } from "./category";
 import type { StructPropertysPath, StructPathResultWithError } from "./struct";
-import type { StructPropertysPathEx3 } from "./template";
+import type { StructPropertysPathEx3, TemplateGE } from "./template";
 
 export interface PluginValuesPath extends PluginValuesPathBase {
   rootCategory: ValueCategory;
@@ -22,8 +22,8 @@ export interface PluginValuesPathEx<
   rootCategory: ValueCategory;
   rootName: string;
   scalars?: StructPropertysPathEx3<Scalar, Array>;
-  structs: StructPathResultWithError;
-  structArrays: StructPathResultWithError;
+  structs: TemplateGE<Scalar, Array>;
+  structArrays: TemplateGE<Scalar, Array>;
 }
 
 export interface PrimitivePluginValuesPath<T extends ScalarParam>
