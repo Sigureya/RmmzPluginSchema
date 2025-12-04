@@ -1,8 +1,12 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
+  ArrayParamTypes,
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
+  PluginParamEx2,
   PluginSchemaArray,
+  PluginSchemaArrayFiltered,
+  ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginCommandExtractor } from "./command";
@@ -16,9 +20,12 @@ import type {
 import { compileJSONPathSchema } from "./pathToMemo";
 import type { PluginExtractorBundle } from "./types";
 
-export const createPluginValueExtractor = (
+export const createPluginValueExtractor = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
   pluginName: string,
-  schema: PluginSchemaArray,
+  schema: PluginSchemaArrayFiltered<PluginParamEx2<S, A>>,
   factoryFn: (path: string) => JSONPathReader
 ): PluginExtractorBundle => {
   const structMap = createClassifiedStructMap(schema.structs);

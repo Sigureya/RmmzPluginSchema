@@ -1,10 +1,14 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
-import type { ScalarParam } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  ArrayParamPathPair,
-  PluginValuesPathBase,
-  StructPropertysPath,
+  ArrayParamTypes,
+  PluginParamEx,
+  ScalarParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  ArrayParamPathPairEx,
+  PluginValuesPathEx,
 } from "./createPath/types";
+import type { StructPropertysPathEx3 } from "./createPath/types/template";
 import type {
   ExtractorBundle,
   PluginValuesPathMemo4,
@@ -12,18 +16,21 @@ import type {
   ScalarValueExtractor,
 } from "./extractor/types";
 
-export const compileJSONPathSchema = (
-  path: PluginValuesPathBase,
+export const compileJSONPathSchema = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
+  path: PluginValuesPathEx<S, A>,
   factoryFn: (path: string) => JSONPathReader
-): ExtractorBundle => {
+): ExtractorBundle<S, A> => {
   const top = path.scalars
     ? compileStructExtractor(path.scalars, factoryFn)
     : undefined;
   const structs = path.structs.items.map(
-    (p): PluginValuesPathMemo4 => compileStructExtractor(p, factoryFn)
+    (p): PluginValuesPathMemo4<S, A> => compileStructExtractor(p, factoryFn)
   );
   const structArrays = path.structArrays.items.map(
-    (p): PluginValuesPathMemo4 => compileStructExtractor(p, factoryFn)
+    (p): PluginValuesPathMemo4<S, A> => compileStructExtractor(p, factoryFn)
   );
   return {
     rootCategory: path.rootCategory,
@@ -34,10 +41,13 @@ export const compileJSONPathSchema = (
   };
 };
 
-const compileStructExtractor = (
-  p: StructPropertysPath,
+const compileStructExtractor = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
+  p: StructPropertysPathEx3<S, A>,
   factoryFn: (path: string) => JSONPathReader
-): PluginValuesPathMemo4 => {
+): PluginValuesPathMemo4<S, A> => {
   if (p.scalarsPath) {
     return {
       bundleName: p.name,
@@ -56,13 +66,13 @@ const compileStructExtractor = (
   };
 };
 
-const compileArrayPathExtractor = (
-  paths: ReadonlyArray<ArrayParamPathPair>,
+const compileArrayPathExtractor = <A extends ArrayParamTypes>(
+  paths: ReadonlyArray<ArrayParamPathPairEx<PluginParamEx<A>>>,
   gn: string,
   factoryFn: (path: string) => JSONPathReader
-): ArrayPathExtractor[] => {
+): ArrayPathExtractor<A>[] => {
   return paths.map(
-    (p): ArrayPathExtractor => ({
+    (p): ArrayPathExtractor<A> => ({
       jsonPathJS: factoryFn(p.path),
       schema: p.param,
       parentType: gn,

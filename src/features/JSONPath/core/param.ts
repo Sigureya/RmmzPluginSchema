@@ -3,10 +3,16 @@ import type {
   JSONValue,
 } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ClassifiedPluginParams,
+  ArrayParamTypes,
+  ClassifiedPluginParamsEx2,
   PluginParamsRecord,
+  ScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
+import {
+  createClassifiedStructMap,
+  parseDeepRecord,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
 import { createPluginValuesPath } from "./createPath";
 import { extractAllPluginValues } from "./extractor/extractor";
 import type {
@@ -38,9 +44,27 @@ export const extractPluginParam = (
   };
 };
 
-export const compilePluginParamExtractor = (
-  plugin: PluginParamsSchema,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+const xxx = <S extends ScalarParam, A extends ArrayParamTypes>(
+  plugin: PluginSchemaOf<S, A>,
+  record: PluginParamsRecord,
+  factoryFn: (path: string) => JSONPathReader
+) => {
+  const map = createClassifiedStructMap(plugin.schema.structs);
+  const e = compilePluginParamExtractor(plugin, map, factoryFn);
+  const result = extractPluginParamFromRecord(record, e.extractors);
+  return {
+    pluginName: e.pluginName,
+    params: result.params,
+    structMap: map,
+  };
+};
+
+export const compilePluginParamExtractor = <
+  S extends ScalarParam,
+  A extends ArrayParamTypes
+>(
+  plugin: PluginParamsSchema<S, A>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
   factoryFn: (path: string) => JSONPathReader
 ): PluginParamExtractor => {
   return {

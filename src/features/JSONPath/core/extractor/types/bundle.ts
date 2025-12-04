@@ -7,8 +7,8 @@ import type { ArrayPathExtractor } from "./array";
 import type { ValueCategory2 } from "./result";
 
 export interface PluginValuesPathMemo4<
-  S extends ScalarParam = ScalarParam,
-  A extends ArrayParamTypes = ArrayParamTypes
+  S extends ScalarParam,
+  A extends ArrayParamTypes
 > {
   scalar?: ScalarValueExtractor<S>;
   arrays: ArrayPathExtractor<A>[];
