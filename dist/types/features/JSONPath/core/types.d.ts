@@ -1,6 +1,6 @@
-import { CommandExtractorEntry, ExtractorBundle } from './extractor/types';
+import { CommandExtractorEntry, PluginValuesExtractorBundle } from './extractor/types';
 export interface PluginExtractorBundle {
     pluginName: string;
-    params: ExtractorBundle[];
+    params: PluginValuesExtractorBundle[];
     commands: CommandExtractorEntry[];
 }

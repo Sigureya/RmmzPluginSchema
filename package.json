@@ -1,6 +1,6 @@
 {
   "name": "@sigureya/rmmz-plugin-schema",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A TypeScript library for RpgMakerMZ-related types.",
   "sideEffects": false,
   "main": "./dist/main/main.cjs.js",

@@ -1,3 +1,3 @@
-import { ClassifiedPluginParams, PluginStructSchemaArray, PrimitiveParam } from './types';
-export declare const createClassifiedStructMap: (bundle: ReadonlyArray<PluginStructSchemaArray>) => Map<string, ClassifiedPluginParams>;
+import { PluginArrayParamType, ClassifiedPluginParamsEx2, PluginParamEx2, PluginStructSchemaArray, PluginStructSchemaArrayFiltered, PrimitiveParam, PluginScalarParam } from './types';
+export declare const createClassifiedStructMap: <S extends PluginScalarParam, A extends PluginArrayParamType>(bundle: PluginStructSchemaArrayFiltered<PluginParamEx2<S, A>>[]) => Map<string, ClassifiedPluginParamsEx2<S, A>>;
 export declare const createStructMap: (structs: ReadonlyArray<PluginStructSchemaArray>) => Map<string, PrimitiveParam[]>;

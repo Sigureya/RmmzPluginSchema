@@ -1,23 +1,27 @@
-import { ArrayParamTypes, ScalarParam } from '../../../../../rmmz/plugin';
+import { PluginArrayParamType, PluginScalarParam } from '../../../../../rmmz/plugin';
 import { PluginValuesPathBase } from './base';
 import { ValueCategory } from './category';
-import { StructPropertysPath, StructPathResultWithError } from './struct';
-import { StructPropertysPathEx3 } from './template';
+import { StructPropertysPathOld, StructPathResultWithError } from './struct';
+import { StructPropertiesPath, TemplateGE } from './template';
 export interface PluginValuesPath extends PluginValuesPathBase {
     rootCategory: ValueCategory;
     rootName: string;
-    scalars?: StructPropertysPath;
+    scalars?: StructPropertysPathOld;
     structs: StructPathResultWithError;
     structArrays: StructPathResultWithError;
 }
-export interface PluginValuesPathEx<Scalar extends ScalarParam, Array extends ArrayParamTypes> extends PluginValuesPathBase {
+/**
+ * @deprecated use PluginValuesPathSchema instead
+ */
+export type PluginValuesPathEx<Scalar extends PluginScalarParam, Array extends PluginArrayParamType> = PluginValuesPathSchema<Scalar, Array>;
+export interface PluginValuesPathSchema<Scalar extends PluginScalarParam, Array extends PluginArrayParamType> extends PluginValuesPathBase {
     rootCategory: ValueCategory;
     rootName: string;
-    scalars?: StructPropertysPathEx3<Scalar, Array>;
-    structs: StructPathResultWithError;
-    structArrays: StructPathResultWithError;
+    scalars?: StructPropertiesPath<Scalar, Array>;
+    structs: TemplateGE<Scalar, Array>;
+    structArrays: TemplateGE<Scalar, Array>;
 }
-export interface PrimitivePluginValuesPath<T extends ScalarParam> extends PluginValuesPathBase {
+export interface PrimitivePluginValuesPath<T extends PluginScalarParam> extends PluginValuesPathBase {
     rootCategory: "param" | "args";
     rootName: string;
     scalars: {

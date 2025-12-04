@@ -1,4 +1,5 @@
 import { JSONPathReader } from '../../../libs/jsonPath';
-import { PluginValuesPathBase } from './createPath/types';
-import { ExtractorBundle } from './extractor/types';
-export declare const compileJSONPathSchema: (path: PluginValuesPathBase, factoryFn: (path: string) => JSONPathReader) => ExtractorBundle;
+import { PluginArrayParamType, PluginScalarParam } from '../../../rmmz/plugin';
+import { PluginValuesPathSchema } from './createPath/types';
+import { PluginValuesExtractorBundle } from './extractor/types';
+export declare const compileJSONPathSchema: <S extends PluginScalarParam, A extends PluginArrayParamType>(path: PluginValuesPathSchema<S, A>, factoryFn: (path: string) => JSONPathReader) => PluginValuesExtractorBundle<S, A>;

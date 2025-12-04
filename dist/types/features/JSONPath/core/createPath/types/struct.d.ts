@@ -1,6 +1,6 @@
-import { ArrayParamTypes, ScalarParam } from '../../../../../rmmz/plugin';
-import { TemplateE, TemplateG, StructPropertysPathEx3, TemplateGE } from './template';
-export type StructPropertysPath = StructPropertysPathEx3<ScalarParam, ArrayParamTypes>;
-export type StructPathResultWithError = TemplateGE<ScalarParam, ArrayParamTypes>;
-export type PluginValuesPathWithError = TemplateE<ScalarParam, ArrayParamTypes>;
-export type StructPathResultItems = TemplateG<ScalarParam, ArrayParamTypes>;
+import { PluginArrayParamType, PluginScalarParam } from '../../../../../rmmz/plugin';
+import { TemplateE, TemplateG, StructPropertiesPath, TemplateGE } from './template';
+export type StructPropertysPathOld = StructPropertiesPath<PluginScalarParam, PluginArrayParamType>;
+export type StructPathResultWithError = TemplateGE<PluginScalarParam, PluginArrayParamType>;
+export type PluginValuesPathWithError = TemplateE<PluginScalarParam, PluginArrayParamType>;
+export type StructPathResultItems = TemplateG<PluginScalarParam, PluginArrayParamType>;
