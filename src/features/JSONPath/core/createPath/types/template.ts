@@ -18,6 +18,14 @@ export interface StructPropertiesPath<
   objectSchema: Record<string, Scalar>;
 }
 
+/**
+ * @deprecated use StructPropertiesPath instead
+ */
+export type StructPropertysPathEx3<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
+> = StructPropertiesPath<Scalar, Array>;
+
 export interface TemplateG<
   Scalar extends PluginScalarParam,
   Array extends PluginArrayParamType

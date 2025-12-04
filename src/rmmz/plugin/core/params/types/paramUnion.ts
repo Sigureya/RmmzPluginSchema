@@ -66,7 +66,17 @@ export type PluginScalarParam = Exclude<
   ArrayParam | StructArrayRefParam | KindOfStructBase
 >;
 
+/**
+ * @deprecated use PluginScalarParam instead
+ */
+export type ScalarParam = PluginScalarParam;
+
 export type PluginArrayParamType = Extract<PrimitiveParam, ArrayParam>;
+
+/**
+ * @deprecated use PluginArrayParamType instead
+ */
+export type ArrayParamTypes = PluginArrayParamType;
 
 export type ArrayParamItemType2 = Exclude<
   PluginArrayParamType,

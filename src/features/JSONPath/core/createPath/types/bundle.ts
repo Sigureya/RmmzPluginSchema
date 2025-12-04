@@ -18,6 +18,14 @@ export interface PluginValuesPath extends PluginValuesPathBase {
   structArrays: StructPathResultWithError;
 }
 
+/**
+ * @deprecated use PluginValuesPathSchema instead
+ */
+export type PluginValuesPathEx<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
+> = PluginValuesPathSchema<Scalar, Array>;
+
 export interface PluginValuesPathSchema<
   Scalar extends PluginScalarParam,
   Array extends PluginArrayParamType
