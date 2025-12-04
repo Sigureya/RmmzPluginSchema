@@ -1,6 +1,6 @@
 import type {
   PrimitiveParam,
-  ScalarParam,
+  PluginScalarParam,
   ArrayParam,
   StructRefParam,
   StructArrayRefParam,
@@ -8,7 +8,7 @@ import type {
 } from "@RpgTypes/rmmz/plugin";
 
 export interface PluginParamGroups<T extends PrimitiveParam = PrimitiveParam> {
-  single: NamedAttribute<ScalarParam>[];
+  single: NamedAttribute<PluginScalarParam>[];
   array: NamedAttribute<Extract<T, ArrayParam>>[];
   struct: NamedAttribute<StructRefParam>[];
   structArray: NamedAttribute<StructArrayRefParam>[];

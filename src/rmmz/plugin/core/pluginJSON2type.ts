@@ -1,9 +1,9 @@
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   PluginParamEx2,
   PluginSchemaArray,
   PluginSchemaArrayFiltered,
-  ScalarParam,
+  PluginScalarParam,
 } from "./params";
 import type { PluginDependencies } from "./parse";
 
@@ -16,8 +16,8 @@ export interface PluginSchema {
 }
 
 export interface PluginSchemaOf<
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 > extends PluginSchema {
   schema: PluginSchemaArrayFiltered<PluginParamEx2<S, A>>;
 }

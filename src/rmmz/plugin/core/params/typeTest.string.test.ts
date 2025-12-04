@@ -3,7 +3,7 @@ import type {
   StringParam,
   ComboParam,
   SelectParam,
-  ScalarParam,
+  PluginScalarParam,
   PrimitiveParam,
   FileParam,
 } from "./types";
@@ -43,7 +43,7 @@ const selectParam: SelectParam = {
   ],
 };
 
-const runTestCase = (param: ScalarParam) => {
+const runTestCase = (param: PluginScalarParam) => {
   describe(`param kind=${param.kind}`, () => {
     it("is string value param", () => {
       expect(param).toSatisfy(isStringValueParam);

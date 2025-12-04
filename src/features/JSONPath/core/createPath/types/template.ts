@@ -1,43 +1,51 @@
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   PluginParamEx,
-  ScalarParam,
+  PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayParamPathPairEx } from "./array";
+import type { ArrayParamPathPair } from "./array";
 import type { ValueCategory } from "./category";
 import type { StructPathError } from "./errorTypes";
 
-export interface StructPropertysPathEx3<
-  Scalar extends ScalarParam,
-  Array extends ArrayParamTypes
+export interface StructPropertiesPath<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
 > {
   name: string;
   category: ValueCategory;
   scalarsPath: string | undefined;
-  scalarArrays: ArrayParamPathPairEx<PluginParamEx<Array>>[];
+  scalarArrays: ArrayParamPathPair<PluginParamEx<Array>>[];
   objectSchema: Record<string, Scalar>;
 }
 
+/**
+ * @deprecated use StructPropertiesPath instead
+ */
+export type StructPropertysPathEx3<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
+> = StructPropertiesPath<Scalar, Array>;
+
 export interface TemplateG<
-  Scalar extends ScalarParam,
-  Array extends ArrayParamTypes
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
 > {
-  items: StructPropertysPathEx3<Scalar, Array>[];
+  items: StructPropertiesPath<Scalar, Array>[];
 }
 
 export interface TemplateGE<
-  Scalar extends ScalarParam,
-  Array extends ArrayParamTypes
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
 > {
-  items: StructPropertysPathEx3<Scalar, Array>[];
+  items: StructPropertiesPath<Scalar, Array>[];
   errors: StructPathError[];
 }
 
 export interface TemplateE<
-  Scalar extends ScalarParam,
-  Array extends ArrayParamTypes
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
 > {
-  scalars: StructPropertysPathEx3<Scalar, Array>;
+  scalars: StructPropertiesPath<Scalar, Array>;
   structs: TemplateGE<Scalar, Array>;
   structArrays: TemplateGE<Scalar, Array>;
 }

@@ -1,9 +1,9 @@
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx2,
   PluginParamEx,
-  ScalarParam,
+  PluginScalarParam,
   ScalaStruct,
   StructArrayRefParam,
   StructRefParam,
@@ -11,7 +11,7 @@ import type {
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalarArrayPath, makeScalarValuesPath } from "./scalarValue";
 import type { ErrorCodes, StructPathError } from "./types";
-import type { StructPropertysPathEx3, TemplateGE } from "./types/template";
+import type { StructPropertiesPath, TemplateGE } from "./types/template";
 
 const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
@@ -19,8 +19,8 @@ const ERROR_CODE = {
 } as const satisfies ErrorCodes;
 
 interface ClassifiedPluginParamsEx3<
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
+  S extends PluginParamEx<PluginScalarParam>,
+  A extends PluginParamEx<PluginArrayParamType>
 > extends ScalaStruct {
   structs: PluginParamEx<StructRefParam>[];
   structArrays: PluginParamEx<StructArrayRefParam>[];
@@ -34,13 +34,19 @@ interface Frame {
   ancestry: string[];
 }
 
-interface State2<Scalar extends ScalarParam, Array extends ArrayParamTypes> {
+interface State2<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
+> {
   frames: Frame[];
-  items: StructPropertysPathEx3<Scalar, Array>[];
+  items: StructPropertiesPath<Scalar, Array>[];
   errs: StructPathError[];
 }
 
-function createNode<S extends ScalarParam, A extends ArrayParamTypes>(
+function createNode<
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   structSchema: ClassifiedPluginParamsEx2<S, A>,
   {
     path,
@@ -49,7 +55,7 @@ function createNode<S extends ScalarParam, A extends ArrayParamTypes>(
     path: string;
     structName: string;
   }
-): StructPropertysPathEx3<S, A> {
+): StructPropertiesPath<S, A> {
   return {
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
@@ -90,7 +96,10 @@ function createChildFrames(
   return [...structFrames, ...structArrayFrames].reverse(); // LIFO スタックなので、desired の逆順で push
 }
 
-function stepState<Scalar extends ScalarParam, Array extends ArrayParamTypes>(
+function stepState<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
+>(
   state: State2<Scalar, Array>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<Scalar, Array>>,
   errors: ErrorCodes
@@ -136,7 +145,7 @@ function stepState<Scalar extends ScalarParam, Array extends ArrayParamTypes>(
   if (structSchema.scalars.length > 0 || structSchema.scalarArrays.length > 0) {
     // 現在ノードを追加（pre-order）
 
-    const current: StructPropertysPathEx3<Scalar, Array> = createNode(
+    const current: StructPropertiesPath<Scalar, Array> = createNode(
       structSchema,
       {
         path: frame.basePath,
@@ -158,7 +167,10 @@ function stepState<Scalar extends ScalarParam, Array extends ArrayParamTypes>(
   };
 }
 
-function collectFromSchema<S extends ScalarParam, A extends ArrayParamTypes>(
+function collectFromSchema<
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   schemaName: string,
   basePath: string,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
@@ -190,8 +202,8 @@ function collectFromSchema<S extends ScalarParam, A extends ArrayParamTypes>(
 }
 
 export const getPathFromStructParam = <
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
+  S extends PluginParamEx<PluginScalarParam>,
+  A extends PluginParamEx<PluginArrayParamType>
 >(
   params: PluginParamEx<StructRefParam>,
   parent: string,
@@ -208,8 +220,8 @@ export const getPathFromStructParam = <
 };
 
 export const getPathFromStructArraySchema = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   param: PluginParamEx<StructArrayRefParam>,
   parent: string,
@@ -225,8 +237,8 @@ export const getPathFromStructArraySchema = <
 };
 
 export const getPathFromStructSchema = <
-  S extends PluginParamEx<ScalarParam>,
-  A extends PluginParamEx<ArrayParamTypes>
+  S extends PluginParamEx<PluginScalarParam>,
+  A extends PluginParamEx<PluginArrayParamType>
 >(
   structName: string,
   parent: string,

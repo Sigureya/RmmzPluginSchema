@@ -61,15 +61,25 @@ export type ParamKinds = Exclude<
   ArrayParam | StructArrayRefParam
 >["kind"];
 
-export type ScalarParam = Exclude<
+export type PluginScalarParam = Exclude<
   PrimitiveParam,
   ArrayParam | StructArrayRefParam | KindOfStructBase
 >;
 
-export type ArrayParamTypes = Extract<PrimitiveParam, ArrayParam>;
+/**
+ * @deprecated use PluginScalarParam instead
+ */
+export type ScalarParam = PluginScalarParam;
+
+export type PluginArrayParamType = Extract<PrimitiveParam, ArrayParam>;
+
+/**
+ * @deprecated use PluginArrayParamType instead
+ */
+export type ArrayParamTypes = PluginArrayParamType;
 
 export type ArrayParamItemType2 = Exclude<
-  ArrayParamTypes,
+  PluginArrayParamType,
   { default: object[] }
 >;
 

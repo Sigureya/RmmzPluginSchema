@@ -1,33 +1,41 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ArrayParamTypes,
-  ScalarParam,
+  PluginArrayParamType,
+  PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ArrayPathExtractor } from "./array";
+import type { PluginArrayPathExtractor } from "./array";
 import type { ValueCategory2 } from "./result";
 
-export interface PluginValuesPathMemo4<
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+export interface PluginValuesPathMemo<
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 > {
-  scalar?: ScalarValueExtractor<S>;
-  arrays: ArrayPathExtractor<A>[];
+  scalar?: PluginScalarValueExtractor<S>;
+  arrays: PluginArrayPathExtractor<A>[];
   bundleName: string;
 }
 
-export interface ScalarValueExtractor<S extends ScalarParam> {
+export interface PluginScalarValueExtractor<S extends PluginScalarParam> {
   jsonPathJS: JSONPathReader;
   record: Record<string, S>;
 }
 
-export interface ExtractorBundle<
-  S extends ScalarParam = ScalarParam,
-  A extends ArrayParamTypes = ArrayParamTypes
+/**
+ * @deprecated use PluginValuesExtractorBundle instead
+ */
+export type ExtractorBundle = PluginValuesExtractorBundle<
+  PluginScalarParam,
+  PluginArrayParamType
+>;
+
+export interface PluginValuesExtractorBundle<
+  S extends PluginScalarParam = PluginScalarParam,
+  A extends PluginArrayParamType = PluginArrayParamType
 > {
   rootName: string;
   rootCategory: ValueCategory2;
 
-  top: PluginValuesPathMemo4<S, A> | undefined;
-  structs: PluginValuesPathMemo4<S, A>[];
-  structArrays: PluginValuesPathMemo4<S, A>[];
+  top: PluginValuesPathMemo<S, A> | undefined;
+  structs: PluginValuesPathMemo<S, A>[];
+  structArrays: PluginValuesPathMemo<S, A>[];
 }

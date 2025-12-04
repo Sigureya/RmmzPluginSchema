@@ -4,8 +4,8 @@ import type {
   PluginParamEx,
   StructRefParam,
   StructArrayRefParam,
-  ScalarParam,
-  ArrayParamTypes,
+  PluginScalarParam,
+  PluginArrayParamType,
   PluginParam,
   FileParam,
   FileArrayParam,
@@ -28,8 +28,8 @@ export function classifyPluginParams(
 ): ClassifiedPluginParams;
 
 export function classifyPluginParams<
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(params: ReadonlyArray<PluginParamEx2<S, A>>): ClassifiedPluginParamsEx2<S, A>;
 
 export function classifyPluginParams(
@@ -37,8 +37,8 @@ export function classifyPluginParams(
 ): ClassifiedPluginParams {
   return classifyPluginParamsCore(
     params,
-    (p): p is PluginParamEx<ScalarParam> => true,
-    (p): p is PluginParamEx<ArrayParamTypes> => true
+    (p): p is PluginParamEx<PluginScalarParam> => true,
+    (p): p is PluginParamEx<PluginArrayParamType> => true
   );
 }
 
@@ -63,13 +63,13 @@ export const classifyTextParams = (
 };
 
 const classifyPluginParamsCore = <
-  T extends ScalarParam,
-  A extends ArrayParamTypes
+  T extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   paramArray: ReadonlyArray<PluginParam>,
   predicate: (param: PluginParam) => param is PluginParamEx<T>,
   arrayPredicate: (
-    param: PluginParamEx<ArrayParamTypes>
+    param: PluginParamEx<PluginArrayParamType>
   ) => param is PluginParamEx<A>
 ): ClassifiedPluginParamsEx2<T, A> => {
   const structs: PluginParamEx<StructRefParam>[] = [];

@@ -9,8 +9,11 @@ import type {
   ClassifiedPluginParamsEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
-import type { StructPropertysPath, StructPathResultWithError } from "./types";
-import type { StructPropertysPathEx3 } from "./types/template";
+import type {
+  StructPropertysPathOld,
+  StructPathResultWithError,
+} from "./types";
+import type { StructPropertiesPath } from "./types/template";
 
 interface Person {
   name: string;
@@ -79,7 +82,7 @@ const structsMap: ReadonlyMap<
 ]);
 
 describe("getPathFromStructParam", () => {
-  type Struct = StructPropertysPathEx3<NumberParam | StringParam, never>;
+  type Struct = StructPropertiesPath<NumberParam | StringParam, never>;
   const path1: Struct = {
     category: "struct",
     name: "Person",
@@ -111,7 +114,7 @@ describe("getPathFromStructParam", () => {
       "$",
       structsMap
     );
-    const expected: StructPropertysPath[] = [path1, path2];
+    const expected: StructPropertysPathOld[] = [path1, path2];
     expect(result.errors).toEqual([]);
     expect(result.items).toEqual(expected);
   });

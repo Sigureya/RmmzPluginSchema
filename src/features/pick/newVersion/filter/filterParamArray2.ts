@@ -4,7 +4,7 @@ import type {
   ParamKinds,
   PluginParam,
   PrimitiveParam,
-  ScalarParam,
+  PluginScalarParam,
   ArrayParam,
   StructRefParam,
   StructArrayRefParam,
@@ -26,7 +26,7 @@ export const filterParams2 = (
   params2: ReadonlyArray<PluginParam>,
   { arrayKinds, singleKinds, structNames }: ParamFilterCriteria
 ): PluginParamGroups => {
-  const single: NamedAttribute<ScalarParam>[] = [];
+  const single: NamedAttribute<PluginScalarParam>[] = [];
   const array: NamedAttribute<Extract<PrimitiveParam, ArrayParam>>[] = [];
   const struct: NamedAttribute<StructRefParam>[] = [];
   const structArray: NamedAttribute<StructArrayRefParam>[] = [];

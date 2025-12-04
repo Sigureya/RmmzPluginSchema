@@ -3,13 +3,13 @@ import type {
   JSONPathReader,
 } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ScalarParam,
-  ArrayParamTypes,
+  PluginScalarParam,
+  PluginArrayParamType,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ExtractorBundle, PluginValueScalar } from "./types";
+import type { PluginValuesExtractorBundle, PluginValueScalar } from "./types";
 
-export const readScalarValue = <T extends ScalarParam>(
-  bundle: ExtractorBundle<T, ArrayParamTypes>,
+export const readScalarValue = <T extends PluginScalarParam>(
+  bundle: PluginValuesExtractorBundle<T, PluginArrayParamType>,
   structName: string,
   json: JSONValue,
   jsonPath: JSONPathReader,
@@ -23,8 +23,8 @@ export const readScalarValue = <T extends ScalarParam>(
     .filter((v) => v !== null);
 };
 
-const vex = <T extends ScalarParam>(
-  bundle: ExtractorBundle<T>,
+const vex = <T extends PluginScalarParam>(
+  bundle: PluginValuesExtractorBundle<T>,
   structName: string,
   value: JSONValue,
   segments: (number | string)[],

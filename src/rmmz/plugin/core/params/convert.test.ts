@@ -9,7 +9,7 @@ import type {
   PluginParamEx,
   PrimitiveParam,
   PrimitiveStructParams,
-  ScalarParam,
+  PluginScalarParam,
   ObjectParamsV5,
 } from "./types";
 
@@ -37,12 +37,12 @@ const nameSort = <P extends PluginParam>(params: ReadonlyArray<P>) => {
 
 describe("ToObjectParams<T> and PluginParamEx<T, K> conversion and type validation", () => {
   describe("ToObjectParams<ScalaParam, keyof T> <-> PluginParamEx<ScalaParam, keyof T>[]", () => {
-    const objectParams: ObjectParamsV5<keyof MockStruct, ScalarParam> = {
+    const objectParams: ObjectParamsV5<keyof MockStruct, PluginScalarParam> = {
       name: { kind: "string", default: "defaultName" },
       num: { kind: "number", default: 100 },
       isActive: { kind: "boolean", default: false },
     };
-    const arrayParams: PluginParamEx<ScalarParam, keyof MockStruct>[] = [
+    const arrayParams: PluginParamEx<PluginScalarParam, keyof MockStruct>[] = [
       { name: "name", attr: { kind: "string", default: "defaultName" } },
       { name: "num", attr: { kind: "number", default: 100 } },
       { name: "isActive", attr: { kind: "boolean", default: false } },
@@ -53,7 +53,7 @@ describe("ToObjectParams<T> and PluginParamEx<T, K> conversion and type validati
     });
 
     test("toArrayPluginParam converts object to array", () => {
-      type T = PluginParamEx<ScalarParam, keyof MockStruct>;
+      type T = PluginParamEx<PluginScalarParam, keyof MockStruct>;
       const result: T[] = toArrayPluginParam(objectParams);
       expect(nameSort(result)).toEqual(nameSort(arrayParams));
     });

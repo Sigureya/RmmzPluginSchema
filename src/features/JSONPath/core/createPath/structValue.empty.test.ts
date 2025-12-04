@@ -4,11 +4,11 @@ import type {
   ClassifiedPluginParamsEx2,
   NumberArrayParam,
   PluginParamEx,
-  ScalarParam,
+  PluginScalarParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
-import type { StructPropertysPath } from "./types";
+import type { StructPropertysPathOld } from "./types";
 
 describe("empty struct", () => {
   test("getPathFromStruct", () => {
@@ -43,7 +43,7 @@ describe("empty struct", () => {
       ["NotEmptyStruct", schema],
     ]);
     const result = getPathFromStructParam(param, "$", structMap);
-    const expected: StructPropertysPath[] = [
+    const expected: StructPropertysPathOld[] = [
       {
         category: "struct",
         name: "NotEmptyStruct",
@@ -57,7 +57,10 @@ describe("empty struct", () => {
     expect(result.items).toEqual(expected);
   });
   test("struct array", () => {
-    const schema: ClassifiedPluginParamsEx2<ScalarParam, NumberArrayParam> = {
+    const schema: ClassifiedPluginParamsEx2<
+      PluginScalarParam,
+      NumberArrayParam
+    > = {
       scalars: [],
       scalarArrays: [
         {
@@ -76,7 +79,7 @@ describe("empty struct", () => {
       ["EmptyStructArray", schema],
     ]);
     const result = getPathFromStructParam(param, "$", structMap);
-    const expected: StructPropertysPath[] = [
+    const expected: StructPropertysPathOld[] = [
       {
         category: "struct",
         name: "EmptyStructArray",

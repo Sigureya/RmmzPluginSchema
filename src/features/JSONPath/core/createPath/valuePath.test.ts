@@ -1,20 +1,20 @@
 import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   ClassifiedPluginParamsEx2,
   NumberArrayParam,
   NumberParam,
   PluginParamEx,
-  ScalarParam,
+  PluginScalarParam,
   StringParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PrimitivePluginValuesPath } from "./types";
 import { createPrimiteveParamPath, createPluginValuesPath } from "./valuePath";
 
 const createMockedMap = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(): MockedObject<ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>> => {
   const map = new Map<string, ClassifiedPluginParamsEx2<S, A>>();
   return {

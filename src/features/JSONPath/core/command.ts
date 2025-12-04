@@ -6,6 +6,9 @@ import type {
   PluginSchema,
   PluginCommandSchemaArray,
   ClassifiedPluginParams,
+  PluginArrayParamType,
+  PluginScalarParam,
+  ClassifiedPluginParamsEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./createPath/valuePath";
@@ -15,14 +18,17 @@ import type {
   CommandExtractResult,
   CommandMapKey,
   CommandExtractorEntry,
-  ExtractorBundle,
+  PluginValuesExtractorBundle,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const compilePluginCommandExtractor = (
+export const compilePluginCommandExtractor = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   pluginName: string,
   schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
   factoryFn: (path: string) => JSONPathReader
 ): CommandArgExtractors => {
   return {
@@ -36,10 +42,13 @@ export const compilePluginCommandExtractor = (
 
 const createExtractors = (
   schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+  structMap: ReadonlyMap<
+    string,
+    ClassifiedPluginParamsEx2<PluginScalarParam, PluginArrayParamType>
+  >,
   factoryFn: (path: string) => JSONPathReader
-): ExtractorBundle[] => {
-  return schema.args.map((arg): ExtractorBundle => {
+): PluginValuesExtractorBundle[] => {
+  return schema.args.map((arg): PluginValuesExtractorBundle => {
     const path = createPluginValuesPath("args", schema.command, arg, structMap);
     return compileJSONPathSchema(path, factoryFn);
   });
