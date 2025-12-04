@@ -1,7 +1,7 @@
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   PrimitiveParam,
-  ScalarParam,
+  PluginScalarParam,
 } from "./paramUnion";
 import type { StructArrayRefParam, StructRefParam } from "./primitive";
 
@@ -19,8 +19,8 @@ export interface PluginParamEx<
 }
 
 export type PluginParamEx2<
-  S extends ScalarParam,
-  A extends ArrayParamTypes,
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
   N extends string = string
 > = PluginParamEx<S | A | StructRefParam | StructArrayRefParam, N>;
 

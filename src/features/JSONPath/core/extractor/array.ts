@@ -1,7 +1,7 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ScalarParam,
-  ArrayParamTypes,
+  PluginScalarParam,
+  PluginArrayParamType,
   PluginParamEx,
   StringArrayParam,
   NumberArrayParam,
@@ -11,21 +11,21 @@ import {
   isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  ExtractorBundle,
-  ArrayPathExtractor,
+  PluginValuesExtractorBundle,
+  PluginArrayPathExtractor,
   PluginValuesStringArray,
   PluginValuesNumberArray,
 } from "./types";
 
 export const readArrayValue = <
-  T extends ScalarParam,
-  NA extends ArrayParamTypes,
-  SA extends ArrayParamTypes
+  T extends PluginScalarParam,
+  NA extends PluginArrayParamType,
+  SA extends PluginArrayParamType
 >(
-  bundle: ExtractorBundle<T, NA | SA>,
+  bundle: PluginValuesExtractorBundle<T, NA | SA>,
   groupName: string,
   json: JSONValue,
-  path: ArrayPathExtractor<NA>
+  path: PluginArrayPathExtractor<NA>
 ): PluginValuesStringArray[] | PluginValuesNumberArray[] => {
   const values: JSONValue = path.jsonPathJS.find(json);
   if (!Array.isArray(values)) {
@@ -52,7 +52,7 @@ export const readArrayValue = <
 };
 
 const nap = (
-  bundle: ExtractorBundle,
+  bundle: PluginValuesExtractorBundle,
   values: unknown[],
   groupName: string,
   schema: PluginParamEx<NumberArrayParam>
@@ -72,7 +72,7 @@ const nap = (
 };
 
 const sap = (
-  bundle: ExtractorBundle,
+  bundle: PluginValuesExtractorBundle,
   values: unknown[],
   groupName: string,
   schema: PluginParamEx<StringArrayParam>

@@ -4,7 +4,7 @@ import type {
   PluginParamEx,
   StructRefParam,
   ClassifiedPluginParams,
-  ScalarParam,
+  PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
@@ -49,7 +49,9 @@ describe("person", () => {
           param: personSchema.scalarArrays[1],
         },
       ],
-      objectSchema: toObjectPluginParams<ScalarParam>(personSchema.scalars),
+      objectSchema: toObjectPluginParams<PluginScalarParam>(
+        personSchema.scalars
+      ),
     },
   ] as const satisfies StructPropertysPath[];
   test("getPathFromStruct", () => {

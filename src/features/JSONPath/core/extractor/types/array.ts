@@ -1,6 +1,6 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   PluginParamEx,
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -25,9 +25,7 @@ export interface PluginValuesNumberArray<
 type StringArrayParam = Extract<PrimitiveParam, { default: string[] }>;
 type NumberArrayParam = Extract<PrimitiveParam, { default: number[] }>;
 
-export interface ArrayPathExtractor<
-  T extends ArrayParamTypes = ArrayParamTypes
-> {
+export interface PluginArrayPathExtractor<T extends PluginArrayParamType> {
   jsonPathJS: JSONPathReader;
   schema: PluginParamEx<T>;
   parentType: string;

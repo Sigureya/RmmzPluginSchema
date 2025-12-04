@@ -1,7 +1,7 @@
 /* eslint-disable @functional/no-return-void */
 
 import type {
-  ScalarParam,
+  PluginScalarParam,
   PluginParam,
   PrimitiveParam,
   ArrayParam,
@@ -19,13 +19,13 @@ import type {
 } from "./newVersion/filter/types";
 
 export const filterParams = <
-  Fn extends (param: ScalarParam, name: string) => boolean
+  Fn extends (param: PluginScalarParam, name: string) => boolean
 >(
   params2: ReadonlyArray<PluginParam>,
   set: Pick<ReadonlySet<string>, "has">,
   fn: Fn
 ): PluginParamGroups => {
-  const single: NamedAttribute<ScalarParam>[] = [];
+  const single: NamedAttribute<PluginScalarParam>[] = [];
   const array: NamedAttribute<Extract<PrimitiveParam, ArrayParam>>[] = [];
   const struct: NamedAttribute<StructRefParam>[] = [];
   const structArray: NamedAttribute<StructArrayRefParam>[] = [];

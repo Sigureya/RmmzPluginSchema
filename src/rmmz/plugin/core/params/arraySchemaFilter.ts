@@ -13,8 +13,8 @@ import type {
   FileParam,
   RpgVariableArrayParam,
   RpgVariableParam,
-  ArrayParamTypes,
-  ScalarParam,
+  PluginArrayParamType,
+  PluginScalarParam,
   PluginParamEx2,
 } from "./types";
 import {
@@ -57,8 +57,8 @@ export const filterPluginSchemaByFileParam = (
 };
 
 export const filterPluginSchemaByParam = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   schema: PluginSchemaArray,
   predicate: (param: PluginParam) => param is PluginParamEx2<S, A>

@@ -1,17 +1,17 @@
 import { classifyPluginParams } from "./classify";
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   ClassifiedPluginParamsEx2,
   PluginParamEx2,
   PluginStructSchemaArray,
   PluginStructSchemaArrayFiltered,
   PrimitiveParam,
-  ScalarParam,
+  PluginScalarParam,
 } from "./types";
 
 export const createClassifiedStructMap = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   bundle: PluginStructSchemaArrayFiltered<PluginParamEx2<S, A>>[]
 ): Map<string, ClassifiedPluginParamsEx2<S, A>> => {

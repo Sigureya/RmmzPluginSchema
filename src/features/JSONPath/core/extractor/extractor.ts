@@ -1,14 +1,14 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ScalarParam,
-  ArrayParamTypes,
+  PluginScalarParam,
+  PluginArrayParamType,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { readArrayValue } from "./array";
 import { readScalarValue } from "./scalar";
 import type {
-  ExtractorBundle,
+  PluginValuesExtractorBundle,
   PluginValues,
-  PluginValuesPathMemo4,
+  PluginValuesPathMemo,
   PluginValueScalar,
   PluginValuesStringArray,
   PluginValuesNumberArray,
@@ -16,14 +16,17 @@ import type {
 
 export const extractAllPluginValues = (
   value: JSONValue,
-  memo: ReadonlyArray<ExtractorBundle>
+  memo: ReadonlyArray<PluginValuesExtractorBundle>
 ): PluginValues[] => {
   return memo.map((m) => extractBundleGroups(value, m)).flat(3);
 };
 
-const extractBundleGroups = <S extends ScalarParam, A extends ArrayParamTypes>(
+const extractBundleGroups = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   value: JSONValue,
-  memo: ExtractorBundle<S, A>
+  memo: PluginValuesExtractorBundle<S, A>
 ): [PluginValues[], PluginValues[][], PluginValues[][]] => {
   const topValues: PluginValues[] = memo.top
     ? extractFromStruct(memo, value, memo.top)
@@ -37,10 +40,13 @@ const extractBundleGroups = <S extends ScalarParam, A extends ArrayParamTypes>(
   return [topValues, structValues, structArrayValues];
 };
 
-const extractFromStruct = <S extends ScalarParam, A extends ArrayParamTypes>(
-  bundle: ExtractorBundle<S, A>,
+const extractFromStruct = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
+  bundle: PluginValuesExtractorBundle<S, A>,
   value: JSONValue,
-  memo: PluginValuesPathMemo4<S, A>
+  memo: PluginValuesPathMemo<S, A>
 ): PluginValues[] => {
   const structName = memo.bundleName;
   const svalues: PluginValueScalar<S>[] = memo.scalar

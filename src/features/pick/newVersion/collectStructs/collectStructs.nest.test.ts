@@ -2,7 +2,7 @@ import { describe, test, expect } from "vitest";
 import type {
   PluginStructSchemaArray,
   PrimitiveParam,
-  ScalarParam,
+  PluginScalarParam,
 } from "@RpgTypes/rmmz/plugin";
 import { collectStructsByKinds } from "./collectStructs";
 import type { StructCollection } from "./types";
@@ -62,8 +62,8 @@ const createMockStructsXYZ = (
 };
 
 interface TestCase {
-  paramABCD: ScalarParam;
-  paramXYZ: ScalarParam;
+  paramABCD: PluginScalarParam;
+  paramXYZ: PluginScalarParam;
 }
 const runTestCase = ({ paramABCD, paramXYZ }: TestCase) => {
   describe(`${paramABCD.kind} + ${paramXYZ.kind}`, () => {

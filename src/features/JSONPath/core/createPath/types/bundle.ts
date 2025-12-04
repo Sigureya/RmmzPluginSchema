@@ -1,11 +1,11 @@
 import type {
-  ArrayParamTypes,
-  ScalarParam,
+  PluginArrayParamType,
+  PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesPathBase } from "./base";
 import type { ValueCategory } from "./category";
 import type { StructPropertysPath, StructPathResultWithError } from "./struct";
-import type { StructPropertysPathEx3, TemplateGE } from "./template";
+import type { StructPropertiesPath, TemplateGE } from "./template";
 
 export interface PluginValuesPath extends PluginValuesPathBase {
   rootCategory: ValueCategory;
@@ -15,18 +15,18 @@ export interface PluginValuesPath extends PluginValuesPathBase {
   structArrays: StructPathResultWithError;
 }
 
-export interface PluginValuesPathEx<
-  Scalar extends ScalarParam,
-  Array extends ArrayParamTypes
+export interface PluginValuesPathSchema<
+  Scalar extends PluginScalarParam,
+  Array extends PluginArrayParamType
 > extends PluginValuesPathBase {
   rootCategory: ValueCategory;
   rootName: string;
-  scalars?: StructPropertysPathEx3<Scalar, Array>;
+  scalars?: StructPropertiesPath<Scalar, Array>;
   structs: TemplateGE<Scalar, Array>;
   structArrays: TemplateGE<Scalar, Array>;
 }
 
-export interface PrimitivePluginValuesPath<T extends ScalarParam>
+export interface PrimitivePluginValuesPath<T extends PluginScalarParam>
   extends PluginValuesPathBase {
   rootCategory: "param" | "args";
   rootName: string;

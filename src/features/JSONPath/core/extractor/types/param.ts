@@ -1,14 +1,14 @@
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   PluginParamEx2,
-  ScalarParam,
+  PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ExtractorBundle } from "./bundle";
+import type { PluginValuesExtractorBundle } from "./bundle";
 import type { PluginValues } from "./result";
 
 export interface PluginParamsSchema<
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 > {
   pluginName: string;
   schema: {
@@ -18,7 +18,7 @@ export interface PluginParamsSchema<
 
 export interface PluginParamExtractor {
   pluginName: string;
-  extractors: ExtractorBundle[];
+  extractors: PluginValuesExtractorBundle[];
 }
 
 export interface ParamExtractResult {

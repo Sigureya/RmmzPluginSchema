@@ -4,7 +4,7 @@ import type {
   ClassifiedPluginParamsEx2,
   NumberArrayParam,
   PluginParamEx,
-  ScalarParam,
+  PluginScalarParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
@@ -57,7 +57,10 @@ describe("empty struct", () => {
     expect(result.items).toEqual(expected);
   });
   test("struct array", () => {
-    const schema: ClassifiedPluginParamsEx2<ScalarParam, NumberArrayParam> = {
+    const schema: ClassifiedPluginParamsEx2<
+      PluginScalarParam,
+      NumberArrayParam
+    > = {
       scalars: [],
       scalarArrays: [
         {

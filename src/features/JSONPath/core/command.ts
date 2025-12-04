@@ -15,7 +15,7 @@ import type {
   CommandExtractResult,
   CommandMapKey,
   CommandExtractorEntry,
-  ExtractorBundle,
+  PluginValuesExtractorBundle,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
@@ -38,8 +38,8 @@ const createExtractors = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader
-): ExtractorBundle[] => {
-  return schema.args.map((arg): ExtractorBundle => {
+): PluginValuesExtractorBundle[] => {
+  return schema.args.map((arg): PluginValuesExtractorBundle => {
     const path = createPluginValuesPath("args", schema.command, arg, structMap);
     return compileJSONPathSchema(path, factoryFn);
   });

@@ -1,7 +1,7 @@
 import type {
-  ArrayParamTypes,
+  PluginArrayParamType,
   PluginParamEx,
-  ScalarParam,
+  PluginScalarParam,
   StructRefParam,
   StructArrayRefParam,
   ClassifiedPluginParamsEx2,
@@ -17,17 +17,20 @@ import {
   getPathFromStructArraySchema,
   getPathFromStructParam,
 } from "./structValue";
-import type { PluginValuesPathEx, PrimitivePluginValuesPath } from "./types";
+import type {
+  PluginValuesPathSchema,
+  PrimitivePluginValuesPath,
+} from "./types";
 
 export const createPluginValuesPath = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   category: "param" | "args",
   rootName: string,
   param: PluginParamEx2<S, A>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathEx<S, A> => {
+): PluginValuesPathSchema<S, A> => {
   if (isStructAttr(param)) {
     return createStructPath(category, param, structMap);
   }
@@ -45,13 +48,13 @@ export const createPluginValuesPath = <
 };
 
 const createPrimitiveArrayPath = <
-  S extends ScalarParam,
+  S extends PluginScalarParam,
   T extends ArrayParamItemType2
 >(
   category: "param" | "args",
   rootName: string,
   param: PluginParamEx<T>
-): PluginValuesPathEx<S, T> => {
+): PluginValuesPathSchema<S, T> => {
   return {
     rootCategory: category,
     rootName: rootName,
@@ -72,7 +75,7 @@ const createPrimitiveArrayPath = <
   };
 };
 
-export const createPrimiteveParamPath = <T extends ScalarParam>(
+export const createPrimiteveParamPath = <T extends PluginScalarParam>(
   category: "param" | "args",
   rootName: string,
   param: PluginParamEx<T>
@@ -95,21 +98,24 @@ export const createPrimiteveParamPath = <T extends ScalarParam>(
 };
 
 export const createStructParamPath = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathEx<S, A> => {
+): PluginValuesPathSchema<S, A> => {
   return createStructPath(category, param, structMap);
 };
 
-const createStructPath = <S extends ScalarParam, A extends ArrayParamTypes>(
+const createStructPath = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathEx<S, A> => {
+): PluginValuesPathSchema<S, A> => {
   return {
     rootName: param.name,
     rootCategory: category,
@@ -123,13 +129,13 @@ const createStructPath = <S extends ScalarParam, A extends ArrayParamTypes>(
 };
 
 const createStructArrayPath = <
-  S extends ScalarParam,
-  A extends ArrayParamTypes
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
 >(
   category: "param" | "args",
   param: PluginParamEx<StructArrayRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathEx<S, A> => {
+): PluginValuesPathSchema<S, A> => {
   return {
     structArrays: getPathFromStructArraySchema(param, "$", structMap),
     rootName: param.name,

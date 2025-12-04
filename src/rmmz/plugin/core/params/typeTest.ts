@@ -2,14 +2,14 @@ import type {
   PrimitiveParam,
   ArrayParam,
   ParamKinds,
-  ScalarParam,
+  PluginScalarParam,
   StructRefParam,
   PluginParam,
   PluginParamEx,
   StructArrayRefParam,
   PrimitiveStringParam,
   StringArrayParam,
-  ArrayParamTypes,
+  PluginArrayParamType,
   RpgVariableParam,
   RpgVariableArrayParam,
   FileParam,
@@ -41,7 +41,7 @@ export const isArrayParamEx = <T extends PrimitiveParam, K extends ParamKinds>(
 
 export const isScalarParam = <T extends PrimitiveParam>(
   param: T
-): param is Extract<T, ScalarParam> => {
+): param is Extract<T, PluginScalarParam> => {
   return param.kind !== "struct" && !isArrayParam(param);
 };
 
@@ -65,7 +65,7 @@ export const isStructAttr = (
 
 export const hasScalarAttr = (
   param: PluginParam
-): param is PluginParamEx<ScalarParam> => {
+): param is PluginParamEx<PluginScalarParam> => {
   return isScalarParam(param.attr);
 };
 
@@ -94,7 +94,7 @@ export const hasTextAttr = <P extends PrimitiveParam>(
 };
 
 export const isStringValueParam = (
-  param: ScalarParam
+  param: PluginScalarParam
 ): param is Extract<PrimitiveParam, { default: string }> => {
   const info = TABLE[param.kind];
   return info.type === "string";
@@ -107,7 +107,7 @@ export const isNumberValueParam = (
 };
 
 export const isNumberValueParamEx = (
-  param: ScalarParam
+  param: PluginScalarParam
 ): param is Extract<PrimitiveParam, { default: number }> => {
   const info = TABLE[param.kind];
   return info.type === "number";
@@ -138,7 +138,7 @@ export const isNumberAttr = (
 
 export const isStringArrayParam = (
   param: ArrayParam
-): param is Extract<ArrayParamTypes, { default: string[] }> => {
+): param is Extract<PluginArrayParamType, { default: string[] }> => {
   const info = TABLE[param.kind.replace("[]", "") as ParamKinds];
   return info.type === "string";
 };

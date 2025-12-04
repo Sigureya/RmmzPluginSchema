@@ -14,7 +14,10 @@ import type {
 } from "./createPath/types";
 import { createStructParamPath } from "./createPath/valuePath";
 import { extractAllPluginValues } from "./extractor/extractor";
-import type { ExtractorBundle, PluginValues } from "./extractor/types";
+import type {
+  PluginValuesExtractorBundle,
+  PluginValues,
+} from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
 interface Address {
@@ -174,7 +177,7 @@ describe("Address path generation and value extraction", () => {
     });
 
     test("creates correct memo structure", () => {
-      const memo: ExtractorBundle = compileJSONPathSchema(
+      const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
         pathSchema,
         newJSONPath
       );
@@ -217,7 +220,7 @@ describe("Address path generation and value extraction", () => {
         value: "12345",
       },
     ];
-    const memo: ExtractorBundle = compileJSONPathSchema(
+    const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
       pathSchema,
       newJSONPath
     );
@@ -382,7 +385,7 @@ describe("Person path generation and value extraction", () => {
           },
         },
       ];
-      const memo: ExtractorBundle = compileJSONPathSchema(
+      const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
         pathSchema,
         newJSONPath
       );
@@ -746,7 +749,7 @@ describe("classroom path generation and value extraction", () => {
         value: "Rob",
       },
     ];
-    const memo: ExtractorBundle = compileJSONPathSchema(
+    const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
       pathSchema,
       newJSONPath
     );
@@ -1124,7 +1127,7 @@ describe("School path generation and value extraction", () => {
           value: "Chuck",
         },
       ];
-      const memo: ExtractorBundle = compileJSONPathSchema(
+      const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
         pathSchema,
         newJSONPath
       );
