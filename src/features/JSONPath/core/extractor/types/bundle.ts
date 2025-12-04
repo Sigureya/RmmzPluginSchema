@@ -20,6 +20,14 @@ export interface PluginScalarValueExtractor<S extends PluginScalarParam> {
   record: Record<string, S>;
 }
 
+/**
+ * @deprecated use PluginValuesExtractorBundle instead
+ */
+export type ExtractorBundle = PluginValuesExtractorBundle<
+  PluginScalarParam,
+  PluginArrayParamType
+>;
+
 export interface PluginValuesExtractorBundle<
   S extends PluginScalarParam = PluginScalarParam,
   A extends PluginArrayParamType = PluginArrayParamType
