@@ -2,15 +2,31 @@ import type {
   JSONPathReader,
   JSONValue,
 } from "@RmmzPluginSchema/libs/jsonPath";
-import type { ClassifiedPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  ClassifiedPluginParams,
+  PluginParamsRecord,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./createPath";
 import { extractAllPluginValues } from "./extractor/extractor";
 import type {
+  ExtractorBundle,
   ParamExtractResult,
   PluginParamExtractor,
   PluginParamsSchema,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
+
+export const extractPluginParamFromRecord = (
+  record: PluginParamsRecord,
+  paramExtractor: ReadonlyArray<ExtractorBundle>
+): ParamExtractResult => {
+  const parsed: Record<string, JSONValue> = parseDeepRecord(record.parameters);
+  return {
+    pluginName: record.name,
+    params: extractAllPluginValues(parsed, paramExtractor),
+  };
+};
 
 export const extractPluginParam = (
   value: JSONValue,

@@ -23,7 +23,9 @@ export const createPluginValueExtractor = (
 ): PluginExtractorBundle => {
   const structMap = createClassifiedStructMap(schema.structs);
   return {
+    pluginName: pluginName,
     params: compilePluginParams(schema, structMap, factoryFn),
+
     commands: compilePluginCommands(
       pluginName,
       schema.commands,
