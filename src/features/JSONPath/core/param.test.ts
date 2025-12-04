@@ -1,15 +1,22 @@
 import { describe, test, expect, vi } from "vitest";
-import type {
-  ClassifiedPluginParams,
-  ClassifiedPluginParamsEx,
+import {
+  stringifyDeepJSON,
+  type ClassifiedPluginParams,
+  type ClassifiedPluginParamsEx,
+  type PluginParamsRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   PluginValues,
   ParamExtractResult,
   PluginParamsSchema,
+  PluginParamExtractor,
 } from "./extractor/types";
-import { compilePluginParamExtractor, extractPluginParam } from "./param";
+import {
+  compilePluginParamExtractor,
+  extractPluginParam,
+  extractPluginParamFromRecord,
+} from "./param";
 
 interface Person {
   name: string;
@@ -48,9 +55,17 @@ const mockData = {
     name: "Alice",
     age: 30,
   },
+  dummy: "ignore me",
 };
 
 const createMockFn = () => vi.fn((path: string) => new JSONPathJS(path));
+
+const createMockParam = (): Record<string, string> => {
+  const e2: [string, string][] = Object.entries(mockData).map(
+    ([key, value]): [string, string] => [key, stringifyDeepJSON(value)]
+  );
+  return Object.fromEntries(e2);
+};
 
 describe("plugin param extractor", () => {
   test("create memo", () => {
@@ -61,7 +76,6 @@ describe("plugin param extractor", () => {
     expect(mockFn).toHaveBeenNthCalledWith(2, "$.threshold");
     expect(mockFn).toHaveBeenNthCalledWith(3, '$.person["name","age"]');
   });
-
   test("extract values", () => {
     const expected: PluginValues[] = [
       {
@@ -97,12 +111,63 @@ describe("plugin param extractor", () => {
         value: 30,
       },
     ];
-    const memo = compilePluginParamExtractor(
+    const memo: PluginParamExtractor = compilePluginParamExtractor(
       pluginParamsSchema,
       structMap,
       (path) => new JSONPathJS(path)
     );
     const result: ParamExtractResult = extractPluginParam(mockData, memo);
+    expect(result.pluginName).toBe("TestPlugin");
+    expect(result.params).toEqual(expected);
+  });
+  test("extract from record", () => {
+    const expected: PluginValues[] = [
+      {
+        category: "struct",
+        name: "Person",
+        param: {
+          attr: {
+            default: "",
+            kind: "string",
+          },
+          name: "name",
+        },
+        roootName: "person",
+        rootType: "param",
+        value: "Alice",
+      },
+      {
+        category: "struct",
+        name: "Person",
+        param: {
+          attr: {
+            default: 0,
+            kind: "number",
+          },
+          name: "age",
+        },
+        roootName: "person",
+        rootType: "param",
+        value: 30,
+      },
+    ];
+
+    const memo: PluginParamExtractor = compilePluginParamExtractor(
+      pluginParamsSchema,
+      structMap,
+      (path) => new JSONPathJS(path)
+    );
+
+    const record: PluginParamsRecord = {
+      name: "TestPlugin",
+      parameters: createMockParam(),
+      status: true,
+      description: "Test plugin for param extraction",
+    };
+    const result: ParamExtractResult = extractPluginParamFromRecord(
+      record,
+      memo.extractors
+    );
     expect(result.pluginName).toBe("TestPlugin");
     expect(result.params).toEqual(expected);
   });
