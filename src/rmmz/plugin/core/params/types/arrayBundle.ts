@@ -11,7 +11,12 @@ import type {
   PluginStructSchemaArray,
   PluginStructSchemaArrayFiltered,
 } from "./arrayStructs";
-import type { PrimitiveStringParam } from "./paramUnion";
+import type {
+  NumberArrayUnion,
+  PluginScalarParam,
+  PrimitiveStringParam,
+  StringArrayUnion,
+} from "./paramUnion";
 import type {
   RpgVariableParam,
   RpgVariableArrayParam,
@@ -20,14 +25,33 @@ import type {
   StringArrayParam,
 } from "./primitive";
 
-export interface PluginSchemaArray {
-  commands: PluginCommandSchemaArray[];
-  params: PluginParam[];
-  structs: PluginStructSchemaArray[];
+export interface PluginSchemaArrayFiltered7Ex<
+  S extends PluginScalarParam,
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
+> {
+  params: (PluginParamEx<S | NA | SA> | StructPluginParam)[];
+  structs: PluginStructSchemaArrayFiltered<
+    PluginParamEx<S | NA | SA> | StructPluginParam
+  >[];
+  commands: PluginCommandSchemaArrayFiltered<
+    PluginParamEx<S | NA | SA> | StructPluginParam
+  >[];
 }
 
-export interface PluginSchemaArrayFiltered<T extends PluginParam>
-  extends PluginSchemaArray {
+export interface PluginSchemaArrayFiltered7<T extends PluginParam> {
+  commands: PluginCommandSchemaArrayFiltered<T | StructPluginParam>[];
+  params: (T | StructPluginParam)[];
+  structs: PluginStructSchemaArrayFiltered<T | StructPluginParam>[];
+}
+
+export type PluginSchemaArray = PluginSchemaArrayFiltered7Ex<
+  PluginScalarParam,
+  NumberArrayUnion,
+  StringArrayUnion
+>;
+
+export interface PluginSchemaArrayFiltered<T extends PluginParam> {
   commands: PluginCommandSchemaArrayFiltered<T | StructPluginParam>[];
   params: (T | StructPluginParam)[];
   structs: PluginStructSchemaArrayFiltered<T | StructPluginParam>[];

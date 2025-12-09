@@ -4,11 +4,14 @@ import type {
 } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   PluginSchema,
-  PluginCommandSchemaArray,
   ClassifiedPluginParams,
-  PluginArrayParamType,
   PluginScalarParam,
-  ClassifiedPluginParamsEx2,
+  NumberArrayParam,
+  StringArrayParam,
+  PluginParamEx2,
+  PluginCommandSchemaArrayFiltered,
+  ClassifiedPluginParamsEx7,
+  PluginCommandSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./createPath/valuePath";
@@ -18,19 +21,38 @@ import type {
   CommandExtractResult,
   CommandMapKey,
   CommandExtractorEntry,
-  PluginValuesExtractorBundle,
+  PluginValuesExtractorBundle7,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const compilePluginCommandExtractor = <
-  S extends PluginScalarParam,
-  A extends PluginArrayParamType
->(
+export function compilePluginCommandExtractor(
   pluginName: string,
   schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader
-): CommandArgExtractors => {
+): CommandArgExtractors;
+
+export function compilePluginCommandExtractor<
+  S extends PluginScalarParam,
+  NA extends NumberArrayParam,
+  SA extends StringArrayParam
+>(
+  pluginName: string,
+  schema: PluginCommandSchemaArrayFiltered<PluginParamEx2<S, NA | SA>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
+  factoryFn: (path: string) => JSONPathReader
+): CommandArgExtractors;
+
+export function compilePluginCommandExtractor<
+  S extends PluginScalarParam,
+  NA extends NumberArrayParam,
+  SA extends StringArrayParam
+>(
+  pluginName: string,
+  schema: PluginCommandSchemaArrayFiltered<PluginParamEx2<S, NA | SA>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
+  factoryFn: (path: string) => JSONPathReader
+): CommandArgExtractors {
   return {
     pluginName,
     commandName: schema.command,
@@ -38,18 +60,28 @@ export const compilePluginCommandExtractor = <
     text: schema.text ?? "",
     extractors: createExtractors(schema, structMap, factoryFn),
   };
-};
+}
 
-const createExtractors = (
-  schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<
-    string,
-    ClassifiedPluginParamsEx2<PluginScalarParam, PluginArrayParamType>
-  >,
+const createExtractors = <
+  S extends PluginScalarParam,
+  NA extends NumberArrayParam,
+  SA extends StringArrayParam
+>(
+  schema: PluginCommandSchemaArrayFiltered<PluginParamEx2<S, NA | SA>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   factoryFn: (path: string) => JSONPathReader
-): PluginValuesExtractorBundle[] => {
-  return schema.args.map((arg): PluginValuesExtractorBundle => {
-    const path = createPluginValuesPath("args", schema.command, arg, structMap);
+): PluginValuesExtractorBundle7<
+  PluginScalarParam,
+  NumberArrayParam,
+  StringArrayParam
+>[] => {
+  return schema.args.map((arg) => {
+    const path = createPluginValuesPath<S, NA, SA>(
+      "args",
+      schema.command,
+      arg,
+      structMap
+    );
     return compileJSONPathSchema(path, factoryFn);
   });
 };

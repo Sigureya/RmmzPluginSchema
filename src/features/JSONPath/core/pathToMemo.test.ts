@@ -9,15 +9,12 @@ import type {
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
-  PluginValuesPath,
+  PluginValuesPathOld,
   PluginValuesPathBase,
 } from "./createPath/types";
 import { createStructParamPath } from "./createPath/valuePath";
 import { extractAllPluginValues } from "./extractor/extractor";
-import type {
-  PluginValuesExtractorBundle,
-  PluginValues,
-} from "./extractor/types";
+import type { PluginValues, ExtractorBundle } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
 interface Address {
@@ -135,7 +132,7 @@ describe("Address path generation and value extraction", () => {
     attr: { kind: "struct", struct: "Address" },
   };
 
-  const pathSchema: PluginValuesPath = {
+  const pathSchema: PluginValuesPathOld = {
     rootCategory: "param",
     rootName: "address",
     scalars: undefined,
@@ -177,7 +174,7 @@ describe("Address path generation and value extraction", () => {
     });
 
     test("creates correct memo structure", () => {
-      const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
+      const memo: ExtractorBundle = compileJSONPathSchema(
         pathSchema,
         newJSONPath
       );
@@ -220,7 +217,7 @@ describe("Address path generation and value extraction", () => {
         value: "12345",
       },
     ];
-    const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
+    const memo: ExtractorBundle = compileJSONPathSchema(
       pathSchema,
       newJSONPath
     );
@@ -235,7 +232,7 @@ describe("Person path generation and value extraction", () => {
     name: "person",
     attr: { kind: "struct", struct: "Person" },
   };
-  const pathSchema: PluginValuesPath = {
+  const pathSchema: PluginValuesPathOld = {
     rootCategory: "param",
     rootName: "person",
     scalars: undefined,
@@ -385,7 +382,7 @@ describe("Person path generation and value extraction", () => {
           },
         },
       ];
-      const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
+      const memo: ExtractorBundle = compileJSONPathSchema(
         pathSchema,
         newJSONPath
       );
@@ -403,7 +400,7 @@ describe("classroom path generation and value extraction", () => {
     attr: { kind: "struct", struct: "Class" },
   };
 
-  const pathSchema: PluginValuesPath = {
+  const pathSchema: PluginValuesPathOld = {
     rootCategory: "param",
     rootName: "classroom",
     scalars: undefined,
@@ -749,7 +746,7 @@ describe("classroom path generation and value extraction", () => {
         value: "Rob",
       },
     ];
-    const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
+    const memo: ExtractorBundle = compileJSONPathSchema(
       pathSchema,
       newJSONPath
     );
@@ -762,7 +759,7 @@ describe("School path generation and value extraction", () => {
     name: "school",
     attr: { kind: "struct", struct: "School" },
   };
-  const pathSchema: PluginValuesPath = {
+  const pathSchema: PluginValuesPathOld = {
     rootCategory: "param",
     rootName: "school",
     scalars: undefined,
@@ -1127,7 +1124,7 @@ describe("School path generation and value extraction", () => {
           value: "Chuck",
         },
       ];
-      const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
+      const memo: ExtractorBundle = compileJSONPathSchema(
         pathSchema,
         newJSONPath
       );

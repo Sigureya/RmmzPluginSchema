@@ -1,32 +1,23 @@
 import type {
-  PluginArrayParamType,
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx2,
   PluginParamEx,
   PluginScalarParam,
-  ScalaStruct,
   StructArrayRefParam,
   StructRefParam,
+  NumberArrayUnion,
+  StringArrayUnion,
+  ClassifiedPluginParamsEx7,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalarArrayPath, makeScalarValuesPath } from "./scalarValue";
 import type { ErrorCodes, StructPathError } from "./types";
-import type { StructPropertiesPath, TemplateGE } from "./types/template";
+import type { StructPropertiesPath, TemplateGE7 } from "./types/template";
 
 const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
   cyclicStruct: "cyclic_struct",
 } as const satisfies ErrorCodes;
-
-interface ClassifiedPluginParamsEx3<
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>
-> extends ScalaStruct {
-  structs: PluginParamEx<StructRefParam>[];
-  structArrays: PluginParamEx<StructArrayRefParam>[];
-  scalars: S[];
-  scalarArrays: A[];
-}
 
 interface Frame {
   schemaName: string;
@@ -34,20 +25,22 @@ interface Frame {
   ancestry: string[];
 }
 
-interface State2<
-  Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+interface State3<
+  S extends PluginScalarParam,
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 > {
   frames: Frame[];
-  items: StructPropertiesPath<Scalar, Array>[];
+  items: StructPropertiesPath<S, NA | SA>[];
   errs: StructPathError[];
 }
 
 function createNode<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
-  structSchema: ClassifiedPluginParamsEx2<S, A>,
+  structSchema: ClassifiedPluginParamsEx2<S, NA | SA>,
   {
     path,
     structName,
@@ -55,7 +48,7 @@ function createNode<
     path: string;
     structName: string;
   }
-): StructPropertiesPath<S, A> {
+): StructPropertiesPath<S, NA | SA> {
   return {
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
@@ -68,10 +61,10 @@ function createNode<
   };
 }
 
-function createChildFrames(
+const createChildFrames = (
   lastFrame: Frame,
   structSchema: ClassifiedPluginParams
-): Frame[] {
+): Frame[] => {
   const childAncestry: string[] = lastFrame.ancestry.concat(
     lastFrame.schemaName
   );
@@ -94,16 +87,17 @@ function createChildFrames(
   // childrenDesired: structs の順で先に処理し、その後 structArrays を処理したい
 
   return [...structFrames, ...structArrayFrames].reverse(); // LIFO スタックなので、desired の逆順で push
-}
+};
 
-function stepState<
-  Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+const stepState = <
+  S extends PluginScalarParam,
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
-  state: State2<Scalar, Array>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<Scalar, Array>>,
+  state: State3<S, NA, SA>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   errors: ErrorCodes
-): State2<Scalar, Array> {
+): State3<S, NA, SA> => {
   if (state.frames.length === 0) {
     return state;
   }
@@ -145,7 +139,7 @@ function stepState<
   if (structSchema.scalars.length > 0 || structSchema.scalarArrays.length > 0) {
     // 現在ノードを追加（pre-order）
 
-    const current: StructPropertiesPath<Scalar, Array> = createNode(
+    const current: StructPropertiesPath<S, NA | SA> = createNode<S, NA, SA>(
       structSchema,
       {
         path: frame.basePath,
@@ -165,18 +159,19 @@ function stepState<
     items: state.items,
     errs: state.errs,
   };
-}
+};
 
 function collectFromSchema<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   schemaName: string,
   basePath: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   errors: ErrorCodes
-): TemplateGE<S, A> {
-  type StateType = State2<S, A>;
+): TemplateGE7<S, NA, SA> {
+  type StateType = State3<S, NA, SA>;
   const state: StateType = {
     items: [],
     errs: [],
@@ -202,14 +197,15 @@ function collectFromSchema<
 }
 
 export const getPathFromStructParam = <
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>
+  S extends PluginScalarParam,
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   params: PluginParamEx<StructRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S["attr"], A["attr"]> => {
+): TemplateGE7<S, NA, SA> => {
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
   return collectFromSchema(
     params.attr.struct,
@@ -221,14 +217,15 @@ export const getPathFromStructParam = <
 
 export const getPathFromStructArraySchema = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   param: PluginParamEx<StructArrayRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S, A> => {
-  return collectFromSchema<S, A>(
+): TemplateGE7<S, NA, SA> => {
+  return collectFromSchema(
     param.attr.struct,
     `${parent}.${param.name}[*]`,
     structMap,
@@ -237,13 +234,14 @@ export const getPathFromStructArraySchema = <
 };
 
 export const getPathFromStructSchema = <
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>
+  S extends PluginScalarParam,
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   structName: string,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S["attr"], A["attr"]> => {
+): TemplateGE7<S, NA, SA> => {
   return collectFromSchema(structName, parent, structMap, errors);
 };

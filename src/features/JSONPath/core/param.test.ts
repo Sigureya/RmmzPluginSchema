@@ -12,6 +12,7 @@ import type {
   ParamExtractResult,
   PluginParamsSchema,
   PluginParamExtractor,
+  ExtractorBundle,
 } from "./extractor/types";
 import {
   compilePluginParamExtractor,
@@ -168,10 +169,7 @@ describe("plugin param extractor", () => {
       status: true,
       description: "Test plugin for param extraction",
     };
-    const result: ParamExtractResult = extractPluginParamFromRecord(
-      record,
-      memo.extractors
-    );
+    const result = extractPluginParamFromRecord(record, memo.extractors);
     expect(result.pluginName).toBe("TestPlugin");
     expect(result.params).toEqual(expected);
   });

@@ -1,31 +1,34 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  PluginArrayParamType,
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
-  PluginParamEx2,
-  PluginSchemaArray,
-  PluginSchemaArrayFiltered,
   PluginScalarParam,
+  StringArrayUnion,
+  ClassifiedPluginParamsEx7,
+  FileArrayParam,
+  PluginSchemaArrayFiltered7Ex,
+  NumberArrayUnion,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginCommandExtractor } from "./command";
 import { createPluginValuesPath } from "./createPath";
 import type {
-  PluginValuesExtractorBundle,
   CommandExtractorEntry,
   CommandMapKey,
   CommandArgExtractors,
+  PluginValuesExtractorBundle7,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 import type { PluginExtractorBundle } from "./types";
 
 export const createPluginValueExtractor = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   pluginName: string,
-  schema: PluginSchemaArrayFiltered<PluginParamEx2<S, A>>,
+  schema: PluginSchemaArrayFiltered7Ex<S, NA, SA>,
+
   factoryFn: (path: string) => JSONPathReader
 ): PluginExtractorBundle => {
   const structMap = createClassifiedStructMap(schema.structs);
@@ -42,12 +45,16 @@ export const createPluginValueExtractor = <
   };
 };
 
-const compilePluginParams = (
-  schema: PluginSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
+const compilePluginParams = <
+  S extends PluginScalarParam,
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion | FileArrayParam
+>(
+  schema: PluginSchemaArrayFiltered7Ex<S, NA, SA>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>,
   factoryFn: (path: string) => JSONPathReader
-): PluginValuesExtractorBundle[] => {
-  return schema.params.map((param): PluginValuesExtractorBundle => {
+): PluginValuesExtractorBundle7<S, NA, SA>[] => {
+  return schema.params.map((param): PluginValuesExtractorBundle7<S, NA, SA> => {
     const path = createPluginValuesPath("param", param.name, param, structMap);
     return compileJSONPathSchema(path, factoryFn);
   });

@@ -73,6 +73,9 @@ export type ScalarParam = PluginScalarParam;
 
 export type PluginArrayParamType = Extract<PrimitiveParam, ArrayParam>;
 
+export type StringArrayUnion = Extract<PrimitiveParam, { default: string[] }>;
+export type NumberArrayUnion = Extract<PrimitiveParam, { default: number[] }>;
+
 /**
  * @deprecated use PluginArrayParamType instead
  */

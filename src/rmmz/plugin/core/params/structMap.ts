@@ -7,21 +7,42 @@ import type {
   PluginStructSchemaArrayFiltered,
   PrimitiveParam,
   PluginScalarParam,
+  NumberArrayParam,
+  StringArrayParam,
+  ClassifiedPluginParamsEx7,
+  PluginParamEx3,
+  ClassifiedPluginParams,
+  PluginParam,
+  StringArrayUnion,
+  NumberArrayUnion,
 } from "./types";
 
-export const createClassifiedStructMap = <
+export function createClassifiedStructMap<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
-  bundle: PluginStructSchemaArrayFiltered<PluginParamEx2<S, A>>[]
-): Map<string, ClassifiedPluginParamsEx2<S, A>> => {
+  bundle: PluginStructSchemaArrayFiltered<PluginParamEx3<S, NA, SA>>[]
+): Map<string, ClassifiedPluginParamsEx7<S, NA, SA>>;
+
+export function createClassifiedStructMap(
+  bundle: PluginStructSchemaArrayFiltered<PluginParam>[]
+): Map<string, ClassifiedPluginParams>;
+
+export function createClassifiedStructMap<
+  S extends PluginScalarParam,
+  NA extends NumberArrayParam,
+  SA extends StringArrayParam
+>(
+  bundle: PluginStructSchemaArrayFiltered<PluginParamEx3<S, NA, SA>>[]
+): Map<string, ClassifiedPluginParamsEx7<S, NA, SA>> {
   return new Map(
-    bundle.map((s): [string, ClassifiedPluginParamsEx2<S, A>] => [
+    bundle.map((s): [string, ClassifiedPluginParamsEx7<S, NA, SA>] => [
       s.struct,
-      classifyPluginParams<S, A>(s.params),
+      classifyPluginParams(s.params),
     ])
   );
-};
+}
 
 export const createStructMap = (
   structs: ReadonlyArray<PluginStructSchemaArray>

@@ -1,12 +1,15 @@
 import type {
-  PluginArrayParamType,
   PluginParamEx,
   PluginScalarParam,
   StructRefParam,
   StructArrayRefParam,
-  ClassifiedPluginParamsEx2,
   ArrayParamItemType2,
-  PluginParamEx2,
+  NumberArrayParam,
+  ClassifiedPluginParamsEx7,
+  ClassifiedPluginParams,
+  StringArrayUnion,
+  NumberArrayUnion,
+  PluginParamEx3,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
   isArrayAttr,
@@ -18,19 +21,22 @@ import {
   getPathFromStructParam,
 } from "./structValue";
 import type {
+  PluginValuesPathOld,
   PluginValuesPathSchema,
+  PluginValuesPathSchema7,
   PrimitivePluginValuesPath,
 } from "./types";
 
-export const createPluginValuesPath = <
+export function createPluginValuesPath<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   category: "param" | "args",
   rootName: string,
-  param: PluginParamEx2<S, A>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathSchema<S, A> => {
+  param: PluginParamEx3<S, NA, SA>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>
+): PluginValuesPathSchema7<S, NA, SA> {
   if (isStructAttr(param)) {
     return createStructPath(category, param, structMap);
   }
@@ -38,14 +44,14 @@ export const createPluginValuesPath = <
     return createStructArrayPath(category, param, structMap);
   }
   if (isArrayAttr(param)) {
-    return createPrimitiveArrayPath<S, A>(category, rootName, param);
+    return createPrimitiveArrayPath<S, NA | SA>(category, rootName, param);
   }
   return createPrimiteveParamPath<S>(
     category,
     rootName,
     param as PluginParamEx<S>
   ) satisfies PrimitivePluginValuesPath<S>;
-};
+}
 
 const createPrimitiveArrayPath = <
   S extends PluginScalarParam,
@@ -97,25 +103,43 @@ export const createPrimiteveParamPath = <T extends PluginScalarParam>(
   };
 };
 
-export const createStructParamPath = <
+export function createStructParamPath<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayParam,
+  SA extends StringArrayUnion
 >(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathSchema<S, A> => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>
+): PluginValuesPathSchema7<S, NA, SA>;
+
+export function createStructParamPath(
+  category: "param" | "args",
+  param: PluginParamEx<StructRefParam>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>
+): PluginValuesPathOld;
+
+export function createStructParamPath<
+  S extends PluginScalarParam,
+  NA extends NumberArrayParam,
+  SA extends StringArrayUnion
+>(
+  category: "param" | "args",
+  param: PluginParamEx<StructRefParam>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>
+): PluginValuesPathSchema7<S, NA, SA> {
   return createStructPath(category, param, structMap);
-};
+}
 
 const createStructPath = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathSchema<S, A> => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>
+): PluginValuesPathSchema7<S, NA, SA> => {
   return {
     rootName: param.name,
     rootCategory: category,
@@ -130,12 +154,13 @@ const createStructPath = <
 
 const createStructArrayPath = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion
 >(
   category: "param" | "args",
   param: PluginParamEx<StructArrayRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
-): PluginValuesPathSchema<S, A> => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx7<S, NA, SA>>
+): PluginValuesPathSchema7<S, NA, SA> => {
   return {
     structArrays: getPathFromStructArraySchema(param, "$", structMap),
     rootName: param.name,

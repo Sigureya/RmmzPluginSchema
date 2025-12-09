@@ -1,4 +1,9 @@
-import type { PluginValuesExtractorBundle } from "./bundle";
+import type {
+  NumberArrayParam,
+  PluginScalarParam,
+  StringArrayParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginValuesExtractorBundle7 } from "./bundle";
 import type { PluginValues } from "./result";
 
 export interface CommandArgExtractors {
@@ -6,7 +11,11 @@ export interface CommandArgExtractors {
   commandName: string;
   desc: string;
   text: string;
-  extractors: PluginValuesExtractorBundle[];
+  extractors: PluginValuesExtractorBundle7<
+    PluginScalarParam,
+    NumberArrayParam,
+    StringArrayParam
+  >[];
 }
 
 export interface CommandExtractResult {

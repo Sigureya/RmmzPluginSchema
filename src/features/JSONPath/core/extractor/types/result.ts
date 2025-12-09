@@ -1,4 +1,9 @@
-import type { PluginParam } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  PluginArrayParamType,
+  PluginParam,
+  PluginParamEx2,
+  PluginScalarParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 
 export type ValueCategory2 =
   | "struct"
@@ -15,3 +20,8 @@ export interface PluginValues<P extends PluginParam = PluginParam> {
   name: string;
   param: P;
 }
+
+export type PluginValues2<
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+> = PluginValues<PluginParamEx2<S, A>>;

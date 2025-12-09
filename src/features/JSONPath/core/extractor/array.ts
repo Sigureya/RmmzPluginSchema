@@ -1,7 +1,6 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   PluginScalarParam,
-  PluginArrayParamType,
   PluginParamEx,
   StringArrayParam,
   NumberArrayParam,
@@ -11,56 +10,59 @@ import {
   isNumberArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  PluginValuesExtractorBundle,
+  PluginArrayPathExtractor2N,
+  PluginArrayPathExtractor2S,
+  PluginValuesArrayExN,
+  PluginValuesArrayExS,
   PluginArrayPathExtractor,
-  PluginValuesStringArray,
-  PluginValuesNumberArray,
+  PluginValuesExtractorBundle7,
 } from "./types";
 
 export const readArrayValue = <
-  T extends PluginScalarParam,
-  NA extends PluginArrayParamType,
-  SA extends PluginArrayParamType
+  NA extends NumberArrayParam,
+  SA extends StringArrayParam
 >(
-  bundle: PluginValuesExtractorBundle<T, NA | SA>,
+  bundle: PluginValuesExtractorBundle7<PluginScalarParam, NA, SA>,
   groupName: string,
   json: JSONValue,
-  path: PluginArrayPathExtractor<NA>
-): PluginValuesStringArray[] | PluginValuesNumberArray[] => {
+  path: PluginArrayPathExtractor<NA | SA>
+): PluginValuesArrayExS<SA>[] | PluginValuesArrayExN<NA>[] => {
   const values: JSONValue = path.jsonPathJS.find(json);
   if (!Array.isArray(values)) {
     return [];
   }
-  const attr = path.schema.attr;
-  if (isStringArrayParam(attr)) {
-    return sap(
-      bundle,
-      values,
-      groupName,
-      path.schema as PluginParamEx<StringArrayParam>
-    );
+  if (isNap(path)) {
+    return nap(bundle, values, groupName, path.schema);
   }
-  if (isNumberArrayParam(attr)) {
-    return nap(
-      bundle,
-      values,
-      groupName,
-      path.schema as PluginParamEx<NumberArrayParam>
-    );
+  if (isSap(path)) {
+    return sap(bundle, values, groupName, path.schema);
   }
+
   return [];
 };
 
-const nap = (
-  bundle: PluginValuesExtractorBundle,
+const isNap = <NA extends NumberArrayParam, SA extends StringArrayParam>(
+  path: PluginArrayPathExtractor<NA | SA>
+): path is PluginArrayPathExtractor2N<NA> => {
+  return isNumberArrayParam(path.schema.attr);
+};
+
+const isSap = <NA extends NumberArrayParam, SA extends StringArrayParam>(
+  path: PluginArrayPathExtractor<NA | SA>
+): path is PluginArrayPathExtractor2S<SA> => {
+  return isStringArrayParam(path.schema.attr);
+};
+
+const nap = <A extends NumberArrayParam>(
+  bundle: PluginValuesExtractorBundle7<PluginScalarParam, A, StringArrayParam>,
   values: unknown[],
   groupName: string,
-  schema: PluginParamEx<NumberArrayParam>
-): PluginValuesNumberArray[] => {
+  schema: PluginParamEx<A>
+): PluginValuesArrayExN<A>[] => {
   return values
     .filter((v) => typeof v === "number")
     .map(
-      (v): PluginValuesNumberArray => ({
+      (v): PluginValuesArrayExN<A> => ({
         roootName: bundle.rootName,
         rootType: bundle.rootCategory,
         value: v,
@@ -71,15 +73,15 @@ const nap = (
     );
 };
 
-const sap = (
-  bundle: PluginValuesExtractorBundle,
+const sap = <A extends StringArrayParam>(
+  bundle: PluginValuesExtractorBundle7<PluginScalarParam, NumberArrayParam, A>,
   values: unknown[],
   groupName: string,
-  schema: PluginParamEx<StringArrayParam>
-): PluginValuesStringArray[] => {
+  schema: PluginParamEx<A>
+): PluginValuesArrayExS<A>[] => {
   return values
     .filter((v) => typeof v === "string")
-    .map((v): PluginValuesStringArray => {
+    .map((v): PluginValuesArrayExS<A> => {
       return {
         roootName: bundle.rootName,
         rootType: bundle.rootCategory,

@@ -16,6 +16,11 @@ import type {
   PluginArrayParamType,
   PluginScalarParam,
   PluginParamEx2,
+  NumberArrayUnion,
+  StringArrayUnion,
+  PluginSchemaArrayFiltered7Ex,
+  PluginParamEx3,
+  PluginParamEx,
 } from "./types";
 import {
   hasStructAttr,
@@ -50,19 +55,18 @@ export const filterPluginSchemaByVariableParam = (
 export const filterPluginSchemaByFileParam = (
   schema: PluginSchemaArray
 ): PluginSchemaArrayFiltered<PluginParamEx2<FileParam, FileArrayParam>> => {
-  return filterPluginSchemaByParam<FileParam, FileArrayParam>(
-    schema,
-    isFileAttr
-  );
+  return filterPluginSchemaByParam(schema, isFileAttr);
 };
 
 export const filterPluginSchemaByParam = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  NA extends NumberArrayUnion,
+  SA extends StringArrayUnion,
+  T extends PluginParam
 >(
-  schema: PluginSchemaArray,
-  predicate: (param: PluginParam) => param is PluginParamEx2<S, A>
-): PluginSchemaArrayFiltered<PluginParamEx2<S, A>> => {
+  schema: PluginSchemaArrayFiltered7Ex<S, NA, SA>,
+  predicate: (param: PluginParamEx3<S, NA, SA>) => param is PluginParamEx<T>
+): PluginSchemaArrayFiltered<PluginParamEx3<S, NA, SA>> => {
   const base: PluginStructSchemaArray[] = schema.structs.filter((s) => {
     return s.params.some((p) => predicate(p));
   });
