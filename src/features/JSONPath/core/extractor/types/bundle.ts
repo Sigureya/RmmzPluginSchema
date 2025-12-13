@@ -4,7 +4,7 @@ import type {
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginArrayPathExtractor } from "./array";
-import type { ValueCategory2 } from "./result";
+import type { RootTypeCategory } from "./result";
 
 export interface PluginValuesPathMemo<
   S extends PluginScalarParam,
@@ -33,7 +33,7 @@ export interface PluginValuesExtractorBundle<
   A extends PluginArrayParamType = PluginArrayParamType
 > {
   rootName: string;
-  rootCategory: ValueCategory2;
+  rootCategory: RootTypeCategory;
 
   top: PluginValuesPathMemo<S, A> | undefined;
   structs: PluginValuesPathMemo<S, A>[];

@@ -3,7 +3,6 @@ import type {
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesPathBase } from "./base";
-import type { ValueCategory } from "./category";
 import type {
   StructPropertysPathOld,
   StructPathResultWithError,
@@ -11,7 +10,7 @@ import type {
 import type { StructPropertiesPath, TemplateGE } from "./template";
 
 export interface PluginValuesPath extends PluginValuesPathBase {
-  rootCategory: ValueCategory;
+  rootCategory: "param" | "args";
   rootName: string;
   scalars?: StructPropertysPathOld;
   structs: StructPathResultWithError;
@@ -30,7 +29,7 @@ export interface PluginValuesPathSchema<
   Scalar extends PluginScalarParam,
   Array extends PluginArrayParamType
 > extends PluginValuesPathBase {
-  rootCategory: ValueCategory;
+  rootCategory: "param" | "args";
   rootName: string;
   scalars?: StructPropertiesPath<Scalar, Array>;
   structs: TemplateGE<Scalar, Array>;
