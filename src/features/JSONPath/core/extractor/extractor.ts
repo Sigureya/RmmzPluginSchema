@@ -14,9 +14,12 @@ import type {
   PluginValuesNumberArray,
 } from "./types";
 
-export const extractAllPluginValues = (
+export const extractAllPluginValues = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   value: JSONValue,
-  memo: ReadonlyArray<PluginValuesExtractorBundle>
+  memo: ReadonlyArray<PluginValuesExtractorBundle<S, A>>
 ): PluginValues[] => {
   return memo.map((m) => extractBundleGroups(value, m)).flat(3);
 };
