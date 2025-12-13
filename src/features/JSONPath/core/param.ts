@@ -8,11 +8,7 @@ import type {
   PluginParamsRecord,
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  createClassifiedStructMap,
-  parseDeepRecord,
-} from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
+import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./createPath";
 import { extractAllPluginValues } from "./extractor/extractor";
 import type {
@@ -34,28 +30,16 @@ export const extractPluginParamFromRecord = (
   };
 };
 
-export const extractPluginParam = (
+export const extractPluginParam = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType
+>(
   value: JSONValue,
-  paramExtractor: PluginParamExtractor
+  paramExtractor: PluginParamExtractor<S, A>
 ): ParamExtractResult => {
   return {
     pluginName: paramExtractor.pluginName,
     params: extractAllPluginValues(value, paramExtractor.extractors),
-  };
-};
-
-const xxx = <S extends PluginScalarParam, A extends PluginArrayParamType>(
-  plugin: PluginSchemaOf<S, A>,
-  record: PluginParamsRecord,
-  factoryFn: (path: string) => JSONPathReader
-) => {
-  const map = createClassifiedStructMap(plugin.schema.structs);
-  const e = compilePluginParamExtractor(plugin, map, factoryFn);
-  const result = extractPluginParamFromRecord(record, e.extractors);
-  return {
-    pluginName: e.pluginName,
-    params: result.params,
-    structMap: map,
   };
 };
 
@@ -66,10 +50,11 @@ export const compilePluginParamExtractor = <
   plugin: PluginParamsSchema<S, A>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
   factoryFn: (path: string) => JSONPathReader
-): PluginParamExtractor => {
+): PluginParamExtractor<S, A> => {
+  type BundlerType = PluginValuesExtractorBundle<S, A>;
   return {
     pluginName: plugin.pluginName,
-    extractors: plugin.schema.params.map((param) => {
+    extractors: plugin.schema.params.map((param): BundlerType => {
       const path = createPluginValuesPath("param", "plugin", param, structMap);
       return compileJSONPathSchema(path, factoryFn);
     }),
