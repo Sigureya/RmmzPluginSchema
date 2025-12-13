@@ -7,8 +7,11 @@ export type ValueCategory2 =
   | "args"
   | "primitive";
 
+export type VCT_PS = "primitve" | "struct";
+export type RootTypeCategory = "args" | "param";
+
 export interface PluginValues<P extends PluginParam = PluginParam> {
-  rootType: ValueCategory2;
+  rootType: RootTypeCategory;
   roootName: string;
   value: number | string | boolean;
   category: ValueCategory2;
