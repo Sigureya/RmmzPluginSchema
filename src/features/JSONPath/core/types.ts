@@ -2,8 +2,9 @@ import type {
   PluginScalarParam,
   PluginArrayParamType,
   PluginParam,
-  ClassifiedPluginParamsEx2,
+  PluginParamsRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
 import type {
   CommandExtractorEntry,
   PluginValues,
@@ -16,11 +17,16 @@ export interface PluginExtractorBundle {
   commands: CommandExtractorEntry[];
 }
 
-export interface X<
+export interface CommandExtractorEntryList {
+  extractorEntries: CommandExtractorEntry[];
+}
+
+export interface ConvertPluginResult<
   S extends PluginScalarParam,
   A extends PluginArrayParamType
-> {
-  pluginName: string;
+> extends CommandExtractorEntryList {
   params: PluginValues<PluginParam>[];
-  structMap: Map<string, ClassifiedPluginParamsEx2<S, A>>;
+  record: PluginParamsRecord;
+  schema: PluginSchemaOf<S, A>;
+  extractorEntries: CommandExtractorEntry[];
 }
