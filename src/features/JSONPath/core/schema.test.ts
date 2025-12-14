@@ -144,8 +144,7 @@ describe("JSONPath", () => {
       commandName: "AddItem",
       args: [
         {
-          category: "struct",
-          name: "item",
+          structName: "",
           param: {
             name: "itemId",
             attr: {
@@ -158,8 +157,7 @@ describe("JSONPath", () => {
           value: 5,
         },
         {
-          category: "struct",
-          name: "number",
+          structName: "",
           param: {
             name: "quantity",
             attr: {

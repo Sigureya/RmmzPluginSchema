@@ -198,24 +198,21 @@ describe("Address path generation and value extraction", () => {
       {
         rootType: "param",
         roootName: "address",
-        category: "struct",
-        name: "Address",
+        structName: "Address",
         param: { name: "street", attr: { kind: "string", default: "" } },
         value: "123 Sample St",
       },
       {
         rootType: "param",
         roootName: "address",
-        category: "struct",
-        name: "Address",
+        structName: "Address",
         param: { name: "city", attr: { kind: "string", default: "" } },
         value: "Sample City",
       },
       {
         rootType: "param",
         roootName: "address",
-        category: "struct",
-        name: "Address",
+        structName: "Address",
         param: { name: "zipCode", attr: { kind: "string", default: "" } },
         value: "12345",
       },
@@ -310,8 +307,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             name: "name",
             attr: { default: "", kind: "string" },
@@ -321,8 +317,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           value: 30,
           param: {
             name: "age",
@@ -332,8 +327,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           value: 115,
           param: {
             name: "items",
@@ -343,8 +337,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           value: 201,
           param: {
             name: "items",
@@ -354,8 +347,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           value: 351,
           param: {
             name: "items",
@@ -365,8 +357,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           value: "Ally",
           param: {
             name: "nicknames",
@@ -376,8 +367,7 @@ describe("Person path generation and value extraction", () => {
         {
           rootType: "param",
           roootName: "person",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           value: "Lice",
           param: {
             name: "nicknames",
@@ -539,8 +529,7 @@ describe("classroom path generation and value extraction", () => {
       {
         roootName: "classroom",
         rootType: "param",
-        category: "struct",
-        name: "Class",
+        structName: "Class",
         value: "Math 101",
         param: {
           name: "className",
@@ -550,8 +539,7 @@ describe("classroom path generation and value extraction", () => {
       {
         rootType: "param",
         roootName: "classroom",
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         value: "Mr. Smith",
         param: {
           name: "name",
@@ -561,8 +549,7 @@ describe("classroom path generation and value extraction", () => {
       {
         roootName: "classroom",
         rootType: "param",
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         value: 40,
         param: {
           name: "age",
@@ -572,8 +559,7 @@ describe("classroom path generation and value extraction", () => {
       {
         roootName: "classroom",
         rootType: "param",
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         value: 1001,
         param: {
           name: "items",
@@ -581,8 +567,7 @@ describe("classroom path generation and value extraction", () => {
         },
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         value: 1002,
         param: {
           attr: {
@@ -595,8 +580,7 @@ describe("classroom path generation and value extraction", () => {
         rootType: "param",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         value: "Smitty",
         param: {
           attr: {
@@ -609,8 +593,7 @@ describe("classroom path generation and value extraction", () => {
         rootType: "param",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         value: "Alice",
         param: {
           attr: {
@@ -623,8 +606,7 @@ describe("classroom path generation and value extraction", () => {
         rootType: "param",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: 0,
@@ -637,8 +619,7 @@ describe("classroom path generation and value extraction", () => {
         value: 20,
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: "",
@@ -651,8 +632,7 @@ describe("classroom path generation and value extraction", () => {
         value: "Bob",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: 0,
@@ -665,8 +645,7 @@ describe("classroom path generation and value extraction", () => {
         value: 22,
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: [],
@@ -679,8 +658,7 @@ describe("classroom path generation and value extraction", () => {
         value: 2001,
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: [],
@@ -693,8 +671,7 @@ describe("classroom path generation and value extraction", () => {
         value: 2002,
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: [],
@@ -707,8 +684,7 @@ describe("classroom path generation and value extraction", () => {
         value: 3001,
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: [],
@@ -721,8 +697,7 @@ describe("classroom path generation and value extraction", () => {
         value: "Ally",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: [],
@@ -735,8 +710,7 @@ describe("classroom path generation and value extraction", () => {
         value: "Bobby",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: [],
@@ -933,8 +907,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "School",
+          structName: "School",
           param: {
             attr: {
               default: 0,
@@ -947,8 +920,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Address",
+          structName: "Address",
           param: {
             attr: {
               default: "",
@@ -961,8 +933,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Address",
+          structName: "Address",
           param: {
             attr: {
               default: "",
@@ -975,8 +946,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Address",
+          structName: "Address",
           param: {
             attr: {
               default: "",
@@ -989,8 +959,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Class",
+          structName: "Class",
           param: {
             attr: {
               default: "",
@@ -1003,8 +972,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: "",
@@ -1017,8 +985,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: 0,
@@ -1031,8 +998,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: [],
@@ -1045,8 +1011,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: [],
@@ -1059,8 +1024,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: "",
@@ -1073,8 +1037,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: 0,
@@ -1087,8 +1050,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: [],
@@ -1101,8 +1063,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: [],
@@ -1115,8 +1076,7 @@ describe("School path generation and value extraction", () => {
         {
           roootName: "school",
           rootType: "param",
-          category: "struct",
-          name: "Person",
+          structName: "Person",
           param: {
             attr: {
               default: [],

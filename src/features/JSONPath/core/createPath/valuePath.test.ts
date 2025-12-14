@@ -40,7 +40,6 @@ describe("eee", () => {
       rootCategory: "param",
       rootName: "testParam",
       scalars: {
-        category: "primitive",
         name: "number",
         objectSchema: {
           testParam: { kind: "number", default: 0 },
@@ -87,7 +86,6 @@ describe("eee", () => {
       rootCategory: "args",
       rootName: "stringParam",
       scalars: {
-        category: "primitive",
         name: "string",
         objectSchema: {
           stringParam: { kind: "string", default: "" },

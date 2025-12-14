@@ -22,11 +22,13 @@ import type {
   PrimitivePluginValuesPath,
 } from "./types";
 
+type PAUnion = "param" | "args";
+
 export const createPluginValuesPath = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType
 >(
-  category: "param" | "args",
+  category: PAUnion,
   rootName: string,
   param: PluginParamEx2<S, A>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
@@ -51,7 +53,7 @@ const createPrimitiveArrayPath = <
   S extends PluginScalarParam,
   T extends ArrayParamItemType2
 >(
-  category: "param" | "args",
+  category: PAUnion,
   rootName: string,
   param: PluginParamEx<T>
 ): PluginValuesPathSchema<S, T> => {
@@ -59,8 +61,7 @@ const createPrimitiveArrayPath = <
     rootCategory: category,
     rootName: rootName,
     scalars: {
-      category,
-      name: "array",
+      name: "",
       objectSchema: {},
       scalarsPath: undefined,
       scalarArrays: [
@@ -76,7 +77,7 @@ const createPrimitiveArrayPath = <
 };
 
 export const createPrimiteveParamPath = <T extends PluginScalarParam>(
-  category: "param" | "args",
+  category: PAUnion,
   rootName: string,
   param: PluginParamEx<T>
 ): PrimitivePluginValuesPath<T> => {
@@ -84,7 +85,6 @@ export const createPrimiteveParamPath = <T extends PluginScalarParam>(
     rootCategory: category,
     rootName: rootName,
     scalars: {
-      category: "primitive",
       name: param.attr.kind,
       objectSchema: {
         [param.name]: param.attr,
@@ -101,7 +101,7 @@ export const createStructParamPath = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType
 >(
-  category: "param" | "args",
+  category: PAUnion,
   param: PluginParamEx<StructRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
 ): PluginValuesPathSchema<S, A> => {
@@ -132,7 +132,7 @@ const createStructArrayPath = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType
 >(
-  category: "param" | "args",
+  category: PAUnion,
   param: PluginParamEx<StructArrayRefParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
 ): PluginValuesPathSchema<S, A> => {
