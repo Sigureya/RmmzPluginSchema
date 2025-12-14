@@ -28,10 +28,15 @@ export type ExtractorBundle = PluginValuesExtractorBundle<
   PluginArrayParamType
 >;
 
+export interface RootInfo {
+  rootName: string;
+  rootCategory: RootTypeCategory;
+}
+
 export interface PluginValuesExtractorBundle<
   S extends PluginScalarParam = PluginScalarParam,
   A extends PluginArrayParamType = PluginArrayParamType
-> {
+> extends RootInfo {
   rootName: string;
   rootCategory: RootTypeCategory;
 
