@@ -4,7 +4,7 @@ import { ValueCategory } from './category';
 import { StructPathError } from './errorTypes';
 export interface StructPropertiesPath<Scalar extends PluginScalarParam, Array extends PluginArrayParamType> {
     name: string;
-    category: ValueCategory;
+    category?: ValueCategory;
     scalarsPath: string | undefined;
     scalarArrays: ArrayParamPathPair<PluginParamEx<Array>>[];
     objectSchema: Record<string, Scalar>;

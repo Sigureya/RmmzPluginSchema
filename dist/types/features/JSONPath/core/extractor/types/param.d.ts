@@ -7,9 +7,9 @@ export interface PluginParamsSchema<S extends PluginScalarParam, A extends Plugi
         params: PluginParamEx2<S, A>[];
     };
 }
-export interface PluginParamExtractor {
+export interface PluginParamExtractor<S extends PluginScalarParam = PluginScalarParam, A extends PluginArrayParamType = PluginArrayParamType> {
     pluginName: string;
-    extractors: PluginValuesExtractorBundle[];
+    extractors: PluginValuesExtractorBundle<S, A>[];
 }
 export interface ParamExtractResult {
     pluginName: string;
