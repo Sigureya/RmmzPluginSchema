@@ -32,7 +32,7 @@ const extractBundleGroups = <
   memo: PluginValuesExtractorBundle<S, A>
 ): [PluginValues[], PluginValues[][], PluginValues[][]] => {
   const topValues: PluginValues[] = memo.top
-    ? extractFromStruct(memo, value, memo.top)
+    ? extractFromStruct(memo, value, memo.top, "")
     : [];
   const structValues: PluginValues[][] = memo.structs.map((m) =>
     extractFromStruct(memo, value, m)
@@ -49,9 +49,9 @@ const extractFromStruct = <
 >(
   bundle: PluginValuesExtractorBundle<S, A>,
   value: JSONValue,
-  memo: PluginValuesPathMemo<S, A>
+  memo: PluginValuesPathMemo<S, A>,
+  structName: string = memo.bundleName
 ): PluginValues[] => {
-  const structName = memo.bundleName;
   const svalues: PluginValueScalar<S>[] = memo.scalar
     ? readScalarValue(
         bundle,

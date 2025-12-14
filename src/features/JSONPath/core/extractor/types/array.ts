@@ -4,12 +4,11 @@ import type {
   PluginParamEx,
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValues, ValueCategory2 } from "./result";
+import type { PluginValues } from "./result";
 
 export interface PluginValuesStringArray extends PluginValues {
   value: string;
-  category: ValueCategory2;
-  name: string;
+  structName: string;
   param: PluginParamEx<StringArrayParam>;
 }
 
@@ -17,8 +16,7 @@ export interface PluginValuesNumberArray<
   T extends NumberArrayParam = NumberArrayParam
 > extends PluginValues {
   value: number;
-  category: ValueCategory2;
-  name: string;
+  structName: string;
   param: PluginParamEx<T>;
 }
 

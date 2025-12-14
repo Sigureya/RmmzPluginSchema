@@ -83,32 +83,28 @@ describe("plugin param extractor", () => {
   test("extract values", () => {
     const expected: PluginValues[] = [
       {
-        category: "struct",
-        name: "boolean",
+        structName: "",
         param: { name: "enable", attr: { kind: "boolean", default: false } },
         roootName: "plugin",
         rootType: "param",
         value: true,
       },
       {
-        category: "struct",
-        name: "number",
+        structName: "",
         param: { name: "threshold", attr: { kind: "number", default: 10 } },
         roootName: "plugin",
         rootType: "param",
         value: 42,
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: { name: "name", attr: { kind: "string", default: "" } },
         roootName: "person",
         rootType: "param",
         value: "Alice",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: { name: "age", attr: { kind: "number", default: 0 } },
         roootName: "person",
         rootType: "param",
@@ -127,8 +123,7 @@ describe("plugin param extractor", () => {
   test("extract from record", () => {
     const expected: PluginValues[] = [
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: "",
@@ -141,8 +136,7 @@ describe("plugin param extractor", () => {
         value: "Alice",
       },
       {
-        category: "struct",
-        name: "Person",
+        structName: "Person",
         param: {
           attr: {
             default: 0,

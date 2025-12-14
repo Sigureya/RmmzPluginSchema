@@ -64,8 +64,7 @@ const nap = (
         roootName: bundle.rootName,
         rootType: bundle.rootCategory,
         value: v,
-        category: "struct",
-        name: groupName,
+        structName: groupName,
         param: schema,
       })
     );
@@ -84,8 +83,7 @@ const sap = (
         roootName: bundle.rootName,
         rootType: bundle.rootCategory,
         value: v,
-        category: "struct",
-        name: groupName,
+        structName: groupName,
         param: schema,
       };
     });

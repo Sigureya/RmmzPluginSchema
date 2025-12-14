@@ -44,8 +44,7 @@ const vex = <T extends PluginScalarParam>(
   return {
     roootName: bundle.rootName,
     rootType: bundle.rootCategory,
-    category: "struct",
-    name: structName,
+    structName: structName,
     value: value,
     param: { name: lastSegment, attr: schema },
   };

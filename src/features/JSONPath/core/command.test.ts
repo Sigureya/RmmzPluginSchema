@@ -10,7 +10,11 @@ import {
   compilePluginCommandExtractor,
   extractPluginCommandArgs,
 } from "./command";
-import type { PluginValues, CommandExtractResult } from "./extractor/types";
+import type {
+  PluginValues,
+  CommandExtractResult,
+  CommandArgExtractors,
+} from "./extractor/types";
 
 interface Effect {
   code: number;
@@ -121,8 +125,7 @@ describe("command extractor", () => {
   test("extract values", () => {
     const values: PluginValues[] = [
       {
-        category: "struct",
-        name: "number",
+        structName: "",
         param: {
           attr: { default: 0, kind: "number" },
           name: "subject",
@@ -132,8 +135,7 @@ describe("command extractor", () => {
         value: 1,
       },
       {
-        category: "struct",
-        name: "array",
+        structName: "",
         param: {
           attr: { default: [], kind: "number[]" },
           name: "targets",
@@ -143,8 +145,7 @@ describe("command extractor", () => {
         value: 2,
       },
       {
-        category: "struct",
-        name: "array",
+        structName: "",
         param: {
           attr: { default: [], kind: "number[]" },
           name: "targets",
@@ -154,8 +155,7 @@ describe("command extractor", () => {
         value: 3,
       },
       {
-        category: "struct",
-        name: "Damage",
+        structName: "Damage",
         param: {
           attr: { default: "", kind: "string" },
           name: "exprFunc",
@@ -165,8 +165,7 @@ describe("command extractor", () => {
         value: "a  b",
       },
       {
-        category: "struct",
-        name: "Effect",
+        structName: "Effect",
         param: {
           attr: { default: 0, kind: "number" },
           name: "code",
@@ -176,8 +175,7 @@ describe("command extractor", () => {
         value: 10,
       },
       {
-        category: "struct",
-        name: "Effect",
+        structName: "Effect",
         param: {
           attr: { default: 0, kind: "number" },
           name: "value",
@@ -187,8 +185,7 @@ describe("command extractor", () => {
         value: 100,
       },
       {
-        category: "struct",
-        name: "Effect",
+        structName: "Effect",
         param: {
           attr: { default: 0, kind: "number" },
           name: "code",
@@ -198,8 +195,7 @@ describe("command extractor", () => {
         value: 20,
       },
       {
-        category: "struct",
-        name: "Effect",
+        structName: "Effect",
         param: {
           attr: { default: 0, kind: "number" },
           name: "value",
@@ -209,8 +205,7 @@ describe("command extractor", () => {
         value: 200,
       },
       {
-        category: "struct",
-        name: "Message",
+        structName: "Message",
         param: {
           attr: { default: "", kind: "string" },
           name: "success",
@@ -220,8 +215,7 @@ describe("command extractor", () => {
         value: "Hit!",
       },
       {
-        category: "struct",
-        name: "Message",
+        structName: "Message",
         param: {
           attr: { default: "", kind: "string" },
           name: "failure",
@@ -261,7 +255,7 @@ describe("", () => {
   });
 
   test("extract values", () => {
-    const memo = compilePluginCommandExtractor(
+    const memo: CommandArgExtractors = compilePluginCommandExtractor(
       "PluginName",
       schema,
       structsMap,
@@ -269,8 +263,7 @@ describe("", () => {
     );
     const values: PluginValues[] = [
       {
-        category: "struct",
-        name: "Message",
+        structName: "Message",
         param: {
           attr: { default: "", kind: "string" },
           name: "success",
@@ -280,8 +273,7 @@ describe("", () => {
         value: "Hit!",
       },
       {
-        category: "struct",
-        name: "Message",
+        structName: "Message",
         param: {
           attr: { default: "", kind: "string" },
           name: "failure",
