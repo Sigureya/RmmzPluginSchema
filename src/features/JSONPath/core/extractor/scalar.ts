@@ -6,12 +6,16 @@ import type {
   PluginScalarParam,
   PluginArrayParamType,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesExtractorBundle, PluginValueScalar } from "./types";
+import type {
+  PluginValuesExtractorBundle,
+  PluginValueScalar,
+  RootInfo,
+} from "./types";
 
 export const readScalarValue = <T extends PluginScalarParam>(
   bundle: PluginValuesExtractorBundle<T, PluginArrayParamType>,
   structName: string,
-  json: JSONValue,
+  json: Record<string, JSONValue>,
   jsonPath: JSONPathReader,
   record: Record<string, T>
 ): PluginValueScalar<T>[] => {
@@ -24,7 +28,7 @@ export const readScalarValue = <T extends PluginScalarParam>(
 };
 
 const vex = <T extends PluginScalarParam>(
-  bundle: PluginValuesExtractorBundle<T>,
+  bundle: RootInfo,
   structName: string,
   value: JSONValue,
   segments: (number | string)[],
