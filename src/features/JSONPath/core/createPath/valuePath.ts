@@ -61,7 +61,6 @@ const createPrimitiveArrayPath = <
     rootCategory: category,
     rootName: rootName,
     scalars: {
-      category,
       name: "",
       objectSchema: {},
       scalarsPath: undefined,
@@ -86,7 +85,6 @@ export const createPrimiteveParamPath = <T extends PluginScalarParam>(
     rootCategory: category,
     rootName: rootName,
     scalars: {
-      category: "primitive",
       name: param.attr.kind,
       objectSchema: {
         [param.name]: param.attr,

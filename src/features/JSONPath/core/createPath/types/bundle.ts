@@ -41,7 +41,6 @@ export interface PrimitivePluginValuesPath<T extends PluginScalarParam>
   rootCategory: "param" | "args";
   rootName: string;
   scalars: {
-    category: "primitive";
     name: T["kind"];
     objectSchema: Record<string, T>;
     scalarsPath: `$.${string}`;
