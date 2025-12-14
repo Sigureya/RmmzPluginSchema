@@ -61,7 +61,7 @@ const nap = (
     .filter((v) => typeof v === "number")
     .map(
       (v): PluginValuesNumberArray => ({
-        roootName: bundle.rootName,
+        rootName: bundle.rootName,
         rootType: bundle.rootCategory,
         value: v,
         structName: groupName,
@@ -80,7 +80,7 @@ const sap = (
     .filter((v) => typeof v === "string")
     .map((v): PluginValuesStringArray => {
       return {
-        roootName: bundle.rootName,
+        rootName: bundle.rootName,
         rootType: bundle.rootCategory,
         value: v,
         structName: groupName,
