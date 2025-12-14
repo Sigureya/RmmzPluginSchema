@@ -1,10 +1,10 @@
 import { PluginParam } from '../../../../../rmmz/plugin';
-export type ValueCategory2 = "struct" | "command" | "param" | "args" | "primitive";
+export type Vct_PS = "primitve" | "struct";
+export type RootTypeCategory = "args" | "param";
 export interface PluginValues<P extends PluginParam = PluginParam> {
-    rootType: ValueCategory2;
+    rootType: RootTypeCategory;
     roootName: string;
     value: number | string | boolean;
-    category: ValueCategory2;
-    name: string;
+    structName: string;
     param: P;
 }

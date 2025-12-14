@@ -1,10 +1,9 @@
 import { PluginArrayParamType, PluginScalarParam } from '../../../../../rmmz/plugin';
 import { PluginValuesPathBase } from './base';
-import { ValueCategory } from './category';
 import { StructPropertysPathOld, StructPathResultWithError } from './struct';
 import { StructPropertiesPath, TemplateGE } from './template';
 export interface PluginValuesPath extends PluginValuesPathBase {
-    rootCategory: ValueCategory;
+    rootCategory: "param" | "args";
     rootName: string;
     scalars?: StructPropertysPathOld;
     structs: StructPathResultWithError;
@@ -15,7 +14,7 @@ export interface PluginValuesPath extends PluginValuesPathBase {
  */
 export type PluginValuesPathEx<Scalar extends PluginScalarParam, Array extends PluginArrayParamType> = PluginValuesPathSchema<Scalar, Array>;
 export interface PluginValuesPathSchema<Scalar extends PluginScalarParam, Array extends PluginArrayParamType> extends PluginValuesPathBase {
-    rootCategory: ValueCategory;
+    rootCategory: "param" | "args";
     rootName: string;
     scalars?: StructPropertiesPath<Scalar, Array>;
     structs: TemplateGE<Scalar, Array>;
@@ -25,7 +24,6 @@ export interface PrimitivePluginValuesPath<T extends PluginScalarParam> extends 
     rootCategory: "param" | "args";
     rootName: string;
     scalars: {
-        category: "primitive";
         name: T["kind"];
         objectSchema: Record<string, T>;
         scalarsPath: `$.${string}`;
