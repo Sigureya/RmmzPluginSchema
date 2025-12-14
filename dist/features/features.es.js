@@ -62,13 +62,13 @@ const w = (a, r, t, e = y) => d(a.attr.struct, `${r}.${a.name}`, t, e), V = (a, 
   structArrays: { items: [], errors: [] },
   structs: w(r, "$", t)
 }), B = (a, r, t) => ({ structArrays: V(r, "$", t), rootName: r.name, rootCategory: a, scalars: void 0, structs: { items: [], errors: [] } }), G = (a, r, t, e) => r.filter((s) => typeof s == "number").map((s) => ({
-  roootName: a.rootName,
+  rootName: a.rootName,
   rootType: a.rootCategory,
   value: s,
   structName: t,
   param: e
 })), K = (a, r, t, e) => r.filter((s) => typeof s == "string").map((s) => ({
-  roootName: a.rootName,
+  rootName: a.rootName,
   rootType: a.rootCategory,
   value: s,
   structName: t,
@@ -79,7 +79,7 @@ const w = (a, r, t, e = y) => d(a.attr.struct, `${r}.${a.name}`, t, e), V = (a, 
   if (typeof m == "number") return null;
   const o = s[m];
   return o ? {
-    roootName: a.rootName,
+    rootName: a.rootName,
     rootType: a.rootCategory,
     structName: r,
     value: t,
