@@ -46,7 +46,7 @@ const vex = <T extends PluginScalarParam>(
     return null;
   }
   return {
-    roootName: bundle.rootName,
+    rootName: bundle.rootName,
     rootType: bundle.rootCategory,
     structName: structName,
     value: value,
