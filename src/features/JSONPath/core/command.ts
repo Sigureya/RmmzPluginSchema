@@ -55,7 +55,7 @@ const createExtractors = (
 };
 
 export const extractPluginCommandArgs = (
-  value: JSONValue,
+  value: Record<string, JSONValue>,
   extractor: CommandArgExtractors
 ): CommandExtractResult => {
   return {
@@ -66,7 +66,7 @@ export const extractPluginCommandArgs = (
 };
 
 export const extractCommandArgsByKey = (
-  value: JSONValue,
+  value: Record<string, JSONValue>,
   key: CommandMapKey,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>
 ): CommandExtractResult | undefined => {

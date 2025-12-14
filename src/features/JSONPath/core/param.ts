@@ -34,7 +34,7 @@ export const extractPluginParam = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType
 >(
-  value: JSONValue,
+  value: Record<string, JSONValue>,
   paramExtractor: PluginParamExtractor<S, A>
 ): ParamExtractResult => {
   return {

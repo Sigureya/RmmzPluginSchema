@@ -18,7 +18,7 @@ export const extractAllPluginValues = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType
 >(
-  value: JSONValue,
+  value: Record<string, JSONValue>,
   memo: ReadonlyArray<PluginValuesExtractorBundle<S, A>>
 ): PluginValues[] => {
   return memo.map((m) => extractBundleGroups(value, m)).flat(3);
@@ -28,7 +28,7 @@ const extractBundleGroups = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType
 >(
-  value: JSONValue,
+  value: Record<string, JSONValue>,
   memo: PluginValuesExtractorBundle<S, A>
 ): [PluginValues[], PluginValues[][], PluginValues[][]] => {
   const topValues: PluginValues[] = memo.top
@@ -48,7 +48,7 @@ const extractFromStruct = <
   A extends PluginArrayParamType
 >(
   bundle: PluginValuesExtractorBundle<S, A>,
-  value: JSONValue,
+  value: Record<string, JSONValue>,
   memo: PluginValuesPathMemo<S, A>,
   structName: string = memo.bundleName
 ): PluginValues[] => {
