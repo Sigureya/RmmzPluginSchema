@@ -1,6 +1,7 @@
 export * from './command';
 export * from './createPath';
 export type * from './extractor/types';
+export * from './extractor/value';
 export * from './param';
 export * from './plugin';
 export * from './schema';
