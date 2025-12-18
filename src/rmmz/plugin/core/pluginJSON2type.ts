@@ -4,10 +4,20 @@ import type {
   PluginSchemaArray,
   PluginSchemaArrayFiltered,
   PluginScalarParam,
+  PluginCommandSchemaArray,
+  PluginStructSchemaArray,
 } from "./params";
 import type { PluginDependencies } from "./parse";
 
-export interface PluginSchema {
+export interface PluginMinimumSchema {
+  pluginName: string;
+  schema: {
+    commands: PluginCommandSchemaArray[];
+    structs: PluginStructSchemaArray[];
+  };
+}
+
+export interface PluginSchema extends PluginMinimumSchema {
   pluginName: string;
   target: string;
   meta: Record<string, string>;
