@@ -4,9 +4,6 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValues } from "./result";
 
-export interface PluginValueScalar<T extends PluginScalarParam>
-  extends PluginValues {
-  value: number | string | boolean;
-  structName: string;
-  param: PluginParamEx<T>;
-}
+export type PluginValueScalar<T extends PluginScalarParam> = PluginValues<
+  PluginParamEx<T>
+>;
