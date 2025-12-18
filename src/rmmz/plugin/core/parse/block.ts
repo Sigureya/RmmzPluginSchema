@@ -43,31 +43,33 @@ export const splitBlock = (block: string): Block => {
     lines: [],
     blockType: BLOCK_NONE,
   };
-
   const finalState = lines.reduce((state, line): BlockState => {
-    const trimmed = line.trim();
-    const structMatch = trimmed.match(
-      /^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/
-    );
-
-    if (structMatch) {
-      return handleStructMatch(state, structMatch);
-    }
-    if (trimmed === "/*:") {
-      return handleBlockStart(state);
-    }
-    if (trimmed === "*/") {
-      return state.lines.length > 0 ? handleBlockEnd(state) : state;
-    }
-    return {
-      ...state,
-      lines: state.lines.concat([trimmed]),
-    };
+    return readLine(state, line);
   }, initialState);
-
   return {
     structs: finalState.structs,
     bodies: finalState.bodies,
+  };
+};
+
+const readLine = (state: BlockState, line: string): BlockState => {
+  const trimmed = line.trim();
+  const structMatch = trimmed.match(
+    /^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/
+  );
+
+  if (structMatch) {
+    return handleStructMatch(state, structMatch);
+  }
+  if (trimmed === "/*:") {
+    return handleBlockStart(state);
+  }
+  if (trimmed === "*/") {
+    return state.lines.length > 0 ? handleBlockEnd(state) : state;
+  }
+  return {
+    ...state,
+    lines: state.lines.concat([trimmed]),
   };
 };
 
