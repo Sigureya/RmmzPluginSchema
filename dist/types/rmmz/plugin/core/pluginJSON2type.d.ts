@@ -1,6 +1,13 @@
-import { PluginArrayParamType, PluginParamEx2, PluginSchemaArray, PluginSchemaArrayFiltered, PluginScalarParam } from './params';
+import { PluginArrayParamType, PluginParamEx2, PluginSchemaArray, PluginSchemaArrayFiltered, PluginScalarParam, PluginCommandSchemaArray, PluginStructSchemaArray } from './params';
 import { PluginDependencies } from './parse';
-export interface PluginSchema {
+export interface PluginMinimumSchema {
+    pluginName: string;
+    schema: {
+        commands: PluginCommandSchemaArray[];
+        structs: PluginStructSchemaArray[];
+    };
+}
+export interface PluginSchema extends PluginMinimumSchema {
     pluginName: string;
     target: string;
     meta: Record<string, string>;
