@@ -1,12 +1,12 @@
 import { JSONPathReader } from '../../../../../libs/jsonPath';
 import { PluginArrayParamType, PluginParamEx, PrimitiveParam } from '../../../../../rmmz/plugin';
-import { PluginValues } from './result';
-export interface PluginValuesStringArray extends PluginValues {
+import { PluginValuesN, PluginValuesS } from './result';
+export interface PluginValuesStringArray extends PluginValuesS {
     value: string;
     structName: string;
     param: PluginParamEx<StringArrayParam>;
 }
-export interface PluginValuesNumberArray<T extends NumberArrayParam = NumberArrayParam> extends PluginValues {
+export interface PluginValuesNumberArray<T extends NumberArrayParam = NumberArrayParam> extends PluginValuesN<PluginParamEx<T>> {
     value: number;
     structName: string;
     param: PluginParamEx<T>;
