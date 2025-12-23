@@ -17,6 +17,8 @@ describe("compileAttributes", () => {
     off: "disable",
     dir: "img/pictures/",
     parent: "ppp",
+    text: "Some Text",
+    desc: "Some Description",
   };
   test("number", () => {
     const tokens: PluginParamTokens = {
@@ -35,6 +37,8 @@ describe("compileAttributes", () => {
       decimals: 2,
       default: 123,
       parent: "ppp",
+      text: "Some Text",
+      desc: "Some Description",
     };
 
     const result: PrimitiveParam = compileAttributes(tokens);
@@ -56,6 +60,8 @@ describe("compileAttributes", () => {
       decimals: 2,
       default: [10, 20, 30],
       parent: "ppp",
+      text: "Some Text",
+      desc: "Some Description",
     };
     const result: PrimitiveParam = compileAttributes(tokens);
     expect(result).toEqual(expected);
@@ -75,6 +81,8 @@ describe("compileAttributes", () => {
       off: "disable",
       default: true,
       parent: "ppp",
+      text: "Some Text",
+      desc: "Some Description",
     };
     const result: PrimitiveParam = compileAttributes(tokens);
     expect(result).toEqual(expected);
