@@ -7,6 +7,7 @@ import { parsePlugin } from "./core/parse/parse";
 import type { PluginJSON } from "./core/pluginJSONTypes";
 import { parsePluginParamRecord } from "./pluginsJS/jsToJSON";
 import type { PluginParamsObject, PluginParamsRecord } from "./pluginsJS/types";
+import type { PluginInput } from "./types";
 
 export const paramObjectFromPluginRecord = (
   record: PluginParamsRecord
@@ -18,14 +19,15 @@ export const pluginSourceToJSON = (text: string): PluginJSON => {
   return compilePluginToObject(text);
 };
 
-export const pluginSourceToArraySchema = (
-  plguinName: string,
-  text: string
-): PluginSchema => {
-  const tokens: ParsedPlugin = parsePlugin(text);
+export const pluginSourceToArraySchema = ({
+  locale,
+  pluginName,
+  source,
+}: PluginInput): PluginSchema => {
+  const tokens: ParsedPlugin = parsePlugin(source, locale);
   return {
     meta: tokens.meta,
-    pluginName: plguinName,
+    pluginName: pluginName,
     target: "MZ",
     schema: compilePluginAsArraySchema(tokens),
   };

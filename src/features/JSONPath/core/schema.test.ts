@@ -116,10 +116,11 @@ const schema: PluginSchema = {
 
 describe("JSONPath", () => {
   test("pluginSourceToArraySchema", () => {
-    const result: PluginSchema = pluginSourceToArraySchema(
-      "MockPlugin",
-      pluginAnnoations.join("\n")
-    );
+    const result: PluginSchema = pluginSourceToArraySchema({
+      source: pluginAnnoations.join("\n"),
+      locale: "en",
+      pluginName: "MockPlugin",
+    });
     expect(result.schema.structs).toEqual(schema.schema.structs);
     expect(result.schema.commands).toEqual(schema.schema.commands);
     expect(result.schema.params).toEqual(schema.schema.params);
