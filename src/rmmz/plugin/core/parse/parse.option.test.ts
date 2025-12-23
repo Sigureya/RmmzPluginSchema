@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { parsePlugin } from "./parse";
-import type { ParsedPlugin } from "./types";
+import type { ParsedPlugin, PluginParamTokens } from "./types";
 
 describe("parsePlugin", () => {
   test("select with options and values, default is one of values, option text is same as value", () => {
@@ -52,25 +52,23 @@ describe("parsePlugin", () => {
       "@value 0",
       "*/",
     ];
-    const expected: Pick<ParsedPlugin, "params"> = {
-      params: [
-        {
-          name: "list",
-          attr: {
-            text: "tokaido",
-            kind: "select",
-            default: "300",
-          },
-          options: [
-            { option: "nozomi", value: "300" },
-            { option: "hikari", value: "100" },
-            { option: "kodama", value: "0" },
-          ],
+    const expected: PluginParamTokens[] = [
+      {
+        name: "list",
+        attr: {
+          text: "tokaido",
+          kind: "select",
+          default: "300",
         },
-      ],
-    };
+        options: [
+          { option: "nozomi", value: "300" },
+          { option: "hikari", value: "100" },
+          { option: "kodama", value: "0" },
+        ],
+      },
+    ];
     const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
-    expect(result.params).toMatchObject(expected.params);
+    expect(result.params).toMatchObject(expected);
   });
   test("combo with options, default is one of option texts, option text is same as value", () => {
     const tokens: string[] = [
@@ -83,23 +81,40 @@ describe("parsePlugin", () => {
       "@default ",
       "*/",
     ];
-    const expected: Pick<ParsedPlugin, "params"> = {
-      params: [
-        {
-          name: "list",
-          attr: {
-            kind: "combo",
-            default: "",
-          },
-          options: [
-            { option: "hayabusa", value: "hayabusa" },
-            { option: "komachi", value: "komachi" },
-            { option: "kagayaki", value: "kagayaki" },
-          ],
+    const expected: PluginParamTokens[] = [
+      {
+        name: "list",
+        attr: {
+          kind: "combo",
+          default: "",
         },
-      ],
-    };
+        options: [
+          { option: "hayabusa", value: "hayabusa" },
+          { option: "komachi", value: "komachi" },
+          { option: "kagayaki", value: "kagayaki" },
+        ],
+      },
+    ];
     const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
-    expect(result.params).toEqual(expected.params);
+    expect(result.params).toEqual(expected);
+  });
+  test("combo with options, default is one of option texts, option text is different from value", () => {
+    const tokens: string[] = [
+      "/*:",
+      "@param list",
+      "@option hayabusa",
+      "@option komachi",
+      "@option kagayaki",
+      "@default komachi",
+      "*/",
+    ];
+    const expected: PluginParamTokens[] = [
+      {
+        name: "list",
+        attr: { default: "komachi" },
+      },
+    ];
+    const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
+    expect(result.params).toMatchObject(expected);
   });
 });

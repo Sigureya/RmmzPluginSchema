@@ -6,29 +6,33 @@ import type {
   StructParseState,
 } from "./types/types";
 
+const createTokens = (structHead: string) => {
+  return [
+    "/*:",
+    "@param num",
+    "@type number",
+    "@default 10",
+    "",
+    "@param person",
+    "@type struct<Person>",
+    "@desc This is a person",
+    "*/",
+
+    structHead,
+    "@param name",
+    "@desc This is the name",
+    "@type string",
+    "@default bob",
+    "@param age",
+    "@type number",
+    "@default 20",
+    `*/`,
+  ];
+};
+
 describe("parsePlugin", () => {
   describe("structs", () => {
-    const tokens: string[] = [
-      "/*:",
-      "@param num",
-      "@type number",
-      "@default 10",
-      "",
-      "@param person",
-      "@type struct<Person>",
-      "@desc This is a person",
-      "*/",
-
-      `/*~struct~Person:`,
-      "@param name",
-      "@desc This is the name",
-      "@type string",
-      "@default bob",
-      "@param age",
-      "@type number",
-      "@default 20",
-      `*/`,
-    ];
+    const tokens: string[] = createTokens(`/*~struct~Person`);
     const src: string = tokens.join("\n");
     test("commands is empty", () => {
       const result: ParsedPlugin = parsePlugin(src);
@@ -75,6 +79,40 @@ describe("parsePlugin", () => {
         ],
       };
       expect(result.structs).toEqual([struct]);
+    });
+  });
+  describe("struct with locale", () => {
+    const expectedStruct: StructParseState = {
+      name: "Person",
+      params: [
+        {
+          name: "name",
+          attr: {
+            kind: "string",
+            default: "bob",
+            desc: "This is the name",
+          },
+        },
+        {
+          name: "age",
+          attr: {
+            kind: "number",
+            default: "20",
+          },
+        },
+      ],
+    };
+    test("structs with locale is defined", () => {
+      const tokens: string[] = createTokens(`/*~struct~Person:ja`);
+      const src: string = tokens.join("\n");
+      const result: ParsedPlugin = parsePlugin(src, "ja");
+      expect(result.structs).toEqual([expectedStruct]);
+    });
+    test("structs with locale is defined", () => {
+      const tokens: string[] = createTokens(`/*~struct~Person:ja  `);
+      const src: string = tokens.join("\n");
+      const result: ParsedPlugin = parsePlugin(src, "ja");
+      expect(result.structs).toEqual([expectedStruct]);
     });
   });
 });

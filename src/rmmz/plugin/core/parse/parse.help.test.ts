@@ -25,6 +25,11 @@ const mockTexts: string[] = [
   "@param data",
   "@type number",
   "@default 123",
+
+  "@command load",
+  "@arg slot",
+  "@type number",
+  "@default 1",
   "*/",
 ];
 
@@ -59,18 +64,26 @@ describe("parsePlugin", () => {
   test("should parse commands correctly", () => {
     const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
 
-    const expected: PluginCommandTokens = {
-      command: "save",
-      args: [
-        {
-          name: "arg1",
-          attr: {
-            kind: "number",
-            default: "123",
+    const expected: PluginCommandTokens[] = [
+      {
+        command: "save",
+        args: [
+          {
+            name: "arg1",
+            attr: { kind: "number", default: "123" },
           },
-        },
-      ],
-    };
-    expect(result.commands).toEqual([expected]);
+        ],
+      },
+      {
+        command: "load",
+        args: [
+          {
+            name: "slot",
+            attr: { kind: "number", default: "1" },
+          },
+        ],
+      },
+    ];
+    expect(result.commands).toEqual(expected);
   });
 });

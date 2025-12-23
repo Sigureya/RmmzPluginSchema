@@ -10,6 +10,7 @@ describe("parsePlugin", () => {
       "@type number",
       "@min 0",
       "@max 200",
+      "@decimals 2",
       "@default 123",
       "*/",
     ];
@@ -22,6 +23,7 @@ describe("parsePlugin", () => {
           kind: "number",
           min: "0",
           max: "200",
+          decimals: "2",
           default: "123",
         },
       },
@@ -68,6 +70,36 @@ describe("parsePlugin", () => {
         },
       },
     ];
+    expect(result.params).toEqual(expected);
+  });
+  test("all attributes", () => {
+    const mockTexts: string[] = [
+      "/*:",
+      "@param data",
+      "@min 0",
+      "@max 200",
+      "@decimals 2",
+      "@on enable",
+      "@off disable",
+      "@dir img/pictures/",
+      "@parent ppp",
+      "*/",
+    ];
+    const expected: PluginParamTokens[] = [
+      {
+        name: "data",
+        attr: {
+          min: "0",
+          max: "200",
+          decimals: "2",
+          on: "enable",
+          off: "disable",
+          dir: "img/pictures/",
+          parent: "ppp",
+        },
+      },
+    ];
+    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
     expect(result.params).toEqual(expected);
   });
 });

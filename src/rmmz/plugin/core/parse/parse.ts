@@ -37,6 +37,9 @@ import {
   KEYWORD_AUTHOR,
   KEYWORD_PLUGINDESC,
   KEYWORD_URL,
+  KEYWORD_DECIMALS,
+  KEYWORD_DIR,
+  KEYWORD_PARENT,
 } from "./types/keyword";
 
 export const parsePlugin = (
@@ -288,11 +291,14 @@ const KEYWORD_FUNC_TABLE = {
   option: handleOption,
   value: handleValue,
   type: handlerType,
+  parent: (state, val) => addParamField(state, KEYWORD_PARENT, val),
   default: (state, value) => addParamField(state, KEYWORD_DEFAULT, value),
   on: (state, value) => addParamField(state, KEYWORD_ON, value),
   off: (state, value) => addParamField(state, KEYWORD_OFF, value),
   min: (state, value) => addParamField(state, KEYWORD_MIN, value),
   max: (state, value) => addParamField(state, KEYWORD_MAX, value),
+  decimals: (state, value) => addParamField(state, KEYWORD_DECIMALS, value),
+  dir: (state, value) => addParamField(state, KEYWORD_DIR, value),
   base: handleBase,
   orderAfter: handleOrderAfter,
   orderBefore: handleOrderBefore,
