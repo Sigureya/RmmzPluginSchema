@@ -1,7 +1,7 @@
 import type { PluginBodyBlock, PluginStructBlock } from "./types";
 
-export const findPluginBodyAnnotation = (
-  bodies: readonly PluginBodyBlock[],
+export const findPluginBodyByLocale = (
+  bodies: ReadonlyArray<PluginBodyBlock>,
   locale: string
 ): PluginBodyBlock | undefined => {
   return bodies.reduce<PluginBodyBlock | undefined>((acc, item) => {

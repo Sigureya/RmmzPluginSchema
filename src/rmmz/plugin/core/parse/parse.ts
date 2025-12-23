@@ -1,5 +1,9 @@
 import type { Block, PluginStructBlock, PluginBodyBlock } from "./block";
-import { splitBlock } from "./block/block";
+import {
+  filterSturctByLocale,
+  findPluginBodyByLocale,
+  splitBlock,
+} from "./block";
 import { flashCurrentItem, withTexts } from "./flashState";
 import type { ParseState } from "./internalTypes";
 import {
@@ -33,12 +37,17 @@ import {
   KEYWORD_AUTHOR,
   KEYWORD_PLUGINDESC,
   KEYWORD_URL,
-} from "./types";
+} from "./types/keyword";
 
-export const parsePlugin = (text: string): ParsedPlugin => {
+export const parsePlugin = (
+  text: string,
+  locale: string = "ja"
+): ParsedPlugin => {
   const blocks: Block = splitBlock(text);
-  const structs = blocks.structs.map((s) => parseStructBlock(s));
-  const body = getBody(blocks);
+  const structs = filterSturctByLocale(blocks.structs, locale).map((s) =>
+    parseStructBlock(s)
+  );
+  const body = findPluginBodyByLocale(blocks.bodies, locale);
   if (!body) {
     return {
       params: [],
@@ -65,13 +74,6 @@ const parseStructBlock = (body: PluginStructBlock): StructParseState => {
     name: body.struct,
     params: state.params,
   };
-};
-
-const getBody = (block: Block): PluginBodyBlock | undefined => {
-  if (block.bodies.length === 0) {
-    return undefined;
-  }
-  return block.bodies[0];
 };
 
 const parseBodyBlock = (

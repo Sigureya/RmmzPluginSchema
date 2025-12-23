@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { filterSturctByLocale, findPluginBodyAnnotation } from "./filter";
+import { filterSturctByLocale, findPluginBodyByLocale } from "./filter";
 import type { PluginBodyBlock, PluginStructBlock } from "./types";
 
 describe("findPluginBodyAnnotation", () => {
@@ -20,19 +20,19 @@ describe("findPluginBodyAnnotation", () => {
 
   const input: PluginBodyBlock[] = [bodyJa, bodyEn, bodyFr];
   test("en", () => {
-    const result = findPluginBodyAnnotation(input, "en");
+    const result = findPluginBodyByLocale(input, "en");
     expect(result).toBe(bodyEn);
   });
   test("ja", () => {
-    const result = findPluginBodyAnnotation(input, "ja");
+    const result = findPluginBodyByLocale(input, "ja");
     expect(result).toBe(bodyJa);
   });
   test("fr", () => {
-    const result = findPluginBodyAnnotation(input, "fr");
+    const result = findPluginBodyByLocale(input, "fr");
     expect(result).toBe(bodyFr);
   });
   test("unknown", () => {
-    const result = findPluginBodyAnnotation(input, "unknown");
+    const result = findPluginBodyByLocale(input, "unknown");
     expect(result).toBe(bodyEn);
   });
 });

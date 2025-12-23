@@ -1,3 +1,3 @@
 export type * from "./types";
-export { filterSturctByLocale, findPluginBodyAnnotation } from "./filter";
+export { filterSturctByLocale, findPluginBodyByLocale } from "./filter";
 export { splitBlock } from "./block";
