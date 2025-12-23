@@ -1,10 +1,10 @@
-import type { PlguinStructBlock, PlguinBodyBlock, Block } from "./types";
+import type { PluginStructBlock, PluginBodyBlock, Block } from "./types";
 
 interface BlockState {
-  structs: PlguinStructBlock[];
-  bodies: PlguinBodyBlock[];
+  structs: PluginStructBlock[];
+  bodies: PluginBodyBlock[];
   structName?: string;
-  locale?: string;
+  locale?: string | undefined;
   lines: string[];
   blockType?:
     | typeof BLCOK_BODY
@@ -80,10 +80,10 @@ const readLocale = (line: string | undefined) => {
   if (line) {
     const match = line.match(/^\/\*:(\w+)/);
     if (match) {
-      return { locale: match[1] };
+      return match[1];
     }
   }
-  return {};
+  return undefined;
 };
 
 const handleBlockStart = (state: BlockState, line?: string): BlockState => {
@@ -91,7 +91,7 @@ const handleBlockStart = (state: BlockState, line?: string): BlockState => {
   // /*:ja のようなlocale指定に対応
   return {
     ...flushed,
-    ...readLocale(line),
+    locale: readLocale(line),
     blockType: BLCOK_BODY,
     lines: [],
   };
@@ -99,7 +99,7 @@ const handleBlockStart = (state: BlockState, line?: string): BlockState => {
 const handleBlockEnd = (state: BlockState): BlockState => {
   if (state.blockType === BLCOK_BODY) {
     // localeがあればbodyにも格納
-    const body: PlguinBodyBlock = state.locale
+    const body: PluginBodyBlock = state.locale
       ? { locale: state.locale, lines: [...state.lines] }
       : { lines: [...state.lines] };
     return {

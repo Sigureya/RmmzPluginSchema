@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { splitBlock } from "./block";
-import type { Block, PlguinBodyBlock, PlguinStructBlock } from "./types";
+import type { Block, PluginBodyBlock, PluginStructBlock } from "./types";
 
 describe("splitBlock", () => {
   describe("normal case", () => {
@@ -54,13 +54,24 @@ describe("splitBlock", () => {
   describe("locale in body", () => {
     it("should handle locale in body", () => {
       const lines: string[] = ["/*:ja", "@plugindesc モック", "*/"];
-      const expectedBodies: PlguinBodyBlock[] = [
+      const expectedBodies: PluginBodyBlock[] = [
         {
           locale: "ja",
           lines: ["@plugindesc モック"],
         },
       ];
 
+      const result = splitBlock(lines.join("\n"));
+      expect(result.bodies).toEqual(expectedBodies);
+    });
+    it("locale blank", () => {
+      const lines: string[] = ["/*: ", "@plugindesc mock", "*/"];
+      const expectedBodies: PluginBodyBlock[] = [
+        {
+          locale: undefined,
+          lines: ["@plugindesc mock"],
+        },
+      ];
       const result = splitBlock(lines.join("\n"));
       expect(result.bodies).toEqual(expectedBodies);
     });
@@ -74,9 +85,10 @@ describe("splitBlock", () => {
         "@plugindesc モック",
         "*/",
       ];
-      const expectedBodies: PlguinBodyBlock[] = [
+      const expectedBodies: PluginBodyBlock[] = [
         {
           lines: ["@plugindesc mock"],
+          locale: undefined,
         },
         {
           locale: "ja",
@@ -101,13 +113,13 @@ describe("splitBlock", () => {
         "@default 0",
         "*/",
       ];
-      const expectedBodies: PlguinBodyBlock[] = [
+      const expectedBodies: PluginBodyBlock[] = [
         {
           locale: "ja",
           lines: ["@plugindesc モック"],
         },
       ];
-      const expectedStructs: PlguinStructBlock[] = [
+      const expectedStructs: PluginStructBlock[] = [
         {
           struct: "Vector2",
           locale: "ja",
@@ -139,13 +151,13 @@ describe("splitBlock", () => {
         "@default 0",
         "*/",
       ];
-      const expectedBodies: PlguinBodyBlock[] = [
+      const expectedBodies: PluginBodyBlock[] = [
         {
           locale: "ja",
           lines: ["@plugindesc モック"],
         },
       ];
-      const expectedStructs: PlguinStructBlock[] = [
+      const expectedStructs: PluginStructBlock[] = [
         {
           struct: "Vector2",
           lines: [
@@ -196,7 +208,7 @@ describe("splitBlock", () => {
         "@default 0",
         "*/",
       ];
-      const expectedBodies: PlguinBodyBlock[] = [
+      const expectedBodies: PluginBodyBlock[] = [
         {
           lines: ["@plugindesc mock"],
         },
@@ -209,7 +221,7 @@ describe("splitBlock", () => {
           lines: ["@plugindesc Spott"],
         },
       ];
-      const expectedStructs: PlguinStructBlock[] = [
+      const expectedStructs: PluginStructBlock[] = [
         {
           struct: "Vector2",
           locale: "ja",
@@ -258,7 +270,7 @@ describe("splitBlock", () => {
         "*/",
       ];
 
-      const expectedBlcok: PlguinBodyBlock = {
+      const expectedBlcok: PluginBodyBlock = {
         lines: ["@plugindesc mock"],
       };
 

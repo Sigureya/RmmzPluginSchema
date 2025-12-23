@@ -1,15 +1,15 @@
 export interface Block {
-  structs: PlguinStructBlock[];
-  bodies: PlguinBodyBlock[];
+  structs: PluginStructBlock[];
+  bodies: PluginBodyBlock[];
 }
 
-export interface PlguinStructBlock {
+export interface PluginStructBlock {
   locale?: string;
   struct: string;
   lines: string[];
 }
 
-export interface PlguinBodyBlock {
+export interface PluginBodyBlock {
   locale?: string;
   lines: string[];
 }
