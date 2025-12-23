@@ -1,4 +1,4 @@
-import type { Block, PlguinStructBlock, PlguinBodyBlock } from "./block";
+import type { Block, PluginStructBlock, PluginBodyBlock } from "./block";
 import { splitBlock } from "./block/block";
 import { flashCurrentItem, withTexts } from "./flashState";
 import type { ParseState } from "./internalTypes";
@@ -59,7 +59,7 @@ export const parsePlugin = (text: string): ParsedPlugin => {
   };
 };
 
-const parseStructBlock = (body: PlguinStructBlock): StructParseState => {
+const parseStructBlock = (body: PluginStructBlock): StructParseState => {
   const state = parseBodyBlock(body, KEYWORD_FUNC_TABLE);
   return {
     name: body.struct,
@@ -67,7 +67,7 @@ const parseStructBlock = (body: PlguinStructBlock): StructParseState => {
   };
 };
 
-const getBody = (block: Block): PlguinBodyBlock | undefined => {
+const getBody = (block: Block): PluginBodyBlock | undefined => {
   if (block.bodies.length === 0) {
     return undefined;
   }
@@ -75,7 +75,7 @@ const getBody = (block: Block): PlguinBodyBlock | undefined => {
 };
 
 const parseBodyBlock = (
-  body: PlguinBodyBlock,
+  body: PluginBodyBlock,
   table: Record<string, (state: ParseState, value: string) => ParseState>
 ): ParseState => {
   const state = body.lines.reduce<ParseState>((acc, line) => {
