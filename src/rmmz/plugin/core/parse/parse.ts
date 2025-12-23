@@ -65,6 +65,7 @@ export const parsePlugin = (
     meta: finalState.meta,
     helpLines: finalState.helpLines,
     structs: structs,
+    dependencies: finalState.dependencies,
   };
 };
 

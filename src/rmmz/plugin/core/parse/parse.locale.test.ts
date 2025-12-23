@@ -3,6 +3,7 @@ import { parsePlugin } from "./parse";
 import type {
   ParsedPlugin,
   PluginCommandTokens,
+  PluginDependencies,
   StructParseState,
 } from "./types";
 
@@ -28,6 +29,8 @@ describe("parsePlugin", () => {
     "@text arg1 text",
     "@type number",
     "@default 123",
+
+    "@base ABC",
     "*/",
 
     "/*:ja",
@@ -38,6 +41,8 @@ describe("parsePlugin", () => {
     "@text 引数1のテキスト",
     "@type number",
     "@default 123",
+
+    "@base XYZ",
     "*/",
   ].join("\n");
 
@@ -66,10 +71,16 @@ describe("parsePlugin", () => {
         ],
       },
     ];
+    const dep: PluginDependencies = {
+      base: ["XYZ"],
+      orderBefore: [],
+      orderAfter: [],
+    };
 
     const result: ParsedPlugin = parsePlugin(input, "ja");
     expect(result.commands).toEqual(expectedCommands);
     expect(result.structs).toEqual(expectedStructs);
+    expect(result.dependencies).toEqual(dep);
   });
   test("should parse plugin with locale 'en' correctly", () => {
     const expectedCommands: PluginCommandTokens[] = [
@@ -96,8 +107,15 @@ describe("parsePlugin", () => {
         ],
       },
     ];
+    const dep: PluginDependencies = {
+      base: ["ABC"],
+      orderBefore: [],
+      orderAfter: [],
+    };
+
     const result: ParsedPlugin = parsePlugin(input, "en");
     expect(result.commands).toEqual(expectedCommands);
     expect(result.structs).toEqual(expectedStructs);
+    expect(result.dependencies).toEqual(dep);
   });
 });
