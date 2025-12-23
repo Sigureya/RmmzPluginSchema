@@ -58,7 +58,7 @@ export const parsePlugin = (
     };
   }
 
-  const finalState = parseBodyBlock(body, KEYWORD_FUNC_TABLE);
+  const finalState = parseBodyBlock(body);
   return {
     params: finalState.params,
     commands: finalState.commands,
@@ -70,38 +70,16 @@ export const parsePlugin = (
 };
 
 const parseStructBlock = (body: PluginStructBlock): StructParseState => {
-  const state = parseBodyBlock(body, KEYWORD_FUNC_TABLE);
+  const state = parseBodyBlock(body);
   return {
     name: body.struct,
     params: state.params,
   };
 };
 
-const parseBodyBlock = (
-  body: PluginBodyBlock,
-  table: Record<string, (state: ParseState, value: string) => ParseState>
-): ParseState => {
+const parseBodyBlock = (body: PluginBodyBlock): ParseState => {
   const state = body.lines.reduce<ParseState>((acc, line) => {
-    // 先頭の'*'や空白を除去
-    const trimmed = line.trimEnd().replace(/^[\*\s]*/, "");
-    if (!trimmed.startsWith("@")) {
-      // @タグがない場合はヘルプ行として追加するか無視
-      if (acc.currentContext === KEYWORD_HELP) {
-        return { ...acc, helpLines: acc.helpLines.concat(trimmed) };
-      }
-      return acc;
-    }
-    // @タグと値を抽出
-    const match = trimmed.match(/^@(\S+)\s*(.*)$/);
-    if (!match) {
-      return acc;
-    }
-    const [, tag, value] = match;
-    const fn = table[tag];
-    if (fn) {
-      return fn(acc, value.trim());
-    }
-    return acc;
+    return parseBodyBlockLine(acc, line);
   }, makeParseState());
   return flashCurrentItem(state);
 };
@@ -121,6 +99,36 @@ const makeParseState = (): ParseState => ({
   },
   meta: {},
 });
+
+const parseBodyBlockLine = (
+  acc: ParseState,
+  line: string,
+  table: Record<
+    string,
+    (state: ParseState, value: string) => ParseState
+  > = KEYWORD_FUNC_TABLE
+): ParseState => {
+  // 先頭の'*'や空白を除去
+  const trimmed = line.trimEnd().replace(/^[\*\s]*/, "");
+  if (!trimmed.startsWith("@")) {
+    // @タグがない場合はヘルプ行として追加するか無視
+    if (acc.currentContext === KEYWORD_HELP) {
+      return { ...acc, helpLines: acc.helpLines.concat(trimmed) };
+    }
+    return acc;
+  }
+  // @タグと値を抽出
+  const match = trimmed.match(/^@(\S+)\s*(.*)$/);
+  if (!match) {
+    return acc;
+  }
+  const [, tag, value] = match;
+  const fn = table[tag];
+  if (fn) {
+    return fn(acc, value.trim());
+  }
+  return acc;
+};
 
 const handleHelpContext = (oldstate: ParseState): ParseState => {
   const state = flashCurrentItem(oldstate);
@@ -227,6 +235,7 @@ const handleArgContext = (state: ParseState, value: string): ParseState => {
     },
   };
 };
+
 const handlerType = (state: ParseState, value: string): ParseState => {
   if (typeIsStruct(value)) {
     const structName = value.slice(7, -1);
