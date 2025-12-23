@@ -1,5 +1,5 @@
-import type { Block, PlguinBodyBlock, PlguinStructBlock } from "./block";
-import { splitBlock } from "./block";
+import type { Block, PlguinStructBlock, PlguinBodyBlock } from "./block";
+import { splitBlock } from "./block/block";
 import { flashCurrentItem, withTexts } from "./flashState";
 import type { ParseState } from "./internalTypes";
 import {

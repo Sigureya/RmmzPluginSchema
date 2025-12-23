@@ -1,18 +1,4 @@
-export interface Block {
-  structs: PlguinStructBlock[];
-  bodies: PlguinBodyBlock[];
-}
-
-export interface PlguinStructBlock {
-  locale?: string;
-  struct: string;
-  lines: string[];
-}
-
-export interface PlguinBodyBlock {
-  locale?: string;
-  lines: string[];
-}
+import type { PlguinStructBlock, PlguinBodyBlock, Block } from "./types";
 
 interface BlockState {
   structs: PlguinStructBlock[];
