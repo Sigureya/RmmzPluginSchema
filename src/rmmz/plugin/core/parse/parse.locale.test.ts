@@ -29,6 +29,7 @@ describe("parsePlugin", () => {
     "@type number",
     "@default 123",
     "*/",
+
     "/*:ja",
     "@command 保存",
     "@text セーブを書き込む",
@@ -49,11 +50,7 @@ describe("parsePlugin", () => {
         args: [
           {
             name: "arg1",
-            attr: {
-              kind: "number",
-              text: "引数1のテキスト",
-              default: "123",
-            },
+            attr: { kind: "number", text: "引数1のテキスト", default: "123" },
           },
         ],
       },
@@ -64,19 +61,43 @@ describe("parsePlugin", () => {
         params: [
           {
             name: "param1",
-            attr: {
-              kind: "number",
-              text: "パラメータ1",
-            },
+            attr: { kind: "number", text: "パラメータ1" },
           },
         ],
       },
     ];
 
     const result: ParsedPlugin = parsePlugin(input, "ja");
-
     expect(result.commands).toEqual(expectedCommands);
     expect(result.structs).toEqual(expectedStructs);
   });
-  test("should parse plugin with locale 'en' correctly", () => {});
+  test("should parse plugin with locale 'en' correctly", () => {
+    const expectedCommands: PluginCommandTokens[] = [
+      {
+        command: "save",
+        text: "writeSave",
+        desc: "write Save File",
+        args: [
+          {
+            name: "arg1",
+            attr: { kind: "number", text: "arg1 text", default: "123" },
+          },
+        ],
+      },
+    ];
+    const expectedStructs: StructParseState[] = [
+      {
+        name: "MyStruct",
+        params: [
+          {
+            name: "param1",
+            attr: { kind: "number", text: "Parameter 1" },
+          },
+        ],
+      },
+    ];
+    const result: ParsedPlugin = parsePlugin(input, "en");
+    expect(result.commands).toEqual(expectedCommands);
+    expect(result.structs).toEqual(expectedStructs);
+  });
 });
