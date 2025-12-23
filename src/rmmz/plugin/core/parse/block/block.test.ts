@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { Block, PlguinBodyBlock, PlguinStructBlock } from "./block";
 import { splitBlock } from "./block";
+import type { Block, PlguinBodyBlock, PlguinStructBlock } from "./types";
 
 describe("splitBlock", () => {
   describe("normal case", () => {
