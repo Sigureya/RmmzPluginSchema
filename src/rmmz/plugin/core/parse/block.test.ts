@@ -1,9 +1,9 @@
 import { describe, test, expect, it } from "vitest";
-import type { Block } from "./block";
+import type { Block, PlguinBodyBlock } from "./block";
 import { splitBlock } from "./block";
 
 describe("splitBlock", () => {
-  describe("", () => {
+  describe("normal case", () => {
     const lines: string[] = [
       "/*:",
       "@plugindesc mock",
@@ -50,6 +50,46 @@ describe("splitBlock", () => {
       expect(result.structs).toEqual(expected.structs);
     });
   });
+
+  describe("locale in body", () => {
+    test("should handle locale in body", () => {
+      const lines: string[] = ["/*:ja", "@plugindesc モック", "*/"];
+      const expectedBodies: PlguinBodyBlock[] = [
+        {
+          locale: "ja",
+          lines: ["@plugindesc モック"],
+        },
+      ];
+
+      const result = splitBlock(lines.join("\n"));
+      expect(result.bodies).toEqual(expectedBodies);
+    });
+  });
+
+  describe("multiple locales", () => {
+    it("should handle multiple locales", () => {
+      const lines: string[] = [
+        "/*:",
+        "@plugindesc mock",
+        "*/",
+        "/*:ja",
+        "@plugindesc モック",
+        "*/",
+      ];
+      const expectedBodies: PlguinBodyBlock[] = [
+        {
+          lines: ["@plugindesc mock"],
+        },
+        {
+          locale: "ja",
+          lines: ["@plugindesc モック"],
+        },
+      ];
+
+      const result = splitBlock(lines.join("\n"));
+      expect(result.bodies).toEqual(expectedBodies);
+    });
+  });
   describe("noname struct", () => {
     it("is not allowed", () => {
       const lines: string[] = [
@@ -66,14 +106,15 @@ describe("splitBlock", () => {
         "@default 0",
         "*/",
       ];
+
+      const expectedBlcok: PlguinBodyBlock = {
+        lines: ["@plugindesc mock"],
+      };
+
       const block: string = lines.join("\n");
       const result: Block = splitBlock(block);
       expect(result.structs).toEqual([]);
-      expect(result.bodies).toEqual([
-        {
-          lines: ["@plugindesc mock"],
-        },
-      ]);
+      expect(result.bodies).toEqual([expectedBlcok]);
     });
   });
 });
