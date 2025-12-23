@@ -55,14 +55,15 @@ export const splitBlock = (block: string): Block => {
 const readLine = (state: BlockState, line: string): BlockState => {
   const trimmed = line.trim();
   const structMatch = trimmed.match(
-    /^\/\*~struct~([A-Za-z0-9_]+)(?::([A-Za-z0-9_-]+))?/
+    /^\/\*~struct~([A-Za-z0-9_]*)(?::([A-Za-z0-9_-]+))?/
   );
 
   if (structMatch) {
     return handleStructMatch(state, structMatch);
   }
-  if (trimmed === "/*:") {
-    return handleBlockStart(state);
+  // /*: または /*:ja のようなlocale指定
+  if (/^\/\*:/.test(trimmed)) {
+    return handleBlockStart(state, trimmed);
   }
   if (trimmed === "*/") {
     return state.lines.length > 0 ? handleBlockEnd(state) : state;
@@ -89,23 +90,38 @@ const handleStructMatch = (
   };
 };
 
-const handleBlockStart = (state: BlockState): BlockState => {
+const readLocale = (line: string | undefined) => {
+  if (line) {
+    const match = line.match(/^\/\*:(\w+)/);
+    if (match) {
+      return { locale: match[1] };
+    }
+  }
+  return {};
+};
+
+const handleBlockStart = (state: BlockState, line?: string): BlockState => {
   const flushed = state.lines.length > 0 ? handleBlockEnd(state) : state;
+  // /*:ja のようなlocale指定に対応
   return {
     ...flushed,
+    ...readLocale(line),
     blockType: BLCOK_BODY,
-    structName: undefined,
-    locale: undefined,
     lines: [],
   };
 };
 const handleBlockEnd = (state: BlockState): BlockState => {
   if (state.blockType === BLCOK_BODY) {
+    // localeがあればbodyにも格納
+    const body: PlguinBodyBlock = state.locale
+      ? { locale: state.locale, lines: [...state.lines] }
+      : { lines: [...state.lines] };
     return {
       ...state,
-      bodies: state.bodies.concat([{ lines: [...state.lines] }]),
+      bodies: state.bodies.concat([body]),
       lines: [],
       blockType: BLOCK_NONE,
+      locale: undefined,
     };
   }
 
@@ -130,6 +146,7 @@ const handleBlockEnd = (state: BlockState): BlockState => {
     ...state,
     blockType: BLOCK_NONE,
     structName: undefined,
+    locale: undefined,
     lines: [],
   };
 };
