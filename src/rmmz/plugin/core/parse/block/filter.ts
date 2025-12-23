@@ -1,4 +1,21 @@
-import type { PluginStructBlock } from "./types";
+import type { PluginBodyBlock, PluginStructBlock } from "./types";
+
+export const findPluginBodyByLocale = (
+  bodies: ReadonlyArray<PluginBodyBlock>,
+  locale: string
+): PluginBodyBlock | undefined => {
+  return bodies.reduce<PluginBodyBlock | undefined>((acc, item) => {
+    if (item.locale === locale) {
+      return item;
+    }
+    if (item.locale === undefined) {
+      if (acc === undefined) {
+        return item;
+      }
+    }
+    return acc;
+  }, undefined);
+};
 
 export const filterSturctByLocale = (
   structs: ReadonlyArray<PluginStructBlock>,
