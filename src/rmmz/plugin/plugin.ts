@@ -19,15 +19,11 @@ export const pluginSourceToJSON = (text: string): PluginJSON => {
   return compilePluginToObject(text);
 };
 
-export const pluginSourceToArraySchema = ({
-  locale,
-  pluginName,
-  source,
-}: PluginInput): PluginSchema => {
-  const tokens: ParsedPlugin = parsePlugin(source, locale);
+export const pluginSourceToArraySchema = (input: PluginInput): PluginSchema => {
+  const tokens: ParsedPlugin = parsePlugin(input.source, input.locale);
   return {
     meta: tokens.meta,
-    pluginName: pluginName,
+    pluginName: input.pluginName,
     target: "MZ",
     schema: compilePluginAsArraySchema(tokens),
   };
