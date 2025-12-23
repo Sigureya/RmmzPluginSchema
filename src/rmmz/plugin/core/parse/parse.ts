@@ -41,7 +41,7 @@ import {
 
 export const parsePlugin = (
   text: string,
-  locale: string = "ja"
+  locale: string = "en"
 ): ParsedPlugin => {
   const blocks: Block = splitBlock(text);
   const structs = filterSturctByLocale(blocks.structs, locale).map((s) =>
