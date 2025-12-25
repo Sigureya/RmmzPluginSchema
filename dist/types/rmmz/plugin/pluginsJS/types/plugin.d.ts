@@ -1,4 +1,4 @@
-import { JSONValue } from '../../../libs/jsonPath';
+import { JSONValue } from '../../../../libs/jsonPath';
 export interface PluginInfo {
     name: string;
     status: boolean;
