@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { BooleanParam } from "./params";
@@ -13,12 +13,14 @@ describe("compileAttributes - boolean", () => {
         default: "true",
       } satisfies ParamSoruceRecord<BooleanParam>,
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(tokens, fn);
     const expected: BooleanParam = {
       default: true,
       kind: "boolean",
     };
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 
   test("full set", () => {
@@ -34,7 +36,8 @@ describe("compileAttributes - boolean", () => {
         parent: "Parent Feature",
       } satisfies ParamSoruceRecord<BooleanParam>,
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(tokens, fn);
     const expected: BooleanParam = {
       default: false,
       text: "Enabled?",
@@ -45,5 +48,6 @@ describe("compileAttributes - boolean", () => {
       kind: "boolean",
     };
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vi } from "vitest";
 import { compileAttributes, type ParamSoruceRecord } from "./attributes";
 import type { ComboParam, SelectParam } from "./params";
 import type { PluginParamTokens } from "./parse";
@@ -23,8 +23,10 @@ describe("compileAttributes - combo", () => {
       desc: "this is a combo",
       parent: "parentId",
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
   test("with options", () => {
     const token: PluginParamTokens = {
@@ -49,8 +51,10 @@ describe("compileAttributes - combo", () => {
       desc: "this is a combo",
       parent: "parentId",
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
 
@@ -75,8 +79,10 @@ describe("compileAttributes - select", () => {
       desc: "this is a select",
       parent: "parentId",
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
   test("with options", () => {
     const token: PluginParamTokens = {
@@ -105,7 +111,9 @@ describe("compileAttributes - select", () => {
       desc: "this is a select",
       parent: "parentId",
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });

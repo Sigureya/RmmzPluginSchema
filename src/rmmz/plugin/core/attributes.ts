@@ -1,3 +1,4 @@
+import { createDefaultStruct, createDefaultStructArray } from "./defaultStruct";
 import type { MappingTable } from "./mapping/mapping";
 import { compileParam, compileArrayParam } from "./mapping/mapping";
 import type {
@@ -26,12 +27,19 @@ type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
 
 export const compileAttributes = (
-  tokens: PluginParamTokens
+  tokens: PluginParamTokens,
+  objectParseFn: (json: string) => unknown = parseDeepJSON
 ): PrimitiveParam => {
   if (KEYWORD_KIND in tokens.attr) {
     const func = TABLE2[tokens.attr.kind as keyof typeof TABLE2];
     if (func) {
       return func(tokens);
+    }
+    if (tokens.attr.kind === "struct") {
+      return compileStructParam2(tokens, objectParseFn);
+    }
+    if (tokens.attr.kind === "struct[]") {
+      return compileStructArrayParam2(tokens, objectParseFn);
     }
   }
   return compileParam("any", "", tokens.attr, STRING);
@@ -187,22 +195,11 @@ const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
   return compileParam(kind, 0, tokens.attr, DATA_ID);
 };
 
-const createDefaultStruct = (tokens: PluginParamTokens) => {
-  if (!tokens.attr.default) {
-    return {};
-  }
-  const value = parseDeepJSON(tokens.attr.default);
-  if (Array.isArray(value)) {
-    return {};
-  }
-  if (typeof value === "object" && value !== null) {
-    return value;
-  }
-  return {};
-};
-
-const compileStructParam = (tokens: PluginParamTokens): StructRefParam => {
-  const defaultValue: Record<string, unknown> = createDefaultStruct(tokens);
+const compileStructParam2 = (
+  tokens: PluginParamTokens,
+  fn: (deepJSON: string) => unknown
+): StructRefParam => {
+  const defaultValue = createDefaultStruct(tokens.attr.default, fn);
   const STRUCT_REF = {
     text: attrString,
     desc: attrString,
@@ -214,23 +211,14 @@ const compileStructParam = (tokens: PluginParamTokens): StructRefParam => {
   };
 };
 
-const createDefaultStructArray = (tokens: PluginParamTokens) => {
-  if (!tokens.attr.default) {
-    return [];
-  }
-  const value = parseDeepJSON(tokens.attr.default);
-  if (Array.isArray(value)) {
-    if (value.every((v) => typeof v === "object" && v !== null)) {
-      return value;
-    }
-  }
-  return [];
-};
-
-const compileStructArrayParam = (
-  tokens: PluginParamTokens
+const compileStructArrayParam2 = (
+  tokens: PluginParamTokens,
+  objectParseFn: (json: string) => unknown
 ): StructArrayRefParam => {
-  const defaultValue = createDefaultStructArray(tokens);
+  const defaultValue = createDefaultStructArray(
+    tokens.attr.default,
+    objectParseFn
+  );
   const STRUCT_ARRAY = {
     text: attrString,
     desc: attrString,
@@ -279,8 +267,6 @@ const TABLE2 = {
   boolean: compileBooleanParam,
   file: compileFileParam,
   "file[]": compileFileArrayParam,
-  struct: compileStructParam,
-  "struct[]": compileStructArrayParam,
 } as const satisfies Partial<{
-  [K in PrimitiveParam["kind"]]: (tokens: PluginParamTokens) => PrimitiveParam;
+  [K in PrimitiveParam["kind"]]?: (tokens: PluginParamTokens) => PrimitiveParam;
 }>;
