@@ -40,15 +40,15 @@ describe("person", () => {
     {
       category: "struct",
       name: "MockPerson",
-      scalarsPath: `$.person["name","age","b"]`,
+      scalarsPath: `$["person"]["name","age","b"]`,
       scalarArrays: [
         {
-          path: "$.person.numberArray[*]",
+          path: `$["person"]["numberArray"][*]`,
 
           param: personSchema.scalarArrays[0],
         },
         {
-          path: "$.person.stringArray[*]",
+          path: `$["person"]["stringArray"][*]`,
           param: personSchema.scalarArrays[1],
         },
       ],
@@ -72,7 +72,7 @@ describe("person", () => {
   test("getPathFromStructSchema", () => {
     const result: StructPathResultWithError = getPathFromStructSchema(
       "MockPerson",
-      "$.person",
+      `$["person"]`,
       new Map([["MockPerson", personSchema]])
     );
     expect(result.items).toEqual(expected);

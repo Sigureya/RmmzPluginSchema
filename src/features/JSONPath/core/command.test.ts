@@ -1,5 +1,5 @@
-import type { MockedFunction } from "vitest";
 import { describe, test, expect, vi } from "vitest";
+import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
@@ -91,13 +91,10 @@ const mockData = {
   message: { success: "Hit!", failure: "Miss!" },
 } as const satisfies Action;
 
-const createMockFunc = (): MockedFunction<(path: string) => JSONPathJS> => {
-  return vi.fn(newJSONPath);
-};
-
-const newJSONPath = (path: string): JSONPathJS => {
-  return new JSONPathJS(path);
-};
+const emptyReader = (): JSONPathReader => ({
+  find: () => [],
+  pathSegments: () => [],
+});
 
 describe("command extractor", () => {
   const schema: PluginCommandSchemaArray = {
@@ -112,14 +109,22 @@ describe("command extractor", () => {
   };
 
   test("create memo", () => {
-    const mockFn = createMockFunc();
+    const mockFn = vi.fn<(path: string) => JSONPathReader>(() => {
+      return emptyReader();
+    });
     compilePluginCommandExtractor("PluginName", schema, structsMap, mockFn);
     expect(mockFn).toHaveBeenCalledTimes(5);
-    expect(mockFn).toHaveBeenNthCalledWith(1, "$.subject");
-    expect(mockFn).toHaveBeenNthCalledWith(2, "$.targets[*]");
-    expect(mockFn).toHaveBeenNthCalledWith(3, '$.damage["exprFunc"]');
-    expect(mockFn).toHaveBeenNthCalledWith(4, '$.effects[*]["code","value"]');
-    expect(mockFn).toHaveBeenNthCalledWith(5, '$.message["success","failure"]');
+    expect(mockFn).toHaveBeenNthCalledWith(1, `$["subject"]`);
+    expect(mockFn).toHaveBeenNthCalledWith(2, `$["targets"][*]`);
+    expect(mockFn).toHaveBeenNthCalledWith(3, '$["damage"]["exprFunc"]');
+    expect(mockFn).toHaveBeenNthCalledWith(
+      4,
+      '$["effects"][*]["code","value"]'
+    );
+    expect(mockFn).toHaveBeenNthCalledWith(
+      5,
+      '$["message"]["success","failure"]'
+    );
   });
 
   test("extract values", () => {
@@ -230,7 +235,9 @@ describe("command extractor", () => {
       "",
       schema,
       structsMap,
-      (paht) => new JSONPathJS(paht)
+      (path) => {
+        return new JSONPathJS(path);
+      }
     );
     const result = extractPluginCommandArgs(mockData, memo);
     expect(result.args).toEqual(values);
@@ -248,10 +255,15 @@ describe("", () => {
     ],
   };
   test("create memo", () => {
-    const mockFn = createMockFunc();
+    const mockFn = vi.fn((path) => {
+      return new JSONPathJS(path);
+    });
     compilePluginCommandExtractor("", schema, structsMap, mockFn);
     expect(mockFn).toHaveBeenCalledTimes(1);
-    expect(mockFn).toHaveBeenNthCalledWith(1, '$.message["success","failure"]');
+    expect(mockFn).toHaveBeenNthCalledWith(
+      1,
+      '$["message"]["success","failure"]'
+    );
   });
 
   test("extract values", () => {

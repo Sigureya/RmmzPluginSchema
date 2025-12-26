@@ -80,14 +80,14 @@ function createChildFrames(
   const structFrames: Frame[] = structSchema.structs.map(
     (s): Frame => ({
       schemaName: s.attr.struct,
-      basePath: `${path}.${s.name}`,
+      basePath: `${path}["${s.name}"]`,
       ancestry: childAncestry,
     })
   );
   const structArrayFrames: Frame[] = structSchema.structArrays.map(
     (sa): Frame => ({
       schemaName: sa.attr.struct,
-      basePath: `${path}.${sa.name}[*]`,
+      basePath: `${path}["${sa.name}"][*]`,
       ancestry: childAncestry,
     })
   );
@@ -213,7 +213,7 @@ export const getPathFromStructParam = <
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
   return collectFromSchema(
     params.attr.struct,
-    `${parent}.${params.name}`,
+    `${parent}["${params.name}"]`,
     structMap,
     errors
   );
@@ -230,7 +230,7 @@ export const getPathFromStructArraySchema = <
 ): TemplateGE<S, A> => {
   return collectFromSchema<S, A>(
     param.attr.struct,
-    `${parent}.${param.name}[*]`,
+    `${parent}["${param.name}"][*]`,
     structMap,
     errors
   );

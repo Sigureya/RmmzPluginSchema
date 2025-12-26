@@ -44,7 +44,7 @@ describe("eee", () => {
         objectSchema: {
           testParam: { kind: "number", default: 0 },
         },
-        scalarsPath: "$.testParam",
+        scalarsPath: `$["testParam"]`,
         scalarArrays: [],
       },
       structArrays: {
@@ -90,7 +90,7 @@ describe("eee", () => {
         objectSchema: {
           stringParam: { kind: "string", default: "" },
         },
-        scalarsPath: "$.stringParam",
+        scalarsPath: `$["stringParam"]`,
         scalarArrays: [],
       },
       structArrays: {

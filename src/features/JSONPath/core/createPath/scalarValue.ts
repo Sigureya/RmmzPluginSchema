@@ -24,7 +24,7 @@ export const makeScalarArrayPath = <
 ): ArrayParamPathPair<T>[] => {
   return scalaArrays.map(
     (param): ArrayParamPathPair<T> => ({
-      path: `${parent}.${param.name}[*]`,
+      path: `${parent}["${param.name}"][*]`,
       param: param,
     })
   );

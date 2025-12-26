@@ -145,7 +145,7 @@ describe("Address path generation and value extraction", () => {
         {
           category: "struct",
           name: "Address",
-          scalarsPath: `$.address["street","city","zipCode"]`,
+          scalarsPath: `$["address"]["street","city","zipCode"]`,
           scalarArrays: [],
           objectSchema: toObjectPluginParams(addressSchema.scalars),
         },
@@ -172,7 +172,7 @@ describe("Address path generation and value extraction", () => {
     test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);
-      expect(mockFn).toBeCalledWith('$.address["street","city","zipCode"]');
+      expect(mockFn).toBeCalledWith('$["address"]["street","city","zipCode"]');
       expect(mockFn).toBeCalledTimes(1);
     });
 
@@ -242,7 +242,7 @@ describe("Person path generation and value extraction", () => {
         {
           category: "struct",
           name: "Person",
-          scalarsPath: `$.person["name","age"]`,
+          scalarsPath: `$["person"]["name","age"]`,
           objectSchema: {
             name: { default: "", kind: "string" },
             age: { default: 0, kind: "number" },
@@ -253,14 +253,14 @@ describe("Person path generation and value extraction", () => {
                 name: "items",
                 attr: { kind: "number[]", default: [] },
               },
-              path: "$.person.items[*]",
+              path: `$["person"]["items"][*]`,
             },
             {
               param: {
                 name: "nicknames",
                 attr: { kind: "string[]", default: [] },
               },
-              path: "$.person.nicknames[*]",
+              path: `$["person"]["nicknames"][*]`,
             },
           ],
         },
@@ -289,9 +289,9 @@ describe("Person path generation and value extraction", () => {
     test("calls JSONPath constructor", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);
-      expect(mockFn).toBeCalledWith('$.person["name","age"]');
-      expect(mockFn).toBeCalledWith("$.person.items[*]");
-      expect(mockFn).toBeCalledWith("$.person.nicknames[*]");
+      expect(mockFn).toBeCalledWith('$["person"]["name","age"]');
+      expect(mockFn).toBeCalledWith(`$["person"]["items"][*]`);
+      expect(mockFn).toBeCalledWith(`$["person"]["nicknames"][*]`);
       expect(mockFn).toBeCalledTimes(3);
     });
     test("extracts correct values via memo", () => {
@@ -411,7 +411,7 @@ describe("classroom path generation and value extraction", () => {
             className: { default: "", kind: "string" },
           },
           scalarArrays: [],
-          scalarsPath: '$.classroom["className"]',
+          scalarsPath: '$["classroom"]["className"]',
         },
         {
           category: "struct",
@@ -426,17 +426,17 @@ describe("classroom path generation and value extraction", () => {
                 name: "items",
                 attr: { default: [], kind: "number[]" },
               },
-              path: "$.classroom.teacher.items[*]",
+              path: `$["classroom"]["teacher"]["items"][*]`,
             },
             {
               param: {
                 name: "nicknames",
                 attr: { default: [], kind: "string[]" },
               },
-              path: "$.classroom.teacher.nicknames[*]",
+              path: `$["classroom"]["teacher"]["nicknames"][*]`,
             },
           ],
-          scalarsPath: '$.classroom.teacher["name","age"]',
+          scalarsPath: '$["classroom"]["teacher"]["name","age"]',
         },
         {
           category: "struct",
@@ -451,17 +451,17 @@ describe("classroom path generation and value extraction", () => {
                 name: "items",
                 attr: { default: [], kind: "number[]" },
               },
-              path: "$.classroom.students[*].items[*]",
+              path: `$["classroom"]["students"][*]["items"][*]`,
             },
             {
               param: {
                 name: "nicknames",
                 attr: { default: [], kind: "string[]" },
               },
-              path: "$.classroom.students[*].nicknames[*]",
+              path: `$["classroom"]["students"][*]["nicknames"][*]`,
             },
           ],
-          scalarsPath: '$.classroom.students[*]["name","age"]',
+          scalarsPath: '$["classroom"]["students"][*]["name","age"]',
         },
       ],
     },
@@ -489,14 +489,22 @@ describe("classroom path generation and value extraction", () => {
     test("creates JSONPath objects for all schema paths", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);
-      expect(mockFn).toBeCalledWith('$.classroom["className"]');
-      expect(mockFn).toBeCalledWith('$.classroom.teacher["name","age"]');
-      expect(mockFn).toBeCalledWith("$.classroom.teacher.items[*]");
-      expect(mockFn).toBeCalledWith("$.classroom.teacher.nicknames[*]");
-      expect(mockFn).toBeCalledWith('$.classroom.students[*]["name","age"]');
-      expect(mockFn).toBeCalledWith("$.classroom.students[*].items[*]");
-      expect(mockFn).toBeCalledWith("$.classroom.students[*].nicknames[*]");
       expect(mockFn).toBeCalledTimes(7);
+      expect(mockFn).toBeCalledWith('$["classroom"]["className"]');
+      expect(mockFn).toBeCalledWith('$["classroom"]["teacher"]["name","age"]');
+      expect(mockFn).toBeCalledWith(`$["classroom"]["teacher"]["items"][*]`);
+      expect(mockFn).toBeCalledWith(
+        `$["classroom"]["teacher"]["nicknames"][*]`
+      );
+      expect(mockFn).toBeCalledWith(
+        '$["classroom"]["students"][*]["name","age"]'
+      );
+      expect(mockFn).toBeCalledWith(
+        `$["classroom"]["students"][*]["items"][*]`
+      );
+      expect(mockFn).toBeCalledWith(
+        `$["classroom"]["students"][*]["nicknames"][*]`
+      );
     });
   });
   test("extracts all expected scalar values from ClassRoom object", () => {
@@ -753,7 +761,7 @@ describe("School path generation and value extraction", () => {
           objectSchema: {
             since: { kind: "number", default: 0 },
           },
-          scalarsPath: '$.school["since"]',
+          scalarsPath: '$["school"]["since"]',
           scalarArrays: [],
         },
         {
@@ -764,7 +772,7 @@ describe("School path generation and value extraction", () => {
             street: { kind: "string", default: "" },
             zipCode: { kind: "string", default: "" },
           },
-          scalarsPath: '$.school.address["street","city","zipCode"]',
+          scalarsPath: '$["school"]["address"]["street","city","zipCode"]',
           scalarArrays: [],
         },
         {
@@ -776,7 +784,7 @@ describe("School path generation and value extraction", () => {
               kind: "string",
             },
           },
-          scalarsPath: '$.school.classrooms[*]["className"]',
+          scalarsPath: '$["school"]["classrooms"][*]["className"]',
           scalarArrays: [],
         },
         {
@@ -786,21 +794,21 @@ describe("School path generation and value extraction", () => {
             age: { kind: "number", default: 0 },
             name: { kind: "string", default: "" },
           },
-          scalarsPath: '$.school.classrooms[*].teacher["name","age"]',
+          scalarsPath: '$["school"]["classrooms"][*]["teacher"]["name","age"]',
           scalarArrays: [
             {
               param: {
                 name: "items",
                 attr: { kind: "number[]", default: [] },
               },
-              path: "$.school.classrooms[*].teacher.items[*]",
+              path: `$["school"]["classrooms"][*]["teacher"]["items"][*]`,
             },
             {
               param: {
                 name: "nicknames",
                 attr: { kind: "string[]", default: [] },
               },
-              path: "$.school.classrooms[*].teacher.nicknames[*]",
+              path: `$["school"]["classrooms"][*]["teacher"]["nicknames"][*]`,
             },
           ],
         },
@@ -811,21 +819,22 @@ describe("School path generation and value extraction", () => {
             age: { kind: "number", default: 0 },
             name: { kind: "string", default: "" },
           },
-          scalarsPath: '$.school.classrooms[*].students[*]["name","age"]',
+          scalarsPath:
+            '$["school"]["classrooms"][*]["students"][*]["name","age"]',
           scalarArrays: [
             {
               param: {
                 name: "items",
                 attr: { kind: "number[]", default: [] },
               },
-              path: "$.school.classrooms[*].students[*].items[*]",
+              path: `$["school"]["classrooms"][*]["students"][*]["items"][*]`,
             },
             {
               param: {
                 name: "nicknames",
                 attr: { kind: "string[]", default: [] },
               },
-              path: "$.school.classrooms[*].students[*].nicknames[*]",
+              path: `$["school"]["classrooms"][*]["students"][*]["nicknames"][*]`,
             },
           ],
         },
@@ -858,15 +867,15 @@ describe("School path generation and value extraction", () => {
       const mockFn = createMockFunc();
       compileJSONPathSchema(pathSchema, mockFn);
       const paths: string[] = [
-        '$.school["since"]',
-        '$.school.address["street","city","zipCode"]',
-        '$.school.classrooms[*]["className"]',
-        '$.school.classrooms[*].teacher["name","age"]',
-        "$.school.classrooms[*].teacher.items[*]",
-        "$.school.classrooms[*].teacher.nicknames[*]",
-        '$.school.classrooms[*].students[*]["name","age"]',
-        "$.school.classrooms[*].students[*].items[*]",
-        "$.school.classrooms[*].students[*].nicknames[*]",
+        '$["school"]["since"]',
+        '$["school"]["address"]["street","city","zipCode"]',
+        '$["school"]["classrooms"][*]["className"]',
+        '$["school"]["classrooms"][*]["teacher"]["name","age"]',
+        `$["school"]["classrooms"][*]["teacher"]["items"][*]`,
+        `$["school"]["classrooms"][*]["teacher"]["nicknames"][*]`,
+        '$["school"]["classrooms"][*]["students"][*]["name","age"]',
+        `$["school"]["classrooms"][*]["students"][*]["items"][*]`,
+        `$["school"]["classrooms"][*]["students"][*]["nicknames"][*]`,
       ];
       expect(mockFn).toBeCalledTimes(paths.length);
       paths.forEach((path) => {
