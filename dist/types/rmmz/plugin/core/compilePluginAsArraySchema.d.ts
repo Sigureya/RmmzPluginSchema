@@ -1,3 +1,4 @@
 import { PluginSchemaArray } from './params';
 import { PluginTokens } from './parse/types';
-export declare const compilePluginAsArraySchema: (parsedPlugin: PluginTokens) => PluginSchemaArray;
+export type CCC = "command" | "param" | "struct";
+export declare const compilePluginAsArraySchema: (parsedPlugin: PluginTokens, fn?: (structDefault: string, category: CCC) => unknown) => PluginSchemaArray;
