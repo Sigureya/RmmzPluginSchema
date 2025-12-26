@@ -25,36 +25,14 @@ interface Person {
   age: number;
 }
 
-const schemaPerson: ClassifiedPluginParamsEx<Person> = {
-  scalars: [
-    { name: "name", attr: { kind: "string", default: "" } },
-    { name: "age", attr: { kind: "number", default: 0 } },
-  ],
-  scalarArrays: [],
-  structArrays: [],
-  structs: [],
-};
-
-const pluginParamsSchema: PluginParamsSchema<
-  NumberParam | BooleanParam,
-  never
-> = {
-  pluginName: "TestPlugin",
-  schema: {
-    params: [
-      { name: "enable", attr: { kind: "boolean", default: false } },
-      { name: "threshold", attr: { kind: "number", default: 10 } },
-      { name: "person", attr: { kind: "struct", struct: "Person" } },
-    ],
-  },
-};
-
-const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
-  ["Person", schemaPerson],
-]);
+interface Person2 {
+  "first name": string;
+  age: number;
+}
 
 const mockData = {
   enable: true,
+  "flug enabled": false,
   threshold: 42,
   person: {
     name: "Alice",
@@ -74,6 +52,33 @@ const createMockParam = (): Record<string, string> => {
 
 describe("plugin param extractor", () => {
   describe("normal input", () => {
+    const schemaPerson: ClassifiedPluginParamsEx<Person> = {
+      scalars: [
+        { name: "name", attr: { kind: "string", default: "" } },
+        { name: "age", attr: { kind: "number", default: 0 } },
+      ],
+      scalarArrays: [],
+      structArrays: [],
+      structs: [],
+    };
+
+    const pluginParamsSchema: PluginParamsSchema<
+      NumberParam | BooleanParam,
+      never
+    > = {
+      pluginName: "TestPlugin",
+      schema: {
+        params: [
+          { name: "enable", attr: { kind: "boolean", default: false } },
+          { name: "threshold", attr: { kind: "number", default: 10 } },
+          { name: "person", attr: { kind: "struct", struct: "Person" } },
+        ],
+      },
+    };
+
+    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
+      ["Person", schemaPerson],
+    ]);
     test("create memo", () => {
       const mockFn = createMockFn();
       compilePluginParamExtractor(pluginParamsSchema, structMap, mockFn);
@@ -168,6 +173,75 @@ describe("plugin param extractor", () => {
         record,
         memo.extractors
       );
+      expect(result.pluginName).toBe("TestPlugin");
+      expect(result.params).toEqual(expected);
+    });
+  });
+
+  describe("xx input", () => {
+    const schemaPerson: ClassifiedPluginParamsEx<Person2> = {
+      scalars: [
+        { name: "first name", attr: { kind: "string", default: "" } },
+        { name: "age", attr: { kind: "number", default: 0 } },
+      ],
+      scalarArrays: [],
+      structArrays: [],
+      structs: [],
+    };
+
+    const pluginParamsSchema: PluginParamsSchema = {
+      pluginName: "TestPlugin",
+      schema: {
+        params: [
+          { name: "flug enabled", attr: { kind: "boolean", default: false } },
+          { name: "person", attr: { kind: "struct", struct: "Person2" } },
+        ],
+      },
+    };
+    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
+      ["Person2", schemaPerson],
+    ]);
+    test("create memo", () => {
+      const mockFn = createMockFn();
+      compilePluginParamExtractor(pluginParamsSchema, structMap, mockFn);
+      expect(mockFn).toHaveBeenCalledTimes(
+        pluginParamsSchema.schema.params.length
+      );
+      expect(mockFn).toHaveBeenNthCalledWith(1, `$["flug enabled"]`);
+      expect(mockFn).toHaveBeenNthCalledWith(
+        2,
+        '$["person"]["first name","age"]'
+      );
+    });
+    test("extract values", () => {
+      const expected: PluginValues[] = [
+        {
+          param: {
+            attr: { default: false, kind: "boolean" },
+            name: "flug enabled",
+          },
+          rootName: "plugin",
+          rootType: "param",
+          structName: "",
+          value: false,
+        },
+        {
+          param: {
+            attr: { default: 0, kind: "number" },
+            name: "age",
+          },
+          rootName: "person",
+          rootType: "param",
+          structName: "Person2",
+          value: 30,
+        },
+      ];
+      const memo: PluginParamExtractor = compilePluginParamExtractor(
+        pluginParamsSchema,
+        structMap,
+        (path) => new JSONPathJS(path)
+      );
+      const result: ParamExtractResult = extractPluginParam(mockData, memo);
       expect(result.pluginName).toBe("TestPlugin");
       expect(result.params).toEqual(expected);
     });
