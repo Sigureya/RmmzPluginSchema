@@ -7,8 +7,8 @@ import type { PluginValuesExtractorBundle } from "./bundle";
 import type { PluginValues } from "./result";
 
 export interface PluginParamsSchema<
-  S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  S extends PluginScalarParam = PluginScalarParam,
+  A extends PluginArrayParamType = PluginArrayParamType
 > {
   pluginName: string;
   schema: {
