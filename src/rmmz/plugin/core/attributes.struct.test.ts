@@ -1,9 +1,9 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { StructRefParam, StructArrayRefParam } from "./params";
 import type { PluginParamTokens } from "./parse";
-import { stringifyDeepJSON } from "./rmmzJSON";
+import { parseDeepJSON, stringifyDeepJSON } from "./rmmzJSON";
 
 interface Person {
   name: string;
@@ -24,16 +24,20 @@ describe("compileAttributes", () => {
         age: 0,
       },
     };
+    const defaultStr = stringifyDeepJSON(mockStruct);
     const tokens: PluginParamTokens = {
       name: "structParam",
       attr: {
         kind: "struct",
         struct: "Person",
-        default: stringifyDeepJSON(mockStruct),
+        default: defaultStr,
       } satisfies ParamSoruceRecord<StructRefParam>,
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn((text: string) => parseDeepJSON(text));
+    const result = compileAttributes(tokens, fn);
     expect(result).toEqual(expected);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith(defaultStr);
   });
   test("struct array ref", () => {
     const expected: StructArrayRefParam = {
@@ -46,9 +50,13 @@ describe("compileAttributes", () => {
       attr: {
         kind: "struct[]",
         struct: "MyStruct",
+        default: "[]",
       } satisfies ParamSoruceRecord<StructArrayRefParam>,
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn((text: string) => parseDeepJSON(text));
+    const result = compileAttributes(tokens, fn);
     expect(result).toEqual(expected);
+    expect(fn).toHaveBeenCalledTimes(1);
+    expect(fn).toHaveBeenCalledWith("[]");
   });
 });
