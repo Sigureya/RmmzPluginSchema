@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { RpgDataIdParam, PrimitiveParam } from "./params";
@@ -17,6 +17,9 @@ describe("compileAttributes - dataId", () => {
       kind: "enemy",
       default: 0,
     };
-    expect(compileAttributes(mock)).toEqual(expected);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(mock, fn);
+    expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });

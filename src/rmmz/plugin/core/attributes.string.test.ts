@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { StringParam, StringArrayParam } from "./params";
@@ -17,8 +17,10 @@ describe("compileAttributes - string", () => {
       kind: "string",
       default: "abc",
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(tokens, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 
   test("full set", () => {
@@ -39,8 +41,10 @@ describe("compileAttributes - string", () => {
       desc: "String Description",
       parent: "Parent String",
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(tokens, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
 
@@ -57,8 +61,11 @@ describe("compileAttributes - string[]", () => {
       kind: "string[]",
       default: ["a", "b", "c"],
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+
+    const result = compileAttributes(tokens, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 
   test("empty array", () => {
@@ -73,7 +80,9 @@ describe("compileAttributes - string[]", () => {
       kind: "string[]",
       default: [],
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(tokens, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });

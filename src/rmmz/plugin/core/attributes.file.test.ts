@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { FileParam, FileArrayParam } from "./params";
@@ -13,13 +13,15 @@ describe("compileAttributes - file", () => {
         default: "path/to/file.txt",
       } satisfies ParamSoruceRecord<FileParam>,
     };
-    const result = compileAttributes(tokens);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(tokens, fn);
     const expected: FileParam = {
       kind: "file",
       default: "path/to/file.txt",
       dir: "",
     };
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 
   test("full set", () => {
@@ -34,8 +36,9 @@ describe("compileAttributes - file", () => {
         dir: "img",
       } satisfies ParamSoruceRecord<FileParam>,
     };
+    const fn = vi.fn(() => {});
 
-    const result = compileAttributes(tokens);
+    const result = compileAttributes(tokens, fn);
     const expected: FileParam = {
       kind: "file",
       default: "path/to/file.txt",
@@ -45,6 +48,7 @@ describe("compileAttributes - file", () => {
       dir: "img",
     };
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
 

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vi } from "vitest";
 import { compileAttributes } from "./attributes";
 import type { ParamSoruceRecord } from "./attributes";
 import type { NumberParam, NumberArrayParam } from "./params";
@@ -13,12 +13,15 @@ describe("compileAttributes - number", () => {
       } satisfies ParamSoruceRecord<NumberParam>,
     };
 
+    const fn = vi.fn(() => {});
     const expected: NumberParam = {
       kind: "number",
       default: 0,
     };
-    const result = compileAttributes(token);
+
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 
   test("with default", () => {
@@ -29,12 +32,14 @@ describe("compileAttributes - number", () => {
         default: "123.45",
       } satisfies ParamSoruceRecord<NumberParam>,
     };
+    const fn = vi.fn(() => {});
     const expected: NumberParam = {
       kind: "number",
       default: 123.45,
     };
-    const result = compileAttributes(token);
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
   test("with all properties", () => {
     const token: PluginParamTokens = {
@@ -59,8 +64,10 @@ describe("compileAttributes - number", () => {
       min: -1000.5,
       max: 1000.5,
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
 
@@ -77,8 +84,10 @@ describe("compileAttributes - number[]", () => {
       kind: "number[]",
       default: [],
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
   test("with default", () => {
     const token: PluginParamTokens = {
@@ -92,8 +101,10 @@ describe("compileAttributes - number[]", () => {
       kind: "number[]",
       default: [1, 2, 3],
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 
   test("with empty array", () => {
@@ -108,8 +119,10 @@ describe("compileAttributes - number[]", () => {
       kind: "number[]",
       default: [],
     };
-    const result = compileAttributes(token);
+    const fn = vi.fn(() => {});
+    const result = compileAttributes(token, fn);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
   test("with all properties", () => {
     const token: PluginParamTokens = {
@@ -134,7 +147,9 @@ describe("compileAttributes - number[]", () => {
       max: 1000.5,
       decimals: 2,
     };
+    const fn = vi.fn(() => {});
     const result = compileAttributes(token);
     expect(result).toEqual(expected);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
