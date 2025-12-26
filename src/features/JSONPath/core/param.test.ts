@@ -76,9 +76,9 @@ describe("plugin param extractor", () => {
     const mockFn = createMockFn();
     compilePluginParamExtractor(pluginParamsSchema, structMap, mockFn);
     expect(mockFn).toHaveBeenCalledTimes(3);
-    expect(mockFn).toHaveBeenNthCalledWith(1, "$.enable");
-    expect(mockFn).toHaveBeenNthCalledWith(2, "$.threshold");
-    expect(mockFn).toHaveBeenNthCalledWith(3, '$.person["name","age"]');
+    expect(mockFn).toHaveBeenNthCalledWith(1, `$["enable"]`);
+    expect(mockFn).toHaveBeenNthCalledWith(2, `$["threshold"]`);
+    expect(mockFn).toHaveBeenNthCalledWith(3, '$["person"]["name","age"]');
   });
   test("extract values", () => {
     const expected: PluginValues[] = [

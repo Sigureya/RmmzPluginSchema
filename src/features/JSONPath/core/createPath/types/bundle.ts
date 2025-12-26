@@ -43,7 +43,7 @@ export interface PrimitivePluginValuesPath<T extends PluginScalarParam>
   scalars: {
     name: T["kind"];
     objectSchema: Record<string, T>;
-    scalarsPath: `$.${string}`;
+    scalarsPath: `$["${string}"]${string}`;
     scalarArrays: [];
   };
   structs: {

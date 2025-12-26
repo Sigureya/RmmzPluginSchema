@@ -46,8 +46,8 @@ describe("cyclic struct", () => {
     const expected: StructPathResultWithError = {
       items: [],
       errors: [
-        { code: errors.cyclicStruct, path: "$.loop.loopMock" },
-        { code: errors.cyclicStruct, path: "$.loop.loopMockArray[*]" },
+        { code: errors.cyclicStruct, path: `$["loop"]["loopMock"]` },
+        { code: errors.cyclicStruct, path: `$["loop"]["loopMockArray"][*]` },
       ],
     };
     expect(result.errors).toEqual(expected.errors);
@@ -69,7 +69,7 @@ describe("undefined struct", () => {
     );
     const expected: StructPathResultWithError = {
       items: [],
-      errors: [{ code: errors.undefinedStruct, path: "$.undefinedStruct" }],
+      errors: [{ code: errors.undefinedStruct, path: `$["undefinedStruct"]` }],
     };
     expect(result.errors).toEqual(expected.errors);
     expect(result.items).toEqual(expected.items);

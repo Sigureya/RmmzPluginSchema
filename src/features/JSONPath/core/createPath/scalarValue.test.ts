@@ -81,15 +81,15 @@ describe("makeScalaArrayParams", () => {
   };
   const paths = [
     {
-      path: "$.numberArray[*]",
+      path: `$["numberArray"][*]`,
       param: schema.scalarArrays[0],
     },
     {
-      path: "$.stringArray[*]",
+      path: `$["stringArray"][*]`,
       param: schema.scalarArrays[1],
     },
     {
-      path: "$.files[*]",
+      path: `$["files"][*]`,
       param: schema.scalarArrays[2],
     },
   ] as const satisfies ArrayParamPathPair[];

@@ -66,7 +66,7 @@ const createPrimitiveArrayPath = <
       scalarsPath: undefined,
       scalarArrays: [
         {
-          path: `$.${param.name}[*]`,
+          path: `$["${param.name}"][*]`,
           param,
         },
       ],
@@ -89,7 +89,7 @@ export const createPrimiteveParamPath = <T extends PluginScalarParam>(
       objectSchema: {
         [param.name]: param.attr,
       },
-      scalarsPath: `$.${param.name}`,
+      scalarsPath: `$["${param.name}"]`,
       scalarArrays: [],
     },
     structArrays: { items: [], errors: [] },
