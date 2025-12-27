@@ -127,11 +127,24 @@ const compileStringParam = (tokens: PluginParamTokens) => {
   return compileParam("string", "", tokens.attr, STRING);
 };
 
+const parseStringArray = (value: string): string[] => {
+  try {
+    const array = JSON.parse(value);
+    if (
+      Array.isArray(array) &&
+      array.every((item) => typeof item === "string")
+    ) {
+      return array;
+    }
+  } catch {}
+  return [];
+};
+
 const compileStringArrayParam = (
   tokens: PluginParamTokens
 ): StringArrayParam => {
   const STRING_ARRAY = {
-    default: (value: string): string[] => parseDeepJSON(value) as string[],
+    default: (value: string): string[] => parseStringArray(value),
     text: attrString,
     desc: attrString,
     parent: attrString,
@@ -155,7 +168,7 @@ const compileFileParam = (tokens: PluginParamTokens): FileParam => {
 
 const compileFileArrayParam = (tokens: PluginParamTokens): FileArrayParam => {
   const FILE_ARRAY = {
-    default: (value: string): string[] => parseDeepJSON(value) as string[],
+    default: (value: string): string[] => parseStringArray(value),
     text: attrString,
     desc: attrString,
     parent: attrString,
