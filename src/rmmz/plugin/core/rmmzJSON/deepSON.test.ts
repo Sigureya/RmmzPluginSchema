@@ -157,4 +157,23 @@ describe("parse <-> stringify", () => {
       expect(parsed).toEqual(family);
     });
   });
+  describe("string[] in struct", () => {
+    const str = ["apple", "banana", "cherry"];
+    const nestedStr = JSON.stringify(str);
+    const data = {
+      fruits: str,
+    };
+    const ssData = JSON.stringify({
+      fruits: nestedStr,
+    });
+    test("stringifyDeepJSON", () => {
+      const result = stringifyDeepJSON(data);
+      expect(result).toEqual(ssData);
+    });
+
+    test("parseDeepJSON", () => {
+      const parsed = parseDeepJSON(ssData);
+      expect(parsed).toEqual(data);
+    });
+  });
 });
