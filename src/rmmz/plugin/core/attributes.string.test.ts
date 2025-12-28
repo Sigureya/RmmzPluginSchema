@@ -1,8 +1,17 @@
+import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { StringParam, StringArrayParam } from "./params";
 import type { PluginParamTokens } from "./parse";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
+
+const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn(),
+  parseObject: vi.fn(),
+  parseObjectArray: vi.fn(),
+});
+
 describe("compileAttributes", () => {
   describe("string", () => {
     test("minimum set", () => {
@@ -17,10 +26,12 @@ describe("compileAttributes", () => {
         kind: "string",
         default: "abc",
       };
-      const fn = vi.fn(() => {});
-      const result = compileAttributes(tokens, fn);
+      const mockHandlers = createHandlers();
+      const result = compileAttributes(tokens, mockHandlers);
       expect(result).toEqual(expected);
-      expect(fn).not.toHaveBeenCalled();
+      expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
     });
 
     test("full set", () => {
@@ -41,10 +52,12 @@ describe("compileAttributes", () => {
         desc: "String Description",
         parent: "Parent String",
       };
-      const fn = vi.fn(() => {});
-      const result = compileAttributes(tokens, fn);
+      const mockHandlers = createHandlers();
+      const result = compileAttributes(tokens, mockHandlers);
       expect(result).toEqual(expected);
-      expect(fn).not.toHaveBeenCalled();
+      expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
     });
   });
 
@@ -61,11 +74,14 @@ describe("compileAttributes", () => {
         kind: "string[]",
         default: ["a", "b", "c"],
       };
-      const fn = vi.fn(() => {});
 
-      const result = compileAttributes(tokens, fn);
+      const mockHandlers = createHandlers();
+
+      const result = compileAttributes(tokens, mockHandlers);
       expect(result).toEqual(expected);
-      expect(fn).not.toHaveBeenCalled();
+      expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
     });
 
     test("empty array", () => {
@@ -80,10 +96,13 @@ describe("compileAttributes", () => {
         kind: "string[]",
         default: [],
       };
-      const fn = vi.fn(() => {});
-      const result = compileAttributes(tokens, fn);
+      const mockHandlers = createHandlers();
+
+      const result = compileAttributes(tokens, mockHandlers);
       expect(result).toEqual(expected);
-      expect(fn).not.toHaveBeenCalled();
+      expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
     });
   });
 });
