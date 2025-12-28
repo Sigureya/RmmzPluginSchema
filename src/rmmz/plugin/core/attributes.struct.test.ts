@@ -1,9 +1,11 @@
+import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { StructRefParam, StructArrayRefParam } from "./params";
 import type { PluginParamTokens } from "./parse";
 import { parseDeepJSON, stringifyDeepJSON } from "./rmmzJSON";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 interface Person {
   name: string;
@@ -13,6 +15,15 @@ const mockStruct = {
   name: "",
   age: 0,
 } as const satisfies Person;
+
+const createMockHandlers = (
+  mockString: string[],
+  mockedStruct: Person
+): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn().mockReturnValue(mockString),
+  parseObject: vi.fn().mockReturnValue(mockedStruct),
+  parseObjectArray: vi.fn().mockReturnValue([mockedStruct]),
+});
 
 describe("compileAttributes", () => {
   test("struct ref", () => {
