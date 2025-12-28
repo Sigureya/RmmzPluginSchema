@@ -1,3 +1,4 @@
+import { parseDeepJSON } from "./rmmzJSON";
 import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 export const createDeepJSONParserHandlers = (): DeepJSONParserHandlers => ({
@@ -13,9 +14,9 @@ export const createDeepJSONParserHandlers = (): DeepJSONParserHandlers => ({
       errors: [],
     };
   },
-  parseObject: () => {
+  parseObject: (json: string) => {
     return {
-      value: {},
+      value: parseDeepJSON(json) as object,
       errors: [],
     };
   },
