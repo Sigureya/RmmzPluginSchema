@@ -1,7 +1,16 @@
+import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
-import { compileAttributes, type ParamSoruceRecord } from "./attributes";
+import type { ParamSoruceRecord } from "./attributes";
+import { compileAttributes } from "./attributes";
 import type { ComboParam, SelectParam } from "./params";
 import type { PluginParamTokens } from "./parse";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
+
+const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn(),
+  parseObject: vi.fn(),
+  parseObjectArray: vi.fn(),
+});
 
 describe("compileAttributes - combo", () => {
   test("empty options", () => {
@@ -23,10 +32,12 @@ describe("compileAttributes - combo", () => {
       desc: "this is a combo",
       parent: "parentId",
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("with options", () => {
     const token: PluginParamTokens = {
@@ -51,10 +62,12 @@ describe("compileAttributes - combo", () => {
       desc: "this is a combo",
       parent: "parentId",
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });
 
@@ -79,10 +92,12 @@ describe("compileAttributes - select", () => {
       desc: "this is a select",
       parent: "parentId",
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("with options", () => {
     const token: PluginParamTokens = {
@@ -111,9 +126,11 @@ describe("compileAttributes - select", () => {
       desc: "this is a select",
       parent: "parentId",
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });
