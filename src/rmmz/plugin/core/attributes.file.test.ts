@@ -1,8 +1,16 @@
+import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { FileParam, FileArrayParam } from "./params";
 import type { PluginParamTokens } from "./parse";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
+
+const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn(),
+  parseObject: vi.fn(),
+  parseObjectArray: vi.fn(),
+});
 
 describe("compileAttributes - file", () => {
   test("minimum set", () => {
@@ -13,15 +21,17 @@ describe("compileAttributes - file", () => {
         default: "path/to/file.txt",
       } satisfies ParamSoruceRecord<FileParam>,
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(tokens, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(tokens, mockHandlers);
     const expected: FileParam = {
       kind: "file",
       default: "path/to/file.txt",
       dir: "",
     };
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 
   test("full set", () => {
@@ -36,9 +46,9 @@ describe("compileAttributes - file", () => {
         dir: "img",
       } satisfies ParamSoruceRecord<FileParam>,
     };
-    const fn = vi.fn(() => {});
+    const mockHandlers = createHandlers();
 
-    const result = compileAttributes(tokens, fn);
+    const result = compileAttributes(tokens, mockHandlers);
     const expected: FileParam = {
       kind: "file",
       default: "path/to/file.txt",
@@ -48,7 +58,9 @@ describe("compileAttributes - file", () => {
       dir: "img",
     };
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });
 
@@ -62,13 +74,18 @@ describe("compileAttributes - file[]", () => {
       } satisfies ParamSoruceRecord<FileArrayParam>,
     };
 
-    const result = compileAttributes(tokens);
+    const mockHandlers = createHandlers();
+
+    const result = compileAttributes(tokens, mockHandlers);
     const expected: FileArrayParam = {
       kind: "file[]",
       default: ["path/to/file1.txt", "path/to/file2.txt"],
       dir: "",
     };
     expect(result).toEqual(expected);
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 
   test("empty array", () => {
@@ -79,13 +96,17 @@ describe("compileAttributes - file[]", () => {
         default: `[]`,
       } satisfies ParamSoruceRecord<FileArrayParam>,
     };
+    const mockHandlers = createHandlers();
 
-    const result = compileAttributes(tokens);
+    const result = compileAttributes(tokens, mockHandlers);
     const expected: FileArrayParam = {
       kind: "file[]",
       default: [],
       dir: "",
     };
     expect(result).toEqual(expected);
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });
