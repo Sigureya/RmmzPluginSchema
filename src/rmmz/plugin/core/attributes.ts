@@ -1,3 +1,4 @@
+import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDefaultStruct, createDefaultStructArray } from "./defaultStruct";
 import type { MappingTable } from "./mapping/mapping";
 import { compileParam, compileArrayParam } from "./mapping/mapping";
@@ -18,15 +19,79 @@ import type {
   StructRefParam,
   StructArrayRefParam,
 } from "./params";
+import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
 import { parseDeepJSON } from "./rmmzJSON";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
-
 export const compileAttributes = (
+  tokens: PluginParamTokens,
+  handlers: DeepJSONParserHandlers = createDeepJSONParserHandlers()
+): PrimitiveParam => {
+  if (KEYWORD_KIND in tokens.attr) {
+    const func = TABLE2[tokens.attr.kind as keyof typeof TABLE2];
+    if (func) {
+      return func(tokens);
+    }
+    if (tokens.attr.kind === "struct") {
+      return compileStructParam3(tokens, handlers);
+    }
+    if (tokens.attr.kind === "struct[]") {
+      return compileStructArrayParam3(tokens, handlers);
+    }
+  }
+  return compileParam("any", "", tokens.attr, STRING);
+};
+
+const compileStructParam3 = (
+  tokens: PluginParamTokens,
+  handlers: DeepJSONParserHandlers<ParamError>
+): StructRefParam => {
+  const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
+  const STRUCT_REF = {
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const;
+  const defaultValue = errors.length === 0 ? value : {};
+  const ee = errors.length > 0 ? { errors } : {};
+  return {
+    struct: tokens.attr.struct || "",
+    ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
+    ...ee,
+  };
+};
+
+const compileStructArrayParam3 = (
+  tokens: PluginParamTokens,
+  handlers: DeepJSONParserHandlers<ParamError>
+): StructArrayRefParam => {
+  const { errors, value } = handlers.parseObjectArray(
+    tokens.attr.default || "[]"
+  );
+  const STRUCT_ARRAY = {
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const;
+  const defaultValue = errors.length === 0 ? value : [];
+  const ee = errors.length > 0 ? { errors } : {};
+  return {
+    struct: tokens.attr.struct || "",
+    ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
+    default: defaultValue,
+    ...ee,
+  };
+};
+
+/**
+ * @deprecated use compileAttributes instead
+ */
+export const compileAttributesOld = (
   tokens: PluginParamTokens,
   objectParseFn: (json: string) => unknown = parseDeepJSON
 ): PrimitiveParam => {
