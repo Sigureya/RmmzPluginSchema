@@ -1,4 +1,4 @@
-import { compileAttributes } from "./attributes";
+import { compileAttributesOld } from "./attributes";
 import type {
   PluginSchemaArray,
   PluginParam,
@@ -36,7 +36,7 @@ const mapParams = (
   return params.map(
     (p): PluginParam => ({
       name: p.name,
-      attr: compileAttributes(p, fn),
+      attr: compileAttributesOld(p, fn),
     })
   );
 };
