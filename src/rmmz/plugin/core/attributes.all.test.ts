@@ -1,5 +1,7 @@
-import { describe, expect, test } from "vitest";
+import type { MockedObject } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { compileAttributes } from "./attributes";
+import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type {
   BooleanParam,
   NumberArrayParam,
@@ -7,6 +9,12 @@ import type {
   PrimitiveParam,
 } from "./params";
 import type { PluginParamTokens, PluginTokensRecord } from "./parse";
+
+const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn(),
+  parseObject: vi.fn(),
+  parseObjectArray: vi.fn(),
+});
 
 describe("compileAttributes", () => {
   const allTokens: PluginTokensRecord = {
@@ -40,9 +48,12 @@ describe("compileAttributes", () => {
       text: "Some Text",
       desc: "Some Description",
     };
-
-    const result: PrimitiveParam = compileAttributes(tokens);
+    const handlers = createHandlers();
+    const result: PrimitiveParam = compileAttributes(tokens, handlers);
     expect(result).toEqual(expected);
+    expect(handlers.parseStringArray).not.toHaveBeenCalled();
+    expect(handlers.parseObject).not.toHaveBeenCalled();
+    expect(handlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("number[]", () => {
     const tokens: PluginParamTokens = {
@@ -63,8 +74,12 @@ describe("compileAttributes", () => {
       text: "Some Text",
       desc: "Some Description",
     };
-    const result: PrimitiveParam = compileAttributes(tokens);
+    const handlers = createHandlers();
+    const result: PrimitiveParam = compileAttributes(tokens, handlers);
     expect(result).toEqual(expected);
+    expect(handlers.parseStringArray).not.toHaveBeenCalled();
+    expect(handlers.parseObject).not.toHaveBeenCalled();
+    expect(handlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("boolean", () => {
     const tokens: PluginParamTokens = {
@@ -84,7 +99,11 @@ describe("compileAttributes", () => {
       text: "Some Text",
       desc: "Some Description",
     };
-    const result: PrimitiveParam = compileAttributes(tokens);
+    const handlers = createHandlers();
+    const result: PrimitiveParam = compileAttributes(tokens, handlers);
     expect(result).toEqual(expected);
+    expect(handlers.parseStringArray).not.toHaveBeenCalled();
+    expect(handlers.parseObject).not.toHaveBeenCalled();
+    expect(handlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });

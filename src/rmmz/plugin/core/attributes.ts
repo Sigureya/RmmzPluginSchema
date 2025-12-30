@@ -1,5 +1,4 @@
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
-import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { MappingTable } from "./mapping/mapping";
 import { compileParam, compileArrayParam } from "./mapping/mapping";
 import type {
@@ -27,10 +26,10 @@ type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
 export const compileAttributes = (
   tokens: PluginParamTokens,
-  handlers: DeepJSONParserHandlers = createDeepJSONParserHandlers()
+  handlers: DeepJSONParserHandlers
 ): PrimitiveParam => {
   if (KEYWORD_KIND in tokens.attr) {
-    const func = TABLE2[tokens.attr.kind as keyof typeof TABLE2];
+    const func = TABLE[tokens.attr.kind as keyof typeof TABLE];
     if (func) {
       return func(tokens, handlers);
     }
@@ -239,11 +238,11 @@ const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
   return compileParam(kind, 0, tokens.attr, DATA_ID);
 };
 
-const TABLE2 = {
+const TABLE = {
   number: (tokens) => compileNumberParam(tokens),
   "number[]": compileNumberArrayParam,
   string: compileStringParam,
-  "string[]": (t, p) => compileStringArrayParam(t, p),
+  "string[]": compileStringArrayParam,
   multiline_string: compileStringParam,
   "multiline_string[]": compileStringArrayParam,
   combo: compileComboParam,
@@ -278,7 +277,7 @@ const TABLE2 = {
   "struct[]": compileStructArrayParam,
   struct: compileStructParam,
 } as const satisfies Partial<{
-  [K in PrimitiveParam["kind"]]?: (
+  [K in PrimitiveParam["kind"]]: (
     tokens: PluginParamTokens,
     perser: DeepJSONParserHandlers
   ) => PrimitiveParam;
