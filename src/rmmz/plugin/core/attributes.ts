@@ -33,19 +33,13 @@ export const compileAttributes = (
   if (KEYWORD_KIND in tokens.attr) {
     const func = TABLE2[tokens.attr.kind as keyof typeof TABLE2];
     if (func) {
-      return func(tokens);
-    }
-    if (tokens.attr.kind === "struct") {
-      return compileStructParam3(tokens, handlers);
-    }
-    if (tokens.attr.kind === "struct[]") {
-      return compileStructArrayParam3(tokens, handlers);
+      return func(tokens, handlers);
     }
   }
   return compileParam("any", "", tokens.attr, STRING);
 };
 
-const compileStructParam3 = (
+const compileStructParam = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers<ParamError>
 ): StructRefParam => {
@@ -64,7 +58,7 @@ const compileStructParam3 = (
   };
 };
 
-const compileStructArrayParam3 = (
+const compileStructArrayParam = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers<ParamError>
 ): StructArrayRefParam => {
@@ -113,10 +107,12 @@ const compileComboParam = (tokens: PluginParamTokens): ComboParam => {
 };
 const compileSelectParam = (tokens: PluginParamTokens): SelectParam => {
   const options: OptionItem[] =
-    tokens.options?.map((o) => ({
-      option: o.option,
-      value: o.value,
-    })) ?? [];
+    tokens.options?.map(
+      (o): OptionItem => ({
+        option: o.option,
+        value: o.value,
+      })
+    ) ?? [];
 
   return {
     ...compileParam("select", "", tokens.attr, STRING),
@@ -168,24 +164,14 @@ const compileStringParam = (tokens: PluginParamTokens) => {
   return compileParam("string", "", tokens.attr, STRING);
 };
 
-const parseStringArray = (value: string): string[] => {
-  try {
-    const array = JSON.parse(value);
-    if (
-      Array.isArray(array) &&
-      array.every((item) => typeof item === "string")
-    ) {
-      return array;
-    }
-  } catch {}
-  return [];
-};
-
 const compileStringArrayParam = (
-  tokens: PluginParamTokens
+  tokens: PluginParamTokens,
+  parsers: DeepJSONParserHandlers
 ): StringArrayParam => {
+  const { value } = parsers.parseStringArray(tokens.attr.default || "[]");
+
   const STRING_ARRAY = {
-    default: (value: string): string[] => parseStringArray(value),
+    default: (): string[] => value,
     text: attrString,
     desc: attrString,
     parent: attrString,
@@ -207,9 +193,14 @@ const compileFileParam = (tokens: PluginParamTokens): FileParam => {
   };
 };
 
-const compileFileArrayParam = (tokens: PluginParamTokens): FileArrayParam => {
+const compileFileArrayParam = (
+  tokens: PluginParamTokens,
+
+  parsers: DeepJSONParserHandlers
+): FileArrayParam => {
+  const { value } = parsers.parseStringArray(tokens.attr.default || "[]");
   const FILE_ARRAY = {
-    default: (value: string): string[] => parseStringArray(value),
+    default: (): string[] => value,
     text: attrString,
     desc: attrString,
     parent: attrString,
@@ -253,7 +244,7 @@ const TABLE2 = {
   number: (tokens) => compileNumberParam(tokens),
   "number[]": compileNumberArrayParam,
   string: compileStringParam,
-  "string[]": compileStringArrayParam,
+  "string[]": (t, p) => compileStringArrayParam(t, p),
   multiline_string: compileStringParam,
   "multiline_string[]": compileStringArrayParam,
   combo: compileComboParam,
@@ -285,6 +276,11 @@ const TABLE2 = {
   boolean: compileBooleanParam,
   file: compileFileParam,
   "file[]": compileFileArrayParam,
+  "struct[]": compileStructArrayParam,
+  struct: compileStructParam,
 } as const satisfies Partial<{
-  [K in PrimitiveParam["kind"]]?: (tokens: PluginParamTokens) => PrimitiveParam;
+  [K in PrimitiveParam["kind"]]?: (
+    tokens: PluginParamTokens,
+    perser: DeepJSONParserHandlers
+  ) => PrimitiveParam;
 }>;

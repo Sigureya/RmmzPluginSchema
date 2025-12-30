@@ -2,15 +2,19 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
+import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { FileParam, FileArrayParam } from "./params";
 import type { PluginParamTokens } from "./parse";
 import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
-const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
-  parseStringArray: vi.fn(),
-  parseObject: vi.fn(),
-  parseObjectArray: vi.fn(),
-});
+const createHandlers = (): MockedObject<DeepJSONParserHandlers> => {
+  const parser = createDeepJSONParserHandlers();
+  return {
+    parseStringArray: vi.fn((s: string) => parser.parseStringArray(s)),
+    parseObject: vi.fn((s: string) => parser.parseObject(s)),
+    parseObjectArray: vi.fn((s: string) => parser.parseObjectArray(s)),
+  };
+};
 
 describe("compileAttributes - file", () => {
   test("minimum set", () => {
@@ -83,7 +87,10 @@ describe("compileAttributes - file[]", () => {
       dir: "",
     };
     expect(result).toEqual(expected);
-    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
+      tokens.attr.default
+    );
+    expect(mockHandlers.parseStringArray).toHaveBeenCalledTimes(1);
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
@@ -105,7 +112,10 @@ describe("compileAttributes - file[]", () => {
       dir: "",
     };
     expect(result).toEqual(expected);
-    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
+      tokens.attr.default
+    );
+    expect(mockHandlers.parseStringArray).toHaveBeenCalledTimes(1);
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
