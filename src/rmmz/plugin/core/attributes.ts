@@ -18,6 +18,7 @@ import type {
   StructRefParam,
   StructArrayRefParam,
 } from "./params";
+import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
 
@@ -37,6 +38,10 @@ export const compileAttributes = (
   return compileParam("any", "", tokens.attr, STRING);
 };
 
+const normarizeErros = (list: ParamError[]) => {
+  return list.length > 0 ? { errors: list } : {};
+};
+
 const compileStructParam = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
@@ -48,11 +53,10 @@ const compileStructParam = (
     parent: attrString,
   } as const;
   const defaultValue = errors.length === 0 ? value : {};
-  const ee = errors.length > 0 ? { errors } : {};
   return {
     struct: tokens.attr.struct || "",
     ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
-    ...ee,
+    ...normarizeErros(errors),
   };
 };
 
@@ -68,13 +72,12 @@ const compileStructArrayParam = (
     desc: attrString,
     parent: attrString,
   } as const;
-  const defaultValue = errors.length === 0 ? value : [];
-  const ee = errors.length > 0 ? { errors } : {};
+  const defaultValue: object[] = errors.length === 0 ? value : [];
   return {
     struct: tokens.attr.struct || "",
     ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
     default: defaultValue,
-    ...ee,
+    ...normarizeErros(errors),
   };
 };
 
