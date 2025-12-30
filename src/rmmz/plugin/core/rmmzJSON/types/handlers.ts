@@ -1,6 +1,4 @@
-import type { ParamError } from "../../params/types/error";
-
-export interface DeepJSONParserHandlers<E = ParamError> {
+export interface DeepJSONParserHandlersEx<E> {
   parseStringArray: (json: string) => DeepParseResult<string[], E>;
   parseObject: (json: string) => DeepParseResult<object, E>;
   parseObjectArray: (json: string) => DeepParseResult<object[], E>;

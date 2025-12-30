@@ -2,10 +2,10 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
+import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { FileParam, FileArrayParam } from "./params";
 import type { PluginParamTokens } from "./parse";
-import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 const createHandlers = (): MockedObject<DeepJSONParserHandlers> => {
   const parser = createDeepJSONParserHandlers();

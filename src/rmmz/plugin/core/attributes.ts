@@ -1,3 +1,4 @@
+import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { MappingTable } from "./mapping/mapping";
 import { compileParam, compileArrayParam } from "./mapping/mapping";
@@ -18,10 +19,8 @@ import type {
   StructRefParam,
   StructArrayRefParam,
 } from "./params";
-import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
-import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 
@@ -41,7 +40,7 @@ export const compileAttributes = (
 
 const compileStructParam = (
   tokens: PluginParamTokens,
-  handlers: DeepJSONParserHandlers<ParamError>
+  handlers: DeepJSONParserHandlers
 ): StructRefParam => {
   const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
   const STRUCT_REF = {
@@ -60,7 +59,7 @@ const compileStructParam = (
 
 const compileStructArrayParam = (
   tokens: PluginParamTokens,
-  handlers: DeepJSONParserHandlers<ParamError>
+  handlers: DeepJSONParserHandlers
 ): StructArrayRefParam => {
   const { errors, value } = handlers.parseObjectArray(
     tokens.attr.default || "[]"
