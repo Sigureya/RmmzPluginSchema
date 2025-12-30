@@ -1,5 +1,4 @@
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
-import { createDefaultStruct, createDefaultStructArray } from "./defaultStruct";
 import type { MappingTable } from "./mapping/mapping";
 import { compileParam, compileArrayParam } from "./mapping/mapping";
 import type {
@@ -22,7 +21,6 @@ import type {
 import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
-import { parseDeepJSON } from "./rmmzJSON";
 import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
@@ -86,28 +84,6 @@ const compileStructArrayParam3 = (
     default: defaultValue,
     ...ee,
   };
-};
-
-/**
- * @deprecated use compileAttributes instead
- */
-export const compileAttributesOld = (
-  tokens: PluginParamTokens,
-  objectParseFn: (json: string) => unknown = parseDeepJSON
-): PrimitiveParam => {
-  if (KEYWORD_KIND in tokens.attr) {
-    const func = TABLE2[tokens.attr.kind as keyof typeof TABLE2];
-    if (func) {
-      return func(tokens);
-    }
-    if (tokens.attr.kind === "struct") {
-      return compileStructParam2(tokens, objectParseFn);
-    }
-    if (tokens.attr.kind === "struct[]") {
-      return compileStructArrayParam2(tokens, objectParseFn);
-    }
-  }
-  return compileParam("any", "", tokens.attr, STRING);
 };
 
 const attrString = (value: string): string => value;
@@ -271,42 +247,6 @@ const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
     parent: attrString,
   } as const satisfies MappingTableEx<GenericIdParam>;
   return compileParam(kind, 0, tokens.attr, DATA_ID);
-};
-
-const compileStructParam2 = (
-  tokens: PluginParamTokens,
-  fn: (deepJSON: string) => unknown
-): StructRefParam => {
-  const defaultValue = createDefaultStruct(tokens.attr.default, fn);
-  const STRUCT_REF = {
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const;
-  return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
-  };
-};
-
-const compileStructArrayParam2 = (
-  tokens: PluginParamTokens,
-  objectParseFn: (json: string) => unknown
-): StructArrayRefParam => {
-  const defaultValue = createDefaultStructArray(
-    tokens.attr.default,
-    objectParseFn
-  );
-  const STRUCT_ARRAY = {
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const;
-  return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
-    default: defaultValue,
-  };
 };
 
 const TABLE2 = {
