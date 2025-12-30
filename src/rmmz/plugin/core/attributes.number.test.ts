@@ -1,8 +1,16 @@
+import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
 import { compileAttributes } from "./attributes";
 import type { ParamSoruceRecord } from "./attributes";
 import type { NumberParam, NumberArrayParam } from "./params";
 import type { PluginParamTokens } from "./parse";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
+
+const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn(),
+  parseObject: vi.fn(),
+  parseObjectArray: vi.fn(),
+});
 
 describe("compileAttributes - number", () => {
   test("type only", () => {
@@ -13,15 +21,18 @@ describe("compileAttributes - number", () => {
       } satisfies ParamSoruceRecord<NumberParam>,
     };
 
-    const fn = vi.fn(() => {});
+    const mockHandlers = createHandlers();
+
     const expected: NumberParam = {
       kind: "number",
       default: 0,
     };
 
-    const result = compileAttributes(token, fn);
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 
   test("with default", () => {
@@ -32,14 +43,16 @@ describe("compileAttributes - number", () => {
         default: "123.45",
       } satisfies ParamSoruceRecord<NumberParam>,
     };
-    const fn = vi.fn(() => {});
+    const mockHandlers = createHandlers();
     const expected: NumberParam = {
       kind: "number",
       default: 123.45,
     };
-    const result = compileAttributes(token, fn);
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("with all properties", () => {
     const token: PluginParamTokens = {
@@ -64,10 +77,12 @@ describe("compileAttributes - number", () => {
       min: -1000.5,
       max: 1000.5,
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });
 
@@ -84,10 +99,12 @@ describe("compileAttributes - number[]", () => {
       kind: "number[]",
       default: [],
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("with default", () => {
     const token: PluginParamTokens = {
@@ -101,10 +118,12 @@ describe("compileAttributes - number[]", () => {
       kind: "number[]",
       default: [1, 2, 3],
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 
   test("with empty array", () => {
@@ -119,10 +138,12 @@ describe("compileAttributes - number[]", () => {
       kind: "number[]",
       default: [],
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token, fn);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("with all properties", () => {
     const token: PluginParamTokens = {
@@ -147,9 +168,11 @@ describe("compileAttributes - number[]", () => {
       max: 1000.5,
       decimals: 2,
     };
-    const fn = vi.fn(() => {});
-    const result = compileAttributes(token);
+    const mockHandlers = createHandlers();
+    const result = compileAttributes(token, mockHandlers);
     expect(result).toEqual(expected);
-    expect(fn).not.toHaveBeenCalled();
+    expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+    expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
   });
 });

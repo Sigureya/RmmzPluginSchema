@@ -1,9 +1,14 @@
+import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
 import type { StructRefParam, StructArrayRefParam } from "./params";
 import type { PluginParamTokens } from "./parse";
-import { parseDeepJSON, stringifyDeepJSON } from "./rmmzJSON";
+import { stringifyDeepJSON } from "./rmmzJSON";
+import type {
+  DeepJSONParserHandlers,
+  DeepParseResult,
+} from "./rmmzJSON/types/handlers";
 
 interface Person {
   name: string;
@@ -13,6 +18,26 @@ const mockStruct = {
   name: "",
   age: 0,
 } as const satisfies Person;
+
+type ObjectResult = DeepParseResult<Person, unknown>;
+
+const createMockHandlers = (
+  mockString: string[],
+  mockedStruct: Person
+): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn().mockReturnValue({
+    value: mockString,
+    errors: [],
+  }),
+  parseObject: vi.fn().mockReturnValue({
+    value: mockedStruct,
+    errors: [],
+  } satisfies ObjectResult),
+  parseObjectArray: vi.fn().mockReturnValue({
+    value: [mockedStruct],
+    errors: [],
+  }),
+});
 
 describe("compileAttributes", () => {
   test("struct ref", () => {
@@ -33,17 +58,18 @@ describe("compileAttributes", () => {
         default: defaultStr,
       } satisfies ParamSoruceRecord<StructRefParam>,
     };
-    const fn = vi.fn((text: string) => parseDeepJSON(text));
-    const result = compileAttributes(tokens, fn);
+    const handlers = createMockHandlers([], mockStruct);
+    const result = compileAttributes(tokens, handlers);
     expect(result).toEqual(expected);
-    expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith(defaultStr);
+    expect(handlers.parseStringArray).not.toHaveBeenCalled();
+    expect(handlers.parseObject).toHaveBeenCalledWith(defaultStr);
+    expect(handlers.parseObjectArray).not.toHaveBeenCalled();
   });
   test("struct array ref", () => {
     const expected: StructArrayRefParam = {
       kind: "struct[]",
       struct: "MyStruct",
-      default: [],
+      default: [mockStruct],
     };
     const tokens: PluginParamTokens = {
       name: "structArrayParam",
@@ -53,10 +79,11 @@ describe("compileAttributes", () => {
         default: "[]",
       } satisfies ParamSoruceRecord<StructArrayRefParam>,
     };
-    const fn = vi.fn((text: string) => parseDeepJSON(text));
-    const result = compileAttributes(tokens, fn);
+    const handlers = createMockHandlers([], mockStruct);
+    const result = compileAttributes(tokens, handlers);
     expect(result).toEqual(expected);
-    expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn).toHaveBeenCalledWith("[]");
+    expect(handlers.parseStringArray).not.toHaveBeenCalled();
+    expect(handlers.parseObject).not.toHaveBeenCalled();
+    expect(handlers.parseObjectArray).toHaveBeenCalledWith("[]");
   });
 });
