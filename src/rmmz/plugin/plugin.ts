@@ -1,15 +1,16 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import { parseDeepRecord, PluginSchema } from "./core";
+import type { PluginSchema } from "./core";
+import { parseDeepRecord } from "./core";
 import { compilePluginToObject } from "./core/compilePlugin";
 import { compilePluginAsArraySchema } from "./core/compilePluginAsArraySchema";
+import type { DeepJSONParserHandlers } from "./core/deepJSONHandler";
+import { createDeepJSONParserHandlers } from "./core/deepJSONHandler";
 import type { ParsedPlugin } from "./core/parse";
 import { parsePlugin } from "./core/parse/parse";
 import type { PluginJSON } from "./core/pluginJSONTypes";
 import { parsePluginParamRecord } from "./pluginsJS/jsToJSON";
 import type { PluginParamsObject, PluginParamsRecord } from "./pluginsJS/types";
 import type { PluginInput } from "./types";
-import { createDeepJSONParserHandlers } from "./core/deepJSONHandler";
-import { DeepJSONParserHandlers } from "./core/rmmzJSON/types/handlers";
 
 export const paramObjectFromPluginRecord = (
   record: PluginParamsRecord

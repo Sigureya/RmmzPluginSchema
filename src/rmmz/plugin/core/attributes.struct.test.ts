@@ -2,13 +2,11 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
 import { compileAttributes } from "./attributes";
+import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { StructRefParam, StructArrayRefParam } from "./params";
 import type { PluginParamTokens } from "./parse";
 import { stringifyDeepJSON } from "./rmmzJSON";
-import type {
-  DeepJSONParserHandlers,
-  DeepParseResult,
-} from "./rmmzJSON/types/handlers";
+import type { DeepParseResult } from "./rmmzJSON/types/handlers";
 
 interface Person {
   name: string;

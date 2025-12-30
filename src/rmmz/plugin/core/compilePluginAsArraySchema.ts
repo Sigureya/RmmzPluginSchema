@@ -1,4 +1,5 @@
 import { compileAttributes } from "./attributes";
+import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type {
   PluginSchemaArray,
@@ -12,7 +13,6 @@ import type {
   PluginCommandTokens,
   StructParseState,
 } from "./parse/types";
-import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 export type CCC = "command" | "param" | "struct";
 
