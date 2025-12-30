@@ -1,4 +1,5 @@
-import { compileAttributesOld } from "./attributes";
+import { compileAttributes } from "./attributes";
+import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type {
   PluginSchemaArray,
   PluginParam,
@@ -11,58 +12,53 @@ import type {
   PluginCommandTokens,
   StructParseState,
 } from "./parse/types";
-import { parseDeepJSON } from "./rmmzJSON";
+import type { DeepJSONParserHandlers } from "./rmmzJSON/types/handlers";
 
 export type CCC = "command" | "param" | "struct";
 
 export const compilePluginAsArraySchema = (
   parsedPlugin: PluginTokens,
-  fn: (structDefault: string, category: CCC) => unknown = (s: string) =>
-    parseDeepJSON(s)
+  parser: DeepJSONParserHandlers = createDeepJSONParserHandlers()
 ): PluginSchemaArray => ({
-  params: mapParams(parsedPlugin.params, (text: string) => fn(text, "param")),
-  commands: mapCommands(parsedPlugin.commands, (text: string) =>
-    fn(text, "command")
-  ),
-  structs: mapStructs(parsedPlugin.structs, (text: string) =>
-    fn(text, "struct")
-  ),
+  params: mapParams(parsedPlugin.params, parser),
+  commands: mapCommands(parsedPlugin.commands, parser),
+  structs: mapStructs(parsedPlugin.structs, parser),
 });
 
 const mapParams = (
   params: ReadonlyArray<PluginParamTokens>,
-  fn: (structDefault: string) => unknown
+  parser: DeepJSONParserHandlers
 ): PluginParam[] => {
   return params.map(
     (p): PluginParam => ({
       name: p.name,
-      attr: compileAttributesOld(p, fn),
+      attr: compileAttributes(p, parser),
     })
   );
 };
 
 const mapCommands = (
   commands: ReadonlyArray<PluginCommandTokens>,
-  fn: (structDefault: string) => unknown
+  parser: DeepJSONParserHandlers
 ): PluginCommandSchemaArray[] => {
   return commands.map(
     (cmd): PluginCommandSchemaArray => ({
       command: cmd.command,
       desc: cmd.desc,
       text: cmd.text,
-      args: mapParams(cmd.args, fn),
+      args: mapParams(cmd.args, parser),
     })
   );
 };
 
 const mapStructs = (
   structs: ReadonlyArray<StructParseState>,
-  fn: (structDefault: string) => unknown
+  parser: DeepJSONParserHandlers
 ): PluginStructSchemaArray[] => {
   return structs.map(
     (s): PluginStructSchemaArray => ({
       struct: s.name,
-      params: mapParams(s.params, fn),
+      params: mapParams(s.params, parser),
     })
   );
 };
