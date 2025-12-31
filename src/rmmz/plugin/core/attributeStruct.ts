@@ -1,6 +1,10 @@
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { compileParam } from "./mapping/mapping";
-import type { StructArrayRefParam, StructRefParam } from "./params";
+import type {
+  PluginParamEx,
+  StructArrayRefParam,
+  StructRefParam,
+} from "./params";
 import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens } from "./parse";
 
@@ -10,10 +14,10 @@ const normarizeErros = (list: ParamError[]) => {
 
 const attrString = (value: string): string => value;
 
-export const compileStructParam = (
+export const compileStructValue = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
-): StructRefParam => {
+): PluginParamEx<StructRefParam> => {
   const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
   const STRUCT_REF = {
     text: attrString,
@@ -22,16 +26,19 @@ export const compileStructParam = (
   } as const;
   const defaultValue = errors.length === 0 ? value : {};
   return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
-    ...normarizeErros(errors),
+    name: tokens.name,
+    attr: {
+      struct: tokens.attr.struct || "",
+      ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
+      ...normarizeErros(errors),
+    },
   };
 };
 
-export const compileStructArrayParam = (
+export const compileStructArrayValue = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
-): StructArrayRefParam => {
+): PluginParamEx<StructArrayRefParam> => {
   const { errors, value } = handlers.parseObjectArray(
     tokens.attr.default || "[]"
   );
@@ -42,9 +49,12 @@ export const compileStructArrayParam = (
   } as const;
   const defaultValue: object[] = errors.length === 0 ? value : [];
   return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
-    default: defaultValue,
-    ...normarizeErros(errors),
+    name: tokens.name,
+    attr: {
+      struct: tokens.attr.struct || "",
+      ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
+      default: defaultValue,
+      ...normarizeErros(errors),
+    },
   };
 };
