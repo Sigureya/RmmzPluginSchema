@@ -1,5 +1,5 @@
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
-import { compileParam } from "./mapping/mapping";
+import { compileScalarAttributes } from "./mapping/mapping";
 import type {
   PluginParamEx,
   StructArrayRefParam,
@@ -29,7 +29,12 @@ export const compileStructValue = (
     name: tokens.name,
     attr: {
       struct: tokens.attr.struct || "",
-      ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
+      ...compileScalarAttributes(
+        "struct",
+        defaultValue,
+        tokens.attr,
+        STRUCT_REF
+      ),
       ...normarizeErros(errors),
     },
   };
@@ -52,7 +57,12 @@ export const compileStructArrayValue = (
     name: tokens.name,
     attr: {
       struct: tokens.attr.struct || "",
-      ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
+      ...compileScalarAttributes(
+        "struct[]",
+        defaultValue,
+        tokens.attr,
+        STRUCT_ARRAY
+      ),
       default: defaultValue,
       ...normarizeErros(errors),
     },
