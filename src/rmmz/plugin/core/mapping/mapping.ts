@@ -12,18 +12,16 @@ export const applyMappingTable = <T extends TableConcept>(
 ): {
   [K in keyof T]?: ReturnType<T[K]>;
 } => {
-  return Object.entries(fnTable).reduce((acc, [key, fn]) => {
-    if (key in tokens) {
-      const value = tokens[key as string];
-      if (typeof value === "string") {
-        return {
-          ...acc,
-          [key]: fn(value),
-        };
-      }
-    }
-    return acc;
-  }, {});
+  const entries = Object.entries(fnTable)
+    .filter(([key]) => key in tokens)
+    .map(([key, fn]): [string, unknown] => {
+      const value: string = tokens[key];
+      return [key, fn(value)];
+    });
+
+  return Object.fromEntries(entries) as {
+    [K in keyof T]?: ReturnType<T[K]>;
+  };
 };
 
 export const compileScalarAttributes = <Kind extends string, T>(
