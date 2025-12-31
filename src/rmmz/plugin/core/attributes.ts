@@ -1,4 +1,3 @@
-import { compileStructArrayValue, compileStructValue } from "./attributeStruct";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { MappingTable } from "./mapping/mapping";
 import {
@@ -21,6 +20,9 @@ import type {
   PrimitiveParam,
   PluginParam,
   PluginParamEx,
+  ParamError,
+  StructArrayRefParam,
+  StructRefParam,
 } from "./params";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
@@ -257,6 +259,64 @@ const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
   return {
     name: tokens.name,
     attr: compileScalarAttributes(kind, 0, tokens.attr, DATA_ID),
+  };
+};
+
+const normarizeErros = (list: ParamError[]) => {
+  return list.length > 0 ? { errors: list } : {};
+};
+
+const compileStructValue = (
+  tokens: PluginParamTokens,
+  handlers: DeepJSONParserHandlers
+): PluginParamEx<StructRefParam> => {
+  const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
+  const STRUCT_REF = {
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const;
+  const defaultValue = errors.length === 0 ? value : {};
+  return {
+    name: tokens.name,
+    attr: {
+      struct: tokens.attr.struct || "",
+      ...compileScalarAttributes(
+        "struct",
+        defaultValue,
+        tokens.attr,
+        STRUCT_REF
+      ),
+      ...normarizeErros(errors),
+    },
+  };
+};
+
+const compileStructArrayValue = (
+  tokens: PluginParamTokens,
+  handlers: DeepJSONParserHandlers
+): PluginParamEx<StructArrayRefParam> => {
+  const { errors, value } = handlers.parseObjectArray(
+    tokens.attr.default || "[]"
+  );
+  const STRUCT_ARRAY = {
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const;
+  const defaultValue: object[] = errors.length === 0 ? value : [];
+  return {
+    name: tokens.name,
+    attr: {
+      struct: tokens.attr.struct || "",
+      ...compileScalarAttributes(
+        "struct[]",
+        defaultValue,
+        tokens.attr,
+        STRUCT_ARRAY
+      ),
+      ...normarizeErros(errors),
+    },
   };
 };
 
