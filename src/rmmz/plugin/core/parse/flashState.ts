@@ -46,6 +46,8 @@ const flushCurrentParam = (state: ParseState): ParseState => {
   return {
     ...state,
     params: [...state.params, state.currentParam],
+    currentCommand: null,
+    currentOption: null,
     currentParam: null,
     currentContext: null,
   };
