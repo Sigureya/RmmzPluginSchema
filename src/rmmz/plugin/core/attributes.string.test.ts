@@ -1,7 +1,7 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
-import { compileAttributes } from "./attributes";
+import { compileAttributes, compilePluginValue } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { StringParam, StringArrayParam } from "./params";
@@ -31,8 +31,8 @@ describe("compileAttributes", () => {
         default: "abc",
       };
       const mockHandlers = createHandlers();
-      const result = compileAttributes(tokens, mockHandlers);
-      expect(result).toEqual(expected);
+      const result = compilePluginValue(tokens, mockHandlers);
+      expect(result.attr).toEqual(expected);
       expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
       expect(mockHandlers.parseObject).not.toHaveBeenCalled();
       expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
