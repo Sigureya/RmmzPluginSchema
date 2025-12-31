@@ -1,3 +1,4 @@
+import { compileStructArrayParam, compileStructParam } from "./attributeStruct";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { MappingTable } from "./mapping/mapping";
 import { compileParam, compileArrayParam } from "./mapping/mapping";
@@ -15,16 +16,25 @@ import type {
   DataKind_RpgUnion,
   DataKind_SystemUnion,
   PrimitiveParam,
-  StructRefParam,
-  StructArrayRefParam,
+  PluginParam,
 } from "./params";
-import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
 
 type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
+
+export const compilePluginValue = (
+  tokens: PluginParamTokens,
+  handlers: DeepJSONParserHandlers
+): PluginParam => {
+  return {
+    name: tokens.name,
+    attr: compileAttributes(tokens, handlers),
+  };
+};
+
 export const compileAttributes = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
@@ -36,49 +46,6 @@ export const compileAttributes = (
     }
   }
   return compileParam("any", "", tokens.attr, STRING);
-};
-
-const normarizeErros = (list: ParamError[]) => {
-  return list.length > 0 ? { errors: list } : {};
-};
-
-const compileStructParam = (
-  tokens: PluginParamTokens,
-  handlers: DeepJSONParserHandlers
-): StructRefParam => {
-  const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
-  const STRUCT_REF = {
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const;
-  const defaultValue = errors.length === 0 ? value : {};
-  return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
-    ...normarizeErros(errors),
-  };
-};
-
-const compileStructArrayParam = (
-  tokens: PluginParamTokens,
-  handlers: DeepJSONParserHandlers
-): StructArrayRefParam => {
-  const { errors, value } = handlers.parseObjectArray(
-    tokens.attr.default || "[]"
-  );
-  const STRUCT_ARRAY = {
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const;
-  const defaultValue: object[] = errors.length === 0 ? value : [];
-  return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
-    default: defaultValue,
-    ...normarizeErros(errors),
-  };
 };
 
 const attrString = (value: string): string => value;
