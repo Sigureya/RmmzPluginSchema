@@ -26,7 +26,7 @@ export const applyMappingTable = <T extends TableConcept>(
   }, {});
 };
 
-export const compileParam = <Kind extends string, T>(
+export const compileScalarAttributes = <Kind extends string, T>(
   kind: Kind,
   defaultValue: T,
   tokens: Record<string, string>,
@@ -44,7 +44,7 @@ export const compileParam = <Kind extends string, T>(
   };
 };
 
-export const compileArrayParam = <
+export const compileArrayAttributes = <
   T extends TableConcept & { default: (s: string) => unknown[] },
   Kind extends string
 >(
