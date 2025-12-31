@@ -1,7 +1,7 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { FileParam, FileArrayParam } from "./params";
@@ -26,13 +26,13 @@ describe("compileAttributes - file", () => {
       } satisfies ParamSoruceRecord<FileParam>,
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(tokens, mockHandlers);
+    const result = compilePluginParam(tokens, mockHandlers);
     const expected: FileParam = {
       kind: "file",
       default: "path/to/file.txt",
       dir: "",
     };
-    expect(result).toEqual(expected);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -52,7 +52,7 @@ describe("compileAttributes - file", () => {
     };
     const mockHandlers = createHandlers();
 
-    const result = compileAttributes(tokens, mockHandlers);
+    const result = compilePluginParam(tokens, mockHandlers);
     const expected: FileParam = {
       kind: "file",
       default: "path/to/file.txt",
@@ -61,7 +61,7 @@ describe("compileAttributes - file", () => {
       parent: "Parent File",
       dir: "img",
     };
-    expect(result).toEqual(expected);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -80,13 +80,13 @@ describe("compileAttributes - file[]", () => {
 
     const mockHandlers = createHandlers();
 
-    const result = compileAttributes(tokens, mockHandlers);
+    const result = compilePluginParam(tokens, mockHandlers);
     const expected: FileArrayParam = {
       kind: "file[]",
       default: ["path/to/file1.txt", "path/to/file2.txt"],
       dir: "",
     };
-    expect(result).toEqual(expected);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
       tokens.attr.default
     );
@@ -105,13 +105,13 @@ describe("compileAttributes - file[]", () => {
     };
     const mockHandlers = createHandlers();
 
-    const result = compileAttributes(tokens, mockHandlers);
+    const result = compilePluginParam(tokens, mockHandlers);
     const expected: FileArrayParam = {
       kind: "file[]",
       default: [],
       dir: "",
     };
-    expect(result).toEqual(expected);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
       tokens.attr.default
     );

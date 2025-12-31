@@ -1,9 +1,9 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
-import type { BooleanParam } from "./params";
+import type { BooleanParam, PluginParam } from "./params";
 import type { PluginParamTokens } from "./parse";
 
 const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
@@ -22,12 +22,12 @@ describe("compileAttributes - boolean", () => {
       } satisfies ParamSoruceRecord<BooleanParam>,
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(tokens, mockHandlers);
+    const result: PluginParam = compilePluginParam(tokens, mockHandlers);
     const expected: BooleanParam = {
       default: true,
       kind: "boolean",
     };
-    expect(result).toEqual(expected);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -47,7 +47,7 @@ describe("compileAttributes - boolean", () => {
       } satisfies ParamSoruceRecord<BooleanParam>,
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(tokens, mockHandlers);
+    const result: PluginParam = compilePluginParam(tokens, mockHandlers);
     const expected: BooleanParam = {
       default: false,
       text: "Enabled?",
@@ -57,7 +57,7 @@ describe("compileAttributes - boolean", () => {
       parent: "Parent Feature",
       kind: "boolean",
     };
-    expect(result).toEqual(expected);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();

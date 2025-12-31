@@ -1,9 +1,9 @@
 import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { ParamSoruceRecord } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
-import type { NumberParam, NumberArrayParam } from "./params";
+import type { NumberParam, NumberArrayParam, PluginParam } from "./params";
 import type { PluginParamTokens } from "./parse";
 
 const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
@@ -28,8 +28,8 @@ describe("compileAttributes - number", () => {
       default: 0,
     };
 
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -48,8 +48,8 @@ describe("compileAttributes - number", () => {
       kind: "number",
       default: 123.45,
     };
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -78,8 +78,8 @@ describe("compileAttributes - number", () => {
       max: 1000.5,
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -100,8 +100,8 @@ describe("compileAttributes - number[]", () => {
       default: [],
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -119,8 +119,8 @@ describe("compileAttributes - number[]", () => {
       default: [1, 2, 3],
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result: PluginParam = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -139,8 +139,8 @@ describe("compileAttributes - number[]", () => {
       default: [],
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -169,8 +169,8 @@ describe("compileAttributes - number[]", () => {
       decimals: 2,
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();

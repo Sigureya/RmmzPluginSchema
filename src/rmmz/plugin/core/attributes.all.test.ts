@@ -1,13 +1,8 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
-import type {
-  BooleanParam,
-  NumberArrayParam,
-  NumberParam,
-  PrimitiveParam,
-} from "./params";
+import type { BooleanParam, NumberArrayParam, NumberParam } from "./params";
 import type { PluginParamTokens, PluginTokensRecord } from "./parse";
 
 const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
@@ -49,8 +44,8 @@ describe("compileAttributes", () => {
       desc: "Some Description",
     };
     const handlers = createHandlers();
-    const result: PrimitiveParam = compileAttributes(tokens, handlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(tokens, handlers);
+    expect(result.attr).toEqual(expected);
     expect(handlers.parseStringArray).not.toHaveBeenCalled();
     expect(handlers.parseObject).not.toHaveBeenCalled();
     expect(handlers.parseObjectArray).not.toHaveBeenCalled();
@@ -75,8 +70,8 @@ describe("compileAttributes", () => {
       desc: "Some Description",
     };
     const handlers = createHandlers();
-    const result: PrimitiveParam = compileAttributes(tokens, handlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(tokens, handlers);
+    expect(result.attr).toEqual(expected);
     expect(handlers.parseStringArray).not.toHaveBeenCalled();
     expect(handlers.parseObject).not.toHaveBeenCalled();
     expect(handlers.parseObjectArray).not.toHaveBeenCalled();
@@ -100,8 +95,8 @@ describe("compileAttributes", () => {
       desc: "Some Description",
     };
     const handlers = createHandlers();
-    const result: PrimitiveParam = compileAttributes(tokens, handlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(tokens, handlers);
+    expect(result.attr).toEqual(expected);
     expect(handlers.parseStringArray).not.toHaveBeenCalled();
     expect(handlers.parseObject).not.toHaveBeenCalled();
     expect(handlers.parseObjectArray).not.toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
-import { compilePluginValue } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { StructRefParam, StructArrayRefParam } from "./params";
 import type { PluginParamTokens } from "./parse";
@@ -57,7 +57,7 @@ describe("compileAttributes", () => {
       } satisfies ParamSoruceRecord<StructRefParam>,
     };
     const handlers = createMockHandlers([], mockStruct);
-    const result = compilePluginValue(tokens, handlers);
+    const result = compilePluginParam(tokens, handlers);
     expect(result.name).toEqual("structParam");
     expect(result.attr).toEqual(expected);
     expect(handlers.parseStringArray).not.toHaveBeenCalled();
@@ -79,7 +79,7 @@ describe("compileAttributes", () => {
       } satisfies ParamSoruceRecord<StructArrayRefParam>,
     };
     const handlers = createMockHandlers([], mockStruct);
-    const result = compilePluginValue(tokens, handlers);
+    const result = compilePluginParam(tokens, handlers);
     expect(result.name).toEqual("structArrayParam");
     expect(result.attr).toEqual(expected);
     expect(handlers.parseStringArray).not.toHaveBeenCalled();
