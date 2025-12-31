@@ -1,7 +1,10 @@
 import { compileStructArrayValue, compileStructValue } from "./attributeStruct";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { MappingTable } from "./mapping/mapping";
-import { compileParam, compileArrayParam } from "./mapping/mapping";
+import {
+  compileScalarAttributes,
+  compileArrayAttributes,
+} from "./mapping/mapping";
 import type {
   StringParam,
   ComboParam,
@@ -26,7 +29,7 @@ type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
 
-export const compilePluginValue = (
+export const compilePluginParam = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
 ): PluginParam => {
@@ -39,15 +42,18 @@ export const compilePluginValue = (
 
   return {
     name: tokens.name,
-    attr: compileParam("any", "", tokens.attr, STRING),
+    attr: compileScalarAttributes("any", "", tokens.attr, STRING),
   };
 };
 
+/**
+ * @deprecated Use `compilePluginParam` instead.
+ */
 export const compileAttributes = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
 ): PrimitiveParam => {
-  const { attr } = compilePluginValue(tokens, handlers);
+  const { attr } = compilePluginParam(tokens, handlers);
   return attr;
 };
 
@@ -81,7 +87,7 @@ const compileComboParam3 = (
   return {
     name: tokens.name,
     attr: {
-      ...compileParam("combo", "", tokens.attr, STRING3),
+      ...compileScalarAttributes("combo", "", tokens.attr, STRING3),
       options: option,
     },
   };
@@ -106,7 +112,7 @@ const compileSelectParam3 = (
   return {
     name: tokens.name,
     attr: {
-      ...compileParam("select", "", tokens.attr, STRING3),
+      ...compileScalarAttributes("select", "", tokens.attr, STRING3),
       options,
     },
   };
@@ -125,7 +131,7 @@ const compileBooleanParam3 = (
   } as const satisfies MappingTableEx<BooleanParam>;
   return {
     name: tokens.name,
-    attr: compileParam("boolean", true, tokens.attr, BOOLEAN3),
+    attr: compileScalarAttributes("boolean", true, tokens.attr, BOOLEAN3),
   };
 };
 
@@ -143,7 +149,7 @@ const compileNumberParam3 = (
   } as const satisfies MappingTableEx<NumberParam>;
   return {
     name: tokens.name,
-    attr: compileParam("number", 0, tokens.attr, NUMBER3),
+    attr: compileScalarAttributes("number", 0, tokens.attr, NUMBER3),
   };
 };
 
@@ -161,7 +167,7 @@ const compileNumberArrayParam3 = (
   } as const satisfies MappingTableEx<NumberArrayParam>;
   return {
     name: tokens.name,
-    attr: compileArrayParam("number[]", tokens.attr, NUMBER_ARRAY3),
+    attr: compileArrayAttributes("number[]", tokens.attr, NUMBER_ARRAY3),
   };
 };
 
@@ -176,7 +182,7 @@ const compileStringParam3 = (
   } as const satisfies MappingTableEx<StringParam>;
   return {
     name: tokens.name,
-    attr: compileParam("string", "", tokens.attr, STRING3),
+    attr: compileScalarAttributes("string", "", tokens.attr, STRING3),
   };
 };
 
@@ -192,7 +198,7 @@ const compileStringArrayParam3 = (
   } as const satisfies MappingTableEx<StringArrayParam>;
   return {
     name: tokens.name,
-    attr: compileArrayParam("string[]", tokens.attr, STRING_ARRAY3),
+    attr: compileArrayAttributes("string[]", tokens.attr, STRING_ARRAY3),
   };
 };
 
@@ -210,7 +216,7 @@ const compileFileParam3 = (
     name: tokens.name,
     attr: {
       dir: "",
-      ...compileParam("file", "", tokens.attr, FILE3),
+      ...compileScalarAttributes("file", "", tokens.attr, FILE3),
     },
   };
 };
@@ -230,7 +236,7 @@ const compileFileArrayParam3 = (
     name: tokens.name,
     attr: {
       dir: "",
-      ...compileArrayParam("file[]", tokens.attr, FILE_ARRAY3),
+      ...compileArrayAttributes("file[]", tokens.attr, FILE_ARRAY3),
     },
   };
 };
@@ -249,7 +255,7 @@ const compileDataIdArray3 = <
   } as const;
   return {
     name: tokens.name,
-    attr: compileArrayParam(kind, tokens.attr, DATA_ID_ARRAY3),
+    attr: compileArrayAttributes(kind, tokens.attr, DATA_ID_ARRAY3),
   };
 };
 
@@ -265,7 +271,7 @@ const compileDataId3 = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
   } as const satisfies MappingTableEx<GenericIdParam>;
   return {
     name: tokens.name,
-    attr: compileParam(kind, 0, tokens.attr, DATA_ID3),
+    attr: compileScalarAttributes(kind, 0, tokens.attr, DATA_ID3),
   };
 };
 
