@@ -1,6 +1,10 @@
+import { compileStructArrayValue, compileStructValue } from "./attributeStruct";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { MappingTable } from "./mapping/mapping";
-import { compileParam, compileArrayParam } from "./mapping/mapping";
+import {
+  compileScalarAttributes,
+  compileArrayAttributes,
+} from "./mapping/mapping";
 import type {
   StringParam,
   ComboParam,
@@ -15,70 +19,42 @@ import type {
   DataKind_RpgUnion,
   DataKind_SystemUnion,
   PrimitiveParam,
-  StructRefParam,
-  StructArrayRefParam,
+  PluginParam,
+  PluginParamEx,
 } from "./params";
-import type { ParamError } from "./params/types/error";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
 
 type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
-export const compileAttributes = (
+
+export const compilePluginParam = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
-): PrimitiveParam => {
+): PluginParam => {
   if (KEYWORD_KIND in tokens.attr) {
     const func = TABLE[tokens.attr.kind as keyof typeof TABLE];
     if (func) {
       return func(tokens, handlers);
     }
   }
-  return compileParam("any", "", tokens.attr, STRING);
-};
 
-const normarizeErros = (list: ParamError[]) => {
-  return list.length > 0 ? { errors: list } : {};
-};
-
-const compileStructParam = (
-  tokens: PluginParamTokens,
-  handlers: DeepJSONParserHandlers
-): StructRefParam => {
-  const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
-  const STRUCT_REF = {
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const;
-  const defaultValue = errors.length === 0 ? value : {};
   return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct", defaultValue, tokens.attr, STRUCT_REF),
-    ...normarizeErros(errors),
+    name: tokens.name,
+    attr: compileScalarAttributes("any", "", tokens.attr, STRING),
   };
 };
 
-const compileStructArrayParam = (
+/**
+ * @deprecated Use `compilePluginParam` instead.
+ */
+export const compileAttributes = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers
-): StructArrayRefParam => {
-  const { errors, value } = handlers.parseObjectArray(
-    tokens.attr.default || "[]"
-  );
-  const STRUCT_ARRAY = {
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const;
-  const defaultValue: object[] = errors.length === 0 ? value : [];
-  return {
-    struct: tokens.attr.struct || "",
-    ...compileParam("struct[]", defaultValue, tokens.attr, STRUCT_ARRAY),
-    default: defaultValue,
-    ...normarizeErros(errors),
-  };
+): PrimitiveParam => {
+  const { attr } = compilePluginParam(tokens, handlers);
+  return attr;
 };
 
 const attrString = (value: string): string => value;
@@ -98,15 +74,28 @@ const STRING = {
   parent: attrString,
 } as const satisfies MappingTableEx<StringParam>;
 
-const compileComboParam = (tokens: PluginParamTokens): ComboParam => {
+const compileComboParam = (
+  tokens: PluginParamTokens
+): PluginParamEx<ComboParam> => {
   const option: string[] = tokens.options?.map((o) => o.option) ?? [];
-
+  const STRING = {
+    default: attrString,
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const satisfies MappingTableEx<StringParam>;
   return {
-    ...compileParam("combo", "", tokens.attr, STRING),
-    options: option,
+    name: tokens.name,
+    attr: {
+      ...compileScalarAttributes("combo", "", tokens.attr, STRING),
+      options: option,
+    },
   };
 };
-const compileSelectParam = (tokens: PluginParamTokens): SelectParam => {
+
+const compileSelectParam = (
+  tokens: PluginParamTokens
+): PluginParamEx<SelectParam> => {
   const options: OptionItem[] =
     tokens.options?.map(
       (o): OptionItem => ({
@@ -114,14 +103,24 @@ const compileSelectParam = (tokens: PluginParamTokens): SelectParam => {
         value: o.value,
       })
     ) ?? [];
-
+  const STRING = {
+    default: attrString,
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const satisfies MappingTableEx<StringParam>;
   return {
-    ...compileParam("select", "", tokens.attr, STRING),
-    options,
+    name: tokens.name,
+    attr: {
+      ...compileScalarAttributes("select", "", tokens.attr, STRING),
+      options,
+    },
   };
 };
 
-const compileBooleanParam = (tokens: PluginParamTokens): BooleanParam => {
+const compileBooleanParam = (
+  tokens: PluginParamTokens
+): PluginParamEx<BooleanParam> => {
   const BOOLEAN = {
     default: (value: string) => value === "true",
     text: attrString,
@@ -130,10 +129,15 @@ const compileBooleanParam = (tokens: PluginParamTokens): BooleanParam => {
     off: attrString,
     parent: attrString,
   } as const satisfies MappingTableEx<BooleanParam>;
-  return compileParam("boolean", true, tokens.attr, BOOLEAN);
+  return {
+    name: tokens.name,
+    attr: compileScalarAttributes("boolean", true, tokens.attr, BOOLEAN),
+  };
 };
 
-const compileNumberParam = (tokens: PluginParamTokens): NumberParam => {
+const compileNumberParam = (
+  tokens: PluginParamTokens
+): PluginParamEx<NumberParam> => {
   const NUMBER = {
     default: (value: string) => parseFloat(value),
     text: attrString,
@@ -143,14 +147,17 @@ const compileNumberParam = (tokens: PluginParamTokens): NumberParam => {
     max: (value: string) => parseFloat(value),
     parent: attrString,
   } as const satisfies MappingTableEx<NumberParam>;
-  return compileParam("number", 0, tokens.attr, NUMBER);
+  return {
+    name: tokens.name,
+    attr: compileScalarAttributes("number", 0, tokens.attr, NUMBER),
+  };
 };
 
 const compileNumberArrayParam = (
   tokens: PluginParamTokens
-): NumberArrayParam => {
+): PluginParamEx<NumberArrayParam> => {
   const NUMBER_ARRAY = {
-    default: numberArray,
+    default: (value: string) => numberArray(value),
     text: attrString,
     desc: attrString,
     decimals: (value: string) => parseInt(value, 10),
@@ -158,29 +165,46 @@ const compileNumberArrayParam = (
     max: (value: string) => parseFloat(value),
     parent: attrString,
   } as const satisfies MappingTableEx<NumberArrayParam>;
-  return compileArrayParam("number[]", tokens.attr, NUMBER_ARRAY);
+  return {
+    name: tokens.name,
+    attr: compileArrayAttributes("number[]", tokens.attr, NUMBER_ARRAY),
+  };
 };
 
-const compileStringParam = (tokens: PluginParamTokens) => {
-  return compileParam("string", "", tokens.attr, STRING);
+const compileStringParam = (
+  tokens: PluginParamTokens
+): PluginParamEx<StringParam> => {
+  const STRING = {
+    default: attrString,
+    text: attrString,
+    desc: attrString,
+    parent: attrString,
+  } as const satisfies MappingTableEx<StringParam>;
+  return {
+    name: tokens.name,
+    attr: compileScalarAttributes("string", "", tokens.attr, STRING),
+  };
 };
 
 const compileStringArrayParam = (
   tokens: PluginParamTokens,
   parsers: DeepJSONParserHandlers
-): StringArrayParam => {
-  const { value } = parsers.parseStringArray(tokens.attr.default || "[]");
-
+): PluginParamEx<StringArrayParam> => {
   const STRING_ARRAY = {
-    default: (): string[] => value,
+    default: (value: string) => parsers.parseStringArray(value).value,
     text: attrString,
     desc: attrString,
     parent: attrString,
   } as const satisfies MappingTableEx<StringArrayParam>;
-  return compileArrayParam("string[]", tokens.attr, STRING_ARRAY);
+  return {
+    name: tokens.name,
+    attr: compileArrayAttributes("string[]", tokens.attr, STRING_ARRAY),
+  };
 };
 
-const compileFileParam = (tokens: PluginParamTokens): FileParam => {
+const compileFileParam = (
+  tokens: PluginParamTokens
+): PluginParamEx<FileParam> => {
   const FILE = {
     default: attrString,
     text: attrString,
@@ -189,27 +213,31 @@ const compileFileParam = (tokens: PluginParamTokens): FileParam => {
     dir: attrString,
   } as const satisfies MappingTableEx<FileParam>;
   return {
-    dir: "",
-    ...compileParam("file", "", tokens.attr, FILE),
+    name: tokens.name,
+    attr: {
+      dir: "",
+      ...compileScalarAttributes("file", "", tokens.attr, FILE),
+    },
   };
 };
 
 const compileFileArrayParam = (
   tokens: PluginParamTokens,
-
   parsers: DeepJSONParserHandlers
-): FileArrayParam => {
-  const { value } = parsers.parseStringArray(tokens.attr.default || "[]");
+): PluginParamEx<FileArrayParam> => {
   const FILE_ARRAY = {
-    default: (): string[] => value,
+    default: (value: string) => parsers.parseStringArray(value).value,
     text: attrString,
     desc: attrString,
     parent: attrString,
     dir: attrString,
   } as const satisfies MappingTableEx<FileArrayParam>;
   return {
-    dir: "",
-    ...compileArrayParam("file[]", tokens.attr, FILE_ARRAY),
+    name: tokens.name,
+    attr: {
+      dir: "",
+      ...compileArrayAttributes("file[]", tokens.attr, FILE_ARRAY),
+    },
   };
 };
 
@@ -220,12 +248,15 @@ const compileDataIdArray = <
   kind: `${Kind}[]`
 ) => {
   const DATA_ID_ARRAY = {
-    default: numberArray,
+    default: (value: string) => numberArray(value),
     text: attrString,
     desc: attrString,
     parent: attrString,
   } as const;
-  return compileArrayParam(kind, tokens.attr, DATA_ID_ARRAY);
+  return {
+    name: tokens.name,
+    attr: compileArrayAttributes(kind, tokens.attr, DATA_ID_ARRAY),
+  };
 };
 
 const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
@@ -238,50 +269,55 @@ const compileDataId = <Kind extends DataKind_RpgUnion | DataKind_SystemUnion>(
     desc: attrString,
     parent: attrString,
   } as const satisfies MappingTableEx<GenericIdParam>;
-  return compileParam(kind, 0, tokens.attr, DATA_ID);
+  return {
+    name: tokens.name,
+    attr: compileScalarAttributes(kind, 0, tokens.attr, DATA_ID),
+  };
 };
 
 const TABLE = {
-  number: (tokens) => compileNumberParam(tokens),
+  actor: (token) => compileDataId(token, "actor"),
+  "actor[]": (token) => compileDataIdArray(token, "actor[]"),
+  class: (token) => compileDataId(token, "class"),
+  "class[]": (token) => compileDataIdArray(token, "class[]"),
+  skill: (token) => compileDataId(token, "skill"),
+  "skill[]": (token) => compileDataIdArray(token, "skill[]"),
+  item: (token) => compileDataId(token, "item"),
+  "item[]": (token) => compileDataIdArray(token, "item[]"),
+  weapon: (token) => compileDataId(token, "weapon"),
+  "weapon[]": (token) => compileDataIdArray(token, "weapon[]"),
+  armor: (token) => compileDataId(token, "armor"),
+  "armor[]": (token) => compileDataIdArray(token, "armor[]"),
+  state: (token) => compileDataId(token, "state"),
+  "state[]": (token) => compileDataIdArray(token, "state[]"),
+  enemy: (token) => compileDataId(token, "enemy"),
+  "enemy[]": (token) => compileDataIdArray(token, "enemy[]"),
+  common_event: (token) => compileDataId(token, "common_event"),
+  "common_event[]": (token) => compileDataIdArray(token, "common_event[]"),
+  switch: (token) => compileDataId(token, "switch"),
+  "switch[]": (token) => compileDataIdArray(token, "switch[]"),
+  variable: (token) => compileDataId(token, "variable"),
+  "variable[]": (token) => compileDataIdArray(token, "variable[]"),
+  troop: (token) => compileDataId(token, "troop"),
+  "troop[]": (token) => compileDataIdArray(token, "troop[]"),
+  file: compileFileParam,
+  "file[]": compileFileArrayParam,
+
+  combo: compileComboParam,
+  select: compileSelectParam,
+  struct: compileStructValue,
+  "struct[]": compileStructArrayValue,
+
+  boolean: compileBooleanParam,
+  number: compileNumberParam,
   "number[]": compileNumberArrayParam,
   string: compileStringParam,
   "string[]": compileStringArrayParam,
-  multiline_string: compileStringParam,
   "multiline_string[]": compileStringArrayParam,
-  combo: compileComboParam,
-  select: compileSelectParam,
-  actor: (tokens) => compileDataId(tokens, "actor"),
-  "actor[]": (tokens) => compileDataIdArray(tokens, "actor[]"),
-  class: (tokens) => compileDataId(tokens, "class"),
-  "class[]": (tokens) => compileDataIdArray(tokens, "class[]"),
-  skill: (tokens) => compileDataId(tokens, "skill"),
-  "skill[]": (tokens) => compileDataIdArray(tokens, "skill[]"),
-  item: (tokens) => compileDataId(tokens, "item"),
-  "item[]": (tokens) => compileDataIdArray(tokens, "item[]"),
-  weapon: (tokens) => compileDataId(tokens, "weapon"),
-  "weapon[]": (tokens) => compileDataIdArray(tokens, "weapon[]"),
-  armor: (tokens) => compileDataId(tokens, "armor"),
-  "armor[]": (tokens) => compileDataIdArray(tokens, "armor[]"),
-  state: (tokens) => compileDataId(tokens, "state"),
-  "state[]": (tokens) => compileDataIdArray(tokens, "state[]"),
-  enemy: (tokens) => compileDataId(tokens, "enemy"),
-  "enemy[]": (tokens) => compileDataIdArray(tokens, "enemy[]"),
-  common_event: (tokens) => compileDataId(tokens, "common_event"),
-  "common_event[]": (tokens) => compileDataIdArray(tokens, "common_event[]"),
-  switch: (tokens) => compileDataId(tokens, "switch"),
-  "switch[]": (tokens) => compileDataIdArray(tokens, "switch[]"),
-  variable: (tokens) => compileDataId(tokens, "variable"),
-  "variable[]": (tokens) => compileDataIdArray(tokens, "variable[]"),
-  troop: (tokens) => compileDataId(tokens, "troop"),
-  "troop[]": (tokens) => compileDataIdArray(tokens, "troop[]"),
-  boolean: compileBooleanParam,
-  file: compileFileParam,
-  "file[]": compileFileArrayParam,
-  "struct[]": compileStructArrayParam,
-  struct: compileStructParam,
-} as const satisfies Partial<{
-  [K in PrimitiveParam["kind"]]: (
+  multiline_string: compileStringParam,
+} as const satisfies {
+  [K in PrimitiveParam["kind"]]?: (
     tokens: PluginParamTokens,
     perser: DeepJSONParserHandlers
-  ) => PrimitiveParam;
-}>;
+  ) => PluginParam;
+};

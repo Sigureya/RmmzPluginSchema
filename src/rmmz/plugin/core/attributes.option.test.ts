@@ -1,7 +1,7 @@
 import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
 import type { ParamSoruceRecord } from "./attributes";
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { ComboParam, SelectParam } from "./params";
 import type { PluginParamTokens } from "./parse";
@@ -33,8 +33,8 @@ describe("compileAttributes - combo", () => {
       parent: "parentId",
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -63,8 +63,8 @@ describe("compileAttributes - combo", () => {
       parent: "parentId",
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -93,8 +93,8 @@ describe("compileAttributes - select", () => {
       parent: "parentId",
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
@@ -127,8 +127,8 @@ describe("compileAttributes - select", () => {
       parent: "parentId",
     };
     const mockHandlers = createHandlers();
-    const result = compileAttributes(token, mockHandlers);
-    expect(result).toEqual(expected);
+    const result = compilePluginParam(token, mockHandlers);
+    expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
     expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();

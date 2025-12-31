@@ -1,4 +1,4 @@
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { PrimitiveParam } from "./params";
@@ -35,10 +35,10 @@ const reduceParams = (
   handlers: DeepJSONParserHandlers
 ): { [key: string]: PrimitiveParam } => {
   return Object.fromEntries(
-    paramTokens.map((param): [string, PrimitiveParam] => [
-      param.name,
-      compileAttributes(param, handlers),
-    ])
+    paramTokens.map((param): [string, PrimitiveParam] => {
+      const compiled = compilePluginParam(param, handlers);
+      return [param.name, compiled.attr];
+    })
   );
 };
 

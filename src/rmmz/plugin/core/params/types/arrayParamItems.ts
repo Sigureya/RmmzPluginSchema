@@ -1,3 +1,4 @@
+import type { ParamError } from "./error";
 import type {
   PluginArrayParamType,
   PrimitiveParam,
@@ -8,14 +9,16 @@ import type { StructArrayRefParam, StructRefParam } from "./primitive";
 export interface PluginParam {
   name: string;
   attr: PrimitiveParam;
+  erros?: ParamError[];
 }
 
 export interface PluginParamEx<
   T extends PrimitiveParam,
   N extends string = string
-> {
+> extends PluginParam {
   name: Extract<N, string>;
   attr: T;
+  erros?: ParamError[];
 }
 
 export type PluginParamEx2<

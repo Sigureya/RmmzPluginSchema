@@ -1,4 +1,4 @@
-import { compileAttributes } from "./attributes";
+import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type {
@@ -29,12 +29,7 @@ const mapParams = (
   params: ReadonlyArray<PluginParamTokens>,
   parser: DeepJSONParserHandlers
 ): PluginParam[] => {
-  return params.map(
-    (p): PluginParam => ({
-      name: p.name,
-      attr: compileAttributes(p, parser),
-    })
-  );
+  return params.map((p): PluginParam => compilePluginParam(p, parser));
 };
 
 const mapCommands = (
