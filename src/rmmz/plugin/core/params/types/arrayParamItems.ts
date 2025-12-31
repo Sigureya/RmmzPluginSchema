@@ -15,9 +15,10 @@ export interface PluginParam {
 export interface PluginParamEx<
   T extends PrimitiveParam,
   N extends string = string
-> {
+> extends PluginParam {
   name: Extract<N, string>;
   attr: T;
+  erros?: ParamError[];
 }
 
 export type PluginParamEx2<
