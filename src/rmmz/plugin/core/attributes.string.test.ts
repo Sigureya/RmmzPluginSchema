@@ -38,6 +38,27 @@ describe("compileAttributes", () => {
       expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
     });
 
+    test("multiline", () => {
+      const tokens: PluginParamTokens = {
+        name: "attr",
+        attr: {
+          kind: "multiline_string",
+          default: ["line1", "line2", "line3"].join("\n"),
+        } satisfies ParamSoruceRecord<StringParam>,
+      };
+
+      const expected: StringParam = {
+        kind: "multiline_string",
+        default: ["line1", "line2", "line3"].join("\n"),
+      };
+      const mockHandlers = createHandlers();
+      const result = compilePluginParam(tokens, mockHandlers);
+      expect(result.attr).toEqual(expected);
+      expect(mockHandlers.parseStringArray).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
+    });
+
     test("full set", () => {
       const tokens: PluginParamTokens = {
         name: "attr",
@@ -79,6 +100,29 @@ describe("compileAttributes", () => {
         default: ["a", "b", "c"],
       };
 
+      const mockHandlers = createHandlers();
+
+      const result = compilePluginParam(tokens, mockHandlers);
+      expect(result.attr).toEqual(expected);
+      expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
+        tokens.attr.default
+      );
+      expect(mockHandlers.parseStringArray).toHaveBeenCalledTimes(1);
+      expect(mockHandlers.parseObject).not.toHaveBeenCalled();
+      expect(mockHandlers.parseObjectArray).not.toHaveBeenCalled();
+    });
+    test("multiline_string[]", () => {
+      const tokens: PluginParamTokens = {
+        name: "attr",
+        attr: {
+          kind: "multiline_string[]",
+          default: `["line1a\\nline1b", "line2a\\nline2b"]`,
+        } satisfies ParamSoruceRecord<StringArrayParam>,
+      };
+      const expected: StringArrayParam = {
+        kind: "multiline_string[]",
+        default: ["line1a\nline1b", "line2a\nline2b"],
+      };
       const mockHandlers = createHandlers();
 
       const result = compilePluginParam(tokens, mockHandlers);

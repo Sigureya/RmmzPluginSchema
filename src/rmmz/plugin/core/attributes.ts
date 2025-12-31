@@ -78,12 +78,7 @@ const compileComboParam = (
   tokens: PluginParamTokens
 ): PluginParamEx<ComboParam> => {
   const option: string[] = tokens.options?.map((o) => o.option) ?? [];
-  const STRING = {
-    default: attrString,
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const satisfies MappingTableEx<StringParam>;
+
   return {
     name: tokens.name,
     attr: {
@@ -103,12 +98,6 @@ const compileSelectParam = (
         value: o.value,
       })
     ) ?? [];
-  const STRING = {
-    default: attrString,
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const satisfies MappingTableEx<StringParam>;
   return {
     name: tokens.name,
     attr: {
@@ -172,23 +161,19 @@ const compileNumberArrayParam = (
 };
 
 const compileStringParam = (
-  tokens: PluginParamTokens
+  tokens: PluginParamTokens,
+  kind: StringParam["kind"]
 ): PluginParamEx<StringParam> => {
-  const STRING = {
-    default: attrString,
-    text: attrString,
-    desc: attrString,
-    parent: attrString,
-  } as const satisfies MappingTableEx<StringParam>;
   return {
     name: tokens.name,
-    attr: compileScalarAttributes("string", "", tokens.attr, STRING),
+    attr: compileScalarAttributes(kind, "", tokens.attr, STRING),
   };
 };
 
 const compileStringArrayParam = (
   tokens: PluginParamTokens,
-  parsers: DeepJSONParserHandlers
+  parsers: DeepJSONParserHandlers,
+  kind: StringArrayParam["kind"]
 ): PluginParamEx<StringArrayParam> => {
   const STRING_ARRAY = {
     default: (value: string) => parsers.parseStringArray(value).value,
@@ -198,7 +183,7 @@ const compileStringArrayParam = (
   } as const satisfies MappingTableEx<StringArrayParam>;
   return {
     name: tokens.name,
-    attr: compileArrayAttributes("string[]", tokens.attr, STRING_ARRAY),
+    attr: compileArrayAttributes(kind, tokens.attr, STRING_ARRAY),
   };
 };
 
@@ -311,10 +296,12 @@ const TABLE = {
   boolean: compileBooleanParam,
   number: compileNumberParam,
   "number[]": compileNumberArrayParam,
-  string: compileStringParam,
-  "string[]": compileStringArrayParam,
-  "multiline_string[]": compileStringArrayParam,
-  multiline_string: compileStringParam,
+  string: (tokens) => compileStringParam(tokens, "string"),
+  "string[]": (tokens, parsers) =>
+    compileStringArrayParam(tokens, parsers, "string[]"),
+  multiline_string: (tokens) => compileStringParam(tokens, "multiline_string"),
+  "multiline_string[]": (tokens, parsers) =>
+    compileStringArrayParam(tokens, parsers, "multiline_string[]"),
 } as const satisfies {
   [K in PrimitiveParam["kind"]]?: (
     tokens: PluginParamTokens,
