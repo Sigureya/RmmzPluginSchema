@@ -49,7 +49,7 @@ describe("boolean param", () => {
   });
   test("false default", () => {
     const param: PluginParamEx<BooleanParam> = {
-      name: "key memory",
+      name: "keyMemory",
       attr: {
         kind: "boolean",
         desc: "when key is released, restore previous state.",
@@ -60,7 +60,7 @@ describe("boolean param", () => {
       },
     };
     const expected: PluginParamAnnotation = {
-      name: "@param isEnabled",
+      name: "@arg keyMemory",
       default: "@default false",
       base: {
         kind: "@type boolean",
@@ -70,7 +70,7 @@ describe("boolean param", () => {
       attr: ["@on enable", "@off disable"],
     };
     const handlers = makeHandlers();
-    const annotation = genaratePluginParam(param, "param", handlers);
+    const annotation = genaratePluginParam(param, "arg", handlers);
     expect(annotation).toEqual(expected);
     expect(handlers.numberArray).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();
