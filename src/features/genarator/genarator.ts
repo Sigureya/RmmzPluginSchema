@@ -10,14 +10,21 @@ import {
   KEYWORD_URL,
 } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { createKeywordLine } from "./keywordLine";
+import { generatePluginSchemaAnnotation } from "./schema";
+import type { StringifyXX } from "./types/stringlfy";
 import type {
   Annotation_Meta,
   Annotation_PluginDependencies,
 } from "./types/types";
 
-const ganeratePluginAnnotation = (schema: PluginSchema) => {
+export const ganeratePluginAnnotation = (
+  schema: PluginSchema,
+  handlers: StringifyXX
+) => {
   return {
+    schema: generatePluginSchemaAnnotation(schema.schema, handlers),
     target: createKeywordLine(KEYWORD_TARGET, schema.target),
+    meta: genarateMetaAnnotations(schema.meta),
     //    pluginName: schema.pluginName,
     dependencies: genarateDependencyAnnotations(
       schema.dependencies ?? {
@@ -26,7 +33,6 @@ const ganeratePluginAnnotation = (schema: PluginSchema) => {
         orderAfter: [],
       }
     ),
-    meta: genarateMetaAnnotations(schema.meta),
   };
 };
 
