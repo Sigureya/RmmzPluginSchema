@@ -10,6 +10,15 @@ export interface PluginSchemaAnnotation {
 export interface PluginParamAnnotation<T extends "param" | "arg" = "param"> {
   name: KeyWord<T>;
   attr: KeyWord<KeywordEnum>[];
+  base: ParamBaseAnnotation;
+  default: KeyWord<"default"> | undefined;
+}
+
+export interface ParamBaseAnnotation {
+  kind: KeyWord<"type">;
+  desc?: KeyWord<"desc"> | undefined;
+  text?: KeyWord<"text"> | undefined;
+  parent?: KeyWord<"parent"> | undefined;
 }
 
 export interface PluginCommandAnnotation {

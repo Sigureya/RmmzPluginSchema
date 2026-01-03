@@ -27,7 +27,10 @@ import {
 } from "./keywordLine";
 import { generateComboOptions, generateSelectOptions } from "./options";
 import type { KeyWord } from "./types/keyword";
-import type { PluginParamAnnotation } from "./types/schema";
+import type {
+  ParamBaseAnnotation,
+  PluginParamAnnotation,
+} from "./types/schema";
 import type { StringifyXX } from "./types/stringlfy";
 
 export const genaratePluginParam = <T extends "param" | "arg">(
@@ -38,29 +41,22 @@ export const genaratePluginParam = <T extends "param" | "arg">(
   const name = createKeywordLine(keyword, param.name);
   const base = generateBaseParams(param.attr);
   const attr = mapAttr(param.attr, handlers);
-  return {
-    name: name,
-    attr: toArray(attr, base).filter((s) => s !== undefined),
-  };
-};
-
-const toArray = (
-  attr: AttrResult | undefined,
-  base: BaseAttr
-): (KeyWord<KeywordEnum | "type"> | undefined)[] => {
   return attr
-    ? [base.kind, base.desc, base.text, base.parent, ...attr.attr, attr.default]
-    : [base.kind, base.desc, base.text, base.parent];
+    ? {
+        name,
+        base,
+        default: attr.default,
+        attr: attr.attr.filter((x) => x !== undefined),
+      }
+    : {
+        name,
+        base,
+        default: undefined,
+        attr: [],
+      };
 };
 
-interface BaseAttr {
-  kind: KeyWord<"type">;
-  desc: KeyWord<"desc"> | undefined;
-  text: KeyWord<"text"> | undefined;
-  parent: KeyWord<"parent"> | undefined;
-}
-
-const generateBaseParams = (p: ParamBase): BaseAttr => {
+const generateBaseParams = (p: ParamBase): ParamBaseAnnotation => {
   return {
     kind: createKindLine(p),
     desc: p.desc ? createKeywordLine("desc", p.desc) : undefined,
