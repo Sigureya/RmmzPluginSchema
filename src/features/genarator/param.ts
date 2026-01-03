@@ -19,6 +19,7 @@ import type {
   SystemDataIdArrayParam,
   SystemDataIdParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type { KeywordEnum } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import {
   createKeywordLine,
   createKeywordLineEx,
@@ -26,39 +27,34 @@ import {
 } from "./keywordLine";
 import { generateComboOptions, generateSelectOptions } from "./options";
 import type { KeyWord } from "./types/keyword";
+import type { PluginParamAnnotation } from "./types/schema";
 import type { StringifyXX } from "./types/stringlfy";
 
-export const genaratePluginParam = (
+export const genaratePluginParam = <T extends "param" | "arg">(
   param: PluginParam,
-  keyword: "arg" | "param",
+  keyword: T,
   handlers: StringifyXX
-): KeyWord<string>[] => {
+): PluginParamAnnotation<T> => {
   const name = createKeywordLine(keyword, param.name);
   const base = generateBaseParams(param.attr);
   const attr = mapAttr(param.attr, handlers);
-  return toArray(name, attr, base).filter((s) => s !== undefined);
+  return {
+    name: name,
+    attr: toArray(attr, base).filter((s) => s !== undefined),
+  };
 };
 
 const toArray = (
-  name: KeyWord<"arg" | "param">,
   attr: AttrResult | undefined,
   base: BaseAttr
-): (KeyWord<string> | undefined)[] => {
+): (KeyWord<KeywordEnum | "type"> | undefined)[] => {
   return attr
-    ? [
-        name,
-        base.kind,
-        base.desc,
-        base.text,
-        base.parent,
-        ...attr.attr,
-        attr.default,
-      ]
+    ? [base.kind, base.desc, base.text, base.parent, ...attr.attr, attr.default]
     : [base.kind, base.desc, base.text, base.parent];
 };
 
 interface BaseAttr {
-  kind: KeyWord<string>;
+  kind: KeyWord<"type">;
   desc: KeyWord<"desc"> | undefined;
   text: KeyWord<"text"> | undefined;
   parent: KeyWord<"parent"> | undefined;
@@ -74,7 +70,7 @@ const generateBaseParams = (p: ParamBase): BaseAttr => {
 };
 
 interface AttrResult {
-  attr: (KeyWord<string> | undefined)[];
+  attr: (KeyWord<KeywordEnum> | undefined)[];
   default: KeyWord<"default"> | undefined;
 }
 
