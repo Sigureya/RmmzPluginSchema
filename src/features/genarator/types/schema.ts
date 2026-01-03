@@ -7,7 +7,9 @@ export interface PluginSchemaAnnotation {
   commands: PluginCommandAnnotation[];
 }
 
-export interface PluginParamAnnotation<T extends "param" | "arg" = "param"> {
+export interface PluginParamAnnotation<
+  T extends "param" | "arg" = "param" | "arg"
+> {
   name: KeyWord<T>;
   attr: KeyWord<KeywordEnum>[];
   base: ParamBaseAnnotation;
