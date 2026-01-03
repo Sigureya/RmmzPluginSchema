@@ -16,7 +16,7 @@ import {
 import { typeIsStruct } from "./struct";
 import type {
   ParsedPlugin,
-  StructParseState,
+  PluginStructTokens,
   PluginCommandTokens,
   PluginMeta,
   KeywordEnum,
@@ -95,7 +95,7 @@ export const parsePlugin = (
   };
 };
 
-const parseStructBlock = (body: PluginStructBlock): StructParseState => {
+const parseStructBlock = (body: PluginStructBlock): PluginStructTokens => {
   const state = parseBodyBlock(body);
   return {
     name: body.struct,

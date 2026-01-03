@@ -7,7 +7,7 @@ import type {
   ParsedPlugin,
   PluginCommandTokens,
   PluginParamTokens,
-  StructParseState,
+  PluginStructTokens,
 } from "./parse/types/types";
 import type {
   PluginCommandBody,
@@ -59,7 +59,7 @@ const reduceCommands = (
 };
 
 const reduceStructs = (
-  structs: ReadonlyArray<StructParseState>,
+  structs: ReadonlyArray<PluginStructTokens>,
   handlers: DeepJSONParserHandlers
 ): Record<string, PluginStructBody> => {
   return Object.fromEntries(

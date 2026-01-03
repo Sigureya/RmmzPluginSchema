@@ -4,7 +4,7 @@ import type {
   ParsedPlugin,
   PluginCommandTokens,
   PluginDependencies,
-  StructParseState,
+  PluginStructTokens,
 } from "./types";
 
 describe("parsePlugin", () => {
@@ -60,7 +60,7 @@ describe("parsePlugin", () => {
         ],
       },
     ];
-    const expectedStructs: StructParseState[] = [
+    const expectedStructs: PluginStructTokens[] = [
       {
         name: "MyStruct",
         params: [
@@ -96,7 +96,7 @@ describe("parsePlugin", () => {
         ],
       },
     ];
-    const expectedStructs: StructParseState[] = [
+    const expectedStructs: PluginStructTokens[] = [
       {
         name: "MyStruct",
         params: [
