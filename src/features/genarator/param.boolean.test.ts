@@ -17,8 +17,8 @@ const makeHandlers = (): MockedObject<StringifyXX> => {
   };
 };
 
-describe("boolean param", () => {
-  test("true default", () => {
+describe("genaratePluginParam", () => {
+  test("boolean true default", () => {
     const param: PluginParamEx<BooleanParam> = {
       name: "isEnabled",
       attr: {
@@ -47,7 +47,7 @@ describe("boolean param", () => {
     expect(handlers.stringArray).not.toHaveBeenCalled();
     expect(handlers.struct).not.toHaveBeenCalled();
   });
-  test("false default", () => {
+  test("boolean false default", () => {
     const param: PluginParamEx<BooleanParam> = {
       name: "keyMemory",
       attr: {
