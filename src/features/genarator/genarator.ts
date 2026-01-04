@@ -6,12 +6,14 @@ import {
   KEYWORD_DESC,
   KEYWORD_ORDERAFTER,
   KEYWORD_ORDERBEFORE,
+  KEYWORD_PLUGINDESC,
   KEYWORD_TARGET,
   KEYWORD_URL,
 } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { createKeywordLine } from "./keywordLine";
 import { generatePluginSchemaAnnotation } from "./schema";
 import type { StringifyXX } from "./types/stringlfy";
+import type { AnnotationTokens } from "./types/tokens";
 import type {
   Annotation_Meta,
   Annotation_PluginDependencies,
@@ -20,8 +22,9 @@ import type {
 export const ganeratePluginAnnotation = (
   schema: PluginSchema,
   handlers: StringifyXX
-) => {
+): AnnotationTokens => {
   return {
+    locale: schema.locale,
     schema: generatePluginSchemaAnnotation(schema.schema, handlers),
     target: createKeywordLine(KEYWORD_TARGET, schema.target),
     meta: genarateMetaAnnotations(schema.meta),
@@ -54,12 +57,13 @@ export const genarateDependencyAnnotations = (
 
 export const genarateMetaAnnotations = (
   meta: Record<string, string>
-): Annotation_Meta[] => {
+): Annotation_Meta => {
   const author = meta[KEYWORD_AUTHOR];
   const desc = meta[KEYWORD_DESC];
   const url = meta[KEYWORD_URL];
-  const a2 = author ? createKeywordLine(KEYWORD_AUTHOR, author) : undefined;
-  const d2 = desc ? createKeywordLine(KEYWORD_DESC, desc) : undefined;
-  const u2 = url ? createKeywordLine(KEYWORD_URL, url) : undefined;
-  return [a2, d2, u2].filter((item) => !!item);
+  return {
+    author: author ? createKeywordLine(KEYWORD_AUTHOR, author) : undefined,
+    pluginDesc: desc ? createKeywordLine(KEYWORD_PLUGINDESC, desc) : undefined,
+    url: url ? createKeywordLine(KEYWORD_URL, url) : undefined,
+  };
 };

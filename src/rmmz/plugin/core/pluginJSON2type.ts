@@ -18,6 +18,7 @@ export interface PluginMinimumSchema {
 }
 
 export interface PluginSchema extends PluginMinimumSchema {
+  locale?: string;
   pluginName: string;
   target: string;
   meta: Record<string, string>;

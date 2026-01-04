@@ -37,7 +37,7 @@ const mapStructParams = (
   handlers: StringifyXX
 ): PluginStructAnnotation => {
   return {
-    struct: createKeywordLine("struct", structSchema.struct),
+    struct: structSchema.struct,
     params: mapParams(structSchema.params, handlers),
   };
 };
@@ -47,6 +47,8 @@ const mapCommands = (
   handlers: StringifyXX
 ): PluginCommandAnnotation => {
   return {
+    desc: command.desc ? createKeywordLine("desc", command.desc) : undefined,
+    text: command.text ? createKeywordLine("text", command.text) : undefined,
     command: createKeywordLine("command", command.command),
     args: command.args.map((arg) => genaratePluginParam(arg, "arg", handlers)),
   };

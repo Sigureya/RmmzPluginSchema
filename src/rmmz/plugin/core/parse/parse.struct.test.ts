@@ -3,7 +3,7 @@ import { parsePlugin } from "./parse";
 import type {
   ParsedPlugin,
   PluginParamTokens,
-  StructParseState,
+  PluginStructTokens,
 } from "./types/types";
 
 const createTokens = (structHead: string) => {
@@ -58,7 +58,7 @@ describe("parsePlugin", () => {
     });
     test("structs is defined", () => {
       const result: ParsedPlugin = parsePlugin(src);
-      const struct: StructParseState = {
+      const struct: PluginStructTokens = {
         name: "Person",
         params: [
           {
@@ -82,7 +82,7 @@ describe("parsePlugin", () => {
     });
   });
   describe("struct with locale", () => {
-    const expectedStruct: StructParseState = {
+    const expectedStruct: PluginStructTokens = {
       name: "Person",
       params: [
         {

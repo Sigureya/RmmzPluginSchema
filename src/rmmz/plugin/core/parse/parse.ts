@@ -16,7 +16,7 @@ import {
 import { typeIsStruct } from "./struct";
 import type {
   ParsedPlugin,
-  StructParseState,
+  PluginStructTokens,
   PluginCommandTokens,
   PluginMeta,
   KeywordEnum,
@@ -41,6 +41,29 @@ import {
   KEYWORD_DIR,
   KEYWORD_PARENT,
 } from "./types/keyword";
+
+const bbb = (
+  body: PluginBodyBlock,
+  structs: readonly PluginStructBlock[]
+): ParsedPlugin => {
+  const finalState = parseBodyBlock(body);
+  return {
+    locale: body.locale,
+    commands: finalState.commands,
+    params: finalState.params,
+    helpLines: finalState.helpLines,
+    meta: finalState.meta,
+    dependencies: finalState.dependencies,
+    structs: structs
+      .filter((s) => s.locale === body.locale)
+      .map((s) => parseStructBlock(s)),
+  };
+};
+
+export const parsePlugin2 = (text: string): ParsedPlugin[] => {
+  const blocks: Block = splitBlock(text);
+  return blocks.bodies.map((body): ParsedPlugin => bbb(body, blocks.structs));
+};
 
 export const parsePlugin = (
   text: string,
@@ -72,7 +95,7 @@ export const parsePlugin = (
   };
 };
 
-const parseStructBlock = (body: PluginStructBlock): StructParseState => {
+const parseStructBlock = (body: PluginStructBlock): PluginStructTokens => {
   const state = parseBodyBlock(body);
   return {
     name: body.struct,

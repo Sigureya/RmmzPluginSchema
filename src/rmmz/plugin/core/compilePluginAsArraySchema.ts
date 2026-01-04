@@ -11,7 +11,7 @@ import type {
   PluginTokens,
   PluginParamTokens,
   PluginCommandTokens,
-  StructParseState,
+  PluginStructTokens,
 } from "./parse/types";
 
 export type CCC = "command" | "param" | "struct";
@@ -47,7 +47,7 @@ const mapCommands = (
 };
 
 const mapStructs = (
-  structs: ReadonlyArray<StructParseState>,
+  structs: ReadonlyArray<PluginStructTokens>,
   parser: DeepJSONParserHandlers
 ): PluginStructSchemaArray[] => {
   return structs.map(
