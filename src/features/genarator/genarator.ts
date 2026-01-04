@@ -24,6 +24,7 @@ export const ganeratePluginAnnotation = (
   handlers: StringifyXX
 ): AnnotationTokens => {
   return {
+    locale: schema.locale,
     schema: generatePluginSchemaAnnotation(schema.schema, handlers),
     target: createKeywordLine(KEYWORD_TARGET, schema.target),
     meta: genarateMetaAnnotations(schema.meta),
