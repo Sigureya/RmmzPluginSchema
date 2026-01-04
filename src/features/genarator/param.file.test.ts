@@ -2,8 +2,7 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { FileParam, PluginParamEx } from "@RmmzPluginSchema/rmmz/plugin";
 import { generatePluginParamAnnotation } from "./param";
-import type { PluginParamAnnotation } from "./types/schema";
-import type { SchemaStringifyHandlers } from "./types/stringlfy";
+import type { SchemaStringifyHandlers, PluginParamAnnotation } from "./types";
 
 const makeHandlers = (): MockedObject<SchemaStringifyHandlers> => {
   return {

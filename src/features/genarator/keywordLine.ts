@@ -1,5 +1,5 @@
 import { KEYWORD_TYPE } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
-import type { KeyWord } from "./types/keyword";
+import type { KeyWord } from "./types";
 
 export const createKeywordLine = <K extends string>(
   keyword: K,

@@ -9,13 +9,13 @@ import {
   generateStructTokenBlock,
   generatePluginBodyTokenBlock,
 } from "./tokens";
-import type { PluginStructAnnotation } from "./types/schema";
-import type { SchemaStringifyHandlers } from "./types/stringlfy";
 import type {
+  SchemaStringifyHandlers,
   PluginAnnotationTokens,
   PluginBodyBlockToken,
+  PluginStructAnnotation,
   StructTokenBlock,
-} from "./types/tokens";
+} from "./types";
 
 const createHandlers = (): MockedObject<SchemaStringifyHandlers> => ({
   numberArray: vi.fn(),

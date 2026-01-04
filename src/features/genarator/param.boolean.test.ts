@@ -5,8 +5,7 @@ import type {
   PluginParamEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { generatePluginParamAnnotation } from "./param";
-import type { PluginParamAnnotation } from "./types/schema";
-import type { SchemaStringifyHandlers } from "./types/stringlfy";
+import type { SchemaStringifyHandlers, PluginParamAnnotation } from "./types";
 
 const makeHandlers = (): MockedObject<SchemaStringifyHandlers> => {
   return {

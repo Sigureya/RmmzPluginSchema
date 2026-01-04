@@ -7,12 +7,12 @@ import type {
 import { createKeywordLine } from "./keywordLine";
 import { generatePluginParamAnnotation } from "./param";
 import type {
-  PluginCommandAnnotation,
-  PluginParamAnnotation,
+  SchemaStringifyHandlers,
   PluginSchemaAnnotation,
+  PluginParamAnnotation,
   PluginStructAnnotation,
-} from "./types/schema";
-import type { SchemaStringifyHandlers } from "./types/stringlfy";
+  PluginCommandAnnotation,
+} from "./types";
 
 export const generatePluginSchemaAnnotation = (
   schema: PluginSchemaArray,
