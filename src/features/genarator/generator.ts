@@ -14,12 +14,28 @@ import {
 } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { createKeywordLine } from "./keywordLine";
 import { generatePluginSchemaAnnotation } from "./schema";
-import type { SchemaStringifyHandlers } from "./types/stringlfy";
-import type { PluginAnnotationTokens } from "./types/tokens";
+import {
+  generatePluginBodyTokenBlock,
+  generateStructTokenBlock,
+} from "./tokens";
 import type {
-  PluginMetaAnnotation,
+  SchemaStringifyHandlers,
+  PluginAnnotationLines,
+  PluginAnnotationTokens,
   PluginDependencyAnnotations,
-} from "./types/types";
+  PluginMetaAnnotation,
+} from "./types";
+
+export const generatePluginAnnotationLines = (
+  plugin: PluginSchema,
+  handlers: SchemaStringifyHandlers
+): PluginAnnotationLines => {
+  const tokens = generatePluginAnnotation(plugin, handlers);
+  return {
+    body: generatePluginBodyTokenBlock(tokens) satisfies string[],
+    structs: tokens.schema.structs.flatMap(generateStructTokenBlock),
+  };
+};
 
 export const generatePluginAnnotation = (
   plugin: PluginSchema,
@@ -34,7 +50,7 @@ export const generatePluginAnnotation = (
   };
 };
 
-export const generateDependencyAnnotations = (
+const generateDependencyAnnotations = (
   schema: PluginDependencies
 ): PluginDependencyAnnotations => {
   return {
@@ -50,7 +66,7 @@ export const generateDependencyAnnotations = (
   };
 };
 
-export const generateMetaAnnotations = (
+const generateMetaAnnotations = (
   meta: PluginMetaKeywords
 ): PluginMetaAnnotation => {
   const author = meta.author;
