@@ -32,6 +32,7 @@ export const pluginSourceToArraySchema = (
     meta: tokens.meta,
     pluginName: input.pluginName,
     target: "MZ",
+    dependencies: tokens.dependencies,
     schema: compilePluginAsArraySchema(tokens, parser),
   };
 };

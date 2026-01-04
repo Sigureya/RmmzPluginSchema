@@ -35,6 +35,6 @@ export interface ParsedPlugin extends PluginTokens {
   params: PluginParamTokens[];
   commands: PluginCommandTokens[];
   helpLines: string[];
-  dependencies?: PluginDependencies;
+  dependencies: PluginDependencies;
   structs: PluginStructTokens[];
 }

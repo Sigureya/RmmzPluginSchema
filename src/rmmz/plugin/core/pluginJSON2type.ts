@@ -17,12 +17,18 @@ export interface PluginMinimumSchema {
   };
 }
 
+export interface PluginMetaKeywords {
+  author?: string;
+  plugindesc?: string;
+  url?: string;
+}
+
 export interface PluginSchema extends PluginMinimumSchema {
   locale?: string;
   pluginName: string;
   target: string;
-  meta: Record<string, string>;
-  dependencies?: PluginDependencies;
+  meta: PluginMetaKeywords;
+  dependencies: PluginDependencies;
   schema: PluginSchemaArray;
 }
 
