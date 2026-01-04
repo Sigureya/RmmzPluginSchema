@@ -2,33 +2,40 @@ import type { KeyWord } from "./types/keyword";
 import type {
   PluginCommandAnnotation,
   PluginParamAnnotation,
-  PluginSchemaAnnotation,
   PluginStructAnnotation,
 } from "./types/schema";
-import type { AnnotationTokens } from "./types/tokens";
+import type {
+  AnnotationTokens,
+  PluginBodyBlockToken,
+  StructTokenBlock,
+} from "./types/tokens";
 
 type TokenLine = "" | KeyWord<string> | undefined;
 
-export const createStructTokens = (struct: PluginStructAnnotation) => {
-  return [
-    `/*~struct~${struct.struct}:${struct.locale ?? ""}`,
-    ...struct.params.flatMap(ppp),
-    "*/",
-  ].filter((x) => x !== undefined);
+export const createStructTokens = (
+  struct: PluginStructAnnotation
+): StructTokenBlock => {
+  const params: ("" | KeyWord<string>)[] = struct.params
+    .flatMap(ppp)
+    .filter((x) => x !== undefined);
+  return [`/*~struct~${struct.struct}:${struct.locale ?? ""}`, ...params, "*/"];
 };
 
-const ganerateTokens = (tokens: AnnotationTokens) => {
-  return [
+export const ganerateBodyTokens = (
+  tokens: AnnotationTokens
+): PluginBodyBlockToken => {
+  const lines = [
     tokens.meta.author,
     tokens.meta.pluginDesc,
     tokens.meta.url,
     tokens.target,
-    tokens.dependencies.base,
-    tokens.dependencies.orderBefore,
-    tokens.dependencies.orderAfter,
-    tokens.schema.commands.flatMap(ccc),
-    tokens.schema.params.flatMap(ppp),
-  ];
+    ...tokens.dependencies.base,
+    ...tokens.dependencies.orderBefore,
+    ...tokens.dependencies.orderAfter,
+    ...tokens.schema.commands.flatMap(ccc),
+    ...tokens.schema.params.flatMap(ppp),
+  ].filter((x) => x !== undefined);
+  return [`/*:${tokens.locale ?? ""}`, ...lines, `*/`];
 };
 
 const ccc = (command: PluginCommandAnnotation): TokenLine[] => {

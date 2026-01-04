@@ -3,6 +3,7 @@ import type { PluginStructTokens } from "@RmmzPluginSchema/rmmz/plugin/core/pars
 import { parsePlugin } from "@RmmzPluginSchema/rmmz/plugin/core/parse/parse";
 import { createStructTokens } from "./tokens";
 import type { PluginStructAnnotation } from "./types/schema";
+import type { StructTokenBlock } from "./types/tokens";
 
 describe("createStruct", () => {
   const structAnnotation: PluginStructAnnotation = {
@@ -23,7 +24,7 @@ describe("createStruct", () => {
       },
     ],
   };
-  const expectedTokens: string[] = [
+  const expectedTokens: StructTokenBlock = [
     "/*~struct~Person:ja",
     "@param name",
     "@type string",
@@ -40,7 +41,7 @@ describe("createStruct", () => {
     const tokens = createStructTokens(structAnnotation);
     expect(tokens).toEqual(expectedTokens);
   });
-  test("", () => {
+  test("parses struct tokens correctly", () => {
     const struct: PluginStructTokens = {
       name: "Person",
       params: [
