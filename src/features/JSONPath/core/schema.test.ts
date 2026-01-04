@@ -52,6 +52,7 @@ const schema: PluginSchema = {
   meta: {},
   pluginName: "MockPlugin",
   target: "MZ",
+  locale: "en",
   schema: {
     params: [
       {
