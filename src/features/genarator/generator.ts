@@ -21,7 +21,7 @@ import type {
   Annotation_PluginDependencies,
 } from "./types/types";
 
-export const ganeratePluginAnnotation = (
+export const generatePluginAnnotation = (
   schema: PluginSchema,
   handlers: SchemaStringifyHandlers
 ): PluginAnnotationTokens => {

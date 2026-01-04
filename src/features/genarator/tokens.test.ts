@@ -1,12 +1,10 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
-import {
-  pluginSourceToArraySchema,
-  type PluginInput,
-} from "@RmmzPluginSchema/rmmz/index";
+import type { PluginInput } from "@RmmzPluginSchema/rmmz/index";
+import { pluginSourceToArraySchema } from "@RmmzPluginSchema/rmmz/index";
 import type { PluginStructTokens } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { parsePlugin } from "@RmmzPluginSchema/rmmz/plugin/core/parse/parse";
-import { ganeratePluginAnnotation } from "./genarator";
+import { generatePluginAnnotation } from "./generator";
 import {
   generateStructTokenBlock,
   generatePluginBodyTokenBlock,
@@ -99,7 +97,7 @@ describe("generatePluginBodyTokenBlock", () => {
       "",
       "*/",
     ];
-    test("aa", () => {
+    test("generates plugin body tokens correctly", () => {
       const tokens = generatePluginBodyTokenBlock(pluginAnnoations);
       expect(tokens).toEqual(expectedTokens);
     });
@@ -111,7 +109,7 @@ describe("generatePluginBodyTokenBlock", () => {
       };
       const schema = pluginSourceToArraySchema(input);
       const handlers = createHandlers();
-      const result: PluginAnnotationTokens = ganeratePluginAnnotation(
+      const result: PluginAnnotationTokens = generatePluginAnnotation(
         schema,
         handlers
       );
