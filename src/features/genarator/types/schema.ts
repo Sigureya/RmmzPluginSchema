@@ -25,10 +25,13 @@ export interface ParamBaseAnnotation {
 
 export interface PluginCommandAnnotation {
   command: KeyWord<"command">;
+  text?: KeyWord<"text"> | undefined;
+  desc?: KeyWord<"desc"> | undefined;
   args: PluginParamAnnotation<"arg">[];
 }
 
 export interface PluginStructAnnotation {
-  struct: KeyWord<"struct">;
+  locale?: string;
+  struct: string;
   params: PluginParamAnnotation[];
 }
