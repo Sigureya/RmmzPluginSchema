@@ -2,9 +2,11 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type {
   DeepJSONParserHandlers,
+  ParamError,
   PluginSchema,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { pluginSourceToArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
+import type { DeepParseResult } from "@RmmzPluginSchema/rmmz/plugin/core/rmmzJSON/types/handlers";
 import { generatePluginAnnotationLines } from "./generator";
 import type { SchemaStringifyHandlers, PluginAnnotationLines } from "./types";
 
@@ -12,12 +14,30 @@ const createStringifyHandlers = (): MockedObject<SchemaStringifyHandlers> => ({
   numberArray: vi.fn(),
   structArray: vi.fn(),
   stringArray: vi.fn(),
-  struct: vi.fn(),
+  struct: vi.fn((obj: object) => JSON.stringify(obj)),
 });
 
-const createValueParserHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
-  parseObject: vi.fn(),
-  parseObjectArray: vi.fn(),
+interface MockParseResult {
+  object: object;
+  objectArray: object[];
+  stringArray: string[];
+}
+
+const createValueParserHandlers = (
+  mock: MockParseResult
+): MockedObject<DeepJSONParserHandlers> => ({
+  parseObject: vi.fn<(json: string) => DeepParseResult<object, ParamError>>(
+    () => ({
+      value: mock.object,
+      errors: [],
+    })
+  ),
+  parseObjectArray: vi.fn<
+    (json: string) => DeepParseResult<object[], ParamError>
+  >(() => ({
+    value: mock.objectArray,
+    errors: [],
+  })),
   parseStringArray: vi.fn(),
 });
 
@@ -60,7 +80,11 @@ describe("generatePluginAnnotationLines", () => {
       expect(handlers.struct).not.toHaveBeenCalled();
     });
     test("parses correct schema from annotation lines", () => {
-      const handlers = createValueParserHandlers();
+      const handlers = createValueParserHandlers({
+        object: {},
+        objectArray: [],
+        stringArray: [],
+      });
       const result: PluginSchema = pluginSourceToArraySchema(
         {
           source: joinLines(tokenLines),
@@ -76,6 +100,10 @@ describe("generatePluginAnnotationLines", () => {
     });
   });
   describe("s", () => {
+    const person = {
+      name: "Bob",
+      age: 0,
+    };
     const schema: PluginSchema = {
       target: "MZ",
       locale: undefined,
@@ -87,7 +115,18 @@ describe("generatePluginAnnotationLines", () => {
       dependencies: { base: [], orderBefore: [], orderAfter: [] },
       schema: {
         commands: [],
-        params: [],
+        params: [
+          {
+            name: "mockPerson",
+            attr: {
+              kind: "struct",
+              struct: "Person",
+              default: person,
+              desc: "A person struct parameter.",
+              text: "Person Parameter",
+            },
+          },
+        ],
         structs: [
           {
             struct: "Person",
@@ -122,6 +161,12 @@ describe("generatePluginAnnotationLines", () => {
         "@author Test Author",
         "@plugindesc Plugin to define a Person struct.",
         "",
+        "@param mockPerson",
+        "@type struct<Person>",
+        "@desc A person struct parameter.",
+        "@text Person Parameter",
+        '@default {"name":"Bob","age":0}',
+        "",
         "*/",
       ],
       structs: [
@@ -150,7 +195,11 @@ describe("generatePluginAnnotationLines", () => {
       expect(handlers.stringArray).not.toHaveBeenCalled();
     });
     test("parses correct schema from annotation lines", () => {
-      const handlers = createValueParserHandlers();
+      const handlers = createValueParserHandlers({
+        object: person,
+        objectArray: [],
+        stringArray: [],
+      });
       const result: PluginSchema = pluginSourceToArraySchema(
         {
           source: joinLines(tokenLines),
