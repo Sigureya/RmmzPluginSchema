@@ -33,7 +33,7 @@ export const generatePluginAnnotationLines = (
   const tokens = generatePluginAnnotation(plugin, handlers);
   return {
     body: generatePluginBodyTokenBlock(tokens) satisfies string[],
-    structs: tokens.schema.structs.flatMap(generateStructTokenBlock),
+    structs: tokens.schema.structs.map(generateStructTokenBlock),
   };
 };
 

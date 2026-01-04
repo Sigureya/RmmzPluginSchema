@@ -1,6 +1,6 @@
-import type { PluginBodyBlockToken } from "./tokens";
+import type { PluginBodyBlockToken, StructTokenBlock } from "./tokens";
 
 export interface PluginAnnotationLines {
   body: PluginBodyBlockToken;
-  structs: string[];
+  structs: StructTokenBlock[];
 }
