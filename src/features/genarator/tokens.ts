@@ -69,6 +69,8 @@ const paramAnnotationToLines = (
     param.name,
     param.base.kind,
     param.base.desc,
+    param.base.text,
+    param.base.parent,
     ...param.attr,
     param.default,
     "",
