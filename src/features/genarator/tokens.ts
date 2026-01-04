@@ -25,13 +25,15 @@ export const generatePluginBodyTokenBlock = (
   tokens: PluginAnnotationTokens
 ): PluginBodyBlockToken => {
   const lines = [
+    tokens.target,
     tokens.meta.author,
     tokens.meta.pluginDesc,
     tokens.meta.url,
-    tokens.target,
+    "",
     ...tokens.dependencies.base,
     ...tokens.dependencies.orderBefore,
     ...tokens.dependencies.orderAfter,
+    "",
     ...tokens.schema.commands.flatMap(commandAnnotationToLines),
     ...tokens.schema.params.flatMap(paramAnnotationToLines),
   ].filter((x) => x !== undefined);

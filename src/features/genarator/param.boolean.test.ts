@@ -35,6 +35,8 @@ describe("genaratePluginParam", () => {
       default: "@default true",
       base: {
         kind: "@type boolean",
+        parent: undefined,
+        text: undefined,
         desc: "@desc Enable or disable the feature.",
       },
       attr: ["@on Yes", "@off No"],
@@ -63,6 +65,7 @@ describe("genaratePluginParam", () => {
       name: "@arg keyMemory",
       default: "@default false",
       base: {
+        parent: undefined,
         kind: "@type boolean",
         desc: "@desc when key is released, restore previous state.",
         text: "@text Enable memory",

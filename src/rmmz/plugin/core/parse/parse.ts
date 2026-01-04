@@ -80,6 +80,7 @@ export const parsePlugin = (
       commands: [],
       meta: {},
       helpLines: [],
+      dependencies: { base: [], orderBefore: [], orderAfter: [] },
       structs: structs,
     };
   }

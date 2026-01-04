@@ -18,9 +18,9 @@ export interface PluginParamAnnotation<
 
 export interface ParamBaseAnnotation {
   kind: KeyWord<"type">;
-  desc?: KeyWord<"desc"> | undefined;
-  text?: KeyWord<"text"> | undefined;
-  parent?: KeyWord<"parent"> | undefined;
+  desc: KeyWord<"desc"> | undefined;
+  text: KeyWord<"text"> | undefined;
+  parent: KeyWord<"parent"> | undefined;
 }
 
 export interface PluginCommandAnnotation {

@@ -53,6 +53,11 @@ const schema: PluginSchema = {
   pluginName: "MockPlugin",
   target: "MZ",
   locale: "en",
+  dependencies: {
+    base: [],
+    orderBefore: [],
+    orderAfter: [],
+  },
   schema: {
     params: [
       {
@@ -125,6 +130,7 @@ describe("JSONPath", () => {
     expect(result.schema.structs).toEqual(schema.schema.structs);
     expect(result.schema.commands).toEqual(schema.schema.commands);
     expect(result.schema.params).toEqual(schema.schema.params);
+    expect(result.dependencies).toEqual(schema.dependencies);
     expect(result.pluginName).toBe("MockPlugin");
     expect(result).toEqual(schema);
   });
