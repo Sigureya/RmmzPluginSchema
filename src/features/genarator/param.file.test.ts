@@ -1,11 +1,11 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { FileParam, PluginParamEx } from "@RmmzPluginSchema/rmmz/plugin";
-import { genaratePluginParam } from "./param";
+import { generatePluginParamAnnotation } from "./param";
 import type { PluginParamAnnotation } from "./types/schema";
-import type { StringifyXX } from "./types/stringlfy";
+import type { SchemaStringifyHandlers } from "./types/stringlfy";
 
-const makeHandlers = (): MockedObject<StringifyXX> => {
+const makeHandlers = (): MockedObject<SchemaStringifyHandlers> => {
   return {
     numberArray: vi.fn(),
     structArray: vi.fn(),
@@ -35,7 +35,7 @@ describe("genaratePluginParam", () => {
       },
     };
     const handlers = makeHandlers();
-    const annotation = genaratePluginParam(param, "param", handlers);
+    const annotation = generatePluginParamAnnotation(param, "param", handlers);
     expect(annotation).toEqual(expected);
     expect(handlers.numberArray).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();

@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { PluginStructTokens } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { parsePlugin } from "@RmmzPluginSchema/rmmz/plugin/core/parse/parse";
-import { createStructTokens } from "./tokens";
+import { generateStructTokenBlock } from "./tokens";
 import type { PluginStructAnnotation } from "./types/schema";
 import type { StructTokenBlock } from "./types/tokens";
 
@@ -38,7 +38,7 @@ describe("createStruct", () => {
     "*/",
   ];
   test("generates correct tokens for struct annotation", () => {
-    const tokens = createStructTokens(structAnnotation);
+    const tokens = generateStructTokenBlock(structAnnotation);
     expect(tokens).toEqual(expectedTokens);
   });
   test("parses struct tokens correctly", () => {

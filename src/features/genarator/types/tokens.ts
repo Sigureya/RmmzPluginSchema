@@ -2,7 +2,7 @@ import type { KeyWord } from "./keyword";
 import type { PluginSchemaAnnotation } from "./schema";
 import type { Annotation_Meta, Annotation_PluginDependencies } from "./types";
 
-export interface AnnotationTokens {
+export interface PluginAnnotationTokens {
   locale?: string | undefined;
   schema: PluginSchemaAnnotation;
   meta: Annotation_Meta;

@@ -12,8 +12,8 @@ import {
 } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { createKeywordLine } from "./keywordLine";
 import { generatePluginSchemaAnnotation } from "./schema";
-import type { StringifyXX } from "./types/stringlfy";
-import type { AnnotationTokens } from "./types/tokens";
+import type { SchemaStringifyHandlers } from "./types/stringlfy";
+import type { PluginAnnotationTokens } from "./types/tokens";
 import type {
   Annotation_Meta,
   Annotation_PluginDependencies,
@@ -21,8 +21,8 @@ import type {
 
 export const ganeratePluginAnnotation = (
   schema: PluginSchema,
-  handlers: StringifyXX
-): AnnotationTokens => {
+  handlers: SchemaStringifyHandlers
+): PluginAnnotationTokens => {
   return {
     locale: schema.locale,
     schema: generatePluginSchemaAnnotation(schema.schema, handlers),
