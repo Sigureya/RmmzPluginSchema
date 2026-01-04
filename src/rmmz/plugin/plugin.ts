@@ -28,6 +28,7 @@ export const pluginSourceToArraySchema = (
 ): PluginSchema => {
   const tokens: ParsedPlugin = parsePlugin(input.source, input.locale);
   return {
+    locale: input.locale,
     meta: tokens.meta,
     pluginName: input.pluginName,
     target: "MZ",

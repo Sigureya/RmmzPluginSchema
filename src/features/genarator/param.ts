@@ -31,12 +31,12 @@ import type {
   ParamBaseAnnotation,
   PluginParamAnnotation,
 } from "./types/schema";
-import type { StringifyXX } from "./types/stringlfy";
+import type { SchemaStringifyHandlers } from "./types/stringlfy";
 
-export const genaratePluginParam = <T extends "param" | "arg">(
+export const generatePluginParamAnnotation = <T extends "param" | "arg">(
   param: PluginParam,
   keyword: T,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): PluginParamAnnotation<T> => {
   const name = createKeywordLine(keyword, param.name);
   const base = generateBaseParams(param.attr);
@@ -72,7 +72,7 @@ interface AttrResult {
 
 const mapAttr = (
   parma: PrimitiveParam,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult | undefined => {
   if (parma.kind === "number") {
     return numberAttr(parma);
@@ -152,7 +152,7 @@ const dataIdAttr = (param: RpgDataIdParam | SystemDataIdParam): AttrResult => {
 
 const dataIdArrayAttr = (
   param: RpgDataIdArrayParam | SystemDataIdArrayParam,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult => {
   const s: string = handlers.numberArray(param.default);
   return {
@@ -170,7 +170,7 @@ const numberAttr = (param: NumberParam): AttrResult => {
 
 const numberArrayAttr = (
   param: NumberArrayParam,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult => {
   const s: string = handlers.numberArray(param.default);
   return {
@@ -181,7 +181,7 @@ const numberArrayAttr = (
 
 const stringArrayAttr = (
   param: StringArrayParam,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult => {
   const s: string = handlers.stringArray(param.default);
   return {
@@ -206,7 +206,7 @@ const fileAttr = (param: FileParam): AttrResult => {
 
 const fileArrayAttr = (
   param: FileArrayParam,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult => {
   const s: string = handlers.stringArray(param.default);
   return {
@@ -231,7 +231,7 @@ const comboAttr = (param: ComboParam): AttrResult => {
 
 const structAttr = (
   param: StructRefParam,
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult => {
   if (!param.default) {
     return {
@@ -248,7 +248,7 @@ const structAttr = (
 
 const structArrayAttr = (
   param: StructArrayRefParam & { kind: "struct[]" },
-  handlers: StringifyXX
+  handlers: SchemaStringifyHandlers
 ): AttrResult => {
   if (!param.default) {
     return {

@@ -23,9 +23,9 @@ import type {
   SystemDataIdArrayParam,
   SystemDataIdParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { genaratePluginParam } from "./param";
+import { generatePluginParamAnnotation } from "./param";
 import type { PluginParamAnnotation } from "./types/schema";
-import type { StringifyXX } from "./types/stringlfy";
+import type { SchemaStringifyHandlers } from "./types/stringlfy";
 
 interface TestCase<T extends PrimitiveParam> {
   schema: PluginParamEx<T>;
@@ -146,7 +146,9 @@ const PARAM_TABLE = {
   },
 } satisfies AllParamTypes;
 
-const makeHandlers = (result: string): MockedObject<StringifyXX> => {
+const makeHandlers = (
+  result: string
+): MockedObject<SchemaStringifyHandlers> => {
   return {
     numberArray: vi.fn<(nums: number[]) => string>(() => result),
     structArray: vi.fn<(obj: object[]) => string>(() => result),
@@ -161,7 +163,11 @@ describe("genaratePluginParam", () => {
   test("actor param", () => {
     const paramInfo: TestCase<RpgDataIdParam> = PARAM_TABLE["actor"];
     const handlers = makeHandlers("1");
-    const annotation = genaratePluginParam(paramInfo.schema, "param", handlers);
+    const annotation = generatePluginParamAnnotation(
+      paramInfo.schema,
+      "param",
+      handlers
+    );
     expect(annotation).toEqual(paramInfo.annotation);
     expect(handlers.struct).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();
@@ -171,7 +177,11 @@ describe("genaratePluginParam", () => {
   test("actor array param", () => {
     const paramInfo: TestCase<RpgDataIdArrayParam> = PARAM_TABLE["actor[]"];
     const handlers = makeHandlers("[3]");
-    const annotation = genaratePluginParam(paramInfo.schema, "param", handlers);
+    const annotation = generatePluginParamAnnotation(
+      paramInfo.schema,
+      "param",
+      handlers
+    );
     expect(annotation).toEqual(paramInfo.annotation);
     expect(handlers.numberArray).toHaveBeenCalledWith(
       paramInfo.schema.attr.default
@@ -184,7 +194,11 @@ describe("genaratePluginParam", () => {
   test("file param", () => {
     const paramInfo: TestCase<FileParam> = PARAM_TABLE["file"];
     const handlers = makeHandlers("Picture");
-    const annotation = genaratePluginParam(paramInfo.schema, "param", handlers);
+    const annotation = generatePluginParamAnnotation(
+      paramInfo.schema,
+      "param",
+      handlers
+    );
     expect(annotation).toEqual(paramInfo.annotation);
     expect(handlers.struct).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();
@@ -194,7 +208,11 @@ describe("genaratePluginParam", () => {
   test("file array param", () => {
     const paramInfo: TestCase<FileArrayParam> = PARAM_TABLE["file[]"];
     const handlers = makeHandlers('["Bgm1","Bgm2"]');
-    const annotation = genaratePluginParam(paramInfo.schema, "param", handlers);
+    const annotation = generatePluginParamAnnotation(
+      paramInfo.schema,
+      "param",
+      handlers
+    );
     expect(annotation).toEqual(paramInfo.annotation);
     expect(handlers.stringArray).toHaveBeenCalledWith(
       paramInfo.schema.attr.default
