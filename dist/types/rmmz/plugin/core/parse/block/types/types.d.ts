@@ -11,3 +11,7 @@ export interface PluginBodyBlock {
     locale?: string;
     lines: string[];
 }
+export interface LocalizedBlock {
+    body: PluginBodyBlock;
+    structs: PluginStructBlock[];
+}

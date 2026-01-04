@@ -7,11 +7,17 @@ export interface PluginMinimumSchema {
         structs: PluginStructSchemaArray[];
     };
 }
+export interface PluginMetaKeywords {
+    author?: string;
+    plugindesc?: string;
+    url?: string;
+}
 export interface PluginSchema extends PluginMinimumSchema {
+    locale?: string;
     pluginName: string;
     target: string;
-    meta: Record<string, string>;
-    dependencies?: PluginDependencies;
+    meta: PluginMetaKeywords;
+    dependencies: PluginDependencies;
     schema: PluginSchemaArray;
 }
 export interface PluginSchemaOf<S extends PluginScalarParam, A extends PluginArrayParamType> extends PluginSchema {

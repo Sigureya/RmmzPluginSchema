@@ -6,6 +6,6 @@ export interface Plugin {
 }
 export interface PluginInput {
     source: string;
-    locale: string;
+    locale: string | undefined;
     pluginName: string;
 }
