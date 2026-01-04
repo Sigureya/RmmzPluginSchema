@@ -32,6 +32,8 @@ describe("genaratePluginParam", () => {
       base: {
         kind: "@type file",
         desc: "@desc Select a sound file.",
+        parent: undefined,
+        text: undefined,
       },
     };
     const handlers = makeHandlers();
