@@ -16,7 +16,7 @@ const makeHandlers = (): MockedObject<SchemaStringifyHandlers> => {
   };
 };
 
-describe("genaratePluginParam", () => {
+describe("generatePluginParamAnnotation", () => {
   test("boolean true default", () => {
     const param: PluginParamEx<BooleanParam> = {
       name: "isEnabled",
@@ -49,7 +49,7 @@ describe("genaratePluginParam", () => {
     expect(handlers.struct).not.toHaveBeenCalled();
   });
   test("boolean false default", () => {
-    const param: PluginParamEx<BooleanParam> = {
+    const arg: PluginParamEx<BooleanParam> = {
       name: "keyMemory",
       attr: {
         kind: "boolean",
@@ -72,7 +72,7 @@ describe("genaratePluginParam", () => {
       attr: ["@on enable", "@off disable"],
     };
     const handlers = makeHandlers();
-    const annotation = generatePluginParamAnnotation(param, "arg", handlers);
+    const annotation = generatePluginParamAnnotation(arg, "arg", handlers);
     expect(annotation).toEqual(expected);
     expect(handlers.numberArray).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();
