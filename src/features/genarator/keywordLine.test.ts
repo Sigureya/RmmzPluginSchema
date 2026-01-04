@@ -1,4 +1,9 @@
 import { describe, expect, test } from "vitest";
+import type {
+  PrimitiveParam,
+  StructArrayRefParam,
+  StructRefParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
   createKeywordLine,
   createKeywordLineEx,
@@ -36,7 +41,29 @@ describe("createKeywordLineEx", () => {
 describe("createKindLine", () => {
   test("creates correct kind line", () => {
     const expected: KeyWord<"type"> = "@type string";
-    const kindLine = createKindLine({ kind: "string" });
+    const param: PrimitiveParam = {
+      kind: "string",
+      default: "",
+    };
+    const kindLine = createKindLine(param);
+    expect(kindLine).toBe(expected);
+  });
+  test("creates correct kind line for struct", () => {
+    const expected: KeyWord<"type"> = "@type struct<Person>";
+    const param: StructRefParam = {
+      kind: "struct",
+      struct: "Person",
+    };
+    const kindLine = createKindLine(param);
+    expect(kindLine).toBe(expected);
+  });
+  test("creates correct kind line for struct array", () => {
+    const expected: KeyWord<"type"> = "@type struct<Person>[]";
+    const param: StructArrayRefParam = {
+      kind: "struct[]",
+      struct: "Person",
+    };
+    const kindLine = createKindLine(param);
     expect(kindLine).toBe(expected);
   });
 });

@@ -1,3 +1,4 @@
+import type { PrimitiveParam } from "@RmmzPluginSchema/rmmz/plugin";
 import { KEYWORD_TYPE } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import type { KeyWord } from "./types";
 
@@ -18,6 +19,12 @@ export const createKeywordLineEx = <T>(
     : createKeywordLine(key, String(value));
 };
 
-export const createKindLine = (data: { kind: string }): KeyWord<"type"> => {
+export const createKindLine = (data: PrimitiveParam): KeyWord<"type"> => {
+  if (data.kind === "struct") {
+    return createKeywordLine(KEYWORD_TYPE, `struct<${data.struct}>`);
+  }
+  if (data.kind === "struct[]") {
+    return createKeywordLine(KEYWORD_TYPE, `struct<${data.struct}>[]`);
+  }
   return createKeywordLine(KEYWORD_TYPE, data.kind);
 };

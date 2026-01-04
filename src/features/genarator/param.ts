@@ -6,7 +6,6 @@ import type {
   FileParam,
   NumberArrayParam,
   NumberParam,
-  ParamBase,
   PluginParam,
   PrimitiveParam,
   RpgDataIdArrayParam,
@@ -56,7 +55,7 @@ export const generatePluginParamAnnotation = <T extends "param" | "arg">(
       };
 };
 
-const generateBaseParams = (p: ParamBase): ParamBaseAnnotation => {
+const generateBaseParams = (p: PrimitiveParam): ParamBaseAnnotation => {
   return {
     kind: createKindLine(p),
     desc: p.desc ? createKeywordLine("desc", p.desc) : undefined,
@@ -235,13 +234,13 @@ const structAttr = (
 ): AttrResult => {
   if (!param.default) {
     return {
-      attr: [createKeywordLineEx(param, "struct")],
+      attr: [],
       default: undefined,
     };
   }
   const s: string = handlers.struct(param.default);
   return {
-    attr: [createKeywordLineEx(param, "struct")],
+    attr: [],
     default: createKeywordLine("default", s),
   };
 };
@@ -252,14 +251,14 @@ const structArrayAttr = (
 ): AttrResult => {
   if (!param.default) {
     return {
-      attr: [createKeywordLineEx(param, "struct")],
+      attr: [],
       default: createKeywordLine("default", "[]"),
     };
   }
 
   const s: string = handlers.structArray(param.default);
   return {
-    attr: [createKeywordLineEx(param, "struct")],
+    attr: [],
     default: createKeywordLine("default", s),
   };
 };

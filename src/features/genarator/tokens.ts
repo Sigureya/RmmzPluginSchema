@@ -1,3 +1,4 @@
+import type { PluginDependencyAnnotations } from "./types";
 import type { KeyWord } from "./types/keyword";
 import type {
   PluginCommandAnnotation,
@@ -21,6 +22,16 @@ export const generateStructTokenBlock = (
   return [`/*~struct~${struct.struct}:${struct.locale ?? ""}`, ...params, "*/"];
 };
 
+const dependencyEndLineNeeded = (
+  dependencies: PluginDependencyAnnotations
+): boolean => {
+  return (
+    dependencies.base.length > 0 ||
+    dependencies.orderBefore.length > 0 ||
+    dependencies.orderAfter.length > 0
+  );
+};
+
 export const generatePluginBodyTokenBlock = (
   tokens: PluginAnnotationTokens
 ): PluginBodyBlockToken => {
@@ -33,7 +44,7 @@ export const generatePluginBodyTokenBlock = (
     ...tokens.dependencies.base,
     ...tokens.dependencies.orderBefore,
     ...tokens.dependencies.orderAfter,
-    "",
+    dependencyEndLineNeeded(tokens.dependencies) ? "" : undefined,
     ...tokens.schema.commands.flatMap(commandAnnotationToLines),
     ...tokens.schema.params.flatMap(paramAnnotationToLines),
   ].filter((x) => x !== undefined);
@@ -58,6 +69,8 @@ const paramAnnotationToLines = (
     param.name,
     param.base.kind,
     param.base.desc,
+    param.base.text,
+    param.base.parent,
     ...param.attr,
     param.default,
     "",
