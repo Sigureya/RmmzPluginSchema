@@ -1,13 +1,16 @@
 import type { KeyWord } from "./keyword";
 import type { PluginSchemaAnnotation } from "./schema";
-import type { Annotation_Meta, Annotation_PluginDependencies } from "./types";
+import type {
+  PluginMetaAnnotation,
+  PluginDependencyAnnotations,
+} from "./types";
 
 export interface PluginAnnotationTokens {
   locale?: string | undefined;
   schema: PluginSchemaAnnotation;
-  meta: Annotation_Meta;
+  meta: PluginMetaAnnotation;
   target: KeyWord<"target">;
-  dependencies: Annotation_PluginDependencies;
+  dependencies: PluginDependencyAnnotations;
 }
 
 export type StructTokenBlock = [

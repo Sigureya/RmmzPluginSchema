@@ -17,33 +17,26 @@ import { generatePluginSchemaAnnotation } from "./schema";
 import type { SchemaStringifyHandlers } from "./types/stringlfy";
 import type { PluginAnnotationTokens } from "./types/tokens";
 import type {
-  Annotation_Meta,
-  Annotation_PluginDependencies,
+  PluginMetaAnnotation,
+  PluginDependencyAnnotations,
 } from "./types/types";
 
 export const generatePluginAnnotation = (
-  schema: PluginSchema,
+  plugin: PluginSchema,
   handlers: SchemaStringifyHandlers
 ): PluginAnnotationTokens => {
   return {
-    locale: schema.locale,
-    schema: generatePluginSchemaAnnotation(schema.schema, handlers),
-    target: createKeywordLine(KEYWORD_TARGET, schema.target),
-    meta: genarateMetaAnnotations(schema.meta),
-    //    pluginName: schema.pluginName,
-    dependencies: genarateDependencyAnnotations(
-      schema.dependencies ?? {
-        base: [],
-        orderBefore: [],
-        orderAfter: [],
-      }
-    ),
+    locale: plugin.locale,
+    schema: generatePluginSchemaAnnotation(plugin.schema, handlers),
+    target: createKeywordLine(KEYWORD_TARGET, plugin.target),
+    meta: generateMetaAnnotations(plugin.meta),
+    dependencies: generateDependencyAnnotations(plugin.dependencies),
   };
 };
 
-export const genarateDependencyAnnotations = (
+export const generateDependencyAnnotations = (
   schema: PluginDependencies
-): Annotation_PluginDependencies => {
+): PluginDependencyAnnotations => {
   return {
     base: schema.base.map((dep: string) =>
       createKeywordLine(KEYWORD_BASE, dep)
@@ -57,9 +50,9 @@ export const genarateDependencyAnnotations = (
   };
 };
 
-export const genarateMetaAnnotations = (
+export const generateMetaAnnotations = (
   meta: PluginMetaKeywords
-): Annotation_Meta => {
+): PluginMetaAnnotation => {
   const author = meta.author;
   const desc = meta.plugindesc;
   const url = meta.url;

@@ -8,13 +8,13 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import type { KeyWord } from "./keyword";
 
-export interface Annotation_PluginDependencies {
+export interface PluginDependencyAnnotations {
   base: KeyWord<typeof KEYWORD_BASE>[];
   orderBefore: KeyWord<typeof KEYWORD_ORDERBEFORE>[];
   orderAfter: KeyWord<typeof KEYWORD_ORDERAFTER>[];
 }
 
-export type Annotation_Meta = {
+export type PluginMetaAnnotation = {
   pluginDesc?: KeyWord<typeof KEYWORD_PLUGINDESC> | undefined;
   url?: KeyWord<typeof KEYWORD_URL> | undefined;
   author?: KeyWord<typeof KEYWORD_AUTHOR> | undefined;
