@@ -1,9 +1,11 @@
-import type { PluginSchema } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  PluginMetaKeywords,
+  PluginSchema,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginDependencies } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import {
   KEYWORD_AUTHOR,
   KEYWORD_BASE,
-  KEYWORD_DESC,
   KEYWORD_ORDERAFTER,
   KEYWORD_ORDERBEFORE,
   KEYWORD_PLUGINDESC,
@@ -56,11 +58,11 @@ export const genarateDependencyAnnotations = (
 };
 
 export const genarateMetaAnnotations = (
-  meta: Record<string, string>
+  meta: PluginMetaKeywords
 ): Annotation_Meta => {
-  const author = meta[KEYWORD_AUTHOR];
-  const desc = meta[KEYWORD_DESC];
-  const url = meta[KEYWORD_URL];
+  const author = meta.author;
+  const desc = meta.plugindesc;
+  const url = meta.url;
   return {
     author: author ? createKeywordLine(KEYWORD_AUTHOR, author) : undefined,
     pluginDesc: desc ? createKeywordLine(KEYWORD_PLUGINDESC, desc) : undefined,
