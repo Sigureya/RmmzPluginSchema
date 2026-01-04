@@ -24,8 +24,8 @@ const createHandlers = (): MockedObject<SchemaStringifyHandlers> => ({
   struct: vi.fn(),
 });
 
-describe("generatePluginBodyTokenBlock", () => {
-  describe("generates correct tokens for plugin annotations", () => {
+describe("plugin annotation <-> token roundtrip", () => {
+  describe("generatePluginBodyTokenBlock", () => {
     const pluginAnnoations: PluginAnnotationTokens = {
       target: "@target MZ",
       locale: "ja",
