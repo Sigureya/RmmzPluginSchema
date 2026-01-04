@@ -18,6 +18,6 @@ export const createKeywordLineEx = <T>(
     : createKeywordLine(key, String(value));
 };
 
-export const createKindLine = (data: { kind: string }) => {
+export const createKindLine = (data: { kind: string }): KeyWord<"type"> => {
   return createKeywordLine(KEYWORD_TYPE, data.kind);
 };
