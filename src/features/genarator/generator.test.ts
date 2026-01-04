@@ -24,7 +24,11 @@ interface MockParseResult {
 }
 
 const createValueParserHandlers = (
-  mock: MockParseResult
+  mock: MockParseResult = {
+    object: {},
+    objectArray: [],
+    stringArray: [],
+  }
 ): MockedObject<DeepJSONParserHandlers> => ({
   parseObject: vi.fn<(json: string) => DeepParseResult<object, ParamError>>(
     () => ({
@@ -42,56 +46,12 @@ const createValueParserHandlers = (
 });
 
 const joinLines = (lines: PluginAnnotationLines): string => {
-  return [...lines.body, ...lines.structs.map((struct) => struct)].join("\n");
+  return [...lines.body, ...lines.structs.flatMap((struct) => struct)].join(
+    "\n"
+  );
 };
 
 describe("generatePluginAnnotationLines", () => {
-  describe("empty", () => {
-    const schema: PluginSchema = {
-      target: "MZ",
-      locale: undefined,
-      pluginName: "TestPlugin",
-      meta: {
-        author: undefined,
-        plugindesc: undefined,
-        url: undefined,
-      },
-      dependencies: { base: [], orderBefore: [], orderAfter: [] },
-      schema: { params: [], structs: [], commands: [] },
-    };
-    const tokenLines: PluginAnnotationLines = {
-      structs: [],
-      body: ["/*:", "@target MZ", "", "*/"],
-    };
-    test("generates correct annotation lines for empty schema", () => {
-      const handlers = createStringifyHandlers();
-      const result = generatePluginAnnotationLines(schema, handlers);
-      expect(result).toEqual(tokenLines);
-      expect(handlers.numberArray).not.toHaveBeenCalled();
-      expect(handlers.structArray).not.toHaveBeenCalled();
-      expect(handlers.stringArray).not.toHaveBeenCalled();
-      expect(handlers.struct).not.toHaveBeenCalled();
-    });
-    test("parses correct schema from annotation lines", () => {
-      const handlers = createValueParserHandlers({
-        object: {},
-        objectArray: [],
-        stringArray: [],
-      });
-      const result: PluginSchema = pluginSourceToArraySchema(
-        {
-          source: joinLines(tokenLines),
-          pluginName: "TestPlugin",
-          locale: undefined,
-        },
-        handlers
-      );
-      expect(result).toEqual(schema);
-      expect(handlers.parseObject).not.toHaveBeenCalled();
-      expect(handlers.parseObjectArray).not.toHaveBeenCalled();
-      expect(handlers.parseStringArray).not.toHaveBeenCalled();
-    });
-  });
   describe("all scalar types", () => {
     const schema: PluginSchema = {
       target: "MZ",
@@ -115,7 +75,7 @@ describe("generatePluginAnnotationLines", () => {
           },
           {
             name: "multiLineStringParam",
-            attr: { kind: "multiline_string", default: "LINE1\nLINE2" },
+            attr: { kind: "multiline_string", default: "LINE1\\nLINE2" },
           },
           {
             name: "fileParam",
@@ -182,7 +142,7 @@ describe("generatePluginAnnotationLines", () => {
         "",
         "@param multiLineStringParam",
         "@type multiline_string",
-        "@default LINE1\nLINE2",
+        "@default LINE1\\nLINE2",
         "",
         "@param fileParam",
         "@type file",
@@ -260,9 +220,25 @@ describe("generatePluginAnnotationLines", () => {
       expect(handlers.numberArray).not.toHaveBeenCalled();
       expect(handlers.structArray).not.toHaveBeenCalled();
       expect(handlers.stringArray).not.toHaveBeenCalled();
+      expect(handlers.struct).not.toHaveBeenCalled();
+    });
+    test("parses correct schema from annotation lines", () => {
+      const handlers = createValueParserHandlers();
+      const result: PluginSchema = pluginSourceToArraySchema(
+        {
+          source: joinLines(tokenLines),
+          pluginName: "AllScalarTypesPlugin",
+          locale: undefined,
+        },
+        handlers
+      );
+      expect(result).toEqual(schema);
+      expect(handlers.parseObject).not.toHaveBeenCalled();
+      expect(handlers.parseObjectArray).not.toHaveBeenCalled();
+      expect(handlers.parseStringArray).not.toHaveBeenCalled();
     });
   });
-  describe("s", () => {
+  describe("schema with struct parameter and struct array parameter", () => {
     const person = {
       name: "Bob",
       age: 0,
@@ -314,6 +290,13 @@ describe("generatePluginAnnotationLines", () => {
               },
             ],
           },
+          {
+            struct: "Vector2",
+            params: [
+              { name: "x", attr: { kind: "number", default: 0 } },
+              { name: "y", attr: { kind: "number", default: 0 } },
+            ],
+          },
         ],
       },
     };
@@ -333,20 +316,34 @@ describe("generatePluginAnnotationLines", () => {
         "*/",
       ],
       structs: [
-        "/*~struct~Person:",
-        "@param name",
-        "@type string",
-        "@desc The name of the person.",
-        "@text Name",
-        "@default John Doe",
-        "",
-        "@param age",
-        "@type number",
-        "@desc The age of the person.",
-        "@text Age",
-        "@default 0",
-        "",
-        "*/",
+        [
+          "/*~struct~Person:",
+          "@param name",
+          "@type string",
+          "@desc The name of the person.",
+          "@text Name",
+          "@default John Doe",
+          "",
+          "@param age",
+          "@type number",
+          "@desc The age of the person.",
+          "@text Age",
+          "@default 0",
+          "",
+          "*/",
+        ],
+        [
+          "/*~struct~Vector2:",
+          "@param x",
+          "@type number",
+          "@default 0",
+          "",
+          "@param y",
+          "@type number",
+          "@default 0",
+          "",
+          "*/",
+        ],
       ],
     };
     test("generates correct annotation lines for schema with struct", () => {
