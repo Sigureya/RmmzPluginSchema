@@ -17,7 +17,36 @@ const makeHandlers = (): MockedObject<SchemaStringifyHandlers> => {
   };
 };
 
-describe("genaratePluginParam", () => {
+describe("generatePluginParamAnnotation", () => {
+  test("number param minimum", () => {
+    const arg: PluginParamEx<NumberParam> = {
+      name: "numArg",
+      attr: {
+        kind: "number",
+
+        default: 42,
+      },
+    };
+    const expected: PluginParamAnnotation = {
+      name: "@arg numArg",
+      default: "@default 42",
+      base: {
+        kind: "@type number",
+        desc: undefined,
+        parent: undefined,
+        text: undefined,
+      },
+      attr: [],
+    };
+    const handlers = makeHandlers();
+    const annotation = generatePluginParamAnnotation(arg, "arg", handlers);
+    expect(annotation).toEqual(expected);
+    expect(handlers.numberArray).not.toHaveBeenCalled();
+    expect(handlers.structArray).not.toHaveBeenCalled();
+    expect(handlers.stringArray).not.toHaveBeenCalled();
+    expect(handlers.struct).not.toHaveBeenCalled();
+  });
+
   test("number param", () => {
     const param: PluginParamEx<NumberParam> = {
       name: "numParam",
