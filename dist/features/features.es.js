@@ -1,4 +1,4 @@
-import { d as F, p as V, s as _, k as w, C as D, A as K, h as N, G as L, K as h, H as C, I as z, J as G, L as H, M as I, N as O, O as Q, P as R, Q as q } from "../shared/constants.es.js";
+import { F as J, y as V, w as _, l as w, u as D, p as K, f as N, D as L, K as h, H as C, I as z, J as H, L as I, M as O, N as Q, O as R, P as q, Q as G } from "../shared/constants.es.js";
 const U = (r, t) => {
   if (r.length !== 0)
     return `${t}[${r.map((a) => `"${a.name}"`).join(",")}]`;
@@ -28,7 +28,7 @@ function X(r, t, a) {
     const o = function(l, { path: i, structName: d }) {
       return {
         category: "struct",
-        objectSchema: F(l.scalars),
+        objectSchema: J(l.scalars),
         name: d,
         scalarArrays: W(l.scalarArrays, i),
         scalarsPath: l.scalars.length > 0 ? U(l.scalars, i) : void 0
@@ -109,10 +109,10 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     structs: e,
     structArrays: s
   };
-}, P = (r, t) => r.scalarsPath ? { bundleName: r.name, arrays: S(r.scalarArrays, r.name, t), scalar: cr(r.scalarsPath, r.objectSchema, t) } : {
+}, P = (r, t) => r.scalarsPath ? { bundleName: r.name, arrays: k(r.scalarArrays, r.name, t), scalar: cr(r.scalarsPath, r.objectSchema, t) } : {
   bundleName: r.name,
-  arrays: S(r.scalarArrays, r.name, t)
-}, S = (r, t, a) => r.map((e) => ({ jsonPathJS: a(e.path), schema: e.param, parentType: t })), cr = (r, t, a) => ({
+  arrays: k(r.scalarArrays, r.name, t)
+}, k = (r, t, a) => r.map((e) => ({ jsonPathJS: a(e.path), schema: e.param, parentType: t })), cr = (r, t, a) => ({
   jsonPathJS: a(r),
   record: t
 }), j = (r, t, a, e) => ({ pluginName: r, commandName: t.command, desc: t.desc ?? "", text: t.text ?? "", extractors: or(t, a, e) }), or = (r, t, a) => r.args.map((e) => {
@@ -121,19 +121,19 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
 }), ur = (r, t) => ({ pluginName: t.pluginName, commandName: t.commandName, args: x(r, t.extractors) }), zr = (r, t, a) => {
   const e = a.get(t);
   if (e) return ur(r, e);
-}, Gr = (r, t) => new Map(r.flatMap((a) => lr(a, t))), lr = (r, t) => {
+}, Hr = (r, t) => new Map(r.flatMap((a) => lr(a, t))), lr = (r, t) => {
   const a = N(r.schema.structs);
   return r.schema.commands.map((e) => [`${r.pluginName}:${e.command}`, j(r.pluginName, e, a, t)]);
-}, Hr = (r) => r.rootType === "args", Ir = (r) => r.rootType === "param", dr = (r, t) => {
+}, Ir = (r) => r.rootType === "args", Or = (r) => r.rootType === "param", dr = (r, t) => {
   const a = L(r.parameters);
   return { pluginName: r.name, params: x(a, t) };
-}, Or = (r, t) => ({
+}, Qr = (r, t) => ({
   pluginName: t.pluginName,
   params: x(r, t.extractors)
-}), Qr = (r, t, a) => ({ pluginName: r.pluginName, extractors: r.schema.params.map((e) => {
+}), Rr = (r, t, a) => ({ pluginName: r.pluginName, extractors: r.schema.params.map((e) => {
   const s = A("param", "plugin", e, t);
   return $(s, a);
-}) }), Rr = (r, t) => {
+}) }), qr = (r, t) => {
   const a = N(r.schema.structs);
   return E(r.pluginName, r.schema.commands, a, t);
 }, ir = (r, t, a) => {
@@ -142,7 +142,7 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
 }, pr = (r, t, a) => r.params.map((e) => {
   const s = A("param", e.name, e, t);
   return $(s, a);
-}), E = (r, t, a, e) => t.map((s) => [`${r}:${s.command}`, j(r, s, a, e)]), qr = (r) => {
+}), E = (r, t, a, e) => t.map((s) => [`${r}:${s.command}`, j(r, s, a, e)]), Gr = (r) => {
   const t = r.flatMap((a) => a.extractorEntries);
   return new Map(t);
 }, Ur = (r, t, a) => {
@@ -167,7 +167,7 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     parent: r.parent ? n("parent", r.parent) : void 0
   };
   var t;
-}, gr = (r, t) => r.kind === "number" ? Nr(r) : r.kind === "number[]" ? br(r, t) : r.kind === "file[]" ? $r(r, t) : r.kind === "struct[]" ? Mr(r, t) : r.kind === "string[]" || r.kind === "multiline_string[]" ? vr(r, t) : r.kind === "select" ? kr(r) : r.kind === "combo" ? Sr(r) : r.kind === "file" ? xr(r) : r.kind === "struct" ? Cr(r, t) : r.kind === "boolean" ? hr(r) : r.kind === "string" || r.kind === "any" || r.kind === "multiline_string" ? Ar(r) : typeof r.default == "number" ? yr(r) : Pr(r, t), B = (r) => r === void 0 ? void 0 : n("default", r.toString()), hr = (r) => ({
+}, gr = (r, t) => r.kind === "number" ? Nr(r) : r.kind === "number[]" ? br(r, t) : r.kind === "file[]" ? $r(r, t) : r.kind === "struct[]" ? Mr(r, t) : r.kind === "string[]" || r.kind === "multiline_string[]" ? vr(r, t) : r.kind === "select" ? Sr(r) : r.kind === "combo" ? kr(r) : r.kind === "file" ? xr(r) : r.kind === "struct" ? Cr(r, t) : r.kind === "boolean" ? hr(r) : r.kind === "string" || r.kind === "any" || r.kind === "multiline_string" ? Ar(r) : typeof r.default == "number" ? yr(r) : Pr(r, t), B = (r) => r === void 0 ? void 0 : n("default", r.toString()), hr = (r) => ({
   attr: f.boolean.map((t) => p(r, t)),
   default: n("default", r.default ? "true" : "false")
 }), yr = (r) => ({ attr: [], default: B(r.default) }), Pr = (r, t) => {
@@ -194,10 +194,10 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     attr: f.file.map((e) => p(r, e)),
     default: n("default", a)
   };
-}, kr = (r) => {
+}, Sr = (r) => {
   return { attr: (t = r, t.options.flatMap((a) => [n(C, a.option), n(z, a.value)])), default: n("default", r.default) };
   var t;
-}, Sr = (r) => {
+}, kr = (r) => {
   return { attr: (t = r, t.options.map((a) => n(C, a))), default: n("default", r.default) };
   var t;
 }, Cr = (r, t) => {
@@ -212,62 +212,62 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     default: n("default", a)
   };
 }, f = { number: ["min", "max", "decimals"], file: ["dir"], boolean: ["on", "off"] }, jr = (r, t) => ({
-  params: J(r.params, t),
+  params: F(r.params, t),
   structs: r.structs.map((a) => Er(a, t)),
   commands: r.commands.map((a) => Tr(a, t))
-}), J = (r, t) => r.map((a) => T(a, "param", t)), Er = (r, t) => ({ struct: r.struct, params: J(r.params, t) }), Tr = (r, t) => ({
+}), F = (r, t) => r.map((a) => T(a, "param", t)), Er = (r, t) => ({ struct: r.struct, params: F(r.params, t) }), Tr = (r, t) => ({
   desc: r.desc ? n("desc", r.desc) : void 0,
   text: r.text ? n("text", r.text) : void 0,
   command: n("command", r.command),
   args: r.args.map((a) => T(a, "arg", t))
 }), Br = (r) => {
-  const t = r.params.flatMap(k).filter((a) => a !== void 0);
+  const t = r.params.flatMap(S).filter((a) => a !== void 0);
   return [`/*~struct~${r.struct}:${r.locale ?? ""}`, ...t, "*/"];
-}, Jr = (r) => {
-  const t = [r.target, r.meta.author, r.meta.pluginDesc, r.meta.url, "", ...r.dependencies.base, ...r.dependencies.orderBefore, ...r.dependencies.orderAfter, (a = r.dependencies, a.base.length > 0 || a.orderBefore.length > 0 || a.orderAfter.length > 0 ? "" : void 0), ...r.schema.commands.flatMap(Fr), ...r.schema.params.flatMap(k)].filter((e) => e !== void 0);
+}, Fr = (r) => {
+  const t = [r.target, r.meta.author, r.meta.pluginDesc, r.meta.url, "", ...r.dependencies.base, ...r.dependencies.orderBefore, ...r.dependencies.orderAfter, (a = r.dependencies, a.base.length > 0 || a.orderBefore.length > 0 || a.orderAfter.length > 0 ? "" : void 0), ...r.schema.commands.flatMap(Jr), ...r.schema.params.flatMap(S)].filter((e) => e !== void 0);
   var a;
   return [`/*:${r.locale ?? ""}`, ...t, "*/"];
-}, Fr = (r) => [r.command, r.text, r.desc, ...r.args.flatMap(k)], k = (r) => [r.name, r.base.kind, r.base.desc, r.base.text, r.base.parent, ...r.attr, r.default, ""], Wr = (r, t) => {
+}, Jr = (r) => [r.command, r.text, r.desc, ...r.args.flatMap(S)], S = (r) => [r.name, r.base.kind, r.base.desc, r.base.text, r.base.parent, ...r.attr, r.default, ""], Wr = (r, t) => {
   const a = Vr(r, t);
   return {
-    body: Jr(a),
+    body: Fr(a),
     structs: a.schema.structs.map(Br)
   };
-}, Vr = (r, t) => ({ locale: r.locale, schema: jr(r.schema, t), target: n(G, r.target), meta: wr(r.meta), dependencies: _r(r.dependencies) }), _r = (r) => ({
-  base: r.base.map((t) => n(O, t)),
-  orderBefore: r.orderBefore.map((t) => n(I, t)),
-  orderAfter: r.orderAfter.map((t) => n(H, t))
+}, Vr = (r, t) => ({ locale: r.locale, schema: jr(r.schema, t), target: n(H, r.target), meta: wr(r.meta), dependencies: _r(r.dependencies) }), _r = (r) => ({
+  base: r.base.map((t) => n(Q, t)),
+  orderBefore: r.orderBefore.map((t) => n(O, t)),
+  orderAfter: r.orderAfter.map((t) => n(I, t))
 }), wr = (r) => {
   const t = r.author, a = r.plugindesc, e = r.url;
   return {
-    author: t ? n(q, t) : void 0,
-    pluginDesc: a ? n(R, a) : void 0,
-    url: e ? n(Q, e) : void 0
+    author: t ? n(G, t) : void 0,
+    pluginDesc: a ? n(q, a) : void 0,
+    url: e ? n(R, e) : void 0
   };
 };
 export {
-  Gr as compileCommandExtractorsFromPlugins,
+  Hr as compileCommandExtractorsFromPlugins,
   j as compilePluginCommandExtractor,
   lr as compilePluginCommandPairs,
-  Qr as compilePluginParamExtractor,
+  Rr as compilePluginParamExtractor,
   Ur as convertPlugin,
-  Rr as createPluginCommandExtractor,
+  qr as createPluginCommandExtractor,
   ir as createPluginValueExtractor,
   A as createPluginValuesPath,
   tr as createPrimiteveParamPath,
   Lr as createStructParamPath,
   zr as extractCommandArgsByKey,
   ur as extractPluginCommandArgs,
-  Or as extractPluginParam,
+  Qr as extractPluginParam,
   dr as extractPluginParamFromRecord,
   Vr as generatePluginAnnotation,
   Wr as generatePluginAnnotationLines,
   Z as getPathFromStructArraySchema,
   Y as getPathFromStructParam,
   Kr as getPathFromStructSchema,
-  Hr as isCommandArgValue,
-  Ir as ispluginParamValue,
+  Ir as isCommandArgValue,
+  Or as ispluginParamValue,
   W as makeScalarArrayPath,
   U as makeScalarValuesPath,
-  qr as mergeCommandMap
+  Gr as mergeCommandMap
 };
