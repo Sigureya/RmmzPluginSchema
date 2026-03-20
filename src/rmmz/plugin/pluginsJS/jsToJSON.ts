@@ -1,4 +1,8 @@
 import type { PluginParamsRecord } from "./types";
+import type {
+  MessageOfparsePluginParamRecord,
+  ResultOfparsePluginParamRecord,
+} from "./types/result2";
 import { validatePluginJS } from "./validate";
 
 const commentRegex = /\s*\/\//;
@@ -26,4 +30,36 @@ export const parsePluginParamRecord = (src: string): PluginParamsRecord[] => {
     return array;
   }
   throw new Error("Parsed value is not PluginParamsObject array");
+};
+
+export const parsePluginParamRecord2 = (
+  src: string,
+  msg: MessageOfparsePluginParamRecord,
+): ResultOfparsePluginParamRecord => {
+  const lines: string[] = convertPluginsJSToJSON(src);
+  const jsonText = `[${lines.join("")}]`;
+  try {
+    const array = JSON.parse(jsonText);
+    if (!Array.isArray(array)) {
+      return {
+        plugins: [],
+        message: msg.notArray,
+        invalidPlugins: 0,
+      };
+    }
+    const validPlugins = array.filter(validatePluginJS);
+    const numInvalid = array.length - validPlugins.length;
+    return {
+      plugins: validPlugins,
+      invalidPlugins: numInvalid,
+      message: numInvalid <= 0 ? msg.success : msg.partialSuccess,
+    };
+  } catch (e) {
+    return {
+      plugins: [],
+      invalidPlugins: 0,
+      message: msg.parseError,
+      error: e,
+    };
+  }
 };
