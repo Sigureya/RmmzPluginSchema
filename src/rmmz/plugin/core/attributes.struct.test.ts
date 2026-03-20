@@ -21,7 +21,7 @@ type ObjectResult = DeepParseResult<Person, unknown>;
 
 const createMockHandlers = (
   mockString: string[],
-  mockedStruct: Person
+  mockedStruct: Person,
 ): MockedObject<DeepJSONParserHandlers> => ({
   parseStringArray: vi.fn().mockReturnValue({
     value: mockString,
@@ -37,8 +37,39 @@ const createMockHandlers = (
   }),
 });
 
+const createErrorMockHandlers = (
+  errorTarget: string,
+): MockedObject<DeepJSONParserHandlers> => ({
+  parseStringArray: vi.fn((a) => {
+    if (errorTarget === a) {
+      throw new Error("String array parse error");
+    }
+    return {
+      value: [],
+      errors: [],
+    };
+  }),
+  parseObject: vi.fn((a) => {
+    if (errorTarget === a) {
+      throw new Error("Object parse error");
+    }
+    return {
+      value: {},
+      errors: [],
+    };
+  }),
+  parseObjectArray: vi.fn((a) => {
+    if (errorTarget === a) {
+      throw new Error("Object array parse error");
+    }
+    return {
+      value: [],
+      errors: [],
+    };
+  }),
+});
 describe("compileAttributes", () => {
-  test("struct ref", () => {
+  describe("struct ref", () => {
     const expected: StructRefParam = {
       kind: "struct",
       struct: "Person",
@@ -56,13 +87,33 @@ describe("compileAttributes", () => {
         default: defaultStr,
       } satisfies ParamSoruceRecord<StructRefParam>,
     };
-    const handlers = createMockHandlers([], mockStruct);
-    const result = compilePluginParam(tokens, handlers);
-    expect(result.name).toEqual("structParam");
-    expect(result.attr).toEqual(expected);
-    expect(handlers.parseStringArray).not.toHaveBeenCalled();
-    expect(handlers.parseObject).toHaveBeenCalledWith(defaultStr);
-    expect(handlers.parseObjectArray).not.toHaveBeenCalled();
+    test("", () => {
+      const handlers = createMockHandlers([], mockStruct);
+      const result = compilePluginParam(tokens, handlers);
+      expect(result.name).toEqual("structParam");
+      expect(result.attr).toEqual(expected);
+      expect(handlers.parseStringArray).not.toHaveBeenCalled();
+      expect(handlers.parseObject).toHaveBeenCalledWith(defaultStr);
+      expect(handlers.parseObjectArray).not.toHaveBeenCalled();
+    });
+    test("object parse error", () => {
+      const errorStr = "{invalid json";
+      const handlers = createErrorMockHandlers(errorStr);
+      const tokens: PluginParamTokens = {
+        name: "structParam",
+        attr: {
+          kind: "struct",
+          struct: "Person",
+          default: errorStr,
+        },
+      };
+      expect(() => compilePluginParam(tokens, handlers)).toThrow(
+        "Object parse error",
+      );
+      expect(handlers.parseObject).toHaveBeenCalledWith(errorStr);
+      expect(handlers.parseStringArray).not.toHaveBeenCalled();
+      expect(handlers.parseObjectArray).not.toHaveBeenCalled();
+    });
   });
   test("struct array ref", () => {
     const expected: StructArrayRefParam = {
