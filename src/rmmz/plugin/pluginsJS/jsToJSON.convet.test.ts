@@ -20,7 +20,7 @@ const testCases: TestCase[] = [
     expected: ["aaa"],
   },
   {
-    name: "",
+    name: "input with comments and variable declaration",
     input: ["//comment", "abc", "xyz", "//end"].join("\n"),
     expected: ["abc", "xyz"],
   },
