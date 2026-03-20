@@ -8,12 +8,11 @@ import { createDeepJSONParserHandlers } from "./core/deepJSONHandler";
 import type { ParsedPlugin } from "./core/parse";
 import { parsePlugin } from "./core/parse/parse";
 import type { PluginJSON } from "./core/pluginJSONTypes";
-import { parsePluginParamRecord } from "./pluginsJS/jsToJSON";
-import type { PluginParamsObject, PluginParamsRecord } from "./pluginsJS/types";
+import type { PluginParamsRecord } from "./pluginsJS/types";
 import type { PluginInput } from "./types";
 
 export const paramObjectFromPluginRecord = (
-  record: PluginParamsRecord
+  record: PluginParamsRecord,
 ): Record<string, JSONValue> => {
   return parseDeepRecord(record.parameters);
 };
@@ -24,7 +23,7 @@ export const pluginSourceToJSON = (text: string): PluginJSON => {
 
 export const pluginSourceToArraySchema = (
   input: PluginInput,
-  parser: DeepJSONParserHandlers = createDeepJSONParserHandlers()
+  parser: DeepJSONParserHandlers = createDeepJSONParserHandlers(),
 ): PluginSchema => {
   const tokens: ParsedPlugin = parsePlugin(input.source, input.locale);
   return {
@@ -35,15 +34,4 @@ export const pluginSourceToArraySchema = (
     dependencies: tokens.dependencies,
     schema: compilePluginAsArraySchema(tokens, parser),
   };
-};
-
-export const parsePluginParamObject = (src: string): PluginParamsObject[] => {
-  return parsePluginParamRecord(src).map(
-    (item): PluginParamsObject => ({
-      description: item.description,
-      name: item.name,
-      status: item.status,
-      parameters: parseDeepRecord(item.parameters),
-    })
-  );
 };
