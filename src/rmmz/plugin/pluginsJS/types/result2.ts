@@ -4,6 +4,7 @@ export interface ResultOfparsePluginParamRecord {
   plugins: PluginParamsRecord[];
   message: string;
   invalidPlugins: number;
+  complete: boolean;
   error?: unknown;
 }
 

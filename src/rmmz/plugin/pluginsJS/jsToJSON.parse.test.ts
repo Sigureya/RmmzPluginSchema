@@ -30,6 +30,7 @@ const testCaseFromInvalidRecord = (
   name,
   src: createSrc(record),
   expected: {
+    complete: false,
     message: messages.partialSuccess,
     plugins: [],
     invalidPlugins: numInvalid,
@@ -43,6 +44,7 @@ const testCaseFromRecord = (
   name,
   src: createSrc(record),
   expected: {
+    complete: true,
     message: messages.success,
     plugins: record,
     invalidPlugins: 0,
@@ -66,6 +68,7 @@ const testCases: TestCase[] = [
   {
     name: "empty input",
     expected: {
+      complete: true,
       message: messages.success,
       plugins: [],
       invalidPlugins: 0,
@@ -75,6 +78,7 @@ const testCases: TestCase[] = [
   {
     name: "empty array input",
     expected: {
+      complete: true,
       message: messages.success,
       plugins: [],
       invalidPlugins: 0,
@@ -84,6 +88,7 @@ const testCases: TestCase[] = [
   {
     name: "valid input",
     expected: {
+      complete: true,
       invalidPlugins: 0,
       message: messages.success,
       plugins: [
@@ -114,6 +119,7 @@ const testCases: TestCase[] = [
   {
     name: "invalid JSON input",
     expected: {
+      complete: false,
       message: messages.parseError,
       plugins: [],
       invalidPlugins: 0,
@@ -137,6 +143,7 @@ const testCases: TestCase[] = [
       },
     ]),
     expected: {
+      complete: false,
       invalidPlugins: 1,
       message: messages.partialSuccess,
       plugins: [

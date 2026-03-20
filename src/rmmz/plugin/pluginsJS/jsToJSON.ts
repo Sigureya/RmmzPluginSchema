@@ -42,6 +42,7 @@ export const parsePluginParamRecord2 = (
     const array = JSON.parse(jsonText);
     if (!Array.isArray(array)) {
       return {
+        complete: false,
         plugins: [],
         message: msg.notArray,
         invalidPlugins: 0,
@@ -50,12 +51,14 @@ export const parsePluginParamRecord2 = (
     const validPlugins = array.filter(validatePluginJS);
     const numInvalid = array.length - validPlugins.length;
     return {
+      complete: numInvalid === 0,
       plugins: validPlugins,
       invalidPlugins: numInvalid,
       message: numInvalid <= 0 ? msg.success : msg.partialSuccess,
     };
   } catch (e) {
     return {
+      complete: false,
       plugins: [],
       invalidPlugins: 0,
       message: msg.parseError,
