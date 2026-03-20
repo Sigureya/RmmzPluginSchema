@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { parsePluginParamRecord } from "./jsToJSON";
+import { parsePluginParamRecord2 } from "./jsToJSON";
 import type { PluginParamsRecord } from "./types";
 import type {
   MessageOfparsePluginParamRecord,
@@ -59,7 +59,7 @@ interface TestCase {
 
 const runTestCase = (testCase: TestCase) => {
   test(testCase.name, () => {
-    const result = parsePluginParamRecord(testCase.src, messages);
+    const result = parsePluginParamRecord2(testCase.src, messages);
     expect(result).toEqual(testCase.expected);
   });
 };

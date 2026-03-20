@@ -19,7 +19,20 @@ export const convertPluginsJSToJSON = (src: string): string[] => {
   return src.split("\n").filter((line) => !isIgnoredLine(line));
 };
 
-export const parsePluginParamRecord = (
+export const parsePluginParamRecord = (src: string): PluginParamsRecord[] => {
+  const lines = convertPluginsJSToJSON(src);
+  const jsonText = `[${lines.join("")}]`;
+  const array = JSON.parse(jsonText);
+  if (!Array.isArray(array)) {
+    throw new Error("Parsed value is not an array");
+  }
+  if (array.every(validatePluginJS)) {
+    return array;
+  }
+  throw new Error("Parsed value is not PluginParamsObject array");
+};
+
+export const parsePluginParamRecord2 = (
   src: string,
   msg: MessageOfparsePluginParamRecord,
 ): ResultOfparsePluginParamRecord => {
@@ -35,7 +48,7 @@ export const parsePluginParamRecord = (
         invalidPlugins: 0,
       };
     }
-    const validPlugins: PluginParamsRecord[] = array.filter(validatePluginJS);
+    const validPlugins = array.filter(validatePluginJS);
     const numInvalid = array.length - validPlugins.length;
     return {
       complete: numInvalid === 0,
