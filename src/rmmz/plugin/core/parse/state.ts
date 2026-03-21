@@ -1,6 +1,6 @@
 import { addBasePlugin, addOrderAfter, addOrderBefore } from "./dependencies";
-import type { OptionsState, ParseState } from "./internalTypes";
 import { addOption, addValue } from "./option";
+import type { ParseState, OptionsState } from "./types";
 
 export const handleBase = (state: ParseState, value: string): ParseState => {
   return { ...state, dependencies: addBasePlugin(state.dependencies, value) };
@@ -8,7 +8,7 @@ export const handleBase = (state: ParseState, value: string): ParseState => {
 
 export const handleOrderAfter = (
   state: ParseState,
-  value: string
+  value: string,
 ): ParseState => {
   return {
     ...state,
@@ -18,7 +18,7 @@ export const handleOrderAfter = (
 
 export const handleOrderBefore = (
   state: ParseState,
-  value: string
+  value: string,
 ): ParseState => {
   return {
     ...state,
@@ -33,7 +33,7 @@ export const handleOption = (state: ParseState, value: string): ParseState => {
 
   const newOption: OptionsState = addOption(
     state.currentOption ?? { items: [] },
-    value
+    value,
   );
 
   return {
