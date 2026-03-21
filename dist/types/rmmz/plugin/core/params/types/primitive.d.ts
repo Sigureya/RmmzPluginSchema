@@ -1,3 +1,4 @@
+import { ParamError } from './error';
 import { ParamBase } from './paramBase';
 export interface ArrayParam {
     kind: `${string}[]`;
@@ -80,6 +81,7 @@ export interface AnyStringParam extends ParamBase {
 }
 export interface KindOfStructBase extends ParamBase {
     struct: string;
+    errors?: ParamError[];
 }
 /**
  * - 型を参照するだけのパラメータ。別の箇所に型定義があることを前提としている。

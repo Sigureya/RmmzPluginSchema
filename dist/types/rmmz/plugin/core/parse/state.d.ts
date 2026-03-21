@@ -1,4 +1,4 @@
-import { ParseState } from './internalTypes';
+import { ParseState } from './types';
 export declare const handleBase: (state: ParseState, value: string) => ParseState;
 export declare const handleOrderAfter: (state: ParseState, value: string) => ParseState;
 export declare const handleOrderBefore: (state: ParseState, value: string) => ParseState;

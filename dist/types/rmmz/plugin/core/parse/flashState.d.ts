@@ -1,4 +1,4 @@
-import { ParseState } from './internalTypes';
+import { ParseState } from './types';
 export interface DescAndText {
     desc?: string;
     text?: string;

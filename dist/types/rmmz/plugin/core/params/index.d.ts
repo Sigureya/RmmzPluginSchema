@@ -2,6 +2,7 @@ export * from './arraySchemaFilter';
 export * from './classify';
 export * from './convert';
 export * from './lookupRpgDataKind';
+export * from './structError';
 export * from './structMap';
 export * from './typeTest';
 export type * from './types';
