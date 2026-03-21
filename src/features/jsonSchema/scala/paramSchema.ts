@@ -12,6 +12,7 @@ import type {
   SelectParam,
   StringParam,
   StringArrayParam,
+  ParamError,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 import type { DiscriminatedUnionSchemaType3 } from "src/libs/templates/discriminator/discriminator3";
@@ -53,7 +54,7 @@ export const makePluginParamSchema = () =>
       SCHEMA_STRING_PARAM,
       SCHEMA_STRING_ARRAY_PARAM,
     ],
-  } as const satisfies DiscriminatedUnionSchemaType3<
+  }) as const satisfies DiscriminatedUnionSchemaType3<
     ParamBase,
     string,
     "kind",
@@ -69,7 +70,7 @@ export const makePluginParamSchema = () =>
     | SelectParam
     | StringParam
     | StringArrayParam
-  >);
+  >;
 const SCHEMA_BOOLEAN_PARAM = {
   additionalProperties: false,
   type: "object",
@@ -228,6 +229,18 @@ const STRUCT_NAME = {
   maxLength: 48,
 } as const satisfies JSONSchemaType<string>;
 
+const SCHEMA_STRUCT_ERROR = {
+  type: "object",
+  additionalProperties: false,
+  required: ["message", "code", "source", "attr"],
+  properties: {
+    message: { type: "string" },
+    code: { type: "string" },
+    source: { type: "string" },
+    attr: { type: "string" },
+  },
+} as const satisfies JSONSchemaType<ParamError>;
+
 const SCHEMA_STRUCT_REF_PARAM = {
   additionalProperties: false,
   type: "object",
@@ -239,6 +252,11 @@ const SCHEMA_STRUCT_REF_PARAM = {
     text: BASIC_TEXT,
     parent: BASIC_TEXT,
     struct: STRUCT_NAME,
+    errors: {
+      nullable: true,
+      type: "array",
+      items: SCHEMA_STRUCT_ERROR,
+    },
   },
 } as const satisfies JSONSchemaType<StructRefParam>;
 
@@ -258,6 +276,11 @@ const SCHEMA_STRUCT_ARRAY_REF_PARAM = {
     desc: BASIC_TEXT,
     text: BASIC_TEXT,
     parent: BASIC_TEXT,
+    errors: {
+      nullable: true,
+      type: "array",
+      items: SCHEMA_STRUCT_ERROR,
+    },
   },
 } as const satisfies JSONSchemaType<StructArrayRefParam>;
 
