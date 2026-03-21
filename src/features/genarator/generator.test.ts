@@ -2,11 +2,9 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type {
   DeepJSONParserHandlers,
-  ParamError,
   PluginSchema,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { pluginSourceToArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
-import type { DeepParseResult } from "@RmmzPluginSchema/rmmz/plugin/core/rmmzJSON/types/handlers";
 import { generatePluginAnnotationLines } from "./generator";
 import type { SchemaStringifyHandlers, PluginAnnotationLines } from "./types";
 
@@ -28,17 +26,13 @@ const createValueParserHandlers = (
     object: {},
     objectArray: [],
     stringArray: [],
-  }
+  },
 ): MockedObject<DeepJSONParserHandlers> => ({
-  parseObject: vi.fn<(json: string) => DeepParseResult<object, ParamError>>(
-    () => ({
-      value: mock.object,
-      errors: [],
-    })
-  ),
-  parseObjectArray: vi.fn<
-    (json: string) => DeepParseResult<object[], ParamError>
-  >(() => ({
+  parseObject: vi.fn<DeepJSONParserHandlers["parseObject"]>(() => ({
+    value: mock.object,
+    errors: [],
+  })),
+  parseObjectArray: vi.fn<DeepJSONParserHandlers["parseObjectArray"]>(() => ({
     value: mock.objectArray,
     errors: [],
   })),
@@ -47,7 +41,7 @@ const createValueParserHandlers = (
 
 const joinLines = (lines: PluginAnnotationLines): string => {
   return [...lines.body, ...lines.structs.flatMap((struct) => struct)].join(
-    "\n"
+    "\n",
   );
 };
 
@@ -180,7 +174,7 @@ describe("generatePluginAnnotationLines", () => {
           pluginName: "PersonPlugin",
           locale: undefined,
         },
-        handlers
+        handlers,
       );
       expect(result).toEqual(schema);
       expect(handlers.parseObjectArray).not.toHaveBeenCalled();

@@ -10,9 +10,13 @@ import type { PluginParamTokens } from "./parse";
 const createHandlers = (): MockedObject<DeepJSONParserHandlers> => {
   const parser = createDeepJSONParserHandlers();
   return {
-    parseStringArray: vi.fn((s: string) => parser.parseStringArray(s)),
-    parseObject: vi.fn((s: string) => parser.parseObject(s)),
-    parseObjectArray: vi.fn((s: string) => parser.parseObjectArray(s)),
+    parseStringArray: vi.fn((s: string, name) =>
+      parser.parseStringArray(s, name),
+    ),
+    parseObject: vi.fn((s: string, name) => parser.parseObject(s, name)),
+    parseObjectArray: vi.fn((s: string, name) =>
+      parser.parseObjectArray(s, name),
+    ),
   };
 };
 
@@ -88,7 +92,8 @@ describe("compileAttributes - file[]", () => {
     };
     expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
-      tokens.attr.default
+      tokens.attr.default,
+      tokens,
     );
     expect(mockHandlers.parseStringArray).toHaveBeenCalledTimes(1);
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();
@@ -113,7 +118,8 @@ describe("compileAttributes - file[]", () => {
     };
     expect(result.attr).toEqual(expected);
     expect(mockHandlers.parseStringArray).toHaveBeenCalledWith(
-      tokens.attr.default
+      tokens.attr.default,
+      tokens,
     );
     expect(mockHandlers.parseStringArray).toHaveBeenCalledTimes(1);
     expect(mockHandlers.parseObject).not.toHaveBeenCalled();

@@ -1,8 +1,12 @@
 import type { ParamError } from "./params/types/error";
+import type { PluginParamTokens } from "./parse";
 import { parseDeepJSON } from "./rmmzJSON";
 import type { DeepJSONParserHandlersEx } from "./rmmzJSON/types/handlers";
 
-export type DeepJSONParserHandlers = DeepJSONParserHandlersEx<ParamError>;
+export type DeepJSONParserHandlers = DeepJSONParserHandlersEx<
+  ParamError,
+  PluginParamTokens
+>;
 
 export const createDeepJSONParserHandlers = (): DeepJSONParserHandlers => ({
   parseStringArray: (json: string) => {
