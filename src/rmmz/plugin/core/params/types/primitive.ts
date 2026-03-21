@@ -1,3 +1,4 @@
+import type { ParamError } from "./error";
 import type { ParamBase } from "./paramBase";
 
 export interface ArrayParam {
@@ -92,6 +93,7 @@ export interface AnyStringParam extends ParamBase {
 
 export interface KindOfStructBase extends ParamBase {
   struct: string;
+  errors?: ParamError[];
 }
 
 /**
