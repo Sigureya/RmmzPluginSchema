@@ -79,16 +79,17 @@ const compileComboParam = (
   };
 };
 
+const cloneOption = (opt: OptionItem): OptionItem => ({
+  option: opt.option,
+  value: opt.value,
+});
+
 const compileSelectParam = (
   tokens: PluginParamTokens,
 ): PluginParamEx<SelectParam> => {
-  const options: OptionItem[] =
-    tokens.options?.map(
-      (o): OptionItem => ({
-        option: o.option,
-        value: o.value,
-      }),
-    ) ?? [];
+  const options: OptionItem[] = tokens.options
+    ? tokens.options.map(cloneOption)
+    : [];
   return {
     name: tokens.name,
     attr: {
@@ -166,8 +167,12 @@ const compileStringArrayParam = (
   parsers: DeepJSONParserHandlers,
   kind: StringArrayParam["kind"],
 ): PluginParamEx<StringArrayParam> => {
+  const { value, errors } = parsers.parseStringArray(
+    tokens.attr.default || "[]",
+    tokens,
+  );
   const STRING_ARRAY = {
-    default: (value: string) => parsers.parseStringArray(value).value,
+    default: (): string[] => value,
     text: attrString,
     desc: attrString,
     parent: attrString,
@@ -175,6 +180,7 @@ const compileStringArrayParam = (
   return {
     name: tokens.name,
     attr: compileArrayAttributes(kind, tokens.attr, STRING_ARRAY),
+    ...normarizeErros(errors),
   };
 };
 
@@ -201,8 +207,12 @@ const compileFileArrayParam = (
   tokens: PluginParamTokens,
   parsers: DeepJSONParserHandlers,
 ): PluginParamEx<FileArrayParam> => {
+  const { value } = parsers.parseStringArray(
+    tokens.attr.default || "[]",
+    tokens,
+  );
   const FILE_ARRAY = {
-    default: (value: string) => parsers.parseStringArray(value).value,
+    default: () => value,
     text: attrString,
     desc: attrString,
     parent: attrString,
@@ -259,7 +269,10 @@ const compileStructValue = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers,
 ): PluginParamEx<StructRefParam> => {
-  const { errors, value } = handlers.parseObject(tokens.attr.default || "{}");
+  const { errors, value } = handlers.parseObject(
+    tokens.attr.default || "{}",
+    tokens,
+  );
   const STRUCT_REF = {
     text: attrString,
     desc: attrString,
@@ -287,6 +300,7 @@ const compileStructArrayValue = (
 ): PluginParamEx<StructArrayRefParam> => {
   const { errors, value } = handlers.parseObjectArray(
     tokens.attr.default || "[]",
+    tokens,
   );
   const STRUCT_ARRAY = {
     text: attrString,

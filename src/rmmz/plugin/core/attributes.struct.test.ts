@@ -40,7 +40,7 @@ const createMockHandlers = (
 const createErrorMockHandlers = (
   errorTarget: string,
 ): MockedObject<DeepJSONParserHandlers> => ({
-  parseStringArray: vi.fn((a) => {
+  parseStringArray: vi.fn((a, name) => {
     if (errorTarget === a) {
       throw new Error("String array parse error");
     }
@@ -49,7 +49,7 @@ const createErrorMockHandlers = (
       errors: [],
     };
   }),
-  parseObject: vi.fn((a) => {
+  parseObject: vi.fn((a, name) => {
     if (errorTarget === a) {
       throw new Error("Object parse error");
     }
@@ -58,7 +58,7 @@ const createErrorMockHandlers = (
       errors: [],
     };
   }),
-  parseObjectArray: vi.fn((a) => {
+  parseObjectArray: vi.fn((a, name) => {
     if (errorTarget === a) {
       throw new Error("Object array parse error");
     }
@@ -93,7 +93,7 @@ describe("compileAttributes", () => {
       expect(result.name).toEqual("structParam");
       expect(result.attr).toEqual(expected);
       expect(handlers.parseStringArray).not.toHaveBeenCalled();
-      expect(handlers.parseObject).toHaveBeenCalledWith(defaultStr);
+      expect(handlers.parseObject).toHaveBeenCalledWith(defaultStr, tokens);
       expect(handlers.parseObjectArray).not.toHaveBeenCalled();
     });
     test("object parse error", () => {
@@ -110,7 +110,7 @@ describe("compileAttributes", () => {
       expect(() => compilePluginParam(tokens, handlers)).toThrow(
         "Object parse error",
       );
-      expect(handlers.parseObject).toHaveBeenCalledWith(errorStr);
+      expect(handlers.parseObject).toHaveBeenCalledWith(errorStr, tokens);
       expect(handlers.parseStringArray).not.toHaveBeenCalled();
       expect(handlers.parseObjectArray).not.toHaveBeenCalled();
     });
@@ -135,6 +135,6 @@ describe("compileAttributes", () => {
     expect(result.attr).toEqual(expected);
     expect(handlers.parseStringArray).not.toHaveBeenCalled();
     expect(handlers.parseObject).not.toHaveBeenCalled();
-    expect(handlers.parseObjectArray).toHaveBeenCalledWith("[]");
+    expect(handlers.parseObjectArray).toHaveBeenCalledWith("[]", tokens);
   });
 });
