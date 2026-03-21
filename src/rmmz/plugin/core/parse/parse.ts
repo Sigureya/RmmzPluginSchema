@@ -5,7 +5,6 @@ import {
   splitBlock,
 } from "./block";
 import { flashCurrentItem, withTexts } from "./flashState";
-import type { ParseState } from "./internalTypes";
 import {
   handleBase,
   handleOption,
@@ -20,6 +19,7 @@ import type {
   PluginCommandTokens,
   PluginMeta,
   KeywordEnum,
+  ParseState,
 } from "./types";
 import {
   KEYWORD_HELP,
@@ -44,7 +44,7 @@ import {
 
 const bbb = (
   body: PluginBodyBlock,
-  structs: readonly PluginStructBlock[]
+  structs: readonly PluginStructBlock[],
 ): ParsedPlugin => {
   const finalState = parseBodyBlock(body);
   return {
@@ -67,11 +67,11 @@ export const parsePlugin2 = (text: string): ParsedPlugin[] => {
 
 export const parsePlugin = (
   text: string,
-  locale: string = "en"
+  locale: string = "en",
 ): ParsedPlugin => {
   const blocks: Block = splitBlock(text);
   const structs = filterSturctByLocale(blocks.structs, locale).map((s) =>
-    parseStructBlock(s)
+    parseStructBlock(s),
   );
   const body = findPluginBodyByLocale(blocks.bodies, locale);
   if (!body) {
@@ -133,7 +133,7 @@ const parseBodyBlockLine = (
   table: Record<
     string,
     (state: ParseState, value: string) => ParseState
-  > = KEYWORD_FUNC_TABLE
+  > = KEYWORD_FUNC_TABLE,
 ): ParseState => {
   // 先頭の'*'や空白を除去
   const trimmed = line.trimEnd().replace(/^[\*\s]*/, "");
@@ -167,7 +167,7 @@ const handleHelpContext = (oldstate: ParseState): ParseState => {
 
 const handleParamContext = (
   oldstate: ParseState,
-  value: string
+  value: string,
 ): ParseState => {
   const state = flashCurrentItem(oldstate);
   // すでに同名のparamが存在する場合は新しいparamを作らない
@@ -219,7 +219,7 @@ const handleDesc = (state: ParseState, value: string): ParseState => {
 
 const handleCommandContext = (
   oldstate: ParseState,
-  value: string
+  value: string,
 ): ParseState => {
   const state: ParseState = flashCurrentItem(oldstate);
   if (state.commands.some((c) => c.command === value)) {
@@ -278,7 +278,7 @@ const handlerType = (state: ParseState, value: string): ParseState => {
 const addParamField = (
   state: ParseState,
   key: string,
-  value: string
+  value: string,
 ): ParseState => {
   if (state.currentParam) {
     if (!(key in state.currentParam.attr)) {
@@ -297,7 +297,7 @@ const addParamField = (
 const addMetaField = (
   state: ParseState,
   key: keyof PluginMeta,
-  value: string
+  value: string,
 ): ParseState => {
   return {
     ...state,

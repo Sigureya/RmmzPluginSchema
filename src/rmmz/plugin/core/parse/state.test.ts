@@ -1,5 +1,4 @@
 import { describe, test, expect } from "vitest";
-import type { ParseState } from "./internalTypes";
 import {
   handleBase,
   handleOption,
@@ -7,6 +6,7 @@ import {
   handleOrderBefore,
   handleValue,
 } from "./state";
+import type { ParseState } from "./types";
 
 // 初期状態生成ヘルパー
 const createInitialState = (): ParseState => ({
@@ -109,7 +109,7 @@ describe("handleValue", () => {
     };
     const next = handleValue(state, "newValue");
     expect(next.currentOption?.items.some((i) => i.value === "newValue")).toBe(
-      true
+      true,
     );
   });
 

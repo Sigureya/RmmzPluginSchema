@@ -1,6 +1,9 @@
-import type { ParseState } from "./internalTypes";
 import { finalizeOptions } from "./option";
-import type { PluginCommandTokens } from "./types";
+import type {
+  ParseState,
+  PluginCommandTokens,
+  PluginParamTokens,
+} from "./types";
 
 export interface DescAndText {
   desc?: string;
@@ -58,7 +61,7 @@ const flushCurrentCommand = (state: ParseState): ParseState => {
     return state;
   }
 
-  const newArgs = state.currentParam
+  const newArgs: PluginParamTokens[] = state.currentParam
     ? [...state.currentCommand.args, state.currentParam]
     : state.currentCommand.args;
   const newCommand: PluginCommandTokens = {

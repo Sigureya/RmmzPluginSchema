@@ -1,4 +1,4 @@
-import type { OptionsState } from "./internalTypes";
+import type { OptionsState } from "./types";
 
 export const addValue = (state: OptionsState, value: string): OptionsState => {
   return state.currentOption
@@ -15,7 +15,7 @@ export const addValue = (state: OptionsState, value: string): OptionsState => {
 
 export const addOption = (
   state: OptionsState,
-  option: string
+  option: string,
 ): OptionsState => {
   return state.currentOption
     ? {
