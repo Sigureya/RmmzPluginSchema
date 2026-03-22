@@ -4,7 +4,7 @@ import type { ParamSoruceRecord } from "./attributes";
 import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import type { AnyStringParam } from "./params";
-import type { PluginParamTokens } from "./parse/types/types";
+import type { PluginParamTokens } from "./parse/types/token";
 
 const createHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
   parseStringArray: vi.fn(),

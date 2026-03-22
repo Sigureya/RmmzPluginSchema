@@ -8,7 +8,7 @@ import type {
   PluginCommandTokens,
   PluginParamTokens,
   PluginStructTokens,
-} from "./parse/types/types";
+} from "./parse/types/token";
 import type {
   PluginCommandBody,
   PluginJSON,
@@ -32,19 +32,19 @@ const compilePluginToObjectCore = (parsedPlugin: ParsedPlugin): PluginJSON => {
 
 const reduceParams = (
   paramTokens: ReadonlyArray<PluginParamTokens>,
-  handlers: DeepJSONParserHandlers
+  handlers: DeepJSONParserHandlers,
 ): { [key: string]: PrimitiveParam } => {
   return Object.fromEntries(
     paramTokens.map((param): [string, PrimitiveParam] => {
       const compiled = compilePluginParam(param, handlers);
       return [param.name, compiled.attr];
-    })
+    }),
   );
 };
 
 const reduceCommands = (
   tokens: ReadonlyArray<PluginCommandTokens>,
-  handlers: DeepJSONParserHandlers
+  handlers: DeepJSONParserHandlers,
 ): Record<string, PluginCommandBody> => {
   return Object.fromEntries(
     tokens.map((token): [string, PluginCommandBody] => [
@@ -54,13 +54,13 @@ const reduceCommands = (
         text: token.text,
         args: reduceParams(token.args, handlers),
       },
-    ])
+    ]),
   );
 };
 
 const reduceStructs = (
   structs: ReadonlyArray<PluginStructTokens>,
-  handlers: DeepJSONParserHandlers
+  handlers: DeepJSONParserHandlers,
 ): Record<string, PluginStructBody> => {
   return Object.fromEntries(
     structs.map((struct): [string, PluginStructBody] => [
@@ -68,6 +68,6 @@ const reduceStructs = (
       {
         params: reduceParams(struct.params, handlers),
       },
-    ])
+    ]),
   );
 };
