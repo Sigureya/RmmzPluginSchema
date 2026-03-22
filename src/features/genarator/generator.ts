@@ -24,11 +24,21 @@ import type {
   PluginAnnotationTokens,
   PluginDependencyAnnotations,
   PluginMetaAnnotation,
+  StructTokenBlock,
 } from "./types";
+
+export const generatePluginAnnotationText = (
+  lines: PluginAnnotationLines,
+): string => {
+  return [
+    ...lines.body,
+    ...lines.structs.flatMap((struct: StructTokenBlock): string[] => struct),
+  ].join("\n");
+};
 
 export const generatePluginAnnotationLines = (
   plugin: PluginSchema,
-  handlers: SchemaStringifyHandlers
+  handlers: SchemaStringifyHandlers,
 ): PluginAnnotationLines => {
   const tokens = generatePluginAnnotation(plugin, handlers);
   return {
@@ -39,10 +49,10 @@ export const generatePluginAnnotationLines = (
 
 export const generatePluginAnnotation = (
   plugin: PluginSchema,
-  handlers: SchemaStringifyHandlers
+  handlers: SchemaStringifyHandlers,
 ): PluginAnnotationTokens => {
   return {
-    locale: plugin.locale,
+    locale: plugin.locale ?? "",
     schema: generatePluginSchemaAnnotation(plugin.schema, handlers),
     target: createKeywordLine(KEYWORD_TARGET, plugin.target),
     meta: generateMetaAnnotations(plugin.meta),
@@ -51,23 +61,23 @@ export const generatePluginAnnotation = (
 };
 
 const generateDependencyAnnotations = (
-  schema: PluginDependencies
+  schema: PluginDependencies,
 ): PluginDependencyAnnotations => {
   return {
     base: schema.base.map((dep: string) =>
-      createKeywordLine(KEYWORD_BASE, dep)
+      createKeywordLine(KEYWORD_BASE, dep),
     ),
     orderBefore: schema.orderBefore.map((dep: string) =>
-      createKeywordLine(KEYWORD_ORDERBEFORE, dep)
+      createKeywordLine(KEYWORD_ORDERBEFORE, dep),
     ),
     orderAfter: schema.orderAfter.map((dep: string) =>
-      createKeywordLine(KEYWORD_ORDERAFTER, dep)
+      createKeywordLine(KEYWORD_ORDERAFTER, dep),
     ),
   };
 };
 
 const generateMetaAnnotations = (
-  meta: PluginMetaKeywords
+  meta: PluginMetaKeywords,
 ): PluginMetaAnnotation => {
   const author = meta.author;
   const desc = meta.plugindesc;
