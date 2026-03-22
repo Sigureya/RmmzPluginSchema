@@ -2,7 +2,7 @@ import { KeywordEnum } from './keyword';
 import { PluginDependencies } from './pluginDependencies';
 import { PluginMeta } from './pluginMeta';
 import { OptionItem } from './selectOption';
-import { PluginParamTokens, PluginCommandTokens } from './types';
+import { PluginParamTokens, PluginCommandTokens } from './token';
 export interface OptionsState {
     items: OptionItem[];
     currentOption?: string;

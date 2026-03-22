@@ -4,7 +4,7 @@ import type {
   ParsedPlugin,
   PluginParamTokens,
   PluginStructTokens,
-} from "./types/types";
+} from "./types/token";
 
 const createTokens = (structHead: string) => {
   return [
