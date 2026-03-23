@@ -14,10 +14,7 @@ import type {
   RpgSwitchArrayParam,
   FileParam,
   FileArrayParam,
-  StructRefParam,
-  StructArrayRefParam,
   ArrayParam,
-  KindOfStructBase,
 } from "./primitive";
 import type {
   SystemDataIdParam,
@@ -25,6 +22,11 @@ import type {
   RpgDataIdParam,
   RpgDataIdArrayParam,
 } from "./rpgDataTypes";
+import type {
+  StructRefParam,
+  StructArrayRefParam,
+  KindOfStructBase,
+} from "./struct";
 
 export type PrimitiveStringParam =
   | StringParam

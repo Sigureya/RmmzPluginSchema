@@ -5,7 +5,7 @@ import type {
   PrimitiveParam,
 } from "./paramUnion";
 import type { PluginStructParamTypeEx } from "./pluginSchemaType";
-import type { StructRefParam, StructArrayRefParam } from "./primitive";
+import type { StructRefParam, StructArrayRefParam } from "./struct";
 
 export interface ScalaStruct {
   scalars: PluginParamEx<PluginScalarParam>[];
@@ -21,7 +21,7 @@ export interface ClassifiedPluginParams extends ScalaStruct {
 
 export interface ClassifiedPluginParamsEx2<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 > extends ClassifiedPluginParams {
   structs: PluginParamEx<StructRefParam>[];
   structArrays: PluginParamEx<StructArrayRefParam>[];
@@ -37,7 +37,7 @@ type ParamTypesEx4<T, Attr extends PrimitiveParam> = Extract<
 export type ClassifiedPluginParamsEx<
   T,
   S extends PluginScalarParam = PluginScalarParam,
-  A extends PluginArrayParamType = PluginArrayParamType
+  A extends PluginArrayParamType = PluginArrayParamType,
 > = ClassifiedPluginParamsEx2<S, A> & {
   structs: ParamTypesEx4<T, StructRefParam>[];
   structArrays: ParamTypesEx4<T, StructArrayRefParam>[];
