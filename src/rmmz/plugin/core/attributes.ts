@@ -26,19 +26,25 @@ import type {
 } from "./params";
 import type { PluginParamTokens, OptionItem } from "./parse";
 import { KEYWORD_KIND } from "./parse";
+import type { AttrMessage } from "./types/attrMessage";
 
 type MappingTableEx<T> = MappingTable<Omit<T, "kind">>;
 
 export type ParamSoruceRecord<T> = Partial<Record<keyof T, string>>;
 
+const ATTR_MAPPING_TABLE = {
+  notNumber: "isNaN",
+  notInteger: "notInteger",
+} as const satisfies AttrMessage;
 export const compilePluginParam = (
   tokens: PluginParamTokens,
   handlers: DeepJSONParserHandlers,
+  message: AttrMessage = ATTR_MAPPING_TABLE,
 ): PluginParam => {
   if (KEYWORD_KIND in tokens.attr) {
     const func = TABLE[tokens.attr.kind as keyof typeof TABLE];
     if (func) {
-      return func(tokens, handlers);
+      return func(tokens, handlers, message);
     }
   }
 
@@ -118,9 +124,11 @@ const compileBooleanParam = (
 
 const compileNumberParam = (
   tokens: PluginParamTokens,
+  notUse: unknown,
+  message: AttrMessage,
 ): PluginParamEx<NumberParam> => {
   const NUMBER = {
-    default: (value: string) => parseFloat(value),
+    default: (value: string): number => parseFloat(value),
     text: attrString,
     desc: attrString,
     decimals: (value: string) => parseInt(value, 10),
@@ -128,12 +136,29 @@ const compileNumberParam = (
     max: (value: string) => parseFloat(value),
     parent: attrString,
   } as const satisfies MappingTableEx<NumberParam>;
+
+  const attr = compileScalarAttributes("number", 0, tokens.attr, NUMBER);
+
+  if (isNaN(attr.default)) {
+    return {
+      name: tokens.name,
+      attr,
+      errors: [
+        {
+          source: tokens.attr.default || "",
+          message: message.notNumber,
+          code: "notNumber",
+          attr: "default",
+        },
+      ],
+    };
+  }
+
   return {
     name: tokens.name,
-    attr: compileScalarAttributes("number", 0, tokens.attr, NUMBER),
+    attr: attr,
   };
 };
-
 const compileNumberArrayParam = (
   tokens: PluginParamTokens,
 ): PluginParamEx<NumberArrayParam> => {
@@ -369,5 +394,6 @@ const TABLE = {
   [K in PrimitiveParam["kind"]]?: (
     tokens: PluginParamTokens,
     perser: DeepJSONParserHandlers,
+    message: AttrMessage,
   ) => PluginParam;
 };
