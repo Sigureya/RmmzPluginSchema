@@ -1,4 +1,3 @@
-import type { ParamError } from "./error";
 import type { ParamBase } from "./paramBase";
 
 export interface ArrayParam {
@@ -89,24 +88,4 @@ export interface FileArrayParam extends ParamBase {
 export interface AnyStringParam extends ParamBase {
   kind: "any";
   default: string;
-}
-
-export interface KindOfStructBase extends ParamBase {
-  struct: string;
-  errors?: ParamError[];
-}
-
-/**
- * - 型を参照するだけのパラメータ。別の箇所に型定義があることを前提としている。
- */
-export interface StructRefParam extends KindOfStructBase {
-  kind: "struct";
-  struct: string;
-  default?: object;
-}
-
-export interface StructArrayRefParam extends KindOfStructBase {
-  kind: "struct[]";
-  struct: string;
-  default?: object[];
 }
