@@ -1,6 +1,7 @@
 import { StructDefParam, StructArrayDefParam } from './objectSturctDef';
-import { StringParam, AnyStringParam, ComboParam, SelectParam, BooleanParam, NumberParam, NumberArrayParam, StringArrayParam, RpgVariableParam, RpgVariableArrayParam, RpgSwitchParam, RpgSwitchArrayParam, FileParam, FileArrayParam, StructRefParam, StructArrayRefParam, ArrayParam, KindOfStructBase } from './primitive';
+import { StringParam, AnyStringParam, ComboParam, SelectParam, BooleanParam, NumberParam, NumberArrayParam, StringArrayParam, RpgVariableParam, RpgVariableArrayParam, RpgSwitchParam, RpgSwitchArrayParam, FileParam, FileArrayParam, ArrayParam } from './primitive';
 import { SystemDataIdParam, SystemDataIdArrayParam, RpgDataIdParam, RpgDataIdArrayParam } from './rpgDataTypes';
+import { StructRefParam, StructArrayRefParam, KindOfStructBase } from './struct';
 export type PrimitiveStringParam = StringParam | AnyStringParam | ComboParam | SelectParam;
 export type PrimitiveTextParam = StringParam | StringArrayParam;
 export type PrimitiveParam = BooleanParam | NumberParam | NumberArrayParam | RpgDataIdParam | RpgDataIdArrayParam | ComboParam | SelectParam | StringParam | StringArrayParam | SystemDataIdParam | SystemDataIdArrayParam | RpgVariableParam | RpgVariableArrayParam | RpgSwitchParam | RpgSwitchArrayParam | FileParam | FileArrayParam | StructRefParam | StructArrayRefParam | AnyStringParam;

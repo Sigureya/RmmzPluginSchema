@@ -14,3 +14,4 @@ export type * from './pluginSchemaType';
 export type * from './primitive';
 export type * from './rpgDataTypes';
 export type * from './rpgDataTypesNames';
+export type * from './struct';
