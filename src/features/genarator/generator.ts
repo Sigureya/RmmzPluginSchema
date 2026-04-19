@@ -51,9 +51,10 @@ export const generatePluginAnnotation = (
   plugin: PluginSchema,
   handlers: SchemaStringifyHandlers,
 ): PluginAnnotationTokens => {
+  const local = plugin.locale ?? "";
   return {
-    locale: plugin.locale ?? "",
-    schema: generatePluginSchemaAnnotation(plugin.schema, handlers),
+    locale: local,
+    schema: generatePluginSchemaAnnotation(local, plugin.schema, handlers),
     target: createKeywordLine(KEYWORD_TARGET, plugin.target),
     meta: generateMetaAnnotations(plugin.meta),
     dependencies: generateDependencyAnnotations(plugin.dependencies),
