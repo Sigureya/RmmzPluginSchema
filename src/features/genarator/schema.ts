@@ -15,30 +15,35 @@ import type {
 } from "./types";
 
 export const generatePluginSchemaAnnotation = (
+  local: string,
   schema: PluginSchemaArray,
-  handlers: SchemaStringifyHandlers
+  handlers: SchemaStringifyHandlers,
 ): PluginSchemaAnnotation => {
   return {
     params: paramSchemaToAnnotations(schema.params, handlers),
-    structs: schema.structs.map((s) => structSchemaToAnnotation(s, handlers)),
+    structs: schema.structs.map((s) =>
+      structSchemaToAnnotation(s, local, handlers),
+    ),
     commands: schema.commands.map((c) =>
-      commandSchemaToAnnotation(c, handlers)
+      commandSchemaToAnnotation(c, handlers),
     ),
   };
 };
 
 const paramSchemaToAnnotations = (
   param: ReadonlyArray<PluginParam>,
-  handlers: SchemaStringifyHandlers
+  handlers: SchemaStringifyHandlers,
 ): PluginParamAnnotation<"param">[] => {
   return param.map((p) => generatePluginParamAnnotation(p, "param", handlers));
 };
 
 const structSchemaToAnnotation = (
   structSchema: PluginStructSchemaArray,
-  handlers: SchemaStringifyHandlers
+  local: string,
+  handlers: SchemaStringifyHandlers,
 ): PluginStructAnnotation => {
   return {
+    locale: local,
     struct: structSchema.struct,
     params: paramSchemaToAnnotations(structSchema.params, handlers),
   };
@@ -46,14 +51,14 @@ const structSchemaToAnnotation = (
 
 const commandSchemaToAnnotation = (
   command: PluginCommandSchemaArray,
-  handlers: SchemaStringifyHandlers
+  handlers: SchemaStringifyHandlers,
 ): PluginCommandAnnotation => {
   return {
     desc: command.desc ? createKeywordLine("desc", command.desc) : undefined,
     text: command.text ? createKeywordLine("text", command.text) : undefined,
     command: createKeywordLine("command", command.command),
     args: command.args.map((arg) =>
-      generatePluginParamAnnotation(arg, "arg", handlers)
+      generatePluginParamAnnotation(arg, "arg", handlers),
     ),
   };
 };

@@ -24,7 +24,11 @@ describe("generatePluginSchemaAnnotation", () => {
       commands: [],
     };
     const handlers = createHandlers();
-    const annotation = generatePluginSchemaAnnotation(schema, handlers);
+    const annotation = generatePluginSchemaAnnotation(
+      "unused local",
+      schema,
+      handlers,
+    );
     expect(annotation).toEqual(expected);
     expect(handlers.numberArray).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();
@@ -143,12 +147,13 @@ describe("generatePluginSchemaAnnotation", () => {
               name: "@param age",
             },
           ],
+          locale: "ja",
           struct: "Person",
         },
       ],
     };
     const handlers = createHandlers();
-    const annotation = generatePluginSchemaAnnotation(schema, handlers);
+    const annotation = generatePluginSchemaAnnotation("ja", schema, handlers);
     expect(annotation).toEqual(expected);
     expect(handlers.numberArray).not.toHaveBeenCalled();
     expect(handlers.structArray).not.toHaveBeenCalled();
