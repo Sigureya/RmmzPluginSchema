@@ -158,8 +158,8 @@ describe("createPluginValuesPath for command arguments", () => {
 
     expect(result.rootCategory).toBe("args");
     expect(result.rootName).toBe("Action");
-    expect(result.scalars.scalarsPath).toBe('$["subject"]');
-    expect(result.scalars.objectSchema).toEqual({
+    expect(result.scalars?.scalarsPath).toBe('$["subject"]');
+    expect(result.scalars?.objectSchema).toEqual({
       subject: { default: 0, kind: "number" },
     });
   });
@@ -174,10 +174,10 @@ describe("createPluginValuesPath for command arguments", () => {
 
     expect(result.rootCategory).toBe("args");
     expect(result.rootName).toBe("Action");
-    expect(result.scalars.scalarArrays).toHaveLength(1);
-    expect(result.scalars.scalarArrays[0].path).toBe('$["targets"][*]');
-    expect(result.scalars.scalarArrays[0].param.name).toBe("targets");
-    expect(result.scalars.scalarArrays[0].param.attr.kind).toBe("number[]");
+    expect(result.scalars?.scalarArrays).toHaveLength(1);
+    expect(result.scalars?.scalarArrays[0].path).toBe('$["targets"][*]');
+    expect(result.scalars?.scalarArrays[0].param.name).toBe("targets");
+    expect(result.scalars?.scalarArrays[0].param.attr.kind).toBe("number[]");
   });
 
   test("creates correct path for damage struct", () => {
@@ -237,10 +237,10 @@ describe("createPluginValuesPath for command arguments", () => {
 
     expect(results).toHaveLength(5);
     // subject (scalar number)
-    expect(results[0].scalars.scalarsPath).toBeDefined();
+    expect(results[0].scalars?.scalarsPath).toBeDefined();
     expect(results[0].rootCategory).toBe("args");
     // targets (scalar array)
-    expect(results[1].scalars.scalarArrays).toHaveLength(1);
+    expect(results[1].scalars?.scalarArrays).toHaveLength(1);
     expect(results[1].rootCategory).toBe("args");
     // damage (struct)
     expect(results[2].structs.items).toHaveLength(1);
@@ -261,6 +261,8 @@ describe("createPluginValuesPath for command arguments", () => {
       if (index < 2) {
         // scalar and array arguments maintain the passed rootName
         expect(result.rootName).toBe("Action");
+        // scalar and array have scalars defined
+        expect(result.scalars).toBeDefined();
       } else {
         // struct arguments use the argument name as rootName
         expect(result.rootName).toBe(arg.name);

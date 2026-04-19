@@ -253,7 +253,7 @@ describe("createPluginValuesPath for params", () => {
   });
 
   test("correctly handles all parameters in schema", () => {
-    type Expected = PluginValuesPathWithError & {
+    type Expected = Partial<PluginValuesPathWithError> & {
       rootCategory: string;
       rootName: string;
     };
@@ -308,7 +308,6 @@ describe("createPluginValuesPath for params", () => {
     const expected3: Expected = {
       rootCategory: "param",
       rootName: "terms",
-      scalars: undefined,
       structArrays: {
         errors: [],
         items: [],
