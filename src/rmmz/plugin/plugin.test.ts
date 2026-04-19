@@ -1,4 +1,5 @@
 import { test, expect, describe } from "vitest";
+import type { PluginSchema } from "./core";
 import {
   paramObjectFromPluginRecord,
   pluginSourceToJSON,
@@ -201,7 +202,7 @@ describe("plugin", () => {
            * @author NoLocaleAuthor
            */
         `,
-        locale: undefined,
+        locale: "",
         pluginName: "NoLocalePlugin",
       };
 
@@ -209,7 +210,7 @@ describe("plugin", () => {
 
       expect(result.pluginName).toBe("NoLocalePlugin");
       expect(result.target).toBe("MZ");
-      expect(result.locale).toBeUndefined();
+      expect(result.locale).toBe("");
       expect(result.schema).toBeDefined();
     });
 
@@ -275,7 +276,7 @@ describe("plugin", () => {
         },
         {
           source: "/*:\n * @plugindesc Test3\n */",
-          locale: undefined,
+          locale: "",
           pluginName: "Plugin3",
         },
       ];
@@ -321,11 +322,23 @@ describe("plugin", () => {
            * @command testCmd
            * @text Test Command
            */
+          /*~struct~Person:
+           * @param name
+           * @type string
+           * @desc name desc
+           * @default John Doe
+           *
+           * @param age
+           * @type number
+           * @desc age desc
+           * @default 0
+           * @min 0
+           */
         `,
         locale: "en_US",
         pluginName: "ComplexPlugin",
       };
-      const expected = {
+      const expected: PluginSchema = {
         dependencies: {
           base: [],
           orderAfter: [],
@@ -364,7 +377,31 @@ describe("plugin", () => {
               name: "param2",
             },
           ],
-          structs: [],
+          structs: [
+            {
+              struct: "Person",
+
+              params: [
+                {
+                  name: "name",
+                  attr: {
+                    default: "John Doe",
+                    kind: "string",
+                    desc: "name desc",
+                  },
+                },
+                {
+                  name: "age",
+                  attr: {
+                    default: 0,
+                    kind: "number",
+                    desc: "age desc",
+                    min: 0,
+                  },
+                },
+              ],
+            },
+          ],
         },
         target: "MZ",
       };
