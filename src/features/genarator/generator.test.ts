@@ -59,7 +59,11 @@ describe("generatePluginAnnotationLines", () => {
         author: "Test Author",
         plugindesc: "Plugin to define a Person struct.",
       },
-      dependencies: { base: [], orderBefore: [], orderAfter: [] },
+      dependencies: {
+        base: ["base1"],
+        orderBefore: ["before2"],
+        orderAfter: ["after3"],
+      },
       schema: {
         commands: [],
         params: [
@@ -114,6 +118,10 @@ describe("generatePluginAnnotationLines", () => {
         "@target MZ",
         "@author Test Author",
         "@plugindesc Plugin to define a Person struct.",
+        "",
+        "@base base1",
+        "@orderBefore before2",
+        "@orderAfter after3",
         "",
         "@param mockPerson",
         "@type struct<Person>",
