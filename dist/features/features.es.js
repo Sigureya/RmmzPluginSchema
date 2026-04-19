@@ -211,11 +211,11 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     attr: [],
     default: n("default", a)
   };
-}, f = { number: ["min", "max", "decimals"], file: ["dir"], boolean: ["on", "off"] }, jr = (r, t) => ({
-  params: F(r.params, t),
-  structs: r.structs.map((a) => Er(a, t)),
-  commands: r.commands.map((a) => Tr(a, t))
-}), F = (r, t) => r.map((a) => T(a, "param", t)), Er = (r, t) => ({ struct: r.struct, params: F(r.params, t) }), Tr = (r, t) => ({
+}, f = { number: ["min", "max", "decimals"], file: ["dir"], boolean: ["on", "off"] }, jr = (r, t, a) => ({
+  params: F(t.params, a),
+  structs: t.structs.map((e) => Er(e, r, a)),
+  commands: t.commands.map((e) => Tr(e, a))
+}), F = (r, t) => r.map((a) => T(a, "param", t)), Er = (r, t, a) => ({ locale: t, struct: r.struct, params: F(r.params, a) }), Tr = (r, t) => ({
   desc: r.desc ? n("desc", r.desc) : void 0,
   text: r.text ? n("text", r.text) : void 0,
   command: n("command", r.command),
@@ -231,13 +231,16 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
 `), Xr = (r, t) => {
   const a = Vr(r, t);
   return { body: Fr(a), structs: a.schema.structs.map(Br) };
-}, Vr = (r, t) => ({
-  locale: r.locale ?? "",
-  schema: jr(r.schema, t),
-  target: n(H, r.target),
-  meta: wr(r.meta),
-  dependencies: _r(r.dependencies)
-}), _r = (r) => ({ base: r.base.map((t) => n(Q, t)), orderBefore: r.orderBefore.map((t) => n(O, t)), orderAfter: r.orderAfter.map((t) => n(I, t)) }), wr = (r) => {
+}, Vr = (r, t) => {
+  const a = r.locale ?? "";
+  return {
+    locale: a,
+    schema: jr(a, r.schema, t),
+    target: n(H, r.target),
+    meta: wr(r.meta),
+    dependencies: _r(r.dependencies)
+  };
+}, _r = (r) => ({ base: r.base.map((t) => n(Q, t)), orderBefore: r.orderBefore.map((t) => n(O, t)), orderAfter: r.orderAfter.map((t) => n(I, t)) }), wr = (r) => {
   const t = r.author, a = r.plugindesc, e = r.url;
   return { author: t ? n(G, t) : void 0, pluginDesc: a ? n(q, a) : void 0, url: e ? n(R, e) : void 0 };
 };
