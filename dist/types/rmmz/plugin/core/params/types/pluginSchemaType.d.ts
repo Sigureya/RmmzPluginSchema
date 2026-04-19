@@ -1,5 +1,6 @@
 import { PrimitiveParam } from './paramUnion';
-import { BooleanParam, AnyStringParam, StructArrayRefParam, StructRefParam } from './primitive';
+import { BooleanParam, AnyStringParam } from './primitive';
+import { StructArrayRefParam, StructRefParam } from './struct';
 export type PluginStructParamTypeEx<T> = {
     [K in keyof T as string]: {
         name: Extract<K, string>;

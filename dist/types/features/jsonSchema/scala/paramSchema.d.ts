@@ -354,29 +354,6 @@ export declare const makePluginParamSchema: () => {
                 readonly minLength: 1;
                 readonly maxLength: 48;
             };
-            readonly errors: {
-                readonly nullable: true;
-                readonly type: "array";
-                readonly items: {
-                    readonly type: "object";
-                    readonly additionalProperties: false;
-                    readonly required: readonly ["message", "code", "source", "attr"];
-                    readonly properties: {
-                        readonly message: {
-                            readonly type: "string";
-                        };
-                        readonly code: {
-                            readonly type: "string";
-                        };
-                        readonly source: {
-                            readonly type: "string";
-                        };
-                        readonly attr: {
-                            readonly type: "string";
-                        };
-                    };
-                };
-            };
         };
     }, {
         readonly additionalProperties: false;
@@ -415,29 +392,6 @@ export declare const makePluginParamSchema: () => {
                 readonly type: "string";
                 readonly nullable: true;
                 readonly maxLength: 100;
-            };
-            readonly errors: {
-                readonly nullable: true;
-                readonly type: "array";
-                readonly items: {
-                    readonly type: "object";
-                    readonly additionalProperties: false;
-                    readonly required: readonly ["message", "code", "source", "attr"];
-                    readonly properties: {
-                        readonly message: {
-                            readonly type: "string";
-                        };
-                        readonly code: {
-                            readonly type: "string";
-                        };
-                        readonly source: {
-                            readonly type: "string";
-                        };
-                        readonly attr: {
-                            readonly type: "string";
-                        };
-                    };
-                };
             };
         };
     }, {

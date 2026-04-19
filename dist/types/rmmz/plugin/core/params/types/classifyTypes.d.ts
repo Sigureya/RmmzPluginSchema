@@ -1,7 +1,7 @@
 import { PluginParamEx } from './arrayParamItems';
 import { PluginScalarParam, PluginArrayParamType, PrimitiveParam } from './paramUnion';
 import { PluginStructParamTypeEx } from './pluginSchemaType';
-import { StructRefParam, StructArrayRefParam } from './primitive';
+import { StructRefParam, StructArrayRefParam } from './struct';
 export interface ScalaStruct {
     scalars: PluginParamEx<PluginScalarParam>[];
     scalarArrays: PluginParamEx<PluginArrayParamType>[];
