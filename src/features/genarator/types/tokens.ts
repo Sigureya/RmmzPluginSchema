@@ -6,7 +6,7 @@ import type {
 } from "./types";
 
 export interface PluginAnnotationTokens {
-  locale?: string | undefined;
+  locale: string;
   schema: PluginSchemaAnnotation;
   meta: PluginMetaAnnotation;
   target: KeyWord<"target">;
@@ -16,11 +16,11 @@ export interface PluginAnnotationTokens {
 export type StructTokenBlock = [
   head: `/*~struct~${string}:${string}`,
   ...("" | KeyWord<string>)[],
-  tail: "*/"
+  tail: "*/",
 ];
 
 export type PluginBodyBlockToken = [
   head: `/*:${string}`,
   ...string[],
-  tail: `*/`
+  tail: `*/`,
 ];

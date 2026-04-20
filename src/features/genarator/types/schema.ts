@@ -8,7 +8,7 @@ export interface PluginSchemaAnnotation {
 }
 
 export interface PluginParamAnnotation<
-  T extends "param" | "arg" = "param" | "arg"
+  T extends "param" | "arg" = "param" | "arg",
 > {
   name: KeyWord<T>;
   attr: KeyWord<KeywordEnum>[];
@@ -31,7 +31,7 @@ export interface PluginCommandAnnotation {
 }
 
 export interface PluginStructAnnotation {
-  locale?: string;
+  locale: string;
   struct: string;
   params: PluginParamAnnotation[];
 }

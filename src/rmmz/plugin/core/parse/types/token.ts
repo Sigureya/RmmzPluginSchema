@@ -30,7 +30,7 @@ export interface PluginTokens {
 }
 
 export interface ParsedPlugin extends PluginTokens {
-  locale?: string;
+  locale: string;
   meta: Partial<PluginMeta>;
   params: PluginParamTokens[];
   commands: PluginCommandTokens[];

@@ -53,7 +53,7 @@ describe("generatePluginAnnotationLines", () => {
     };
     const schema: PluginSchema = {
       target: "MZ",
-      locale: undefined,
+      locale: "",
       pluginName: "PersonPlugin",
       meta: {
         author: "Test Author",
@@ -180,7 +180,7 @@ describe("generatePluginAnnotationLines", () => {
         {
           source: joinLines(tokenLines),
           pluginName: "PersonPlugin",
-          locale: undefined,
+          locale: "",
         },
         handlers,
       );

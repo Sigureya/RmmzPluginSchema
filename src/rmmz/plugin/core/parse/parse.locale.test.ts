@@ -118,7 +118,7 @@ describe("parsePlugin", () => {
   test("parsePlugin should return all locales", () => {
     const expected: ParsedPlugin[] = [
       {
-        locale: undefined,
+        locale: "",
         commands: [
           {
             command: "save",

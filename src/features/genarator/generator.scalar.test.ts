@@ -22,7 +22,7 @@ const createValueParserHandlers = (): MockedObject<DeepJSONParserHandlers> => ({
 
 const joinLines = (lines: PluginAnnotationLines): string => {
   return [...lines.body, ...lines.structs.flatMap((struct) => struct)].join(
-    "\n"
+    "\n",
   );
 };
 
@@ -30,7 +30,7 @@ describe("generatePluginAnnotationLines", () => {
   describe("all scalar types", () => {
     const schema: PluginSchema = {
       target: "MZ",
-      locale: undefined,
+      locale: "",
       pluginName: "AllScalarTypesPlugin",
       meta: {
         author: "Test Author",
@@ -203,9 +203,9 @@ describe("generatePluginAnnotationLines", () => {
         {
           source: joinLines(tokenLines),
           pluginName: "AllScalarTypesPlugin",
-          locale: undefined,
+          locale: "",
         },
-        handlers
+        handlers,
       );
       expect(result).toEqual(schema);
       expect(handlers.parseObject).not.toHaveBeenCalled();

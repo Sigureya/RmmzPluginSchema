@@ -11,22 +11,22 @@ interface StructsGroup {
 
 export const localizeBlocks = (
   bodies: ReadonlyArray<PluginBodyBlock>,
-  structs: ReadonlyArray<PluginStructBlock>
+  structs: ReadonlyArray<PluginStructBlock>,
 ): LocalizedBlock[] => {
   const group = groupStructsByLocale(structs);
   return bodies.map(
     (b): LocalizedBlock => ({
       body: b,
       structs: findStructsForBody(b, group),
-    })
+    }),
   );
 };
 
 const findStructsForBody = (
   body: PluginBodyBlock,
-  ll: StructsGroup
+  ll: StructsGroup,
 ): PluginStructBlock[] => {
-  if (body.locale === undefined) {
+  if (body.locale === "") {
     return ll.unlocale;
   }
   const list = ll.localeMap[body.locale];
@@ -37,11 +37,11 @@ const findStructsForBody = (
 };
 
 const groupStructsByLocale = (
-  structs: ReadonlyArray<PluginStructBlock>
+  structs: ReadonlyArray<PluginStructBlock>,
 ): StructsGroup => {
   return structs.reduce<StructsGroup>(
     (acc, s) => {
-      if (s.locale === undefined) {
+      if (s.locale === "") {
         acc.unlocale.push(s);
         return acc;
       }
@@ -55,6 +55,6 @@ const groupStructsByLocale = (
     {
       unlocale: [],
       localeMap: {},
-    }
+    },
   );
 };

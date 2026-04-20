@@ -24,7 +24,7 @@ export interface PluginMetaKeywords {
 }
 
 export interface PluginSchema extends PluginMinimumSchema {
-  locale?: string;
+  locale: string;
   pluginName: string;
   target: string;
   meta: PluginMetaKeywords;
@@ -34,7 +34,7 @@ export interface PluginSchema extends PluginMinimumSchema {
 
 export interface PluginSchemaOf<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 > extends PluginSchema {
   schema: PluginSchemaArrayFiltered<PluginParamEx2<S, A>>;
 }
