@@ -13,7 +13,7 @@ export interface PluginMetaKeywords {
     url?: string;
 }
 export interface PluginSchema extends PluginMinimumSchema {
-    locale?: string;
+    locale: string;
     pluginName: string;
     target: string;
     meta: PluginMetaKeywords;
