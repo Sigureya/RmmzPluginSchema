@@ -24,7 +24,7 @@ export interface PluginCommandAnnotation {
     args: PluginParamAnnotation<"arg">[];
 }
 export interface PluginStructAnnotation {
-    locale?: string;
+    locale: string;
     struct: string;
     params: PluginParamAnnotation[];
 }

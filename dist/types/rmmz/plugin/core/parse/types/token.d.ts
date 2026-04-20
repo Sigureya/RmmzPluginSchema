@@ -26,7 +26,7 @@ export interface PluginTokens {
     structs: PluginStructTokens[];
 }
 export interface ParsedPlugin extends PluginTokens {
-    locale?: string;
+    locale: string;
     meta: Partial<PluginMeta>;
     params: PluginParamTokens[];
     commands: PluginCommandTokens[];
