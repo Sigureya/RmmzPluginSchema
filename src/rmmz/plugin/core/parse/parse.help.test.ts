@@ -1,12 +1,12 @@
 import { describe, test, expect } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale, parsePlugin } from "./parse";
 import type {
   ParsedPlugin,
   PluginCommandTokens,
   PluginParamTokens,
 } from "./types";
 
-const mockTexts: string[] = [
+const mockInput: string[] = [
   "/*:",
   "@command save",
   "@arg arg1",
@@ -33,57 +33,52 @@ const mockTexts: string[] = [
   "*/",
 ];
 
-describe("parsePlugin", () => {
+const expectedParams: PluginParamTokens[] = [
+  { name: "gameTitle", attr: { kind: "string", default: "'My Game'" } },
+  { name: "data", attr: { kind: "number", default: "123" } },
+];
+const expectedCommands: PluginCommandTokens[] = [
+  {
+    command: "save",
+    args: [{ name: "arg1", attr: { kind: "number", default: "123" } }],
+  },
+  {
+    command: "load",
+    args: [{ name: "slot", attr: { kind: "number", default: "1" } }],
+  },
+];
+
+const helpLines: string[] = ["aaaa", "bbbb", "cccc"];
+describe("parsePluginByLocale", () => {
   test("should parse plugin annotations correctly", () => {
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockInput.join("\n"));
     expect(result.meta).toBeDefined();
-    expect(result.helpLines).toEqual(["aaaa", "bbbb", "cccc"]);
+    expect(result.helpLines).toEqual(helpLines);
   });
-
   test("should parse parameters correctly", () => {
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
-
-    const expected: PluginParamTokens[] = [
-      {
-        name: "gameTitle",
-        attr: {
-          kind: "string",
-          default: "'My Game'",
-        },
-      },
-      {
-        name: "data",
-        attr: {
-          kind: "number",
-          default: "123",
-        },
-      },
-    ];
-    expect(result.params).toEqual(expected);
+    const result: ParsedPlugin = parsePluginByLocale(mockInput.join("\n"));
+    expect(result.params).toEqual(expectedParams);
   });
   test("should parse commands correctly", () => {
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockInput.join("\n"));
 
-    const expected: PluginCommandTokens[] = [
-      {
-        command: "save",
-        args: [
-          {
-            name: "arg1",
-            attr: { kind: "number", default: "123" },
-          },
-        ],
-      },
-      {
-        command: "load",
-        args: [
-          {
-            name: "slot",
-            attr: { kind: "number", default: "1" },
-          },
-        ],
-      },
-    ];
-    expect(result.commands).toEqual(expected);
+    expect(result.commands).toEqual(expectedCommands);
+  });
+});
+
+describe("parsePlugin", () => {
+  test("should parse plugin annotations correctly", () => {
+    const result: ParsedPlugin[] = parsePlugin(mockInput.join("\n"));
+    expect(result.length).toBe(1);
+    expect(result[0].meta).toBeDefined();
+    expect(result[0].helpLines).toEqual(helpLines);
+  });
+  test("should parse parameters correctly", () => {
+    const result: ParsedPlugin[] = parsePlugin(mockInput.join("\n"));
+    expect(result[0].params).toEqual(expectedParams);
+  });
+  test("should parse commands correctly", () => {
+    const result: ParsedPlugin[] = parsePlugin(mockInput.join("\n"));
+    expect(result[0].commands).toEqual(expectedCommands);
   });
 });

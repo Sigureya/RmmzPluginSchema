@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale } from "./parse";
 import type { ParsedPlugin, PluginCommandTokens } from "./types";
 
 describe("parsePlugin", () => {
@@ -20,7 +20,7 @@ describe("parsePlugin", () => {
       "@default abc",
       "*/",
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
     const expected: PluginCommandTokens = {
       command: "save",
       text: "writeSave",
@@ -64,7 +64,7 @@ describe("parsePlugin", () => {
       "@default abc",
       "*/",
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
     const expected: PluginCommandTokens[] = [
       {
         command: "save",
@@ -115,7 +115,7 @@ describe("parsePlugin", () => {
       "@default abc",
       "*/",
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
     const expected: PluginCommandTokens[] = [
       {
         command: "save",

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale } from "./parse";
 import type {
   ParsedPlugin,
   PluginCommandTokens,
@@ -37,7 +37,7 @@ describe("parsePlugin - space in param names", () => {
       },
     ];
 
-    const result: ParsedPlugin = parsePlugin(input.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(input.join("\n"));
     expect(result.params).toEqual(expected);
   });
   test("should parse commands with spaces correctly", () => {
@@ -73,7 +73,7 @@ describe("parsePlugin - space in param names", () => {
         ],
       },
     ];
-    const result: ParsedPlugin = parsePlugin(input.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(input.join("\n"));
     expect(result.commands).toEqual(expected);
   });
 });

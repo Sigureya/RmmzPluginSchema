@@ -60,14 +60,14 @@ const bbb = (
   };
 };
 
-export const parsePlugin2 = (text: string): ParsedPlugin[] => {
+export const parsePlugin = (text: string): ParsedPlugin[] => {
   const blocks: Block = splitBlock(text);
   return blocks.bodies.map((body): ParsedPlugin => bbb(body, blocks.structs));
 };
 
-export const parsePlugin = (
+export const parsePluginByLocale = (
   text: string,
-  locale: string = "en",
+  locale: string = "",
 ): ParsedPlugin => {
   const blocks: Block = splitBlock(text);
   const structs = filterSturctByLocale(blocks.structs, locale).map((s) =>

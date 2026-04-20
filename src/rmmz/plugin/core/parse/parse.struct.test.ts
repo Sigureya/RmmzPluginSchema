@@ -1,12 +1,12 @@
 import { describe, test, expect } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale } from "./parse";
 import type {
   ParsedPlugin,
   PluginParamTokens,
   PluginStructTokens,
 } from "./types/token";
 
-const createTokens = (structHead: string) => {
+const createTokens = (structHead: string): string[] => {
   return [
     "/*:",
     "@param num",
@@ -35,11 +35,11 @@ describe("parsePlugin", () => {
     const tokens: string[] = createTokens(`/*~struct~Person`);
     const src: string = tokens.join("\n");
     test("commands is empty", () => {
-      const result: ParsedPlugin = parsePlugin(src);
+      const result: ParsedPlugin = parsePluginByLocale(src);
       expect(result.commands).toEqual([]);
     });
     test("params", () => {
-      const result: ParsedPlugin = parsePlugin(src);
+      const result: ParsedPlugin = parsePluginByLocale(src);
       const expected: PluginParamTokens[] = [
         {
           name: "num",
@@ -57,7 +57,7 @@ describe("parsePlugin", () => {
       expect(result.params).toEqual(expected);
     });
     test("structs is defined", () => {
-      const result: ParsedPlugin = parsePlugin(src);
+      const result: ParsedPlugin = parsePluginByLocale(src);
       const struct: PluginStructTokens = {
         name: "Person",
         params: [
@@ -105,13 +105,13 @@ describe("parsePlugin", () => {
     test("structs with locale is defined", () => {
       const tokens: string[] = createTokens(`/*~struct~Person:ja`);
       const src: string = tokens.join("\n");
-      const result: ParsedPlugin = parsePlugin(src, "ja");
+      const result: ParsedPlugin = parsePluginByLocale(src, "ja");
       expect(result.structs).toEqual([expectedStruct]);
     });
     test("structs with locale is defined", () => {
       const tokens: string[] = createTokens(`/*~struct~Person:ja  `);
       const src: string = tokens.join("\n");
-      const result: ParsedPlugin = parsePlugin(src, "ja");
+      const result: ParsedPlugin = parsePluginByLocale(src, "ja");
       expect(result.structs).toEqual([expectedStruct]);
     });
   });

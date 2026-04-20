@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale } from "./parse";
 import type { ParsedPlugin, PluginParamTokens } from "./types";
 
 describe("parsePlugin", () => {
@@ -14,7 +14,7 @@ describe("parsePlugin", () => {
       "@default 123",
       "*/",
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
 
     const expected: PluginParamTokens[] = [
       {
@@ -38,7 +38,7 @@ describe("parsePlugin", () => {
       "@default ",
       "*/",
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
 
     const expected: PluginParamTokens[] = [
       {
@@ -59,7 +59,7 @@ describe("parsePlugin", () => {
       "@default ",
       "*/",
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
 
     const expected: PluginParamTokens[] = [
       {
@@ -99,7 +99,7 @@ describe("parsePlugin", () => {
         },
       },
     ];
-    const result: ParsedPlugin = parsePlugin(mockTexts.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(mockTexts.join("\n"));
     expect(result.params).toEqual(expected);
   });
 });
