@@ -2,7 +2,7 @@ import { compilePluginParam } from "./attributes";
 import type { DeepJSONParserHandlers } from "./deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./deepJSONHandler";
 import type { PrimitiveParam } from "./params";
-import { parsePlugin } from "./parse/parse";
+import { parsePluginByLocale } from "./parse/parse";
 import type {
   ParsedPlugin,
   PluginCommandTokens,
@@ -16,7 +16,7 @@ import type {
 } from "./pluginJSONTypes";
 
 export const compilePluginToObject = (text: string): PluginJSON => {
-  return compilePluginToObjectCore(parsePlugin(text));
+  return compilePluginToObjectCore(parsePluginByLocale(text, ""));
 };
 
 const compilePluginToObjectCore = (parsedPlugin: ParsedPlugin): PluginJSON => {

@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale } from "./parse";
 import type { ParsedPlugin, PluginParamTokens } from "./types";
 
 describe("parsePlugin", () => {
@@ -33,7 +33,7 @@ describe("parsePlugin", () => {
         },
       ],
     };
-    const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(tokens.join("\n"));
     expect(result.params).toEqual(expected.params);
   });
 
@@ -67,7 +67,7 @@ describe("parsePlugin", () => {
         ],
       },
     ];
-    const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(tokens.join("\n"));
     expect(result.params).toMatchObject(expected);
   });
   test("combo with options, default is one of option texts, option text is same as value", () => {
@@ -95,7 +95,7 @@ describe("parsePlugin", () => {
         ],
       },
     ];
-    const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(tokens.join("\n"));
     expect(result.params).toEqual(expected);
   });
   test("combo with options, default is one of option texts, option text is different from value", () => {
@@ -114,7 +114,7 @@ describe("parsePlugin", () => {
         attr: { default: "komachi" },
       },
     ];
-    const result: ParsedPlugin = parsePlugin(tokens.join("\n"));
+    const result: ParsedPlugin = parsePluginByLocale(tokens.join("\n"));
     expect(result.params).toMatchObject(expected);
   });
 });

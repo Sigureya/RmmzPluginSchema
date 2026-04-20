@@ -6,7 +6,7 @@ import { compilePluginAsArraySchema } from "./core/compilePluginAsArraySchema";
 import type { DeepJSONParserHandlers } from "./core/deepJSONHandler";
 import { createDeepJSONParserHandlers } from "./core/deepJSONHandler";
 import type { ParsedPlugin } from "./core/parse";
-import { parsePlugin } from "./core/parse/parse";
+import { parsePluginByLocale } from "./core/parse/parse";
 import type { PluginJSON } from "./core/pluginJSONTypes";
 import type { PluginParamsRecord } from "./pluginsJS/types";
 import type { PluginInput } from "./types";
@@ -25,7 +25,7 @@ export const pluginSourceToArraySchema = (
   input: PluginInput,
   parser: DeepJSONParserHandlers = createDeepJSONParserHandlers(),
 ): PluginSchema => {
-  const tokens: ParsedPlugin = parsePlugin(input.source, input.locale);
+  const tokens: ParsedPlugin = parsePluginByLocale(input.source, input.locale);
   return {
     locale: input.locale,
     meta: tokens.meta,

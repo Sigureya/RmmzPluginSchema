@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { parsePlugin } from "./parse";
+import { parsePluginByLocale } from "./parse";
 import type { ParsedPlugin } from "./types";
 
 describe("parsePlugin", () => {
   it("returns an empty meta object for empty input", () => {
-    const result: ParsedPlugin = parsePlugin("");
+    const result: ParsedPlugin = parsePluginByLocale("");
     expect(result.meta).toEqual({});
   });
 
@@ -16,7 +16,7 @@ describe("parsePlugin", () => {
       "@url dummy-url",
       "*/",
     ].join("\n");
-    const result = parsePlugin(text);
+    const result = parsePluginByLocale(text);
     expect(result.meta.author).toBe("John Doe");
     expect(result.meta.plugindesc).toBe("This is a test plugin");
     expect(result.meta.url).toBe("dummy-url");
@@ -24,9 +24,9 @@ describe("parsePlugin", () => {
 
   it("prioritizes the first value when the same meta keyword is specified multiple times", () => {
     const text: string = ["/*:", "@author alice", "@author bob", "*/"].join(
-      "\n"
+      "\n",
     );
-    const result = parsePlugin(text);
+    const result = parsePluginByLocale(text);
     expect(result.meta.author).toBe("alice");
   });
 });
