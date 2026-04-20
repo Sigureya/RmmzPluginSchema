@@ -4,7 +4,7 @@ import type { PluginBodyBlock, PluginStructBlock } from "./types";
 
 describe("findPluginBodyAnnotation", () => {
   const bodyEn: PluginBodyBlock = {
-    locale: undefined,
+    locale: "",
     lines: ["@param name", "@type string", "@default John"],
   };
 
@@ -46,12 +46,12 @@ describe("filterBlock", () => {
     },
     {
       struct: "Vector2",
-      locale: undefined,
+      locale: "",
       lines: ["@param id", "@type number", "@default 0"],
     },
     {
       struct: "Person",
-      locale: undefined,
+      locale: "",
       lines: ["@param name", "@type string", "@default John"],
     },
   ];
@@ -64,7 +64,7 @@ describe("filterBlock", () => {
       },
       {
         struct: "Person",
-        locale: undefined,
+        locale: "",
         lines: ["@param name", "@type string", "@default John"],
       },
     ];
@@ -75,12 +75,12 @@ describe("filterBlock", () => {
     const expected: PluginStructBlock[] = [
       {
         struct: "Vector2",
-        locale: undefined,
+        locale: "",
         lines: ["@param id", "@type number", "@default 0"],
       },
       {
         struct: "Person",
-        locale: undefined,
+        locale: "",
         lines: ["@param name", "@type string", "@default John"],
       },
     ];

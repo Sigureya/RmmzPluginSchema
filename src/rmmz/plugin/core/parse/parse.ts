@@ -76,6 +76,7 @@ export const parsePluginByLocale = (
   const body = findPluginBodyByLocale(blocks.bodies, locale);
   if (!body) {
     return {
+      locale,
       params: [],
       commands: [],
       meta: {},
@@ -87,6 +88,7 @@ export const parsePluginByLocale = (
 
   const finalState = parseBodyBlock(body);
   return {
+    locale: body.locale,
     params: finalState.params,
     commands: finalState.commands,
     meta: finalState.meta,

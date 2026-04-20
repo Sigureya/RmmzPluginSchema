@@ -24,9 +24,11 @@ describe("localizeBlocks", () => {
     ],
   };
   const body: PluginBodyBlock = {
+    locale: "",
     lines: ["@plugindesc mock"],
   };
   const struct: PluginStructBlock = {
+    locale: "",
     struct: "Vector2",
     lines: [
       "@param x",

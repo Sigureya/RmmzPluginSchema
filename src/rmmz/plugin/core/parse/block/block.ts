@@ -4,7 +4,7 @@ interface BlockState {
   structs: PluginStructBlock[];
   bodies: PluginBodyBlock[];
   structName?: string;
-  locale?: string | undefined;
+  locale: string;
   lines: string[];
   blockType?:
     | typeof BLCOK_BODY
@@ -25,7 +25,7 @@ export const splitBlock = (block: string): Block => {
     structs: [],
     bodies: [],
     structName: undefined,
-    locale: undefined,
+    locale: "",
     lines: [],
     blockType: BLOCK_NONE,
   };
@@ -41,7 +41,7 @@ export const splitBlock = (block: string): Block => {
 const readLine = (state: BlockState, line: string): BlockState => {
   const trimmed = line.trim();
   const structMatch = trimmed.match(
-    /^\/\*~struct~([A-Za-z0-9_]*)(?::([A-Za-z0-9_-]+))?/
+    /^\/\*~struct~([A-Za-z0-9_]*)(?::([A-Za-z0-9_-]+))?/,
   );
 
   if (structMatch) {
@@ -62,7 +62,7 @@ const readLine = (state: BlockState, line: string): BlockState => {
 
 const handleStructMatch = (
   state: BlockState,
-  structMatch: RegExpMatchArray
+  structMatch: RegExpMatchArray,
 ): BlockState => {
   const flushed = state.lines.length > 0 ? handleBlockEnd(state) : state;
   // struct名が空文字の場合はstructNameをundefinedにする
@@ -71,19 +71,19 @@ const handleStructMatch = (
     ...flushed,
     structName,
     blockType: structName ? BLCOK_STRUCT : BLOCK_INVALID,
-    locale: structMatch[2],
+    locale: structMatch[2] ?? "",
     lines: [],
   };
 };
 
-const readLocale = (line: string | undefined) => {
+const readLocale = (line?: string): string => {
   if (line) {
     const match = line.match(/^\/\*:(\w+)/);
     if (match) {
       return match[1];
     }
   }
-  return undefined;
+  return "";
 };
 
 const handleBlockStart = (state: BlockState, line?: string): BlockState => {
@@ -98,16 +98,16 @@ const handleBlockStart = (state: BlockState, line?: string): BlockState => {
 };
 const handleBlockEnd = (state: BlockState): BlockState => {
   if (state.blockType === BLCOK_BODY) {
-    // localeがあればbodyにも格納
-    const body: PluginBodyBlock = state.locale
-      ? { locale: state.locale, lines: [...state.lines] }
-      : { lines: [...state.lines] };
+    const body: PluginBodyBlock = {
+      locale: state.locale,
+      lines: [...state.lines],
+    };
     return {
       ...state,
       bodies: state.bodies.concat([body]),
       lines: [],
       blockType: BLOCK_NONE,
-      locale: undefined,
+      locale: "",
     };
   }
 
@@ -123,7 +123,7 @@ const handleBlockEnd = (state: BlockState): BlockState => {
       ]),
       blockType: BLOCK_NONE,
       structName: undefined,
-      locale: undefined,
+      locale: "",
       lines: [],
     };
   }
@@ -132,7 +132,7 @@ const handleBlockEnd = (state: BlockState): BlockState => {
     ...state,
     blockType: BLOCK_NONE,
     structName: undefined,
-    locale: undefined,
+    locale: "",
     lines: [],
   };
 };

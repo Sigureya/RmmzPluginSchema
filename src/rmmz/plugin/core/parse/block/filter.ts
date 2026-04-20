@@ -2,13 +2,13 @@ import type { PluginBodyBlock, PluginStructBlock } from "./types";
 
 export const findPluginBodyByLocale = (
   bodies: ReadonlyArray<PluginBodyBlock>,
-  locale: string
+  locale: string,
 ): PluginBodyBlock | undefined => {
   return bodies.reduce<PluginBodyBlock | undefined>((acc, item) => {
     if (item.locale === locale) {
       return item;
     }
-    if (item.locale === undefined) {
+    if (item.locale === "") {
       if (acc === undefined) {
         return item;
       }
@@ -19,11 +19,11 @@ export const findPluginBodyByLocale = (
 
 export const filterSturctByLocale = (
   structs: ReadonlyArray<PluginStructBlock>,
-  locale: string
+  locale: string,
 ): PluginStructBlock[] => {
   const map = createDictionary(structs, locale);
   return structs.filter((s) => {
-    if (s.locale === undefined) {
+    if (s.locale === "") {
       if (map.has(s.struct)) {
         return !map.has(`${s.struct}!`);
       }
@@ -37,10 +37,10 @@ export const filterSturctByLocale = (
 
 const createDictionary = (
   structs: ReadonlyArray<PluginStructBlock>,
-  locale: string
+  locale: string,
 ): Set<string> => {
   const maped = structs.map((s): string => {
-    if (s.locale === undefined) {
+    if (s.locale === "") {
       return s.struct;
     }
     if (s.locale === locale) {

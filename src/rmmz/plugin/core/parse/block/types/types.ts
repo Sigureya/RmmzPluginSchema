@@ -4,13 +4,13 @@ export interface Block {
 }
 
 export interface PluginStructBlock {
-  locale?: string;
+  locale: string;
   struct: string;
   lines: string[];
 }
 
 export interface PluginBodyBlock {
-  locale?: string;
+  locale: string;
   lines: string[];
 }
 

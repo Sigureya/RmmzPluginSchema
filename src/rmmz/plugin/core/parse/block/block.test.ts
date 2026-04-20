@@ -22,6 +22,7 @@ describe("splitBlock", () => {
     const expected: Block = {
       bodies: [
         {
+          locale: "",
           lines: ["@plugindesc mock"],
         },
       ],
@@ -68,7 +69,7 @@ describe("splitBlock", () => {
       const lines: string[] = ["/*: ", "@plugindesc mock", "*/"];
       const expectedBodies: PluginBodyBlock[] = [
         {
-          locale: undefined,
+          locale: "",
           lines: ["@plugindesc mock"],
         },
       ];
@@ -88,7 +89,7 @@ describe("splitBlock", () => {
       const expectedBodies: PluginBodyBlock[] = [
         {
           lines: ["@plugindesc mock"],
-          locale: undefined,
+          locale: "",
         },
         {
           locale: "ja",
@@ -160,6 +161,7 @@ describe("splitBlock", () => {
       const expectedStructs: PluginStructBlock[] = [
         {
           struct: "Vector2",
+          locale: "",
           lines: [
             "@param x",
             "@type number",
@@ -210,6 +212,7 @@ describe("splitBlock", () => {
       ];
       const expectedBodies: PluginBodyBlock[] = [
         {
+          locale: "",
           lines: ["@plugindesc mock"],
         },
         {
@@ -238,6 +241,7 @@ describe("splitBlock", () => {
         },
         {
           struct: "Vector2",
+          locale: "",
           lines: [
             "@param x",
             "@type number",
@@ -271,6 +275,7 @@ describe("splitBlock", () => {
       ];
 
       const expectedBlcok: PluginBodyBlock = {
+        locale: "",
         lines: ["@plugindesc mock"],
       };
 
