@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import type { PluginInput } from "@RmmzPluginSchema/rmmz/index";
 import { pluginSourceToArraySchema } from "@RmmzPluginSchema/rmmz/index";
 import type { PluginStructTokens } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
-import { parsePlugin } from "@RmmzPluginSchema/rmmz/plugin/core/parse/parse";
+import { parsePluginByLocale } from "@RmmzPluginSchema/rmmz/plugin/core/parse/parse";
 import { generatePluginAnnotation } from "./generator";
 import {
   generateStructTokenBlock,
@@ -114,7 +114,7 @@ describe("plugin annotation <-> token roundtrip", () => {
       const handlers = createHandlers();
       const result: PluginAnnotationTokens = generatePluginAnnotation(
         schema,
-        handlers
+        handlers,
       );
       expect(handlers.stringArray).not.toHaveBeenCalled();
       expect(handlers.numberArray).not.toHaveBeenCalled();
@@ -189,7 +189,7 @@ describe("generateStructTokenBlock", () => {
     };
 
     const lines = ["/*:ja", "*/", ...expectedTokens].join("\n");
-    const result = parsePlugin(lines, "ja");
+    const result = parsePluginByLocale(lines, "ja");
     expect(result.structs).toEqual([struct]);
   });
 });
