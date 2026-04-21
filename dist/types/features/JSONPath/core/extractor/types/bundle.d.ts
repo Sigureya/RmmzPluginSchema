@@ -11,10 +11,6 @@ export interface PluginScalarValueExtractor<S extends PluginScalarParam> {
     jsonPathJS: JSONPathReader;
     record: Record<string, S>;
 }
-/**
- * @deprecated use PluginValuesExtractorBundle instead
- */
-export type ExtractorBundle = PluginValuesExtractorBundle<PluginScalarParam, PluginArrayParamType>;
 export interface RootInfo {
     rootName: string;
     rootCategory: RootTypeCategory;
