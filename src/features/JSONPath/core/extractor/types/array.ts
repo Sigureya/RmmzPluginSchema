@@ -4,17 +4,17 @@ import type {
   PluginParamEx,
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginValuesN, PluginValuesS } from "./result";
+import type { PluginNumberValue, PluginStringValue } from "./result";
 
-export interface PluginValuesStringArray extends PluginValuesS {
+export interface PluginValuesStringArray extends PluginStringValue {
   value: string;
   structName: string;
   param: PluginParamEx<StringArrayParam>;
 }
 
 export interface PluginValuesNumberArray<
-  T extends NumberArrayParam = NumberArrayParam
-> extends PluginValuesN<PluginParamEx<T>> {
+  T extends NumberArrayParam = NumberArrayParam,
+> extends PluginNumberValue<PluginParamEx<T>> {
   value: number;
   structName: string;
   param: PluginParamEx<T>;
