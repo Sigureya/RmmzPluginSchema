@@ -1,3 +1,4 @@
+export * from "./compilePluginAsArraySchema";
 export * from "./params";
 export type * from "./params/types";
 export type * from "./parse/types/token";
