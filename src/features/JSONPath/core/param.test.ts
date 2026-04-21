@@ -9,7 +9,7 @@ import type {
 import { stringifyDeepJSON } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
-  PluginValues,
+  PluginExtractedValue,
   ParamExtractResult,
   PluginParamsSchema,
   PluginParamExtractor,
@@ -45,7 +45,7 @@ const createMockFn = () => vi.fn((path: string) => new JSONPathJS(path));
 
 const createMockParam = (): Record<string, string> => {
   const e2: [string, string][] = Object.entries(mockData).map(
-    ([key, value]): [string, string] => [key, stringifyDeepJSON(value)]
+    ([key, value]): [string, string] => [key, stringifyDeepJSON(value)],
   );
   return Object.fromEntries(e2);
 };
@@ -88,7 +88,7 @@ describe("plugin param extractor", () => {
       expect(mockFn).toHaveBeenNthCalledWith(3, '$["person"]["name","age"]');
     });
     test("extract values", () => {
-      const expected: PluginValues[] = [
+      const expected: PluginExtractedValue[] = [
         {
           structName: "",
           param: { name: "enable", attr: { kind: "boolean", default: false } },
@@ -121,14 +121,14 @@ describe("plugin param extractor", () => {
       const memo: PluginParamExtractor = compilePluginParamExtractor(
         pluginParamsSchema,
         structMap,
-        (path) => new JSONPathJS(path)
+        (path) => new JSONPathJS(path),
       );
       const result: ParamExtractResult = extractPluginParam(mockData, memo);
       expect(result.pluginName).toBe("TestPlugin");
       expect(result.params).toEqual(expected);
     });
     test("extract from record", () => {
-      const expected: PluginValues[] = [
+      const expected: PluginExtractedValue[] = [
         {
           structName: "Person",
           param: {
@@ -160,7 +160,7 @@ describe("plugin param extractor", () => {
       const memo: PluginParamExtractor = compilePluginParamExtractor(
         pluginParamsSchema,
         structMap,
-        (path) => new JSONPathJS(path)
+        (path) => new JSONPathJS(path),
       );
 
       const record: PluginParamsRecord = {
@@ -171,7 +171,7 @@ describe("plugin param extractor", () => {
       };
       const result: ParamExtractResult = extractPluginParamFromRecord(
         record,
-        memo.extractors
+        memo.extractors,
       );
       expect(result.pluginName).toBe("TestPlugin");
       expect(result.params).toEqual(expected);
@@ -205,16 +205,16 @@ describe("plugin param extractor", () => {
       const mockFn = createMockFn();
       compilePluginParamExtractor(pluginParamsSchema, structMap, mockFn);
       expect(mockFn).toHaveBeenCalledTimes(
-        pluginParamsSchema.schema.params.length
+        pluginParamsSchema.schema.params.length,
       );
       expect(mockFn).toHaveBeenNthCalledWith(1, `$["flug enabled"]`);
       expect(mockFn).toHaveBeenNthCalledWith(
         2,
-        '$["person"]["first name","age"]'
+        '$["person"]["first name","age"]',
       );
     });
     test("extract values", () => {
-      const expected: PluginValues[] = [
+      const expected: PluginExtractedValue[] = [
         {
           param: {
             attr: { default: false, kind: "boolean" },
@@ -239,7 +239,7 @@ describe("plugin param extractor", () => {
       const memo: PluginParamExtractor = compilePluginParamExtractor(
         pluginParamsSchema,
         structMap,
-        (path) => new JSONPathJS(path)
+        (path) => new JSONPathJS(path),
       );
       const result: ParamExtractResult = extractPluginParam(mockData, memo);
       expect(result.pluginName).toBe("TestPlugin");
