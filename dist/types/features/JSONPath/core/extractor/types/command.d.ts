@@ -1,5 +1,5 @@
 import { PluginValuesExtractorBundle } from './bundle';
-import { PluginValues } from './result';
+import { PluginExtractedValue } from './result';
 export interface CommandArgExtractors {
     pluginName: string;
     commandName: string;
@@ -10,7 +10,7 @@ export interface CommandArgExtractors {
 export interface CommandExtractResult {
     pluginName: string;
     commandName: string;
-    args: PluginValues[];
+    args: PluginExtractedValue[];
 }
 export type CommandMapKey = `${string}:${string}`;
 export type CommandExtractorEntry = [CommandMapKey, CommandArgExtractors];

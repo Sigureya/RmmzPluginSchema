@@ -1,3 +1,3 @@
-import { PluginValues } from './types';
-export declare const isCommandArgValue: (value: PluginValues) => boolean;
-export declare const ispluginParamValue: (value: PluginValues) => boolean;
+import { PluginExtractedValue } from './types';
+export declare const isCommandArgValue: (value: PluginExtractedValue) => boolean;
+export declare const ispluginParamValue: (value: PluginExtractedValue) => boolean;
