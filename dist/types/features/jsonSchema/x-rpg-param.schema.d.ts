@@ -65,7 +65,7 @@ declare const SCHEMA_RPG_PARAM_META_SCHEMA: {
             readonly data: {
                 additionalProperties: false;
                 type: "object";
-                required: ("kind" | "author" | "module")[];
+                required: ("author" | "kind" | "module")[];
                 properties: {
                     author: {
                         readonly type: "string";
