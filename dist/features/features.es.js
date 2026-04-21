@@ -42,7 +42,7 @@ function X(r, t, a) {
   }
   return s.push(...c), { frames: s, items: r.items, errs: r.errs };
 }
-function v(r, t, a, e) {
+function A(r, t, a, e) {
   const s = { items: [], errs: [], frames: [{
     schemaName: r,
     basePath: t,
@@ -50,7 +50,7 @@ function v(r, t, a, e) {
   }] }, m = Math.max(1, 3 * a.size + 5), c = Array.from({ length: m }).reduce((o) => o.frames.length === 0 ? o : X(o, a, e), s);
   return { items: c.items, errors: c.errs };
 }
-const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"][*]`, a, e), zr = (r, t, a, e = b) => v(r, t, a, e), A = (r, t, a, e) => V(a) ? M(r, a, e) : _(a) ? ar(r, a, e) : w(a) ? rr(r, t, a) : tr(r, t, a), rr = (r, t, a) => ({
+const Y = (r, t, a, e = b) => A(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (r, t, a, e = b) => A(r.attr.struct, `${t}["${r.name}"][*]`, a, e), zr = (r, t, a, e = b) => A(r, t, a, e), v = (r, t, a, e) => V(a) ? M(r, a, e) : _(a) ? ar(r, a, e) : w(a) ? rr(r, t, a) : tr(r, t, a), rr = (r, t, a) => ({
   rootCategory: r,
   rootName: t,
   scalars: { name: "", objectSchema: {}, scalarsPath: void 0, scalarArrays: [{ path: `$["${a.name}"][*]`, param: a }] },
@@ -116,7 +116,7 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
   jsonPathJS: a(r),
   record: t
 }), j = (r, t, a, e) => ({ pluginName: r, commandName: t.command, desc: t.desc ?? "", text: t.text ?? "", extractors: or(t, a, e) }), or = (r, t, a) => r.args.map((e) => {
-  const s = A("args", r.command, e, t);
+  const s = v("args", r.command, e, t);
   return $(s, a);
 }), ur = (r, t) => ({ pluginName: t.pluginName, commandName: t.commandName, args: x(r, t.extractors) }), Lr = (r, t, a) => {
   const e = a.get(t);
@@ -131,7 +131,7 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
   pluginName: t.pluginName,
   params: x(r, t.extractors)
 }), Rr = (r, t, a) => ({ pluginName: r.pluginName, extractors: r.schema.params.map((e) => {
-  const s = A("param", "plugin", e, t);
+  const s = v("param", "plugin", e, t);
   return $(s, a);
 }) }), qr = (r, t) => {
   const a = N(r.schema.structs);
@@ -140,7 +140,7 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
   const e = N(t.structs);
   return { pluginName: r, params: pr(t, e, a), commands: E(r, t.commands, e, a) };
 }, pr = (r, t, a) => r.params.map((e) => {
-  const s = A("param", e.name, e, t);
+  const s = v("param", e.name, e, t);
   return $(s, a);
 }), E = (r, t, a, e) => t.map((s) => [`${r}:${s.command}`, j(r, s, a, e)]), Gr = (r) => {
   const t = r.flatMap((a) => a.extractorEntries);
@@ -167,7 +167,7 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     parent: r.parent ? n("parent", r.parent) : void 0
   };
   var t;
-}, gr = (r, t) => r.kind === "number" ? Nr(r) : r.kind === "number[]" ? br(r, t) : r.kind === "file[]" ? $r(r, t) : r.kind === "struct[]" ? Mr(r, t) : r.kind === "string[]" || r.kind === "multiline_string[]" ? vr(r, t) : r.kind === "select" ? Sr(r) : r.kind === "combo" ? kr(r) : r.kind === "file" ? xr(r) : r.kind === "struct" ? Cr(r, t) : r.kind === "boolean" ? hr(r) : r.kind === "string" || r.kind === "any" || r.kind === "multiline_string" ? Ar(r) : typeof r.default == "number" ? yr(r) : Pr(r, t), B = (r) => r === void 0 ? void 0 : n("default", r.toString()), hr = (r) => ({
+}, gr = (r, t) => r.kind === "number" ? Nr(r) : r.kind === "number[]" ? br(r, t) : r.kind === "file[]" ? $r(r, t) : r.kind === "struct[]" ? Mr(r, t) : r.kind === "string[]" || r.kind === "multiline_string[]" ? Ar(r, t) : r.kind === "select" ? Sr(r) : r.kind === "combo" ? kr(r) : r.kind === "file" ? xr(r) : r.kind === "struct" ? Cr(r, t) : r.kind === "boolean" ? hr(r) : r.kind === "string" || r.kind === "any" || r.kind === "multiline_string" ? vr(r) : typeof r.default == "number" ? yr(r) : Pr(r, t), B = (r) => r === void 0 ? void 0 : n("default", r.toString()), hr = (r) => ({
   attr: f.boolean.map((t) => p(r, t)),
   default: n("default", r.default ? "true" : "false")
 }), yr = (r) => ({ attr: [], default: B(r.default) }), Pr = (r, t) => {
@@ -182,10 +182,10 @@ const Y = (r, t, a, e = b) => v(r.attr.struct, `${t}["${r.name}"]`, a, e), Z = (
     attr: f.number.map((e) => p(r, e)),
     default: n("default", a)
   };
-}, vr = (r, t) => {
+}, Ar = (r, t) => {
   const a = t.stringArray(r.default);
   return { attr: [], default: n("default", a) };
-}, Ar = (r) => ({
+}, vr = (r) => ({
   attr: [],
   default: n("default", r.default)
 }), xr = (r) => ({ attr: f.file.map((t) => p(r, t)), default: n("default", r.default) }), $r = (r, t) => {
@@ -252,9 +252,10 @@ export {
   Ur as convertPlugin,
   qr as createPluginCommandExtractor,
   dr as createPluginValueExtractor,
-  A as createPluginValuesPath,
+  v as createPluginValuesPath,
   tr as createPrimiteveParamPath,
   Kr as createStructParamPath,
+  x as extractAllPluginValues,
   Lr as extractCommandArgsByKey,
   ur as extractPluginCommandArgs,
   Qr as extractPluginParam,
