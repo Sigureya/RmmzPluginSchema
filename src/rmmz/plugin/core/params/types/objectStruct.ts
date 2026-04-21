@@ -19,10 +19,6 @@ export interface PluginStructType<T extends object> {
   params: PrimitiveStructParams<T>;
 }
 
-export type ObjectParamsV5<K extends string, T extends PrimitiveParam> = {
-  [key in K]?: T;
-};
-
 export type PrimitiveStructParams<T extends object> = {
   [K in Extract<keyof T, string>]: PluginSchemaType<T[K]>;
 };

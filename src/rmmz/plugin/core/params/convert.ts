@@ -6,39 +6,45 @@ import type {
   PluginStructSchemaArray,
   PluginStructType,
   PrimitiveParam,
-  ObjectParamsV5,
   PluginScalarParam,
 } from "./types";
 
 export function toObjectPluginParamsOld(
-  params: ReadonlyArray<PluginParam>
+  params: ReadonlyArray<PluginParam>,
 ): Record<string, PrimitiveParam> {
   const e = params.map((p): [string, PrimitiveParam] => [p.name, p.attr]);
   return Object.fromEntries(e);
 }
 
 export function toObjectPluginParams<S extends PluginScalarParam>(
-  params: ReadonlyArray<PluginParamEx<S>>
+  params: ReadonlyArray<PluginParamEx<S>>,
 ): Record<string, S> {
   const e = params.map((p): [string, S] => [p.name, p.attr]);
   return Object.fromEntries(e);
 }
 
-export const toArrayPluginParam = <T extends PrimitiveParam, K extends string>(
-  params: ObjectParamsV5<K & string, T>
-): PluginParamEx<T, string & K>[] => {
-  return Object.entries<T>(params as Record<string & K, T>).map(
-    ([name, attr]): PluginParamEx<T, K & string> => {
+export const toArrayPluginParam = <
+  P extends Partial<Record<string, PrimitiveParam>>,
+>(
+  params: P,
+): PluginParamEx<
+  P[Extract<keyof P, string>] & PrimitiveParam,
+  Extract<keyof P, string>
+>[] => {
+  type Key = Extract<keyof P, string>;
+  type Attr = P[Key] & PrimitiveParam;
+  return Object.entries(params as Record<Key, Attr>).map(
+    ([name, attr]): PluginParamEx<Attr, Key> => {
       return {
-        name: name as Extract<K, string>,
+        name: name as Key,
         attr: attr,
       };
-    }
+    },
   );
 };
 
 export const convertStructSchema = <T extends PluginStructSchemaArray>(
-  schema: T
+  schema: T,
 ): PluginStructType<object> => {
   return {
     struct: schema.struct,
@@ -47,7 +53,7 @@ export const convertStructSchema = <T extends PluginStructSchemaArray>(
 };
 
 export const convertPluginCommandSchema = <T extends PluginParam>(
-  command: PluginCommandSchemaArrayFiltered<T>
+  command: PluginCommandSchemaArrayFiltered<T>,
 ): PluginCommandTypeEx<object> => {
   return {
     ...textAndDesc(command),
@@ -57,7 +63,7 @@ export const convertPluginCommandSchema = <T extends PluginParam>(
 };
 
 const textAndDesc = (
-  command: PluginCommandSchemaArrayFiltered<PluginParam>
+  command: PluginCommandSchemaArrayFiltered<PluginParam>,
 ): { text?: string; desc?: string } => {
   return {
     ...(command.text ? { text: command.text } : {}),
