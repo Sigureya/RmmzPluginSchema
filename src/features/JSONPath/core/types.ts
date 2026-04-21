@@ -7,7 +7,7 @@ import type {
 import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
 import type {
   CommandExtractorEntry,
-  PluginValues,
+  PluginExtractedValue,
   PluginValuesExtractorBundle,
 } from "./extractor/types";
 
@@ -23,9 +23,9 @@ export interface CommandExtractorEntryList {
 
 export interface ConvertPluginResult<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 > extends CommandExtractorEntryList {
-  params: PluginValues<PluginParam>[];
+  params: PluginExtractedValue<PluginParam>[];
   record: PluginParamsRecord;
   schema: PluginSchemaOf<S, A>;
   extractorEntries: CommandExtractorEntry[];

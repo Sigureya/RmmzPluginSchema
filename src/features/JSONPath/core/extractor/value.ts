@@ -1,9 +1,9 @@
-import type { PluginValues } from "./types";
+import type { PluginExtractedValue } from "./types";
 
-export const isCommandArgValue = (value: PluginValues): boolean => {
+export const isCommandArgValue = (value: PluginExtractedValue): boolean => {
   return value.rootType === "args";
 };
 
-export const ispluginParamValue = (value: PluginValues): boolean => {
+export const ispluginParamValue = (value: PluginExtractedValue): boolean => {
   return value.rootType === "param";
 };
