@@ -4,7 +4,7 @@ import type {
   PluginScalarParam,
   StructRefParam,
   StructArrayRefParam,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   ArrayParamItemType2,
   PluginParamEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -26,12 +26,12 @@ type PAUnion = "param" | "args";
 
 export const createPluginValuesPath = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   category: PAUnion,
   rootName: string,
   param: PluginParamEx2<S, A>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
 ): PluginValuesPathSchema<S, A> => {
   if (isStructAttr(param)) {
     return createStructPath(category, param, structMap);
@@ -45,17 +45,17 @@ export const createPluginValuesPath = <
   return createPrimiteveParamPath<S>(
     category,
     rootName,
-    param as PluginParamEx<S>
+    param as PluginParamEx<S>,
   ) satisfies PrimitivePluginValuesPath<S>;
 };
 
 const createPrimitiveArrayPath = <
   S extends PluginScalarParam,
-  T extends ArrayParamItemType2
+  T extends ArrayParamItemType2,
 >(
   category: PAUnion,
   rootName: string,
-  param: PluginParamEx<T>
+  param: PluginParamEx<T>,
 ): PluginValuesPathSchema<S, T> => {
   return {
     rootCategory: category,
@@ -79,7 +79,7 @@ const createPrimitiveArrayPath = <
 export const createPrimiteveParamPath = <T extends PluginScalarParam>(
   category: PAUnion,
   rootName: string,
-  param: PluginParamEx<T>
+  param: PluginParamEx<T>,
 ): PrimitivePluginValuesPath<T> => {
   return {
     rootCategory: category,
@@ -99,22 +99,22 @@ export const createPrimiteveParamPath = <T extends PluginScalarParam>(
 
 export const createStructParamPath = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   category: PAUnion,
   param: PluginParamEx<StructRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
 ): PluginValuesPathSchema<S, A> => {
   return createStructPath(category, param, structMap);
 };
 
 const createStructPath = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   category: "param" | "args",
   param: PluginParamEx<StructRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
 ): PluginValuesPathSchema<S, A> => {
   return {
     rootName: param.name,
@@ -130,11 +130,11 @@ const createStructPath = <
 
 const createStructArrayPath = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   category: PAUnion,
   param: PluginParamEx<StructArrayRefParam>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
 ): PluginValuesPathSchema<S, A> => {
   return {
     structArrays: getPathFromStructArraySchema(param, "$", structMap),

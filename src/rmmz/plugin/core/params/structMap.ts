@@ -1,7 +1,7 @@
 import { classifyPluginParams } from "./classify";
 import type {
   PluginArrayParamType,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   PluginParamEx2,
   PluginStructSchemaArray,
   PluginStructSchemaArrayFiltered,
@@ -11,25 +11,25 @@ import type {
 
 export const createClassifiedStructMap = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
-  bundle: PluginStructSchemaArrayFiltered<PluginParamEx2<S, A>>[]
-): Map<string, ClassifiedPluginParamsEx2<S, A>> => {
+  bundle: PluginStructSchemaArrayFiltered<PluginParamEx2<S, A>>[],
+): Map<string, ClassifiedPluginParamsTyped<S, A>> => {
   return new Map(
-    bundle.map((s): [string, ClassifiedPluginParamsEx2<S, A>] => [
+    bundle.map((s): [string, ClassifiedPluginParamsTyped<S, A>] => [
       s.struct,
       classifyPluginParams<S, A>(s.params),
-    ])
+    ]),
   );
 };
 
 export const createStructMap = (
-  structs: ReadonlyArray<PluginStructSchemaArray>
+  structs: ReadonlyArray<PluginStructSchemaArray>,
 ): Map<string, PrimitiveParam[]> => {
   return new Map(
     structs.map((s): [string, PrimitiveParam[]] => [
       s.struct,
       s.params.map((p) => p.attr),
-    ])
+    ]),
   );
 };

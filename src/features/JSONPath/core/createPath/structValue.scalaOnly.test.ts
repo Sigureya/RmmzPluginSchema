@@ -1,5 +1,6 @@
 import { describe, test, expect } from "vitest";
 import type {
+  PluginArrayParamType,
   ClassifiedPluginParamsEx,
   PluginParamEx,
   StructRefParam,
@@ -9,10 +10,7 @@ import type {
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import { getPathFromStructParam, getPathFromStructSchema } from "./structValue";
-import type {
-  StructPropertysPathOld,
-  StructPathResultWithError,
-} from "./types";
+import type { StructPathNodeListWithErrors, StructPathNode } from "./types";
 
 interface MockPerson {
   name: string;
@@ -53,10 +51,13 @@ describe("person", () => {
         },
       ],
       objectSchema: toObjectPluginParams<PluginScalarParam>(
-        personSchema.scalars
+        personSchema.scalars,
       ),
     },
-  ] as const satisfies StructPropertysPathOld[];
+  ] as const satisfies StructPathNode<
+    PluginScalarParam,
+    PluginArrayParamType
+  >[];
   test("getPathFromStruct", () => {
     const param = {
       name: "person",
@@ -70,11 +71,13 @@ describe("person", () => {
   });
 
   test("getPathFromStructSchema", () => {
-    const result: StructPathResultWithError = getPathFromStructSchema(
-      "MockPerson",
-      `$["person"]`,
-      new Map([["MockPerson", personSchema]])
-    );
+    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
+      ["MockPerson", personSchema],
+    ]);
+    const result: StructPathNodeListWithErrors<
+      PluginScalarParam,
+      PluginArrayParamType
+    > = getPathFromStructSchema("MockPerson", `$["person"]`, structMap);
     expect(result.items).toEqual(expected);
   });
 

@@ -12,7 +12,7 @@ import type {
   PrimitiveStringParam,
   ClassifiedPluginFileParams,
   ClassifiedTextParams,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   PluginParamEx2,
   ClassifiedPluginParams,
 } from "./types";
@@ -24,54 +24,56 @@ import {
 } from "./typeTest";
 
 export function classifyPluginParams(
-  params: ReadonlyArray<PluginParam>
+  params: ReadonlyArray<PluginParam>,
 ): ClassifiedPluginParams;
 
 export function classifyPluginParams<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
->(params: ReadonlyArray<PluginParamEx2<S, A>>): ClassifiedPluginParamsEx2<S, A>;
+  A extends PluginArrayParamType,
+>(
+  params: ReadonlyArray<PluginParamEx2<S, A>>,
+): ClassifiedPluginParamsTyped<S, A>;
 
 export function classifyPluginParams(
-  params: ReadonlyArray<PluginParam>
+  params: ReadonlyArray<PluginParam>,
 ): ClassifiedPluginParams {
   return classifyPluginParamsCore(
     params,
     (p): p is PluginParamEx<PluginScalarParam> => true,
-    (p): p is PluginParamEx<PluginArrayParamType> => true
+    (p): p is PluginParamEx<PluginArrayParamType> => true,
   );
 }
 
 export const classifyFileParams = (
-  params: ReadonlyArray<PluginParam>
+  params: ReadonlyArray<PluginParam>,
 ): ClassifiedPluginFileParams => {
   return classifyPluginParamsCore(
     params,
     (p): p is PluginParamEx<FileParam> => p.attr.kind === "file",
-    (p): p is PluginParamEx<FileArrayParam> => p.attr.kind === "file[]"
+    (p): p is PluginParamEx<FileArrayParam> => p.attr.kind === "file[]",
   );
 };
 
 export const classifyTextParams = (
-  params: ReadonlyArray<PluginParam>
+  params: ReadonlyArray<PluginParam>,
 ): ClassifiedTextParams => {
   return classifyPluginParamsCore(
     params,
     (p): p is PluginParamEx<PrimitiveStringParam> => hasTextAttr(p),
-    (p) => hasTextAttr(p)
+    (p) => hasTextAttr(p),
   );
 };
 
 const classifyPluginParamsCore = <
   T extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   paramArray: ReadonlyArray<PluginParam>,
   predicate: (param: PluginParam) => param is PluginParamEx<T>,
   arrayPredicate: (
-    param: PluginParamEx<PluginArrayParamType>
-  ) => param is PluginParamEx<A>
-): ClassifiedPluginParamsEx2<T, A> => {
+    param: PluginParamEx<PluginArrayParamType>,
+  ) => param is PluginParamEx<A>,
+): ClassifiedPluginParamsTyped<T, A> => {
   const structs: PluginParamEx<StructRefParam>[] = [];
   const structArrays: PluginParamEx<StructArrayRefParam>[] = [];
   const scalas: PluginParamEx<T>[] = [];

@@ -1,32 +1,24 @@
 import type {
   PluginArrayParamType,
   ClassifiedPluginParams,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   PluginParamEx,
   PluginScalarParam,
-  ScalaStruct,
   StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { toObjectPluginParams } from "@RmmzPluginSchema/rmmz/plugin";
 import { makeScalarArrayPath, makeScalarValuesPath } from "./scalarValue";
 import type { ErrorCodes, StructPathError } from "./types";
-import type { StructPropertiesPath, TemplateGE } from "./types/template";
+import type {
+  StructPathNode,
+  StructPathNodeListWithErrors,
+} from "./types/template";
 
 const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
   cyclicStruct: "cyclic_struct",
 } as const satisfies ErrorCodes;
-
-interface ClassifiedPluginParamsEx3<
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>
-> extends ScalaStruct {
-  structs: PluginParamEx<StructRefParam>[];
-  structArrays: PluginParamEx<StructArrayRefParam>[];
-  scalars: S[];
-  scalarArrays: A[];
-}
 
 interface Frame {
   schemaName: string;
@@ -36,26 +28,26 @@ interface Frame {
 
 interface State2<
   Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+  Array extends PluginArrayParamType,
 > {
   frames: Frame[];
-  items: StructPropertiesPath<Scalar, Array>[];
+  items: StructPathNode<Scalar, Array>[];
   errs: StructPathError[];
 }
 
 function createNode<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
-  structSchema: ClassifiedPluginParamsEx2<S, A>,
+  structSchema: ClassifiedPluginParamsTyped<S, A>,
   {
     path,
     structName,
   }: {
     path: string;
     structName: string;
-  }
-): StructPropertiesPath<S, A> {
+  },
+): StructPathNode<S, A> {
   return {
     category: "struct",
     objectSchema: toObjectPluginParams(structSchema.scalars),
@@ -70,10 +62,10 @@ function createNode<
 
 function createChildFrames(
   lastFrame: Frame,
-  structSchema: ClassifiedPluginParams
+  structSchema: ClassifiedPluginParams,
 ): Frame[] {
   const childAncestry: string[] = lastFrame.ancestry.concat(
-    lastFrame.schemaName
+    lastFrame.schemaName,
   );
   const path: string = lastFrame.basePath;
   // // 子フレームを作成（希望する処理順: structFrames -> structArrayFrames）
@@ -82,14 +74,14 @@ function createChildFrames(
       schemaName: s.attr.struct,
       basePath: `${path}["${s.name}"]`,
       ancestry: childAncestry,
-    })
+    }),
   );
   const structArrayFrames: Frame[] = structSchema.structArrays.map(
     (sa): Frame => ({
       schemaName: sa.attr.struct,
       basePath: `${path}["${sa.name}"][*]`,
       ancestry: childAncestry,
-    })
+    }),
   );
   // childrenDesired: structs の順で先に処理し、その後 structArrays を処理したい
 
@@ -98,11 +90,11 @@ function createChildFrames(
 
 function stepState<
   Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+  Array extends PluginArrayParamType,
 >(
   state: State2<Scalar, Array>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<Scalar, Array>>,
-  errors: ErrorCodes
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<Scalar, Array>>,
+  errors: ErrorCodes,
 ): State2<Scalar, Array> {
   if (state.frames.length === 0) {
     return state;
@@ -145,13 +137,10 @@ function stepState<
   if (structSchema.scalars.length > 0 || structSchema.scalarArrays.length > 0) {
     // 現在ノードを追加（pre-order）
 
-    const current: StructPropertiesPath<Scalar, Array> = createNode(
-      structSchema,
-      {
-        path: frame.basePath,
-        structName: frame.schemaName,
-      }
-    );
+    const current: StructPathNode<Scalar, Array> = createNode(structSchema, {
+      path: frame.basePath,
+      structName: frame.schemaName,
+    });
     newFrames.push(...childrenDesired);
     return {
       frames: newFrames,
@@ -169,13 +158,13 @@ function stepState<
 
 function collectFromSchema<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   schemaName: string,
   basePath: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
-  errors: ErrorCodes
-): TemplateGE<S, A> {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  errors: ErrorCodes,
+): StructPathNodeListWithErrors<S, A> {
   type StateType = State2<S, A>;
   const state: StateType = {
     items: [],
@@ -195,55 +184,55 @@ function collectFromSchema<
   // reduce を使って stepState を繰り返す（for/while を使わない）
   const finalState = Array.from({ length: maxPass }).reduce<StateType>(
     (s) => (s.frames.length === 0 ? s : stepState(s, structMap, errors)),
-    state
+    state,
   );
 
   return { items: finalState.items, errors: finalState.errs };
 }
 
 export const getPathFromStructParam = <
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
 >(
   params: PluginParamEx<StructRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
-  errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S["attr"], A["attr"]> => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  errors: ErrorCodes = ERROR_CODE,
+): StructPathNodeListWithErrors<S, A> => {
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
   return collectFromSchema(
     params.attr.struct,
     `${parent}["${params.name}"]`,
     structMap,
-    errors
+    errors,
   );
 };
 
 export const getPathFromStructArraySchema = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   param: PluginParamEx<StructArrayRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
-  errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S, A> => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  errors: ErrorCodes = ERROR_CODE,
+): StructPathNodeListWithErrors<S, A> => {
   return collectFromSchema<S, A>(
     param.attr.struct,
     `${parent}["${param.name}"][*]`,
     structMap,
-    errors
+    errors,
   );
 };
 
 export const getPathFromStructSchema = <
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
 >(
   structName: string,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
-  errors: ErrorCodes = ERROR_CODE
-): TemplateGE<S["attr"], A["attr"]> => {
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  errors: ErrorCodes = ERROR_CODE,
+): StructPathNodeListWithErrors<S, A> => {
   return collectFromSchema(structName, parent, structMap, errors);
 };

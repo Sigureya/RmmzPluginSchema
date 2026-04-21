@@ -7,9 +7,9 @@ import type { ArrayParamPathPair } from "./array";
 import type { ValueCategory } from "./category";
 import type { StructPathError } from "./errorTypes";
 
-export interface StructPropertiesPath<
+export interface StructPathNode<
   Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+  Array extends PluginArrayParamType,
 > {
   name: string;
   category?: ValueCategory;
@@ -18,34 +18,26 @@ export interface StructPropertiesPath<
   objectSchema: Record<string, Scalar>;
 }
 
-/**
- * @deprecated use StructPropertiesPath instead
- */
-export type StructPropertysPathEx3<
+export interface StructPathNodeList<
   Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
-> = StructPropertiesPath<Scalar, Array>;
-
-export interface TemplateG<
-  Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+  Array extends PluginArrayParamType,
 > {
-  items: StructPropertiesPath<Scalar, Array>[];
+  items: StructPathNode<Scalar, Array>[];
 }
 
-export interface TemplateGE<
+export interface StructPathNodeListWithErrors<
   Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+  Array extends PluginArrayParamType,
 > {
-  items: StructPropertiesPath<Scalar, Array>[];
+  items: StructPathNode<Scalar, Array>[];
   errors: StructPathError[];
 }
 
-export interface TemplateE<
+export interface PluginPathTemplateSections<
   Scalar extends PluginScalarParam,
-  Array extends PluginArrayParamType
+  Array extends PluginArrayParamType,
 > {
-  scalars: StructPropertiesPath<Scalar, Array>;
-  structs: TemplateGE<Scalar, Array>;
-  structArrays: TemplateGE<Scalar, Array>;
+  scalars: StructPathNode<Scalar, Array>;
+  structs: StructPathNodeListWithErrors<Scalar, Array>;
+  structArrays: StructPathNodeListWithErrors<Scalar, Array>;
 }

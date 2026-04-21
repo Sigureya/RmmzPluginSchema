@@ -1,13 +1,13 @@
-import type { ClassifiedPluginParamsEx2 } from "./classifyTypes";
+import type { ClassifiedPluginParamsTyped } from "./classifyTypes";
 import type { PrimitiveStringParam } from "./paramUnion";
 import type { FileParam, FileArrayParam, StringArrayParam } from "./primitive";
 
-export type ClassifiedPluginFileParams = ClassifiedPluginParamsEx2<
+export type ClassifiedPluginFileParams = ClassifiedPluginParamsTyped<
   FileParam,
   FileArrayParam
 >;
 
-export type ClassifiedTextParams = ClassifiedPluginParamsEx2<
+export type ClassifiedTextParams = ClassifiedPluginParamsTyped<
   PrimitiveStringParam,
   StringArrayParam
 >;

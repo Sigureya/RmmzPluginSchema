@@ -2,7 +2,7 @@ import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
 import type {
   PluginArrayParamType,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   NumberArrayParam,
   NumberParam,
   PluginParamEx,
@@ -14,9 +14,9 @@ import { createPrimiteveParamPath, createPluginValuesPath } from "./valuePath";
 
 const createMockedMap = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
->(): MockedObject<ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>> => {
-  const map = new Map<string, ClassifiedPluginParamsEx2<S, A>>();
+  A extends PluginArrayParamType,
+>(): MockedObject<ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>> => {
+  const map = new Map<string, ClassifiedPluginParamsTyped<S, A>>();
   return {
     get: vi.fn((k) => map.get(k)),
     entries: vi.fn(() => map.entries()),
@@ -60,7 +60,7 @@ describe("eee", () => {
       const result: ResultType = createPrimiteveParamPath(
         "param",
         "testParam",
-        param
+        param,
       );
       expect(result).toEqual(expected);
     });
@@ -70,7 +70,7 @@ describe("eee", () => {
         "param",
         "testParam",
         param,
-        structMap
+        structMap,
       );
       expect(result).toEqual(expected);
       expect(structMap.get).not.toHaveBeenCalled();
@@ -106,7 +106,7 @@ describe("eee", () => {
       const result: ResultType = createPrimiteveParamPath(
         "args",
         "stringParam",
-        param
+        param,
       );
       expect(result).toEqual(expected);
     });
