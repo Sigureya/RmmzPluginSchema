@@ -8,7 +8,7 @@ import type {
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
-import type { StructPropertysPathOld } from "./types";
+import type { StructPathNode } from "./types";
 
 describe("empty struct", () => {
   test("getPathFromStruct", () => {
@@ -43,7 +43,7 @@ describe("empty struct", () => {
       ["NotEmptyStruct", schema],
     ]);
     const result = getPathFromStructParam(param, "$", structMap);
-    const expected: StructPropertysPathOld[] = [
+    const expected: StructPathNode<PluginScalarParam, NumberArrayParam>[] = [
       {
         category: "struct",
         name: "NotEmptyStruct",
@@ -79,7 +79,7 @@ describe("empty struct", () => {
       ["EmptyStructArray", schema],
     ]);
     const result = getPathFromStructParam(param, "$", structMap);
-    const expected: StructPropertysPathOld[] = [
+    const expected: StructPathNode<PluginScalarParam, NumberArrayParam>[] = [
       {
         category: "struct",
         name: "EmptyStructArray",

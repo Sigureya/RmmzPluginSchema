@@ -1,11 +1,13 @@
 import { describe, test, expect } from "vitest";
 import type {
+  PluginArrayParamType,
   ClassifiedPluginParams,
+  PluginScalarParam,
   PluginParamEx,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
-import type { ErrorCodes, StructPathResultWithError } from "./types";
+import type { ErrorCodes, StructPathNodeListWithErrors } from "./types";
 
 const schema: ClassifiedPluginParams = {
   structs: [
@@ -38,12 +40,14 @@ describe("cyclic struct", () => {
       name: "loop",
       attr: { kind: "struct", struct: "LoopMock" },
     } as const satisfies PluginParamEx<StructRefParam>;
-    const result: StructPathResultWithError = getPathFromStructParam(
-      param,
-      "$",
-      structMap
-    );
-    const expected: StructPathResultWithError = {
+    const result: StructPathNodeListWithErrors<
+      PluginScalarParam,
+      PluginArrayParamType
+    > = getPathFromStructParam(param, "$", structMap);
+    const expected: StructPathNodeListWithErrors<
+      PluginScalarParam,
+      PluginArrayParamType
+    > = {
       items: [],
       errors: [
         { code: errors.cyclicStruct, path: `$["loop"]["loopMock"]` },
@@ -62,12 +66,14 @@ describe("undefined struct", () => {
       name: "undefinedStruct",
       attr: { kind: "struct", struct: "UndefinedStruct" },
     } as const satisfies PluginParamEx<StructRefParam>;
-    const result: StructPathResultWithError = getPathFromStructParam(
-      param,
-      "$",
-      structMap
-    );
-    const expected: StructPathResultWithError = {
+    const result: StructPathNodeListWithErrors<
+      PluginScalarParam,
+      PluginArrayParamType
+    > = getPathFromStructParam(param, "$", structMap);
+    const expected: StructPathNodeListWithErrors<
+      PluginScalarParam,
+      PluginArrayParamType
+    > = {
       items: [],
       errors: [{ code: errors.undefinedStruct, path: `$["undefinedStruct"]` }],
     };

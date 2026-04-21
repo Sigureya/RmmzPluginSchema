@@ -9,11 +9,8 @@ import type {
   ClassifiedPluginParamsEx2,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
-import type {
-  StructPropertysPathOld,
-  StructPathResultWithError,
-} from "./types";
-import type { StructPropertiesPath } from "./types/template";
+import type { StructPathNodeListWithErrors } from "./types";
+import type { StructPathNode } from "./types/template";
 
 interface Person {
   name: string;
@@ -82,7 +79,7 @@ const structsMap: ReadonlyMap<
 ]);
 
 describe("getPathFromStructParam", () => {
-  type Struct = StructPropertiesPath<NumberParam | StringParam, never>;
+  type Struct = StructPathNode<NumberParam | StringParam, never>;
   const path1: Struct = {
     category: "struct",
     name: "Person",
@@ -109,12 +106,14 @@ describe("getPathFromStructParam", () => {
       name: "classRoom",
       attr: { kind: "struct", struct: "ClassRoom" },
     };
-    const result: StructPathResultWithError = getPathFromStructParam(
-      param,
-      "$",
-      structsMap
-    );
-    const expected: StructPropertysPathOld[] = [path1, path2];
+    const result: StructPathNodeListWithErrors<
+      NumberParam | StringParam,
+      NumberArrayParam
+    > = getPathFromStructParam(param, "$", structsMap);
+    const expected: StructPathNode<
+      NumberParam | StringParam,
+      NumberArrayParam
+    >[] = [path1, path2];
     expect(result.errors).toEqual([]);
     expect(result.items).toEqual(expected);
   });

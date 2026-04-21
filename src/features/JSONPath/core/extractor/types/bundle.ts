@@ -8,7 +8,7 @@ import type { RootTypeCategory } from "./result";
 
 export interface PluginValuesPathMemo<
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 > {
   scalar?: PluginScalarValueExtractor<S>;
   arrays: PluginArrayPathExtractor<A>[];
@@ -20,14 +20,6 @@ export interface PluginScalarValueExtractor<S extends PluginScalarParam> {
   record: Record<string, S>;
 }
 
-/**
- * @deprecated use PluginValuesExtractorBundle instead
- */
-export type ExtractorBundle = PluginValuesExtractorBundle<
-  PluginScalarParam,
-  PluginArrayParamType
->;
-
 export interface RootInfo {
   rootName: string;
   rootCategory: RootTypeCategory;
@@ -35,7 +27,7 @@ export interface RootInfo {
 
 export interface PluginValuesExtractorBundle<
   S extends PluginScalarParam = PluginScalarParam,
-  A extends PluginArrayParamType = PluginArrayParamType
+  A extends PluginArrayParamType = PluginArrayParamType,
 > extends RootInfo {
   rootName: string;
   rootCategory: RootTypeCategory;
