@@ -6,3 +6,4 @@ export * from "./param";
 export * from "./plugin";
 export * from "./schema";
 export * from "./types";
+export { extractAllPluginValues } from "./extractor/extractor";
