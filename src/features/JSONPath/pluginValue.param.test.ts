@@ -1,28 +1,32 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
-  PluginStructParamTypeEx,
+  PluginParam,
+  PluginParamsRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { createPluginValuesPath } from "./core";
-import type { PluginValuesPathBase, PluginValuesPathWithError } from "./core";
+import { stringifyDeepJSON } from "@RmmzPluginSchema/rmmz/plugin";
+import { JSONPathJS } from "jsonpath-js";
+import type {
+  PluginValuesPath,
+  ParamExtractResult,
+  PluginParamsSchema,
+} from "./core";
+import {
+  compilePluginParamExtractor,
+  createPluginValuesPath,
+  extractPluginParamFromRecord,
+} from "./core";
 
 interface Item {
   name: string;
   id: number;
 }
 
-interface Terms {
-  use: string;
-  gain: string;
-  lose: string;
-}
-
-interface MockPluginParams {
-  commandName: string;
-  categorys: string[];
-  terms: Terms;
-  items: Item[];
+interface Class {
+  name: string;
+  maxLevel: number;
+  expTable: number[];
 }
 
 const schemaItem: ClassifiedPluginParamsEx<Item> = {
@@ -35,353 +39,233 @@ const schemaItem: ClassifiedPluginParamsEx<Item> = {
   structs: [],
 };
 
-const schemaTerms: ClassifiedPluginParamsEx<Terms> = {
+const schemaClass: ClassifiedPluginParamsEx<Class> = {
   scalars: [
-    { name: "use", attr: { kind: "string", default: "" } },
-    { name: "gain", attr: { kind: "string", default: "" } },
-    { name: "lose", attr: { kind: "string", default: "" } },
+    { name: "name", attr: { kind: "string", default: "" } },
+    { name: "maxLevel", attr: { kind: "number", default: 0 } },
   ],
-  scalarArrays: [],
+  scalarArrays: [{ name: "expTable", attr: { kind: "number[]", default: [] } }],
   structArrays: [],
   structs: [],
 };
-
-const paramsSchema: PluginStructParamTypeEx<MockPluginParams>[] = [
-  { name: "categorys", attr: { kind: "string[]", default: [] } },
-  { name: "commandName", attr: { kind: "string", default: "" } },
-  { name: "terms", attr: { kind: "struct", struct: "Terms" } },
-  { name: "items", attr: { kind: "struct[]", struct: "Item" } },
-];
-
-const mockPluginParams = {
-  categorys: ["item", "weapon", "armor"],
-  commandName: "Item Command",
-  terms: {
-    use: "Use Item",
-    gain: "You gained {1}!",
-    lose: "You lost {1}.",
-  },
-  items: [
-    { name: "Potion", id: 1 },
-    { name: "Hi-Potion", id: 2 },
-  ],
-} as const satisfies MockPluginParams;
 
 const structsMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map<
   string,
   ClassifiedPluginParams
 >([
   ["Item", schemaItem],
-  ["Terms", schemaTerms],
+  ["Class", schemaClass],
 ]);
 
-const paths: PluginValuesPathWithError[] = [
-  {
-    scalars: {
-      category: "param",
-      objectSchema: {},
-      scalarArrays: [
-        {
-          param: {
-            name: "categorys",
-            attr: { default: [], kind: "string[]" },
-          },
-          path: "$.categorys[*]",
-        },
-      ],
-      scalarsPath: undefined,
-      name: "categorys",
-    },
-    structArrays: { errors: [], items: [] },
-    structs: { errors: [], items: [] },
-  },
-  {
-    scalars: {
-      category: "param",
-      objectSchema: { commandName: { default: "", kind: "string" } },
-      scalarArrays: [],
-      scalarsPath: '$["commandName"]',
-      name: "commandName",
-    },
-    structArrays: { errors: [], items: [] },
-    structs: { errors: [], items: [] },
-  },
-  {
-    scalars: {
-      category: "param",
-      objectSchema: {},
-      scalarArrays: [],
-      scalarsPath: undefined,
-      name: "terms",
-    },
-    structArrays: { errors: [], items: [] },
-    structs: {
-      errors: [],
-      items: [
-        {
-          category: "struct",
-          objectSchema: {
-            gain: { default: "", kind: "string" },
-            lose: { default: "", kind: "string" },
-            use: { default: "", kind: "string" },
-          },
-          scalarArrays: [],
-          scalarsPath: '$.terms["use","gain","lose"]',
-          name: "Terms",
-        },
-      ],
-    },
-  },
-  {
-    scalars: {
-      category: "param",
-      objectSchema: {},
-      scalarArrays: [],
-      scalarsPath: undefined,
-      name: "items",
-    },
-    structArrays: {
-      errors: [],
-      items: [
-        {
-          category: "struct",
-          objectSchema: {
-            id: { default: 0, kind: "number" },
-            name: { default: "", kind: "string" },
-          },
-          scalarArrays: [],
-          scalarsPath: '$.items[*]["name","id"]',
-          name: "Item",
-        },
-      ],
-    },
-    structs: { errors: [], items: [] },
-  },
-];
+const itemParam: PluginParam = {
+  name: "items",
+  attr: { kind: "struct[]", struct: "Item" },
+};
 
-describe("createPluginValuesPath for params", () => {
-  test("creates correct path for string array parameter", () => {
-    const expected: typeof result = {
+const classParam: PluginParam = {
+  name: "class",
+  attr: { kind: "struct", struct: "Class" },
+};
+
+interface TestCase {
+  caseName: string;
+  path: PluginValuesPath;
+  expected: ParamExtractResult;
+  paramSchema: PluginParam;
+}
+
+const runTestCase = (testCase: TestCase, record2: PluginParamsRecord) => {
+  describe(testCase.caseName, () => {
+    const pluginSchema: PluginParamsSchema = {
+      pluginName: "MockPlugin",
+      schema: {
+        params: [testCase.paramSchema],
+      },
+    };
+
+    test("パスを適切に構築できるか", () => {
+      const pathResult = createPluginValuesPath(
+        "param",
+        "MockPluginParams",
+        testCase.paramSchema,
+        structsMap,
+      );
+
+      expect(pathResult).toEqual(testCase.path);
+    });
+
+    test("値の取り出しは成功したか", () => {
+      const memo = compilePluginParamExtractor(
+        pluginSchema,
+        structsMap,
+        (jsonPath) => new JSONPathJS(jsonPath),
+      );
+
+      const result = extractPluginParamFromRecord(record2, memo.extractors);
+      expect(result).toEqual(testCase.expected);
+    });
+  });
+};
+
+const testCases: TestCase[] = [
+  {
+    paramSchema: itemParam,
+    caseName: "基本的な構造のテスト",
+    path: {
       rootCategory: "param",
-      rootName: "MockPluginParams",
-      scalars: {
-        scalarsPath: undefined,
-        name: "",
-        objectSchema: {},
-        scalarArrays: [
+      rootName: "items",
+      scalars: undefined,
+      structArrays: {
+        errors: [],
+        items: [
           {
-            param: {
-              attr: { default: [], kind: "string[]" },
-              name: "categorys",
+            category: "struct",
+            name: "Item",
+            objectSchema: {
+              id: { kind: "number", default: 0 },
+              name: { kind: "string", default: "" },
             },
-            path: '$["categorys"][*]',
+            scalarArrays: [],
+            scalarsPath: '$["items"][*]["name","id"]',
           },
         ],
       },
-      structArrays: { errors: [], items: [] },
       structs: { errors: [], items: [] },
-    };
-    const result = createPluginValuesPath(
-      "param",
-      "MockPluginParams",
-      paramsSchema[0],
-      structsMap,
-    );
-    expect(result.rootCategory).toBe("param");
-    expect(result.rootName).toBe("MockPluginParams");
-    expect(result).toEqual(expected);
-  });
-
-  test("creates correct path for string parameter", () => {
-    const expected: typeof result = {
-      rootCategory: "param",
-      rootName: "MockPluginParams",
-      scalars: {
-        scalarsPath: '$["commandName"]',
-        objectSchema: { commandName: { default: "", kind: "string" } },
-        name: "string",
-        scalarArrays: [],
-      },
-      structs: { errors: [], items: [] },
-      structArrays: { errors: [], items: [] },
-    };
-
-    const result = createPluginValuesPath(
-      "param",
-      "MockPluginParams",
-      paramsSchema[1],
-      structsMap,
-    );
-    expect(result).toEqual(expected);
-  });
-
-  test("creates correct path for struct parameter", () => {
-    const result = createPluginValuesPath(
-      "param",
-      "MockPluginParams",
-      paramsSchema[2],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("param");
-    expect(result.structs.items).toHaveLength(1);
-    expect(result.structs.items[0].name).toBe("Terms");
-    expect(result.structs.items[0].scalarsPath).toMatch(/terms/);
-    expect(result.structs.items[0].objectSchema).toEqual({
-      gain: { default: "", kind: "string" },
-      lose: { default: "", kind: "string" },
-      use: { default: "", kind: "string" },
-    });
-  });
-
-  test("creates correct path for struct array parameter", () => {
-    const result = createPluginValuesPath(
-      "param",
-      "MockPluginParams",
-      paramsSchema[3],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("param");
-    expect(result.structArrays.items).toHaveLength(1);
-    expect(result.structArrays.items[0].name).toBe("Item");
-    expect(result.structArrays.items[0].scalarsPath).toMatch(/items/);
-    expect(result.structArrays.items[0].objectSchema).toEqual({
-      id: { default: 0, kind: "number" },
-      name: { default: "", kind: "string" },
-    });
-  });
-
-  test("correctly handles all parameters in schema", () => {
-    type Expected = Partial<PluginValuesPathWithError> & {
-      rootCategory: string;
-      rootName: string;
-    };
-    const expected1: Expected = {
-      rootCategory: "param",
-      rootName: "MockPluginParams",
-      scalars: {
-        name: "",
-        objectSchema: {},
-        scalarArrays: [
-          {
-            param: {
-              attr: {
-                default: [],
-                kind: "string[]",
-              },
-              name: "categorys",
-            },
-            path: '$["categorys"][*]',
-          },
-        ],
-        scalarsPath: undefined,
-      },
-      structArrays: {
-        errors: [],
-        items: [],
-      },
-      structs: {
-        errors: [],
-        items: [],
-      },
-    };
-
-    const expected2: Expected = {
-      rootCategory: "param",
-      rootName: "MockPluginParams",
-      scalars: {
-        name: "string",
-        objectSchema: {
-          commandName: {
-            default: "",
-            kind: "string",
-          },
+    },
+    expected: {
+      pluginName: "MockPlugin",
+      params: [
+        {
+          rootType: "param",
+          rootName: "items",
+          structName: "Item",
+          param: { name: "name", attr: { kind: "string", default: "" } },
+          value: "Potion",
         },
-        scalarArrays: [],
-        scalarsPath: '$["commandName"]',
-      },
-      structArrays: { errors: [], items: [] },
-      structs: { errors: [], items: [] },
-    };
-
-    const expected3: Expected = {
+        {
+          rootType: "param",
+          rootName: "items",
+          structName: "Item",
+          param: { name: "id", attr: { kind: "number", default: 0 } },
+          value: 1,
+        },
+        {
+          rootType: "param",
+          rootName: "items",
+          structName: "Item",
+          param: { name: "name", attr: { kind: "string", default: "" } },
+          value: "Hi-Potion",
+        },
+        {
+          rootType: "param",
+          rootName: "items",
+          structName: "Item",
+          param: { name: "id", attr: { kind: "number", default: 0 } },
+          value: 2,
+        },
+      ],
+    },
+  },
+  {
+    paramSchema: classParam,
+    caseName: "Class構造体と配列のテスト",
+    path: {
       rootCategory: "param",
-      rootName: "terms",
-      structArrays: {
-        errors: [],
-        items: [],
-      },
+      rootName: "class",
+      scalars: undefined,
+      structArrays: { errors: [], items: [] },
       structs: {
         errors: [],
         items: [
           {
             category: "struct",
-            name: "Terms",
+            name: "Class",
             objectSchema: {
-              gain: { default: "", kind: "string" },
-              lose: { default: "", kind: "string" },
-              use: { default: "", kind: "string" },
+              name: { kind: "string", default: "" },
+              maxLevel: { kind: "number", default: 0 },
             },
-            scalarArrays: [],
-            scalarsPath: '$["terms"]["use","gain","lose"]',
+            scalarArrays: [
+              {
+                param: {
+                  name: "expTable",
+                  attr: { kind: "number[]", default: [] },
+                },
+                path: '$["class"]["expTable"][*]',
+              },
+            ],
+            scalarsPath: '$["class"]["name","maxLevel"]',
           },
         ],
       },
-    };
-
-    const results = paramsSchema.map((param) =>
-      createPluginValuesPath("param", "MockPluginParams", param, structsMap),
-    );
-
-    expect(results).toHaveLength(4);
-    expect(results[0]).toEqual(expected1);
-    expect(results[1]).toEqual(expected2);
-    expect(results[2]).toEqual(expected3);
-  });
-
-  test("maintains root information in all paths", () => {
-    paramsSchema.forEach((param, index) => {
-      const result = createPluginValuesPath(
-        "param",
-        "MockPluginParams",
-        param,
-        structsMap,
-      );
-
-      expect(result.rootCategory).toBe("param");
-      if (index < 2) {
-        // scalar and array parameters maintain the passed rootName
-        expect(result.rootName).toBe("MockPluginParams");
-      } else {
-        // struct parameters use the parameter name as rootName
-        expect(result.rootName).toBe(param.name);
-      }
-    });
-  });
-
-  test("correctly resolves nested struct schemas", () => {
-    const termsResult = createPluginValuesPath(
-      "param",
-      "MockPluginParams",
-      paramsSchema[2],
-      structsMap,
-    );
-
-    const itemsResult = createPluginValuesPath(
-      "param",
-      "MockPluginParams",
-      paramsSchema[3],
-      structsMap,
-    );
-
-    // Terms struct should contain all three string fields
-    expect(Object.keys(termsResult.structs.items[0].objectSchema)).toHaveLength(
-      3,
-    );
-    // Item struct should contain name and id
-    expect(
-      Object.keys(itemsResult.structArrays.items[0].objectSchema),
-    ).toHaveLength(2);
-  });
+    },
+    expected: {
+      pluginName: "MockPlugin",
+      params: [
+        {
+          rootType: "param",
+          rootName: "class",
+          structName: "Class",
+          param: { name: "name", attr: { kind: "string", default: "" } },
+          value: "Warrior",
+        },
+        {
+          rootType: "param",
+          rootName: "class",
+          structName: "Class",
+          param: { name: "maxLevel", attr: { kind: "number", default: 0 } },
+          value: 99,
+        },
+        {
+          rootType: "param",
+          rootName: "class",
+          structName: "Class",
+          param: {
+            name: "expTable",
+            attr: { kind: "number[]", default: [] },
+          },
+          value: 0,
+        },
+        {
+          rootType: "param",
+          rootName: "class",
+          structName: "Class",
+          param: {
+            name: "expTable",
+            attr: { kind: "number[]", default: [] },
+          },
+          value: 100,
+        },
+        {
+          rootType: "param",
+          rootName: "class",
+          structName: "Class",
+          param: {
+            name: "expTable",
+            attr: { kind: "number[]", default: [] },
+          },
+          value: 300,
+        },
+      ],
+    },
+  },
+];
+describe("PluginParamExtractorのテスト", () => {
+  const record: PluginParamsRecord = {
+    name: "MockPlugin",
+    status: true,
+    description: "integration test",
+    parameters: {
+      items: stringifyDeepJSON([
+        { name: "Potion", id: 1 },
+        { name: "Hi-Potion", id: 2 },
+      ]),
+      class: stringifyDeepJSON({
+        name: "Warrior",
+        maxLevel: 99,
+        expTable: [0, 100, 300],
+      }),
+      num: "123",
+    },
+  };
+  testCases.forEach((testCase) => runTestCase(testCase, record));
 });
