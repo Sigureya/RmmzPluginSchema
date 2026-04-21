@@ -6,7 +6,7 @@ import type {
   NumberParam,
   NumberArrayParam,
   StringParam,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { getPathFromStructParam } from "./structValue";
 import type { StructPathNodeListWithErrors } from "./types";
@@ -68,10 +68,10 @@ const itemSchema: ClassifiedPluginParamsEx<Item, NumberParam | StringParam> = {
 
 const structsMap: ReadonlyMap<
   string,
-  ClassifiedPluginParamsEx2<NumberParam | StringParam, NumberArrayParam>
+  ClassifiedPluginParamsTyped<NumberParam | StringParam, NumberArrayParam>
 > = new Map<
   string,
-  ClassifiedPluginParamsEx2<NumberParam | StringParam, NumberArrayParam>
+  ClassifiedPluginParamsTyped<NumberParam | StringParam, NumberArrayParam>
 >([
   ["Person", personSchema],
   ["ClassRoom", classRoomSchema],

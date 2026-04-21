@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import type {
   ClassifiedPluginParams,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   NumberArrayParam,
   PluginParamEx,
   PluginScalarParam,
@@ -57,7 +57,7 @@ describe("empty struct", () => {
     expect(result.items).toEqual(expected);
   });
   test("struct array", () => {
-    const schema: ClassifiedPluginParamsEx2<
+    const schema: ClassifiedPluginParamsTyped<
       PluginScalarParam,
       NumberArrayParam
     > = {

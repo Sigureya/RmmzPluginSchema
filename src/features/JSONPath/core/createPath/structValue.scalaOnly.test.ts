@@ -71,14 +71,13 @@ describe("person", () => {
   });
 
   test("getPathFromStructSchema", () => {
+    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
+      ["MockPerson", personSchema],
+    ]);
     const result: StructPathNodeListWithErrors<
       PluginScalarParam,
       PluginArrayParamType
-    > = getPathFromStructSchema(
-      "MockPerson",
-      `$["person"]`,
-      new Map([["MockPerson", personSchema]]),
-    );
+    > = getPathFromStructSchema("MockPerson", `$["person"]`, structMap);
     expect(result.items).toEqual(expected);
   });
 

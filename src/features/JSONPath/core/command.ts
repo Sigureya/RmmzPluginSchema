@@ -8,7 +8,7 @@ import type {
   ClassifiedPluginParams,
   PluginArrayParamType,
   PluginScalarParam,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./createPath/valuePath";
@@ -24,12 +24,12 @@ import { compileJSONPathSchema } from "./pathToMemo";
 
 export const compilePluginCommandExtractor = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   pluginName: string,
   schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
-  factoryFn: (path: string) => JSONPathReader
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  factoryFn: (path: string) => JSONPathReader,
 ): CommandArgExtractors => {
   return {
     pluginName,
@@ -44,9 +44,9 @@ const createExtractors = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<
     string,
-    ClassifiedPluginParamsEx2<PluginScalarParam, PluginArrayParamType>
+    ClassifiedPluginParamsTyped<PluginScalarParam, PluginArrayParamType>
   >,
-  factoryFn: (path: string) => JSONPathReader
+  factoryFn: (path: string) => JSONPathReader,
 ): PluginValuesExtractorBundle[] => {
   return schema.args.map((arg): PluginValuesExtractorBundle => {
     const path = createPluginValuesPath("args", schema.command, arg, structMap);
@@ -56,7 +56,7 @@ const createExtractors = (
 
 export const extractPluginCommandArgs = (
   value: Record<string, JSONValue>,
-  extractor: CommandArgExtractors
+  extractor: CommandArgExtractors,
 ): CommandExtractResult => {
   return {
     pluginName: extractor.pluginName,
@@ -68,7 +68,7 @@ export const extractPluginCommandArgs = (
 export const extractCommandArgsByKey = (
   value: Record<string, JSONValue>,
   key: CommandMapKey,
-  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>
+  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
 ): CommandExtractResult | undefined => {
   const extractor = map.get(key);
   if (!extractor) {
@@ -82,10 +82,10 @@ export const extractCommandArgsByKey = (
  */
 export const compileCommandExtractorsFromPlugins = (
   plugins: ReadonlyArray<PluginSchema>,
-  factoryFn: (path: string) => JSONPathReader
+  factoryFn: (path: string) => JSONPathReader,
 ): Map<CommandMapKey, CommandArgExtractors> => {
   return new Map(
-    plugins.flatMap((p) => compilePluginCommandPairs(p, factoryFn))
+    plugins.flatMap((p) => compilePluginCommandPairs(p, factoryFn)),
   );
 };
 
@@ -94,7 +94,7 @@ export const compileCommandExtractorsFromPlugins = (
  */
 export const compilePluginCommandPairs = (
   plugin: PluginSchema,
-  factoryFn: (path: string) => JSONPathReader
+  factoryFn: (path: string) => JSONPathReader,
 ): CommandExtractorEntry[] => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
   const structMap: MapType = createClassifiedStructMap(plugin.schema.structs);
@@ -105,8 +105,8 @@ export const compilePluginCommandPairs = (
         plugin.pluginName,
         cmd,
         structMap,
-        factoryFn
+        factoryFn,
       ),
-    ]
+    ],
   );
 };

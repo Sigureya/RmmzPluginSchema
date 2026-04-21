@@ -1,10 +1,9 @@
 import type {
   PluginArrayParamType,
   ClassifiedPluginParams,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   PluginParamEx,
   PluginScalarParam,
-  ScalaStruct,
   StructArrayRefParam,
   StructRefParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -20,16 +19,6 @@ const ERROR_CODE = {
   undefinedStruct: "undefined_struct",
   cyclicStruct: "cyclic_struct",
 } as const satisfies ErrorCodes;
-
-interface ClassifiedPluginParamsEx3<
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>,
-> extends ScalaStruct {
-  structs: PluginParamEx<StructRefParam>[];
-  structArrays: PluginParamEx<StructArrayRefParam>[];
-  scalars: S[];
-  scalarArrays: A[];
-}
 
 interface Frame {
   schemaName: string;
@@ -50,7 +39,7 @@ function createNode<
   S extends PluginScalarParam,
   A extends PluginArrayParamType,
 >(
-  structSchema: ClassifiedPluginParamsEx2<S, A>,
+  structSchema: ClassifiedPluginParamsTyped<S, A>,
   {
     path,
     structName,
@@ -104,7 +93,7 @@ function stepState<
   Array extends PluginArrayParamType,
 >(
   state: State2<Scalar, Array>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<Scalar, Array>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<Scalar, Array>>,
   errors: ErrorCodes,
 ): State2<Scalar, Array> {
   if (state.frames.length === 0) {
@@ -173,7 +162,7 @@ function collectFromSchema<
 >(
   schemaName: string,
   basePath: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
   errors: ErrorCodes,
 ): StructPathNodeListWithErrors<S, A> {
   type StateType = State2<S, A>;
@@ -202,14 +191,14 @@ function collectFromSchema<
 }
 
 export const getPathFromStructParam = <
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>,
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
 >(
   params: PluginParamEx<StructRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
   errors: ErrorCodes = ERROR_CODE,
-): StructPathNodeListWithErrors<S["attr"], A["attr"]> => {
+): StructPathNodeListWithErrors<S, A> => {
   // 各パラメータから構造体名を取得し、collectFromSchemaで集約
   return collectFromSchema(
     params.attr.struct,
@@ -225,7 +214,7 @@ export const getPathFromStructArraySchema = <
 >(
   param: PluginParamEx<StructArrayRefParam>,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
   errors: ErrorCodes = ERROR_CODE,
 ): StructPathNodeListWithErrors<S, A> => {
   return collectFromSchema<S, A>(
@@ -237,13 +226,13 @@ export const getPathFromStructArraySchema = <
 };
 
 export const getPathFromStructSchema = <
-  S extends PluginParamEx<PluginScalarParam>,
-  A extends PluginParamEx<PluginArrayParamType>,
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
 >(
   structName: string,
   parent: string,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx3<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
   errors: ErrorCodes = ERROR_CODE,
-): StructPathNodeListWithErrors<S["attr"], A["attr"]> => {
+): StructPathNodeListWithErrors<S, A> => {
   return collectFromSchema(structName, parent, structMap, errors);
 };

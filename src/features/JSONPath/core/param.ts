@@ -4,7 +4,7 @@ import type {
 } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   PluginArrayParamType,
-  ClassifiedPluginParamsEx2,
+  ClassifiedPluginParamsTyped,
   PluginParamsRecord,
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
@@ -21,7 +21,7 @@ import { compileJSONPathSchema } from "./pathToMemo";
 
 export const extractPluginParamFromRecord = (
   record: PluginParamsRecord,
-  paramExtractor: ReadonlyArray<PluginValuesExtractorBundle>
+  paramExtractor: ReadonlyArray<PluginValuesExtractorBundle>,
 ): ParamExtractResult => {
   const parsed: Record<string, JSONValue> = parseDeepRecord(record.parameters);
   return {
@@ -32,10 +32,10 @@ export const extractPluginParamFromRecord = (
 
 export const extractPluginParam = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   value: Record<string, JSONValue>,
-  paramExtractor: PluginParamExtractor<S, A>
+  paramExtractor: PluginParamExtractor<S, A>,
 ): ParamExtractResult => {
   return {
     pluginName: paramExtractor.pluginName,
@@ -45,11 +45,11 @@ export const extractPluginParam = <
 
 export const compilePluginParamExtractor = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   plugin: PluginParamsSchema<S, A>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsEx2<S, A>>,
-  factoryFn: (path: string) => JSONPathReader
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  factoryFn: (path: string) => JSONPathReader,
 ): PluginParamExtractor<S, A> => {
   type BundlerType = PluginValuesExtractorBundle<S, A>;
   return {
