@@ -1,11 +1,17 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
   PluginCommandSchemaArrayEx,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { createPluginValuesPath } from "./core";
-import type { StructPropertysPathOld, StructPathResultWithError } from "./core";
+import { JSONPathJS } from "jsonpath-js";
+import type { CommandExtractResult, PluginValuesPath } from "./core";
+import {
+  compilePluginCommandExtractor,
+  createPluginValuesPath,
+  extractPluginCommandArgs,
+} from "./core";
 
 interface Effect {
   code: number;
@@ -93,214 +99,226 @@ const mockData = {
   message: { success: "Hit!", failure: "Miss!" },
 } as const satisfies Action;
 
-const scalarsPath: StructPropertysPathOld = {
-  name: "Action",
-  category: "command",
-  objectSchema: {
-    subject: { default: 0, kind: "number" },
+interface TestCase {
+  caseName: string;
+  paths: PluginValuesPath[];
+  expected: CommandExtractResult;
+  commandSchema: PluginCommandSchemaArrayEx<Action>;
+}
+
+const runTestCase = <T extends Record<string, JSONValue>>(
+  testCase: TestCase,
+  value: T,
+) => {
+  describe(testCase.caseName, () => {
+    test("パスを適切に構築できるか", () => {
+      const pathResult = testCase.commandSchema.args.map((arg) =>
+        createPluginValuesPath(
+          "args",
+          testCase.commandSchema.command,
+          arg,
+          structsMap,
+        ),
+      );
+
+      expect(pathResult).toEqual(testCase.paths);
+    });
+
+    test("値の取り出しは成功したか", () => {
+      const extractor = compilePluginCommandExtractor(
+        "MockPlugin",
+        testCase.commandSchema,
+        structsMap,
+        (jsonPath) => new JSONPathJS(jsonPath),
+      );
+
+      const result = extractPluginCommandArgs(value, extractor);
+      expect(result).toEqual(testCase.expected);
+    });
+  });
+};
+
+const testCases: TestCase[] = [
+  {
+    caseName: "Actionコマンドの統合テスト",
+    commandSchema: commandAction,
+    paths: [
+      {
+        rootCategory: "args",
+        rootName: "Action",
+        scalars: {
+          name: "number",
+          category: undefined,
+          objectSchema: {
+            subject: { kind: "number", default: 0 },
+          },
+          scalarArrays: [],
+          scalarsPath: '$["subject"]',
+        },
+        structs: { errors: [], items: [] },
+        structArrays: { errors: [], items: [] },
+      },
+      {
+        rootCategory: "args",
+        rootName: "Action",
+        scalars: {
+          name: "",
+          category: undefined,
+          objectSchema: {},
+          scalarArrays: [
+            {
+              param: {
+                name: "targets",
+                attr: { kind: "number[]", default: [] },
+              },
+              path: '$["targets"][*]',
+            },
+          ],
+          scalarsPath: undefined,
+        },
+        structs: { errors: [], items: [] },
+        structArrays: { errors: [], items: [] },
+      },
+      {
+        rootCategory: "args",
+        rootName: "damage",
+        scalars: undefined,
+        structs: {
+          errors: [],
+          items: [
+            {
+              category: "struct",
+              name: "Damage",
+              objectSchema: { exprFunc: { kind: "string", default: "" } },
+              scalarArrays: [],
+              scalarsPath: '$["damage"]["exprFunc"]',
+            },
+          ],
+        },
+        structArrays: { errors: [], items: [] },
+      },
+      {
+        rootCategory: "args",
+        rootName: "effects",
+        scalars: undefined,
+        structs: { errors: [], items: [] },
+        structArrays: {
+          errors: [],
+          items: [
+            {
+              category: "struct",
+              name: "Effect",
+              objectSchema: {
+                code: { kind: "number", default: 0 },
+                value: { kind: "number", default: 0 },
+              },
+              scalarArrays: [],
+              scalarsPath: '$["effects"][*]["code","value"]',
+            },
+          ],
+        },
+      },
+      {
+        rootCategory: "args",
+        rootName: "message",
+        scalars: undefined,
+        structs: {
+          errors: [],
+          items: [
+            {
+              category: "struct",
+              name: "Message",
+              objectSchema: {
+                success: { kind: "string", default: "" },
+                failure: { kind: "string", default: "" },
+              },
+              scalarArrays: [],
+              scalarsPath: '$["message"]["success","failure"]',
+            },
+          ],
+        },
+        structArrays: { errors: [], items: [] },
+      },
+    ],
+    expected: {
+      pluginName: "MockPlugin",
+      commandName: "Action",
+      args: [
+        {
+          rootType: "args",
+          rootName: "Action",
+          structName: "",
+          param: { name: "subject", attr: { kind: "number", default: 0 } },
+          value: 1,
+        },
+        {
+          rootType: "args",
+          rootName: "Action",
+          structName: "",
+          param: { name: "targets", attr: { kind: "number[]", default: [] } },
+          value: 2,
+        },
+        {
+          rootType: "args",
+          rootName: "Action",
+          structName: "",
+          param: { name: "targets", attr: { kind: "number[]", default: [] } },
+          value: 3,
+        },
+        {
+          rootType: "args",
+          rootName: "damage",
+          structName: "Damage",
+          param: { name: "exprFunc", attr: { kind: "string", default: "" } },
+          value: "a + b",
+        },
+        {
+          rootType: "args",
+          rootName: "effects",
+          structName: "Effect",
+          param: { name: "code", attr: { kind: "number", default: 0 } },
+          value: 10,
+        },
+        {
+          rootType: "args",
+          rootName: "effects",
+          structName: "Effect",
+          param: { name: "value", attr: { kind: "number", default: 0 } },
+          value: 100,
+        },
+        {
+          rootType: "args",
+          rootName: "effects",
+          structName: "Effect",
+          param: { name: "code", attr: { kind: "number", default: 0 } },
+          value: 20,
+        },
+        {
+          rootType: "args",
+          rootName: "effects",
+          structName: "Effect",
+          param: { name: "value", attr: { kind: "number", default: 0 } },
+          value: 200,
+        },
+        {
+          rootType: "args",
+          rootName: "message",
+          structName: "Message",
+          param: { name: "success", attr: { kind: "string", default: "" } },
+          value: "Hit!",
+        },
+        {
+          rootType: "args",
+          rootName: "message",
+          structName: "Message",
+          param: { name: "failure", attr: { kind: "string", default: "" } },
+          value: "Miss!",
+        },
+      ],
+    },
   },
-  scalarArrays: [
-    {
-      param: { attr: { default: [], kind: "number[]" }, name: "targets" },
-      path: "$.targets[*]",
-    },
-  ],
-  scalarsPath: '$["subject"]',
-};
+];
 
-const structsPath: StructPathResultWithError = {
-  errors: [],
-  items: [
-    {
-      category: "struct",
-      name: "Damage",
-      objectSchema: { exprFunc: { default: "", kind: "string" } },
-      scalarArrays: [],
-      scalarsPath: '$.damage["exprFunc"]',
-    },
-    {
-      category: "struct",
-      name: "Message",
-      objectSchema: {
-        failure: { default: "", kind: "string" },
-        success: { default: "", kind: "string" },
-      },
-      scalarArrays: [],
-      scalarsPath: '$.message["success","failure"]',
-    },
-  ],
-};
-
-const structArrays: StructPathResultWithError = {
-  errors: [],
-  items: [
-    {
-      category: "struct",
-      name: "Effect",
-      objectSchema: {
-        code: { default: 0, kind: "number" },
-        value: { default: 0, kind: "number" },
-      },
-      scalarArrays: [],
-      scalarsPath: '$.effects[*]["code","value"]',
-    },
-  ],
-};
-
-describe("createPluginValuesPath for command arguments", () => {
-  test("creates correct path for number argument", () => {
-    const result = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[0],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("args");
-    expect(result.rootName).toBe("Action");
-    expect(result.scalars?.scalarsPath).toBe('$["subject"]');
-    expect(result.scalars?.objectSchema).toEqual({
-      subject: { default: 0, kind: "number" },
-    });
-  });
-
-  test("creates correct path for number array argument", () => {
-    const result = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[1],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("args");
-    expect(result.rootName).toBe("Action");
-    expect(result.scalars?.scalarArrays).toHaveLength(1);
-    expect(result.scalars?.scalarArrays[0].path).toBe('$["targets"][*]');
-    expect(result.scalars?.scalarArrays[0].param.name).toBe("targets");
-    expect(result.scalars?.scalarArrays[0].param.attr.kind).toBe("number[]");
-  });
-
-  test("creates correct path for damage struct", () => {
-    const result = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[2],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("args");
-    expect(result.structs.items).toHaveLength(1);
-    expect(result.structs.items[0].name).toBe("Damage");
-    expect(result.structs.items[0].scalarsPath).toMatch(/damage/);
-    expect(result.structs.items[0].objectSchema.exprFunc).toBeDefined();
-  });
-
-  test("creates correct path for effects struct array", () => {
-    const result = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[3],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("args");
-    expect(result.structArrays.items).toHaveLength(1);
-    expect(result.structArrays.items[0].name).toBe("Effect");
-    expect(result.structArrays.items[0].scalarsPath).toMatch(/effects/);
-    expect(result.structArrays.items[0].objectSchema).toEqual({
-      code: { default: 0, kind: "number" },
-      value: { default: 0, kind: "number" },
-    });
-  });
-
-  test("creates correct path for message struct", () => {
-    const result = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[4],
-      structsMap,
-    );
-
-    expect(result.rootCategory).toBe("args");
-    expect(result.structs.items).toHaveLength(1);
-    expect(result.structs.items[0].name).toBe("Message");
-    expect(result.structs.items[0].objectSchema).toEqual({
-      failure: { default: "", kind: "string" },
-      success: { default: "", kind: "string" },
-    });
-  });
-
-  test("correctly processes all arguments in command schema", () => {
-    const results = commandAction.args.map((arg) =>
-      createPluginValuesPath("args", "Action", arg, structsMap),
-    );
-
-    expect(results).toHaveLength(5);
-    // subject (scalar number)
-    expect(results[0].scalars?.scalarsPath).toBeDefined();
-    expect(results[0].rootCategory).toBe("args");
-    // targets (scalar array)
-    expect(results[1].scalars?.scalarArrays).toHaveLength(1);
-    expect(results[1].rootCategory).toBe("args");
-    // damage (struct)
-    expect(results[2].structs.items).toHaveLength(1);
-    expect(results[2].rootName).toBe("damage");
-    // effects (struct array)
-    expect(results[3].structArrays.items).toHaveLength(1);
-    expect(results[3].rootName).toBe("effects");
-    // message (struct)
-    expect(results[4].structs.items).toHaveLength(1);
-    expect(results[4].rootName).toBe("message");
-  });
-
-  test("maintains consistent root information across all arguments", () => {
-    commandAction.args.forEach((arg, index) => {
-      const result = createPluginValuesPath("args", "Action", arg, structsMap);
-
-      expect(result.rootCategory).toBe("args");
-      if (index < 2) {
-        // scalar and array arguments maintain the passed rootName
-        expect(result.rootName).toBe("Action");
-        // scalar and array have scalars defined
-        expect(result.scalars).toBeDefined();
-      } else {
-        // struct arguments use the argument name as rootName
-        expect(result.rootName).toBe(arg.name);
-      }
-    });
-  });
-
-  test("correctly resolves nested struct definitions", () => {
-    const damagePath = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[2],
-      structsMap,
-    );
-    const effectsPath = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[3],
-      structsMap,
-    );
-    const messagePath = createPluginValuesPath(
-      "args",
-      "Action",
-      commandAction.args[4],
-      structsMap,
-    );
-
-    // Damage should have exprFunc field
-    expect(damagePath.structs.items[0].objectSchema).toHaveProperty("exprFunc");
-    // Effect should have code and value fields
-    expect(effectsPath.structArrays.items[0].objectSchema).toHaveProperty(
-      "code",
-    );
-    expect(effectsPath.structArrays.items[0].objectSchema).toHaveProperty(
-      "value",
-    );
-    // Message should have success and failure fields
-    expect(messagePath.structs.items[0].objectSchema).toHaveProperty("success");
-    expect(messagePath.structs.items[0].objectSchema).toHaveProperty("failure");
-  });
+describe("PluginCommandExtractorのテスト", () => {
+  testCases.forEach((testCase) => runTestCase(testCase, mockData));
 });
