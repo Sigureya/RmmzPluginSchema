@@ -11,7 +11,7 @@ import {
   extractPluginCommandArgs,
 } from "./command";
 import type {
-  PluginValues,
+  PluginExtractedValue,
   CommandExtractResult,
   CommandArgExtractors,
 } from "./extractor/types";
@@ -119,16 +119,16 @@ describe("command extractor", () => {
     expect(mockFn).toHaveBeenNthCalledWith(3, '$["damage"]["exprFunc"]');
     expect(mockFn).toHaveBeenNthCalledWith(
       4,
-      '$["effects"][*]["code","value"]'
+      '$["effects"][*]["code","value"]',
     );
     expect(mockFn).toHaveBeenNthCalledWith(
       5,
-      '$["message"]["success","failure"]'
+      '$["message"]["success","failure"]',
     );
   });
 
   test("extract values", () => {
-    const values: PluginValues[] = [
+    const values: PluginExtractedValue[] = [
       {
         structName: "",
         param: {
@@ -237,7 +237,7 @@ describe("command extractor", () => {
       structsMap,
       (path) => {
         return new JSONPathJS(path);
-      }
+      },
     );
     const result = extractPluginCommandArgs(mockData, memo);
     expect(result.args).toEqual(values);
@@ -262,7 +262,7 @@ describe("", () => {
     expect(mockFn).toHaveBeenCalledTimes(1);
     expect(mockFn).toHaveBeenNthCalledWith(
       1,
-      '$["message"]["success","failure"]'
+      '$["message"]["success","failure"]',
     );
   });
 
@@ -271,9 +271,9 @@ describe("", () => {
       "PluginName",
       schema,
       structsMap,
-      (paht) => new JSONPathJS(paht)
+      (paht) => new JSONPathJS(paht),
     );
-    const values: PluginValues[] = [
+    const values: PluginExtractedValue[] = [
       {
         structName: "Message",
         param: {
@@ -297,7 +297,7 @@ describe("", () => {
     ];
     const result: CommandExtractResult = extractPluginCommandArgs(
       mockData,
-      memo
+      memo,
     );
     expect(result.args).toEqual(values);
     expect(result.pluginName).toBe("PluginName");

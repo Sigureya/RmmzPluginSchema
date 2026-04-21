@@ -16,7 +16,7 @@ import { createStructParamPath } from "./createPath/valuePath";
 import { extractAllPluginValues } from "./extractor/extractor";
 import type {
   PluginValuesExtractorBundle,
-  PluginValues,
+  PluginExtractedValue,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
@@ -159,7 +159,7 @@ describe("Address path generation and value extraction", () => {
     const result: PluginValuesPathBase = createStructParamPath(
       "param",
       paramSchema,
-      map
+      map,
     );
     expect(map.get).toBeCalledWith("Address");
     expect(map.get).toBeCalledTimes(1);
@@ -179,7 +179,7 @@ describe("Address path generation and value extraction", () => {
     test("creates correct memo structure", () => {
       const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
         pathSchema,
-        newJSONPath
+        newJSONPath,
       );
       expect(memo.top).toBeUndefined();
       expect(memo.structArrays).toEqual([]);
@@ -194,7 +194,7 @@ describe("Address path generation and value extraction", () => {
         zipCode: "12345",
       } as const satisfies Address,
     };
-    const expectedValues: PluginValues[] = [
+    const expectedValues: PluginExtractedValue[] = [
       {
         rootType: "param",
         rootName: "address",
@@ -219,10 +219,12 @@ describe("Address path generation and value extraction", () => {
     ];
     const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
       pathSchema,
-      newJSONPath
+      newJSONPath,
     );
     expect(memo.rootName).toBe("address");
-    const values: PluginValues[] = extractAllPluginValues(paramObject, [memo]);
+    const values: PluginExtractedValue[] = extractAllPluginValues(paramObject, [
+      memo,
+    ]);
     expect(values).toEqual(expectedValues);
   });
 });
@@ -303,7 +305,7 @@ describe("Person path generation and value extraction", () => {
           nicknames: ["Ally", "Lice"],
         } as const satisfies Person,
       };
-      const expectedValues: PluginValues[] = [
+      const expectedValues: PluginExtractedValue[] = [
         {
           rootType: "param",
           rootName: "person",
@@ -377,11 +379,12 @@ describe("Person path generation and value extraction", () => {
       ];
       const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
         pathSchema,
-        newJSONPath
+        newJSONPath,
       );
-      const values: PluginValues[] = extractAllPluginValues(paramObject, [
-        memo,
-      ]);
+      const values: PluginExtractedValue[] = extractAllPluginValues(
+        paramObject,
+        [memo],
+      );
       expect(values).toEqual(expectedValues);
     });
   });
@@ -494,16 +497,16 @@ describe("classroom path generation and value extraction", () => {
       expect(mockFn).toBeCalledWith('$["classroom"]["teacher"]["name","age"]');
       expect(mockFn).toBeCalledWith(`$["classroom"]["teacher"]["items"][*]`);
       expect(mockFn).toBeCalledWith(
-        `$["classroom"]["teacher"]["nicknames"][*]`
+        `$["classroom"]["teacher"]["nicknames"][*]`,
       );
       expect(mockFn).toBeCalledWith(
-        '$["classroom"]["students"][*]["name","age"]'
+        '$["classroom"]["students"][*]["name","age"]',
       );
       expect(mockFn).toBeCalledWith(
-        `$["classroom"]["students"][*]["items"][*]`
+        `$["classroom"]["students"][*]["items"][*]`,
       );
       expect(mockFn).toBeCalledWith(
-        `$["classroom"]["students"][*]["nicknames"][*]`
+        `$["classroom"]["students"][*]["nicknames"][*]`,
       );
     });
   });
@@ -533,7 +536,7 @@ describe("classroom path generation and value extraction", () => {
         ],
       } as const satisfies Class,
     };
-    const expectedValues: PluginValues[] = [
+    const expectedValues: PluginExtractedValue[] = [
       {
         rootName: "classroom",
         rootType: "param",
@@ -733,9 +736,11 @@ describe("classroom path generation and value extraction", () => {
     ];
     const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
       pathSchema,
-      newJSONPath
+      newJSONPath,
     );
-    const values: PluginValues[] = extractAllPluginValues(paramObject, [memo]);
+    const values: PluginExtractedValue[] = extractAllPluginValues(paramObject, [
+      memo,
+    ]);
     expect(values).toEqual(expectedValues);
   });
 });
@@ -912,7 +917,7 @@ describe("School path generation and value extraction", () => {
           ],
         } as const satisfies School,
       };
-      const expectedValues: PluginValues[] = [
+      const expectedValues: PluginExtractedValue[] = [
         {
           rootName: "school",
           rootType: "param",
@@ -1098,11 +1103,12 @@ describe("School path generation and value extraction", () => {
       ];
       const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
         pathSchema,
-        newJSONPath
+        newJSONPath,
       );
-      const values: PluginValues[] = extractAllPluginValues(paramObject, [
-        memo,
-      ]);
+      const values: PluginExtractedValue[] = extractAllPluginValues(
+        paramObject,
+        [memo],
+      );
       expect(values).toEqual(expectedValues);
     });
   });
