@@ -1,13 +1,7 @@
-const e = "rmmz", s = "colors", i = (a) => Object.entries(a).map(([, m]) => m.title), o = (a) => typeof a == "number" && !Number.isNaN(a), t = (a = {}) => ({
-  name: a.name ?? "",
-  volume: a.volume ?? 100,
-  pitch: a.pitch ?? 100,
-  pan: a.pan ?? 0
-});
+const a = "rmmz", m = "colors", r = (e) => Object.entries(e).map(([, s]) => s.title), t = (e) => typeof e == "number" && !Number.isNaN(e);
 export {
-  e as AUTHOR_RMMZ,
-  s as SRC_COLOR,
-  i as domainNames,
-  o as isValidNumber,
-  t as makeAudioFileParams
+  a as AUTHOR_RMMZ,
+  m as SRC_COLOR,
+  r as domainNames,
+  t as isValidNumber
 };
