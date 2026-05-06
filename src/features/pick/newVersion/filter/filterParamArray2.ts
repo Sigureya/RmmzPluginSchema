@@ -3,17 +3,17 @@
 import type {
   ParamKinds,
   PluginParam,
-  PrimitiveParam,
   PluginScalarParam,
+  PrimitiveParam,
   ArrayParam,
   StructRefParam,
   StructArrayRefParam,
-} from "@RpgTypes/rmmz/plugin";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
-  isArrayParam,
-  isStructArrayParam,
   isStructParam,
-} from "@RpgTypes/rmmz/plugin";
+  isStructArrayParam,
+  isArrayParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginParamGroups, NamedAttribute } from "./types";
 
 export interface ParamFilterCriteria {
@@ -24,7 +24,7 @@ export interface ParamFilterCriteria {
 
 export const filterParams2 = (
   params2: ReadonlyArray<PluginParam>,
-  { arrayKinds, singleKinds, structNames }: ParamFilterCriteria
+  { arrayKinds, singleKinds, structNames }: ParamFilterCriteria,
 ): PluginParamGroups => {
   const single: NamedAttribute<PluginScalarParam>[] = [];
   const array: NamedAttribute<Extract<PrimitiveParam, ArrayParam>>[] = [];

@@ -7,23 +7,23 @@ import type {
   ArrayParam,
   StructRefParam,
   StructArrayRefParam,
-} from "@RpgTypes/rmmz/plugin";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
-  isArrayParam,
-  isStructArrayParam,
   isStructParam,
-} from "@RpgTypes/rmmz/plugin";
+  isStructArrayParam,
+  isArrayParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   PluginParamGroups,
   NamedAttribute,
 } from "./newVersion/filter/types";
 
 export const filterParams = <
-  Fn extends (param: PluginScalarParam, name: string) => boolean
+  Fn extends (param: PluginScalarParam, name: string) => boolean,
 >(
   params2: ReadonlyArray<PluginParam>,
   set: Pick<ReadonlySet<string>, "has">,
-  fn: Fn
+  fn: Fn,
 ): PluginParamGroups => {
   const single: NamedAttribute<PluginScalarParam>[] = [];
   const array: NamedAttribute<Extract<PrimitiveParam, ArrayParam>>[] = [];

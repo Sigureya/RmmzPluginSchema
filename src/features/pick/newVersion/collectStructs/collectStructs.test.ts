@@ -1,6 +1,8 @@
 import { describe, test, expect } from "vitest";
-import type { ParamKinds } from "@RpgTypes/rmmz/plugin";
-import type { PluginStructSchemaArray } from "@RpgTypes/rmmz/plugin";
+import type {
+  PluginStructSchemaArray,
+  ParamKinds,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { collectStructsByKinds } from "./collectStructs";
 import type { StructCollection } from "./types";
 
@@ -71,7 +73,7 @@ interface TestCase {
 
 const runTestCase = (
   structs: PluginStructSchemaArray[],
-  { caseName, expected, input }: TestCase
+  { caseName, expected, input }: TestCase,
 ) => {
   test(caseName, () => {
     const result = collectStructsByKinds(structs, input);

@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 import type {
-  ParamKinds,
-  PluginCommandSchemaArray,
   PluginStructSchemaArray,
-} from "@RpgTypes/rmmz/plugin";
+  PluginCommandSchemaArray,
+  ParamKinds,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { collectStructsByKinds } from "./collectStructs/collectStructs";
 import type { PluginParamGroups } from "./filter/types";
 import { filterPluginCommand } from "./xxx";
@@ -90,7 +90,7 @@ interface TestCase {
 
 const runTestCase = (
   testCase: TestCase[],
-  structs: PluginStructSchemaArray[]
+  structs: PluginStructSchemaArray[],
 ) => {
   const commands: PluginCommandSchemaArray[] = Object.values(mockCommands);
   describe("filterPluginCommand", () => {

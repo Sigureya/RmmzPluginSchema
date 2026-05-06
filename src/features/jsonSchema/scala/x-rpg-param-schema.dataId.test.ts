@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import type { SourceIdentifier } from "@RpgTypes/libs";
+import type { SourceIdentifier } from "@RmmzPluginSchema/libs/namedItemSource";
 import Ajv from "ajv";
 import SCHEMA_RPG_PARAM_META_SCHEMA from "../x-rpg-param.schema";
 import type { X_ParamDataId } from "../x-rpg-paramTypes";

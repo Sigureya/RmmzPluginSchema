@@ -1,14 +1,14 @@
 import { describe, test, expect } from "vitest";
 import type {
-  PluginStructSchemaArray,
   PrimitiveParam,
+  PluginStructSchemaArray,
   PluginScalarParam,
-} from "@RpgTypes/rmmz/plugin";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { collectStructsByKinds } from "./collectStructs";
 import type { StructCollection } from "./types";
 
 const createMockStructsABCD = (
-  param: PrimitiveParam
+  param: PrimitiveParam,
 ): PluginStructSchemaArray[] => {
   return [
     {
@@ -39,7 +39,7 @@ const createMockStructsABCD = (
   ];
 };
 const createMockStructsXYZ = (
-  param: PrimitiveParam
+  param: PrimitiveParam,
 ): PluginStructSchemaArray[] => {
   return [
     {
