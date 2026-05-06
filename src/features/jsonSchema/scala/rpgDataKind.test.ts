@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
+import type { SourceIdentifier } from "@RmmzPluginSchema/libs/namedItemSource";
 import type {
   RpgDataIdParam,
   SystemDataIdParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { lookupKind } from "@RmmzPluginSchema/rmmz/plugin";
-import type { X_RmmzParam } from "@RpgTypes/features/jsonSchema/scala/base/x-rpg-param";
-import type { SourceIdentifier } from "@RpgTypes/libs";
 import type { JSONSchemaType } from "ajv";
+import type { X_RmmzParam } from "./base/x-rpg-param";
 import { makeRpgIdField, makeRpgIdFieldWithXParam } from "./rpgDataKind";
 
 interface TestCase {

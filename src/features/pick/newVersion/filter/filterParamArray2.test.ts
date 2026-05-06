@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 import type {
-  ParamKinds,
   PluginParam,
   PrimitiveParam,
-} from "@RpgTypes/rmmz/plugin";
+  ParamKinds,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type { ParamFilterCriteria } from "./filterParamArray2";
 import { filterParams2 } from "./filterParamArray2";
 import type { PluginParamGroups } from "./types";
@@ -133,7 +133,7 @@ describe("filterParams2", () => {
     test(testCase.caseName, () => {
       const result = filterParams2(
         testCase.input.params,
-        testCase.input.pickTargets
+        testCase.input.pickTargets,
       );
       expect(result).toEqual(testCase.expected);
     });

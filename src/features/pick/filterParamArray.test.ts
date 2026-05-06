@@ -1,6 +1,9 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
-import type { PluginParam, PrimitiveParam } from "@RpgTypes/rmmz/plugin";
+import type {
+  PluginParam,
+  PrimitiveParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { filterParams } from "./filterParamArray";
 import type { PluginParamGroups } from "./newVersion/filter/types";
 
@@ -29,7 +32,7 @@ const runTestCase = (testCase: TestCase) => {
     test("result", () => {
       const mockedSet = makeMockedSet(testCase.input.setItems);
       const result = filterParams(testCase.input.params, mockedSet, (p) =>
-        testCase.input.fn(p)
+        testCase.input.fn(p),
       );
       expect(result.array).toEqual(testCase.expected.array);
       expect(result.single).toEqual(testCase.expected.single);
@@ -39,13 +42,13 @@ const runTestCase = (testCase: TestCase) => {
     test("set calls", () => {
       const mockedSet = makeMockedSet(testCase.input.setItems);
       filterParams(testCase.input.params, mockedSet, (p) =>
-        testCase.input.fn(p)
+        testCase.input.fn(p),
       );
       testCase.setCallArg.forEach((key) => {
         expect(mockedSet.has).toHaveBeenCalledWith(key);
       });
       const callLog: Set<string> = new Set(
-        mockedSet.has.mock.calls.map((a) => a[0])
+        mockedSet.has.mock.calls.map((a) => a[0]),
       );
       expect(callLog).toEqual(new Set(testCase.setCallArg));
     });

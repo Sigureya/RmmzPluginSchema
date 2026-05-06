@@ -11,12 +11,10 @@
     "skipLibCheck": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
-    "baseUrl": "./",
     "rootDir": "src",
     "paths": {
-      "@RmmzPluginSchema/rmmz/*": ["src/rmmz/*"],
-      "@RmmzPluginSchema/libs/*": ["src/libs/*"],
-      "@RpgTypes/*": ["src/*"]
+      "@RmmzPluginSchema/rmmz/*": ["./src/rmmz/*"],
+      "@RmmzPluginSchema/libs/*": ["./src/libs/*"]
     }
   },
   "include": ["./src/**/*"],

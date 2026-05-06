@@ -1,4 +1,4 @@
-import type { ParamKinds } from "@RpgTypes/rmmz/plugin";
+import type { ParamKinds } from "@RmmzPluginSchema/rmmz/plugin";
 
 export interface StructCollection {
   matchedStructs: Set<string>;
@@ -7,8 +7,10 @@ export interface StructCollection {
   targetArrayKinds: Set<`${ParamKinds}[]`>;
 }
 
-export interface ReadonlyStructCollection
-  extends Record<keyof StructCollection, ReadonlySet<string>> {
+export interface ReadonlyStructCollection extends Record<
+  keyof StructCollection,
+  ReadonlySet<string>
+> {
   readonly matchedStructs: ReadonlySet<string>;
   readonly nestedStructs: ReadonlySet<string>;
   readonly targetKinds: ReadonlySet<ParamKinds>;

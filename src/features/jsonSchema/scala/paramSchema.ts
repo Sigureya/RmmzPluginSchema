@@ -1,3 +1,4 @@
+import type { DiscriminatedUnionSchemaType3 } from "@RmmzPluginSchema/libs/templates/discriminator/discriminator3";
 import type {
   ParamBase,
   BooleanParam,
@@ -14,7 +15,6 @@ import type {
   StringArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
-import type { DiscriminatedUnionSchemaType3 } from "src/libs/templates/discriminator/discriminator3";
 
 const BASIC_TEXT = {
   type: "string",

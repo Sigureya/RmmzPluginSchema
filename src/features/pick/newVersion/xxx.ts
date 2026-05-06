@@ -2,7 +2,7 @@ import type {
   ParamKinds,
   PluginSchemaArray,
   PluginCommandSchemaArray,
-} from "@RpgTypes/rmmz/plugin";
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { collectStructsByKinds } from "./collectStructs/collectStructs";
 import type { ReadonlyStructCollection } from "./collectStructs/types";
 import type { ParamFilterCriteria } from "./filter/filterParamArray2";
@@ -16,11 +16,11 @@ const merge = (set1: ReadonlySet<string>, set2: ReadonlySet<string>) => {
 
 export const ppp = <K extends ParamKinds>(
   plugin: PluginSchemaArray,
-  kinds: ReadonlyArray<K>
+  kinds: ReadonlyArray<K>,
 ) => {
   const structCollection: ReadonlyStructCollection = collectStructsByKinds(
     plugin.structs,
-    kinds
+    kinds,
   );
 
   const criteria: ParamFilterCriteria = {
@@ -28,7 +28,7 @@ export const ppp = <K extends ParamKinds>(
     arrayKinds: structCollection.targetArrayKinds,
     structNames: merge(
       structCollection.matchedStructs,
-      structCollection.nestedStructs
+      structCollection.nestedStructs,
     ),
   };
 
@@ -44,7 +44,7 @@ export const ppp = <K extends ParamKinds>(
 
 export const filterPluginCommand = (
   commandList: ReadonlyArray<PluginCommandSchemaArray>,
-  criteria: ParamFilterCriteria
+  criteria: ParamFilterCriteria,
 ): PluginParamGroups[] => {
   return commandList.reduce<PluginParamGroups[]>((acc, cmd) => {
     const group = filterParams2(cmd.args, criteria);
