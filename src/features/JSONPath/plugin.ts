@@ -15,7 +15,7 @@ import { createPluginValueExtractor } from "./core/schema";
 import type {
   CommandExtractorEntryList,
   PluginExtractorBundle,
-  ConvertPluginResult,
+  ConvertPluginResultEx,
 } from "./core/types";
 
 export const mergeCommandMap = (
@@ -34,7 +34,7 @@ export const jsonPathFromPluginSchema = <
   schema: PluginSchemaOf<S, A>,
   record: PluginParamsRecord,
   factoryFn: (path: string) => JSONPathReader,
-): ConvertPluginResult<S, A> => {
+): ConvertPluginResultEx<S, A> => {
   const extractor: PluginExtractorBundle = createPluginValueExtractor(
     schema.pluginName,
     schema.schema,
