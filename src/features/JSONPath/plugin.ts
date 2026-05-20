@@ -9,36 +9,36 @@ import type {
   CommandArgExtractors,
   CommandExtractorEntry,
   CommandMapKey,
-} from "./extractor/types";
-import { extractPluginParamFromRecord } from "./param";
-import { createPluginValueExtractor } from "./schema";
+} from "./core/extractor/types";
+import { extractPluginParamFromRecord } from "./core/param";
+import { createPluginValueExtractor } from "./core/schema";
 import type {
   CommandExtractorEntryList,
   PluginExtractorBundle,
   ConvertPluginResult,
-} from "./types";
+} from "./core/types";
 
 export const mergeCommandMap = (
-  list: ReadonlyArray<CommandExtractorEntryList>
+  list: ReadonlyArray<CommandExtractorEntryList>,
 ): Map<CommandMapKey, CommandArgExtractors> => {
   const src: CommandExtractorEntry[] = list.flatMap(
-    (item) => item.extractorEntries
+    (item) => item.extractorEntries,
   );
   return new Map(src);
 };
 
-export const convertPlugin = <
+export const jsonPathFromPluginSchema = <
   S extends PluginScalarParam,
-  A extends PluginArrayParamType
+  A extends PluginArrayParamType,
 >(
   schema: PluginSchemaOf<S, A>,
   record: PluginParamsRecord,
-  factoryFn: (path: string) => JSONPathReader
+  factoryFn: (path: string) => JSONPathReader,
 ): ConvertPluginResult<S, A> => {
   const extractor: PluginExtractorBundle = createPluginValueExtractor(
     schema.pluginName,
     schema.schema,
-    factoryFn
+    factoryFn,
   );
   const { params } = extractPluginParamFromRecord(record, extractor.params);
   return {
@@ -48,3 +48,8 @@ export const convertPlugin = <
     params: params,
   };
 };
+
+/**
+ * @deprecated Use `jsonPathFromPluginSchema` instead.
+ */
+export const convertPlugin = jsonPathFromPluginSchema;

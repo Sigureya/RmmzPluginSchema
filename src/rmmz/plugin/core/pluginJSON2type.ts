@@ -35,6 +35,6 @@ export interface PluginSchema extends PluginMinimumSchema {
 export interface PluginSchemaOf<
   S extends PluginScalarParam,
   A extends PluginArrayParamType,
-> extends PluginSchema {
+> extends PluginMinimumSchema {
   schema: PluginSchemaArrayFiltered<PluginParamEx2<S, A>>;
 }
