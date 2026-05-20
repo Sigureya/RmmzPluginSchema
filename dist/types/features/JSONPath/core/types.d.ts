@@ -9,7 +9,13 @@ export interface PluginExtractorBundle {
 export interface CommandExtractorEntryList {
     extractorEntries: CommandExtractorEntry[];
 }
-export interface ConvertPluginResult<S extends PluginScalarParam, A extends PluginArrayParamType> extends CommandExtractorEntryList {
+export interface ConvertPluginResult {
+    params: PluginExtractedValue<PluginParam>[];
+    record: PluginParamsRecord;
+    schema: PluginSchemaOf<PluginScalarParam, PluginArrayParamType>;
+    extractorEntries: CommandExtractorEntry[];
+}
+export interface ConvertPluginResultEx<S extends PluginScalarParam, A extends PluginArrayParamType> extends ConvertPluginResult {
     params: PluginExtractedValue<PluginParam>[];
     record: PluginParamsRecord;
     schema: PluginSchemaOf<S, A>;
