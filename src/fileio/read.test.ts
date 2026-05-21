@@ -5,7 +5,10 @@ import type {
   ResultOfparsePluginParamRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { readAllPluginBodies, readPluginInfosSafe } from "./read";
-import type { MessageOfparsePluginParamRecordEx } from "./types/msg";
+import type {
+  MessageOfparsePluginParamRecordEx,
+  PluginReadResult,
+} from "./types/msg";
 
 const messages: MessageOfparsePluginParamRecordEx = {
   readErrorPluginsJS: "Failed to read plugins.js",
@@ -144,12 +147,12 @@ describe("readAllPluginBodies", () => {
       parsePluginBody,
     );
     const result = await Promise.all(tasks);
-    const expected0 = {
+    const expected0: PluginReadResult = {
       record: recordsResult.plugins[0],
       plugin: parsedPlugin(),
       error: "",
     };
-    const expected1 = {
+    const expected1: PluginReadResult = {
       record: recordsResult.plugins[1],
       plugin: parsedPlugin(),
       error: "",
@@ -184,7 +187,7 @@ describe("readAllPluginBodies", () => {
         parsePluginBody,
       ),
     );
-    const expected = {
+    const expected: PluginReadResult = {
       record,
       plugin: null,
       error: messages.readErrorPluginBody,
@@ -217,7 +220,7 @@ describe("readAllPluginBodies", () => {
         parsePluginBody,
       ),
     );
-    const expected = {
+    const expected: PluginReadResult = {
       record,
       plugin: null,
       error: "",
