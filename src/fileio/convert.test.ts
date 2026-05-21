@@ -1,11 +1,12 @@
+import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type {
+  DeepJSONParserHandlers,
   ParsedPlugin,
   PluginParamsRecord,
   ResultOfparsePluginParamRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import { createDeepJSONParserHandlers } from "../rmmz/plugin/core/deepJSONHandler";
 import { READ_PLUGIN_MESSAGES, readPluginsWithSchema } from "./convert";
 import type { PluginReadHandlers } from "./types/handlers";
 
@@ -45,6 +46,27 @@ const createRecordsResult = (
   };
 };
 
+const createDeepJSONParserHandlersLocal =
+  (): MockedObject<DeepJSONParserHandlers> => {
+    type StringArrayHandler = DeepJSONParserHandlers["parseStringArray"];
+    type ObjectHandler = DeepJSONParserHandlers["parseObject"];
+    type ObjectArrayHandler = DeepJSONParserHandlers["parseObjectArray"];
+    return {
+      parseStringArray: vi.fn<StringArrayHandler>(() => ({
+        errors: [],
+        value: [],
+      })),
+      parseObject: vi.fn<ObjectHandler>(() => ({
+        errors: [],
+        value: {},
+      })),
+      parseObjectArray: vi.fn<ObjectArrayHandler>(() => ({
+        errors: [],
+        value: [],
+      })),
+    };
+  };
+
 describe("readPluginsWithSchema", () => {
   test("returns converted plugin schema entries when all reads succeed", async () => {
     const recordsResult = createRecordsResult([pluginRecord("PluginA")]);
@@ -77,7 +99,7 @@ describe("readPluginsWithSchema", () => {
     const result = await readPluginsWithSchema(
       READ_PLUGIN_MESSAGES,
       handlers,
-      createDeepJSONParserHandlers(),
+      createDeepJSONParserHandlersLocal(),
     );
     const expected = [
       {
@@ -128,7 +150,7 @@ describe("readPluginsWithSchema", () => {
     const result = await readPluginsWithSchema(
       READ_PLUGIN_MESSAGES,
       handlers,
-      createDeepJSONParserHandlers(),
+      createDeepJSONParserHandlersLocal(),
     );
     const expected = [
       {
@@ -164,7 +186,7 @@ describe("readPluginsWithSchema", () => {
     const result = await readPluginsWithSchema(
       READ_PLUGIN_MESSAGES,
       handlers,
-      createDeepJSONParserHandlers(),
+      createDeepJSONParserHandlersLocal(),
     );
     const expected: [] = [];
 
@@ -186,7 +208,7 @@ describe("readPluginsWithSchema", () => {
     const result = await readPluginsWithSchema(
       READ_PLUGIN_MESSAGES,
       handlers,
-      createDeepJSONParserHandlers(),
+      createDeepJSONParserHandlersLocal(),
     );
     const expected: [] = [];
 
