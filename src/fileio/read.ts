@@ -3,20 +3,19 @@ import type {
   PluginParamsRecord,
   ResultOfparsePluginParamRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  parsePluginByLocale,
-  parsePluginParamRecord2,
-} from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginReadResult } from "./convert";
-import type { MessageOfparsePluginParamRecordEx } from "./types/msg";
+import type { PluginBodyHandler, PluginInfoHandler } from "./types/handlers";
+import type {
+  MessageOfparsePluginParamRecordEx,
+  PluginReadResult,
+} from "./types/msg";
 
 export const readPluginInfosSafe = async (
   messages: MessageOfparsePluginParamRecordEx,
-  readPluginInfos: () => Promise<string>,
+  handlers: PluginInfoHandler,
 ): Promise<ResultOfparsePluginParamRecord> => {
   try {
-    const source = await readPluginInfos();
-    return parsePluginInfosSafe(source, messages);
+    const source = await handlers.readPluginInfos();
+    return parsePluginInfosSafe(source, messages, handlers);
   } catch {
     return {
       message: messages.readErrorPluginsJS,
@@ -30,9 +29,10 @@ export const readPluginInfosSafe = async (
 const parsePluginInfosSafe = (
   source: string,
   messages: MessageOfparsePluginParamRecordEx,
+  handlers: PluginInfoHandler,
 ): ResultOfparsePluginParamRecord => {
   try {
-    return parsePluginParamRecord2(source, messages);
+    return handlers.parsePluginList(source, messages);
   } catch {
     return {
       message: messages.readErrorPluginsJS,
@@ -46,23 +46,23 @@ const parsePluginInfosSafe = (
 export const readAllPluginBodies = (
   recordsResult: ResultOfparsePluginParamRecord,
   messages: MessageOfparsePluginParamRecordEx,
-  readPluginBody: (pluginName: string) => Promise<string>,
+  handlers: PluginBodyHandler,
 ): Promise<PluginReadResult>[] => {
   return recordsResult.plugins.map((record): Promise<PluginReadResult> => {
-    return readSinglePluginBody(record, messages, readPluginBody);
+    return readSinglePluginBody(record, messages, handlers);
   });
 };
 
 const readSinglePluginBody = async (
   record: PluginParamsRecord,
   messages: MessageOfparsePluginParamRecordEx,
-  readPluginBody: (pluginName: string) => Promise<string>,
+  handlers: PluginBodyHandler,
 ): Promise<PluginReadResult> => {
   try {
-    const source = await readPluginBody(record.name);
+    const source = await handlers.readPluginBody(record.name);
     return {
       record,
-      plugin: parsePluginBodySafe(source),
+      plugin: parsePluginBodySafe(source, handlers),
       error: "",
     };
   } catch {
@@ -74,9 +74,12 @@ const readSinglePluginBody = async (
   }
 };
 
-const parsePluginBodySafe = (source: string): ParsedPlugin | null => {
+const parsePluginBodySafe = (
+  source: string,
+  handlers: PluginBodyHandler,
+): ParsedPlugin | null => {
   try {
-    return parsePluginByLocale(source);
+    return handlers.parsePluginBody(source);
   } catch {
     return null;
   }

@@ -1,22 +1,13 @@
-import type {
-  DeepJSONParserHandlers,
-  ParsedPlugin,
-  PluginParamsRecord,
-} from "@RmmzPluginSchema/rmmz/plugin";
+import type { DeepJSONParserHandlers } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
 import type { ConvertPluginResult } from "../features";
 import { jsonPathFromPluginSchema } from "../features";
 import { readAllPluginBodies, readPluginInfosSafe } from "./read";
+import type { PluginReadHandlers } from "./types/handlers";
 import type {
   MessageOfparsePluginParamRecordEx,
-  PluginReadHandlers,
+  PluginReadResult,
 } from "./types/msg";
-
-export interface PluginReadResult {
-  plugin: ParsedPlugin | null;
-  error: string;
-  record: PluginParamsRecord;
-}
 
 export const READ_PLUGIN_MESSAGES: MessageOfparsePluginParamRecordEx = {
   readErrorPluginsJS: "Failed to read plugins.js",
@@ -32,14 +23,11 @@ export const readPluginsWithSchema = async (
   handlers: PluginReadHandlers,
   parserHandlers: DeepJSONParserHandlers,
 ): Promise<ConvertPluginResult[]> => {
-  const pluginRecordsResult = await readPluginInfosSafe(
-    messages,
-    handlers.readPluginInfos,
-  );
+  const pluginRecordsResult = await readPluginInfosSafe(messages, handlers);
   const pluginBodyReads = readAllPluginBodies(
     pluginRecordsResult,
     messages,
-    handlers.readPluginBody,
+    handlers,
   );
   return await convertAllPluginReads(pluginBodyReads, handlers, parserHandlers);
 };
