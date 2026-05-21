@@ -23,11 +23,16 @@ export const readPluginsWithSchema = async (
   handlers: PluginReadHandlers,
   parserHandlers: DeepJSONParserHandlers,
 ): Promise<ConvertPluginResult[]> => {
-  const pluginRecordsResult = await readPluginInfosSafe(messages, handlers);
+  const pluginRecordsResult = await readPluginInfosSafe(
+    messages,
+    () => handlers.readPluginInfos(),
+    (source, msg) => handlers.parsePluginList(source, msg),
+  );
   const pluginBodyReads = readAllPluginBodies(
     pluginRecordsResult,
     messages,
-    handlers,
+    (pluginName) => handlers.readPluginBody(pluginName),
+    (src) => handlers.parsePluginBody(src),
   );
   return await convertAllPluginReads(pluginBodyReads, handlers, parserHandlers);
 };
