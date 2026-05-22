@@ -1,7 +1,11 @@
 import type { DeepJSONParserHandlers } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ConvertPluginResult } from "../features";
-import { jsonPathFromPluginSchema } from "../features";
+import type {
+  CommandMapKey,
+  CommandArgExtractors,
+  ConvertPluginResult,
+} from "../features";
+import { mergeCommandMap, jsonPathFromPluginSchema } from "../features";
 import { readAllPluginBodies, readPluginInfosSafe } from "./read";
 import type { PluginReadHandlers } from "./types/handlers";
 import type {
@@ -16,6 +20,15 @@ export const READ_PLUGIN_MESSAGES: MessageOfparsePluginParamRecordEx = {
   notArray: "Plugin format is invalid: not an array",
   partialSuccess: "Some plugins failed to read or parse",
   success: "All plugins read and parsed successfully",
+};
+
+export const buildCommandMapFromFiles = async (
+  messages: MessageOfparsePluginParamRecordEx,
+  handlers: PluginReadHandlers,
+  parserHandlers: DeepJSONParserHandlers,
+): Promise<Map<CommandMapKey, CommandArgExtractors>> => {
+  const list = await readPluginsWithSchema(messages, handlers, parserHandlers);
+  return mergeCommandMap(list);
 };
 
 export const readPluginsWithSchema = async (
