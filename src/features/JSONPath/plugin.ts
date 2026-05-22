@@ -4,19 +4,39 @@ import type {
   PluginArrayParamType,
   PluginParamsRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
+import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin/types/pluginCommand";
+import { extractPluginCommandArgs } from "./core";
 import type {
   CommandArgExtractors,
   CommandExtractorEntry,
+  CommandExtractResult,
   CommandMapKey,
 } from "./core/extractor/types";
 import { extractPluginParamFromRecord } from "./core/param";
-import { createPluginValueExtractor } from "./core/schema";
+import { createPluginValueExtractor, pluginComamndName } from "./core/schema";
 import type {
   CommandExtractorEntryList,
   PluginExtractorBundle,
   ConvertPluginResultEx,
 } from "./core/types";
+
+export const extractArgsFromPluiginCommand = (
+  command: PluginCommandData,
+  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
+): CommandExtractResult | undefined => {
+  const key: CommandMapKey = pluginComamndName(
+    command.parameters[0],
+    command.parameters[1],
+  );
+  const extractor = map.get(key);
+  if (!extractor) {
+    return undefined;
+  }
+  const args = parseDeepRecord(command.parameters[3]);
+  return extractPluginCommandArgs(args, extractor);
+};
 
 export const mergeCommandMap = (
   list: ReadonlyArray<CommandExtractorEntryList>,
