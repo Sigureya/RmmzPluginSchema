@@ -5,7 +5,12 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { MessageOfparsePluginParamRecordEx } from "./msg";
 
-export interface PluginReadHandlers {
+export interface PluginFileReadHandlers {
+  readPluginInfos: () => Promise<string>;
+  readPluginBody: (pluginName: string) => Promise<string>;
+}
+
+export interface PluginReadHandlers extends PluginFileReadHandlers {
   readPluginInfos: () => Promise<string>;
   readPluginBody: (pluginName: string) => Promise<string>;
   jsonPath: (path: string) => JSONPathReader;
