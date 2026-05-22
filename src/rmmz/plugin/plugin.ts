@@ -17,6 +17,9 @@ export const paramObjectFromPluginRecord = (
   return parseDeepRecord(record.parameters);
 };
 
+/**
+ * @deprecated Use `pluginSourceToArraySchema` instead.
+ */
 export const pluginSourceToJSON = (text: string): PluginJSON => {
   return compilePluginToObject(text);
 };
