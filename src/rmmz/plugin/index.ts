@@ -1,5 +1,6 @@
 export * from "./core";
 export * from "./pluginsJS";
+export * from "./types";
 export type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
