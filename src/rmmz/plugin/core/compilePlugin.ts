@@ -15,6 +15,9 @@ import type {
   PluginStructBody,
 } from "./pluginJSONTypes";
 
+/**
+ * @deprecated Use `pluginSourceToArraySchema` instead.
+ */
 export const compilePluginToObject = (text: string): PluginJSON => {
   return compilePluginToObjectCore(parsePluginByLocale(text, ""));
 };
