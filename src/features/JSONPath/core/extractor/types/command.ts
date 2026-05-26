@@ -2,6 +2,11 @@ import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesExtractorBundle } from "./bundle";
 import type { PluginExtractedValue } from "./result";
 
+export interface CommandBuildResult<T> {
+  extractors: CommandArgExtractors[];
+  errors: T[];
+}
+
 export interface CommandArgExtractors {
   pluginName: string;
   commandName: string;
