@@ -22,13 +22,10 @@ import type {
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const compilePluginCommandExtractor = <
-  S extends PluginScalarParam,
-  A extends PluginArrayParamType,
->(
+export const compilePluginCommandExtractor = (
   pluginName: string,
   schema: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
 ): CommandArgExtractors => {
   return {
