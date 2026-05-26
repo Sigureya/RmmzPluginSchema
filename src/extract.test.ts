@@ -1,11 +1,38 @@
+import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
-import type {
-  ParsedPlugin,
-  PluginParamsRecord,
-  ResultOfparsePluginParamRecord,
+import type { PluginSchemaArray } from "./rmmz";
+import {
+  compilePluginAsArraySchema,
+  type DeepJSONParserHandlers,
+  type ParsedPlugin,
+  type PluginParamsRecord,
+  type ResultOfparsePluginParamRecord,
 } from "./rmmz";
+
+const createDeepJSONParseMock = (): MockedObject<DeepJSONParserHandlers> => {
+  return {
+    parseObject: vi.fn<DeepJSONParserHandlers["parseObject"]>(() => {
+      return {
+        errors: [],
+        value: {},
+      };
+    }),
+    parseObjectArray: vi.fn<DeepJSONParserHandlers["parseObjectArray"]>(() => {
+      return {
+        errors: [],
+        value: [],
+      };
+    }),
+    parseStringArray: vi.fn<DeepJSONParserHandlers["parseStringArray"]>(() => {
+      return {
+        errors: [],
+        value: [],
+      };
+    }),
+  };
+};
 
 const pluginsRecord: PluginParamsRecord[] = [];
 const msg1: MessageOfparsePluginParamRecordEx = {
@@ -21,7 +48,9 @@ const paresdPlugin: ParsedPlugin = {
   locale: "ja",
   meta: {},
   params: [],
-  commands: [],
+  commands: [
+    { command: "cmd", args: [], desc: "test desc", text: "mock text" },
+  ],
   structs: [],
   helpLines: [],
   dependencies: {
@@ -91,6 +120,21 @@ describe("File IO", () => {
           mockBodySrc,
         );
       });
+    });
+  });
+});
+
+describe("rmmz", () => {
+  describe("compilePluginAsArraySchema", () => {
+    test("normal", () => {
+      const deepJSONParseMock = createDeepJSONParseMock();
+      const schema: PluginSchemaArray = compilePluginAsArraySchema(
+        paresdPlugin,
+        deepJSONParseMock,
+      );
+      expect(deepJSONParseMock.parseObject).not.toHaveBeenCalled();
+      expect(deepJSONParseMock.parseObjectArray).not.toHaveBeenCalled();
+      expect(deepJSONParseMock.parseStringArray).not.toHaveBeenCalled();
     });
   });
 });
