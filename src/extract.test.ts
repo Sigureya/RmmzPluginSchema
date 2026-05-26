@@ -9,8 +9,9 @@ import type {
   ParsedPlugin,
   PluginParamsRecord,
   ResultOfparsePluginParamRecord,
+  ClassifiedPluginParams,
 } from "./rmmz";
-import { compilePluginAsArraySchema } from "./rmmz";
+import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 
 const mockStructDefault = {
   mockText: "mock text",
@@ -143,35 +144,45 @@ describe("File IO", () => {
   });
 });
 
+const schema: PluginSchemaArray = {
+  commands: [
+    { args: [], command: "cmd", desc: "test desc", text: "mock text" },
+  ],
+  params: [
+    { attr: { default: "", kind: "string" }, name: "textParam" },
+    { attr: { default: 0, kind: "number" }, name: "numParam" },
+    { attr: { default: false, kind: "boolean" }, name: "boolParam" },
+  ],
+  structs: [
+    {
+      struct: "Person",
+      params: [
+        { attr: { default: "Alice", kind: "string" }, name: "name" },
+        { attr: { default: 17, kind: "number" }, name: "age" },
+      ],
+    },
+  ],
+};
+const classify: ClassifiedPluginParams = {
+  scalars: [
+    { attr: { default: "", kind: "string" }, name: "textParam" },
+    { attr: { default: 0, kind: "number" }, name: "numParam" },
+    { attr: { default: false, kind: "boolean" }, name: "boolParam" },
+  ],
+  scalarArrays: [],
+  structArrays: [],
+  structs: [],
+};
 describe("rmmz", () => {
   describe("compilePluginAsArraySchema", () => {
     test("normal", () => {
       const deepJSONParseMock = createDeepJSONParseMock();
-      const schema: PluginSchemaArray = compilePluginAsArraySchema(
+      const result: PluginSchemaArray = compilePluginAsArraySchema(
         paresdPlugin,
         deepJSONParseMock,
       );
 
-      const expected: PluginSchemaArray = {
-        commands: [
-          { args: [], command: "cmd", desc: "test desc", text: "mock text" },
-        ],
-        params: [
-          { attr: { default: "", kind: "string" }, name: "textParam" },
-          { attr: { default: 0, kind: "number" }, name: "numParam" },
-          { attr: { default: false, kind: "boolean" }, name: "boolParam" },
-        ],
-        structs: [
-          {
-            struct: "Person",
-            params: [
-              { attr: { default: "Alice", kind: "string" }, name: "name" },
-              { attr: { default: 17, kind: "number" }, name: "age" },
-            ],
-          },
-        ],
-      };
-      expect(schema).toEqual(expected);
+      expect(result).toEqual(schema);
       expect(deepJSONParseMock.parseObject).not.toHaveBeenCalled();
       expect(deepJSONParseMock.parseObjectArray).not.toHaveBeenCalled();
       expect(deepJSONParseMock.parseStringArray).not.toHaveBeenCalled();
@@ -243,6 +254,14 @@ describe("rmmz", () => {
         const result = compilePluginAsArraySchema(tokens, deepJSONParseMock);
         expect(result).toEqual(expected);
       });
+    });
+  });
+  describe("classifyPluginParams", () => {
+    test("normal", () => {
+      const result: ClassifiedPluginParams = classifyPluginParams(
+        schema.params,
+      );
+      expect(result).toEqual(classify);
     });
   });
 });
