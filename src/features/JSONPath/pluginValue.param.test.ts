@@ -145,6 +145,11 @@ const titleBgmParam: PluginParam = {
   attr: { kind: "struct", struct: "Audio" },
 };
 
+const undefinedStructParam: PluginParam = {
+  name: "brokenStruct",
+  attr: { kind: "struct", struct: "UndefinedStruct" },
+};
+
 interface TestCase {
   caseName: string;
   path: PluginValuesPath;
@@ -511,6 +516,24 @@ const testCases: TestCase[] = [
           value: 70,
         },
       ],
+    },
+  },
+  {
+    paramSchema: undefinedStructParam,
+    caseName: "未定義structを参照した場合のテスト",
+    path: {
+      rootCategory: "param",
+      rootName: "brokenStruct",
+      scalars: undefined,
+      structArrays: { errors: [], items: [] },
+      structs: {
+        errors: [{ code: "undefined_struct", path: '$["brokenStruct"]' }],
+        items: [],
+      },
+    },
+    expected: {
+      pluginName: "MockPlugin",
+      params: [],
     },
   },
 ];
