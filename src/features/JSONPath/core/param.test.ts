@@ -246,4 +246,52 @@ describe("plugin param extractor", () => {
       expect(result.params).toEqual(expected);
     });
   });
+
+  describe("undefined struct input", () => {
+    const pluginParamsSchema: PluginParamsSchema = {
+      pluginName: "TestPlugin",
+      schema: {
+        params: [
+          { name: "enable", attr: { kind: "boolean", default: false } },
+          { name: "broken", attr: { kind: "struct", struct: "Missing" } },
+        ],
+      },
+    };
+    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map();
+
+    test("compilePluginParamExtractor は未定義structがあっても処理継続できる", () => {
+      const mockFn = createMockFn();
+      const memo = compilePluginParamExtractor(
+        pluginParamsSchema,
+        structMap,
+        mockFn,
+      );
+
+      expect(memo.extractors).toHaveLength(2);
+      expect(mockFn).toHaveBeenCalledTimes(1);
+      expect(mockFn).toHaveBeenNthCalledWith(1, `$["enable"]`);
+    });
+
+    test("extractPluginParam は抽出可能な値のみ返す", () => {
+      const memo: PluginParamExtractor = compilePluginParamExtractor(
+        pluginParamsSchema,
+        structMap,
+        (path) => new JSONPathJS(path),
+      );
+
+      const expectedParams: PluginExtractedValue[] = [
+        {
+          rootType: "param",
+          rootName: "plugin",
+          structName: "",
+          param: { name: "enable", attr: { kind: "boolean", default: false } },
+          value: true,
+        },
+      ];
+      const result: ParamExtractResult = extractPluginParam(mockData, memo);
+
+      expect(result.pluginName).toBe("TestPlugin");
+      expect(result.params).toEqual(expectedParams);
+    });
+  });
 });

@@ -1113,3 +1113,39 @@ describe("School path generation and value extraction", () => {
     });
   });
 });
+
+describe("undefined struct defensive behavior", () => {
+  const pathSchema: PluginValuesPath = {
+    rootCategory: "param",
+    rootName: "brokenStruct",
+    scalars: undefined,
+    structArrays: { errors: [], items: [] },
+    structs: {
+      items: [],
+      errors: [{ code: "undefined_struct", path: '$["brokenStruct"]' }],
+    },
+  };
+
+  test("compileJSONPathSchema は未定義structエラーがあっても例外を投げない", () => {
+    const mockFn = createMockFunc();
+    const memo = compileJSONPathSchema(pathSchema, mockFn);
+
+    expect(mockFn).toBeCalledTimes(0);
+    expect(memo.top).toBeUndefined();
+    expect(memo.structs).toEqual([]);
+    expect(memo.structArrays).toEqual([]);
+  });
+
+  test("未定義structのみのpath schemaは抽出結果が空になる", () => {
+    const memo: PluginValuesExtractorBundle = compileJSONPathSchema(
+      pathSchema,
+      newJSONPath,
+    );
+    const values: PluginExtractedValue[] = extractAllPluginValues(
+      { brokenStruct: { a: 1 } },
+      [memo],
+    );
+
+    expect(values).toEqual([]);
+  });
+});
