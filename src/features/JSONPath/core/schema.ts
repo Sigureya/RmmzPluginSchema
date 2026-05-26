@@ -21,6 +21,14 @@ import type {
 import { compileJSONPathSchema } from "./pathToMemo";
 import type { PluginExtractorBundle } from "./types";
 
+export const createPluginCommandExtractorMap = (
+  schema: PluginMinimumSchema,
+  factoryFn: (path: string) => JSONPathReader,
+): Map<CommandMapKey, CommandArgExtractors> => {
+  const list = createPluginCommandExtractor(schema, factoryFn);
+  return new Map(list);
+};
+
 export const createPluginCommandExtractor = (
   schema: PluginMinimumSchema,
   factoryFn: (path: string) => JSONPathReader,

@@ -1,140 +1,147 @@
-import { AUTHOR_RMMZ as C, SRC_COLOR as F, domainNames as V, isValidNumber as b } from "../libs/libs.es.js";
-import { compilePluginAsArraySchema as o } from "../rmmz/rmmz.es.js";
-import { collectDependentStructNames as R, convertPluginsJSToJSON as O, filterPluginParamByText as v, filterPluginSchemaByFileParam as J, filterPluginSchemaByNumberParam as T, filterPluginSchemaByParam as D, filterPluginSchemaByVariableParam as j, isErrorStructParam as w, isRmmzDataKind as M, lookupKind as L, omitPluginParam as k, parsePlugin as _, parsePluginByLocale as G, parsePluginParamRecord as I, parsePluginParamRecord2 as K, pluginSourceToArraySchema as z, pluginSourceToJSON as H, rebuildCommands as U, stringifyDeepJSON as q, stringifyDeepRecord as W, structDependencies as Z, validatePluginJS as Q } from "../rmmz/rmmz.es.js";
-import { jsonPathFromPluginSchema as c } from "../features/features.es.js";
-import { compileCommandExtractorsFromPlugins as Y, compilePluginCommandExtractor as $, compilePluginCommandPairs as aa, compilePluginParamExtractor as ra, convertPlugin as ea, createPluginCommandExtractor as ta, createPluginValueExtractor as sa, createPluginValuesPath as ia, createPrimiteveParamPath as na, createStructParamPath as la, extractAllPluginValues as ua, extractCommandArgsByKey as ma, extractPluginCommandArgs as oa, extractPluginParam as ca, extractPluginParamFromRecord as Pa, generatePluginAnnotation as ga, generatePluginAnnotationLines as da, generatePluginAnnotationText as pa, getPathFromStructArraySchema as Sa, getPathFromStructParam as ya, getPathFromStructSchema as Aa, isCommandArgValue as ha, ispluginParamValue as fa, makeScalarArrayPath as xa, makeScalarValuesPath as Ea, mergeCommandMap as Na } from "../features/features.es.js";
-import { c as Fa, a as Va, b as ba, d as Ba, e as Ra, f as Oa, g as va, h as Ja, i as Ta, j as Da, k as ja, l as wa, m as Ma, n as La, o as ka, p as _a, q as Ga, r as Ia, s as Ka, t as za, u as Ha, v as Ua, w as qa, x as Wa, y as Za, z as Qa, A as Xa, B as Ya, C as $a, D as ar, E as rr, F as er, G as tr } from "../shared/structMap.es.js";
-const P = async (r, a, e) => {
+import { AUTHOR_RMMZ as b, SRC_COLOR as V, domainNames as B, isValidNumber as R } from "../libs/libs.es.js";
+import { mergeCommandMap as o, jsonPathFromPluginSchema as c } from "../features/features.es.js";
+import { compileCommandExtractorsFromPlugins as v, compilePluginCommandExtractor as J, compilePluginCommandPairs as M, compilePluginParamExtractor as T, convertPlugin as D, createPluginCommandExtractor as w, createPluginCommandExtractorMap as j, createPluginValueExtractor as L, createPluginValuesPath as k, createPrimiteveParamPath as K, createStructParamPath as _, extractAllPluginValues as G, extractArgsFromPluiginCommand as H, extractCommandArgsByKey as I, extractPluginCommandArgs as z, extractPluginParam as U, extractPluginParamFromRecord as q, generatePluginAnnotation as W, generatePluginAnnotationLines as Z, generatePluginAnnotationText as Q, getPathFromStructArraySchema as X, getPathFromStructParam as Y, getPathFromStructSchema as $, isCommandArgValue as aa, ispluginParamValue as ra, makeScalarArrayPath as ea, makeScalarValuesPath as ta, pluginComamndName as sa } from "../features/features.es.js";
+import { compilePluginAsArraySchema as P } from "../rmmz/rmmz.es.js";
+import { collectDependentStructNames as na, convertPluginsJSToJSON as la, filterPluginParamByText as ma, filterPluginSchemaByFileParam as ua, filterPluginSchemaByNumberParam as oa, filterPluginSchemaByParam as ca, filterPluginSchemaByVariableParam as Pa, isErrorStructParam as ga, isRmmzDataKind as da, lookupKind as pa, omitPluginParam as Sa, parsePlugin as ya, parsePluginByLocale as Aa, parsePluginParamRecord as ha, parsePluginParamRecord2 as fa, pluginSourceToArraySchema as xa, pluginSourceToJSON as Ca, rebuildCommands as Ea, stringifyDeepJSON as Fa, stringifyDeepRecord as Na, structDependencies as ba, validatePluginJS as Va } from "../rmmz/rmmz.es.js";
+import { c as Ra, a as Oa, b as va, d as Ja, e as Ma, f as Ta, g as Da, h as wa, i as ja, j as La, k as ka, l as Ka, m as _a, n as Ga, o as Ha, p as Ia, q as za, r as Ua, s as qa, t as Wa, u as Za, v as Qa, w as Xa, x as Ya, y as $a, z as ar, A as rr, B as er, C as tr, D as sr, E as ir, F as nr, G as lr } from "../shared/structMap.es.js";
+const g = async (r, a, e) => {
   try {
-    const i = await a();
-    return g(i, r, e);
+    const t = await a();
+    return d(t, r, e);
   } catch {
     return { message: r.readErrorPluginsJS, plugins: [], invalidPlugins: 0, complete: !1 };
   }
-}, g = (r, a, e) => {
+}, d = (r, a, e) => {
   try {
     return e(r, a);
   } catch {
     return { message: a.readErrorPluginsJS, plugins: [], invalidPlugins: 0, complete: !1 };
   }
-}, d = (r, a, e, i) => r.plugins.map((s) => p(s, a, e, i)), p = async (r, a, e, i) => {
+}, p = (r, a, e, t) => r.plugins.map((i) => S(i, a, e, t)), S = async (r, a, e, t) => {
   try {
-    const s = await e(r.name);
-    return { record: r, plugin: S(s, i), error: "" };
+    const i = await e(r.name);
+    return { record: r, plugin: y(i, t), error: "" };
   } catch {
     return { record: r, plugin: null, error: a.readErrorPluginBody };
   }
-}, S = (r, a) => {
+}, y = (r, a) => {
   try {
     return a(r);
   } catch {
     return null;
   }
-}, f = {
+}, C = {
   readErrorPluginsJS: "Failed to read plugins.js",
   readErrorPluginBody: "Failed to read plugin file",
   parseError: "Failed to parse plugin",
   notArray: "Plugin format is invalid: not an array",
   partialSuccess: "Some plugins failed to read or parse",
   success: "All plugins read and parsed successfully"
-}, x = async (r, a, e) => {
-  const i = await P(r, () => a.readPluginInfos(), (t, n) => a.parsePluginList(t, n)), s = d(i, r, (t) => a.readPluginBody(t), (t) => a.parsePluginBody(t));
-  return await y(s, a, e);
-}, y = async (r, a, e) => (await Promise.all(r.map(async (s) => ((t, n, l) => {
-  if (t.plugin === null) return null;
-  const u = o(t.plugin, l);
-  return c({ pluginName: t.record.name, schema: u }, t.record, (m) => n.jsonPath(m));
-})(await s, a, e)))).filter((s) => s !== null);
+}, E = async (r, a, e) => {
+  const t = await A(r, a, e);
+  return o(t);
+}, A = async (r, a, e) => {
+  const t = await g(r, () => a.readPluginInfos(), (s, n) => a.parsePluginList(s, n)), i = p(t, r, (s) => a.readPluginBody(s), (s) => a.parsePluginBody(s));
+  return await h(i, a, e);
+}, h = async (r, a, e) => (await Promise.all(r.map(async (i) => ((s, n, l) => {
+  if (s.plugin === null) return null;
+  const m = P(s.plugin, l);
+  return c({ pluginName: s.record.name, schema: m }, s.record, (u) => n.jsonPath(u));
+})(await i, a, e)))).filter((i) => i !== null);
 export {
-  C as AUTHOR_RMMZ,
-  f as READ_PLUGIN_MESSAGES,
-  F as SRC_COLOR,
-  Fa as classifyFileParams,
-  Va as classifyPluginParams,
-  ba as classifyTextParams,
-  R as collectDependentStructNames,
-  Y as compileCommandExtractorsFromPlugins,
-  o as compilePluginAsArraySchema,
-  $ as compilePluginCommandExtractor,
-  aa as compilePluginCommandPairs,
-  ra as compilePluginParamExtractor,
-  ea as convertPlugin,
-  Ba as convertPluginCommandSchema,
-  O as convertPluginsJSToJSON,
-  Ra as convertStructSchema,
-  Oa as createClassifiedStructMap,
-  ta as createPluginCommandExtractor,
-  sa as createPluginValueExtractor,
-  ia as createPluginValuesPath,
-  na as createPrimiteveParamPath,
-  va as createStructMap,
-  la as createStructParamPath,
-  V as domainNames,
-  ua as extractAllPluginValues,
-  ma as extractCommandArgsByKey,
-  oa as extractPluginCommandArgs,
-  ca as extractPluginParam,
-  Pa as extractPluginParamFromRecord,
-  v as filterPluginParamByText,
-  J as filterPluginSchemaByFileParam,
-  T as filterPluginSchemaByNumberParam,
-  D as filterPluginSchemaByParam,
-  j as filterPluginSchemaByVariableParam,
-  ga as generatePluginAnnotation,
-  da as generatePluginAnnotationLines,
-  pa as generatePluginAnnotationText,
-  Sa as getPathFromStructArraySchema,
-  ya as getPathFromStructParam,
-  Aa as getPathFromStructSchema,
-  Ja as hasNumberValueParam,
-  Ta as hasScalarAttr,
-  Da as hasStructAttr,
-  ja as hasTextAttr,
-  wa as isArrayAttr,
-  Ma as isArrayParam,
-  La as isArrayParamEx,
-  ha as isCommandArgValue,
-  w as isErrorStructParam,
-  ka as isFileAttr,
-  _a as isNumberArrayParam,
-  Ga as isNumberAttr,
-  Ia as isNumberValueParam,
-  Ka as isNumberValueParamEx,
-  M as isRmmzDataKind,
-  za as isScalarParam,
-  Ha as isStringArrayParam,
-  Ua as isStringValueParam,
-  qa as isStructArrayAttr,
-  Wa as isStructArrayParam,
-  Za as isStructAttr,
-  Qa as isStructParam,
-  b as isValidNumber,
-  Xa as isVariableAttr,
-  fa as ispluginParamValue,
+  b as AUTHOR_RMMZ,
+  C as READ_PLUGIN_MESSAGES,
+  V as SRC_COLOR,
+  E as buildCommandMapFromFiles,
+  Ra as classifyFileParams,
+  Oa as classifyPluginParams,
+  va as classifyTextParams,
+  na as collectDependentStructNames,
+  v as compileCommandExtractorsFromPlugins,
+  P as compilePluginAsArraySchema,
+  J as compilePluginCommandExtractor,
+  M as compilePluginCommandPairs,
+  T as compilePluginParamExtractor,
+  D as convertPlugin,
+  Ja as convertPluginCommandSchema,
+  la as convertPluginsJSToJSON,
+  Ma as convertStructSchema,
+  Ta as createClassifiedStructMap,
+  w as createPluginCommandExtractor,
+  j as createPluginCommandExtractorMap,
+  L as createPluginValueExtractor,
+  k as createPluginValuesPath,
+  K as createPrimiteveParamPath,
+  Da as createStructMap,
+  _ as createStructParamPath,
+  B as domainNames,
+  G as extractAllPluginValues,
+  H as extractArgsFromPluiginCommand,
+  I as extractCommandArgsByKey,
+  z as extractPluginCommandArgs,
+  U as extractPluginParam,
+  q as extractPluginParamFromRecord,
+  ma as filterPluginParamByText,
+  ua as filterPluginSchemaByFileParam,
+  oa as filterPluginSchemaByNumberParam,
+  ca as filterPluginSchemaByParam,
+  Pa as filterPluginSchemaByVariableParam,
+  W as generatePluginAnnotation,
+  Z as generatePluginAnnotationLines,
+  Q as generatePluginAnnotationText,
+  X as getPathFromStructArraySchema,
+  Y as getPathFromStructParam,
+  $ as getPathFromStructSchema,
+  wa as hasNumberValueParam,
+  ja as hasScalarAttr,
+  La as hasStructAttr,
+  ka as hasTextAttr,
+  Ka as isArrayAttr,
+  _a as isArrayParam,
+  Ga as isArrayParamEx,
+  aa as isCommandArgValue,
+  ga as isErrorStructParam,
+  Ha as isFileAttr,
+  Ia as isNumberArrayParam,
+  za as isNumberAttr,
+  Ua as isNumberValueParam,
+  qa as isNumberValueParamEx,
+  da as isRmmzDataKind,
+  Wa as isScalarParam,
+  Za as isStringArrayParam,
+  Qa as isStringValueParam,
+  Xa as isStructArrayAttr,
+  Ya as isStructArrayParam,
+  $a as isStructAttr,
+  ar as isStructParam,
+  R as isValidNumber,
+  rr as isVariableAttr,
+  ra as ispluginParamValue,
   c as jsonPathFromPluginSchema,
-  L as lookupKind,
-  xa as makeScalarArrayPath,
-  Ea as makeScalarValuesPath,
-  Na as mergeCommandMap,
-  k as omitPluginParam,
-  Ya as paramHasText,
-  $a as parseDeepJSON,
-  ar as parseDeepRecord,
-  _ as parsePlugin,
-  G as parsePluginByLocale,
-  I as parsePluginParamRecord,
-  K as parsePluginParamRecord2,
-  z as pluginSourceToArraySchema,
-  H as pluginSourceToJSON,
-  d as readAllPluginBodies,
-  P as readPluginInfosSafe,
-  x as readPluginsWithSchema,
-  U as rebuildCommands,
-  q as stringifyDeepJSON,
-  W as stringifyDeepRecord,
-  Z as structDependencies,
-  rr as toArrayPluginParam,
-  er as toObjectPluginParams,
-  tr as toObjectPluginParamsOld,
-  Q as validatePluginJS
+  pa as lookupKind,
+  ea as makeScalarArrayPath,
+  ta as makeScalarValuesPath,
+  o as mergeCommandMap,
+  Sa as omitPluginParam,
+  er as paramHasText,
+  tr as parseDeepJSON,
+  sr as parseDeepRecord,
+  ya as parsePlugin,
+  Aa as parsePluginByLocale,
+  ha as parsePluginParamRecord,
+  fa as parsePluginParamRecord2,
+  sa as pluginComamndName,
+  xa as pluginSourceToArraySchema,
+  Ca as pluginSourceToJSON,
+  p as readAllPluginBodies,
+  g as readPluginInfosSafe,
+  A as readPluginsWithSchema,
+  Ea as rebuildCommands,
+  Fa as stringifyDeepJSON,
+  Na as stringifyDeepRecord,
+  ba as structDependencies,
+  ir as toArrayPluginParam,
+  nr as toObjectPluginParams,
+  lr as toObjectPluginParamsOld,
+  Va as validatePluginJS
 };
