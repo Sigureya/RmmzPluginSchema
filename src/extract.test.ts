@@ -2,33 +2,40 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
-import type { PluginSchemaArray } from "./rmmz";
-import {
-  compilePluginAsArraySchema,
-  type DeepJSONParserHandlers,
-  type ParsedPlugin,
-  type PluginParamsRecord,
-  type ResultOfparsePluginParamRecord,
+import type {
+  PluginSchemaArray,
+  PluginTokens,
+  DeepJSONParserHandlers,
+  ParsedPlugin,
+  PluginParamsRecord,
+  ResultOfparsePluginParamRecord,
 } from "./rmmz";
+import { compilePluginAsArraySchema } from "./rmmz";
+
+const mockStructDefault = {
+  mockText: "mock text",
+  mockNum: 0,
+  mockBool: false,
+};
 
 const createDeepJSONParseMock = (): MockedObject<DeepJSONParserHandlers> => {
   return {
     parseObject: vi.fn<DeepJSONParserHandlers["parseObject"]>(() => {
       return {
         errors: [],
-        value: {},
+        value: mockStructDefault,
       };
     }),
     parseObjectArray: vi.fn<DeepJSONParserHandlers["parseObjectArray"]>(() => {
       return {
         errors: [],
-        value: [],
+        value: [mockStructDefault],
       };
     }),
     parseStringArray: vi.fn<DeepJSONParserHandlers["parseStringArray"]>(() => {
       return {
         errors: [],
-        value: [],
+        value: ["mock string"],
       };
     }),
   };
@@ -168,6 +175,74 @@ describe("rmmz", () => {
       expect(deepJSONParseMock.parseObject).not.toHaveBeenCalled();
       expect(deepJSONParseMock.parseObjectArray).not.toHaveBeenCalled();
       expect(deepJSONParseMock.parseStringArray).not.toHaveBeenCalled();
+    });
+    describe("struct", () => {
+      const tokens: PluginTokens = {
+        commands: [
+          {
+            command: "add",
+            args: [
+              {
+                name: "personArg",
+                attr: { kind: "struct", struct: "Person" },
+              },
+            ],
+          },
+        ],
+        params: [
+          { name: "personParam", attr: { kind: "struct", struct: "Person" } },
+        ],
+        structs: [
+          {
+            name: "Person",
+            params: [
+              { name: "name", attr: { kind: "string", default: "Alice" } },
+              { name: "age", attr: { kind: "number", default: "19" } },
+            ],
+          },
+        ],
+      };
+      test("result", () => {
+        const deepJSONParseMock = createDeepJSONParseMock();
+        const expected: PluginSchemaArray = {
+          commands: [
+            {
+              command: "add",
+              args: [
+                {
+                  name: "personArg",
+                  attr: {
+                    kind: "struct",
+                    struct: "Person",
+                    default: mockStructDefault,
+                  },
+                },
+              ],
+            },
+          ],
+          params: [
+            {
+              name: "personParam",
+              attr: {
+                default: mockStructDefault,
+                kind: "struct",
+                struct: "Person",
+              },
+            },
+          ],
+          structs: [
+            {
+              struct: "Person",
+              params: [
+                { attr: { default: "Alice", kind: "string" }, name: "name" },
+                { attr: { default: 19, kind: "number" }, name: "age" },
+              ],
+            },
+          ],
+        };
+        const result = compilePluginAsArraySchema(tokens, deepJSONParseMock);
+        expect(result).toEqual(expected);
+      });
     });
   });
 });
