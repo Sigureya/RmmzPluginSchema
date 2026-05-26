@@ -6,60 +6,11 @@ import type {
 import type { StructPathError } from "./createPath/types";
 import type { BuildErrorHandlers } from "./createPath/types/handlers";
 import { createPluginValuesPath } from "./createPath/valuePath";
-import type {
-  CommandArgExtractors,
-  CommandBuildResult,
-} from "./extractor/types";
+import type { CommandArgExtractors } from "./extractor/types";
 import type { ErrorStruct } from "./extractor/types/error";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
-
-export const buildCommandExtractorsV2 = (
-  pluginName: string,
-  commands: ReadonlyArray<PluginCommandSchemaArray>,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
-  factoryFn: (path: string) => JSONPathReader,
-  handlers: BuildErrorHandlers<ErrorStruct> = defaultHandlers,
-): CommandBuildResultE => {
-  return commands.reduce<CommandBuildResultE>(
-    (state, command) => {
-      const built = buildSingleCommand(
-        pluginName,
-        command,
-        structMap,
-        factoryFn,
-        handlers,
-      );
-      return {
-        extractors: [...state.extractors, built.extractor],
-        errors: [...state.errors, ...built.errors],
-      };
-    },
-    {
-      extractors: [],
-      errors: [],
-    },
-  );
-};
-
-export const buildCommandExtractorV2 = (
-  pluginName: string,
-  command: PluginCommandSchemaArray,
-  structMap: ReadonlyMap<string, ClassifiedPluginParams>,
-  factoryFn: (path: string) => JSONPathReader,
-  handlers: BuildErrorHandlers<ErrorStruct> = defaultHandlers,
-): CommandBuildResultE => {
-  return buildCommandExtractorsV2(
-    pluginName,
-    [command],
-    structMap,
-    factoryFn,
-    handlers,
-  );
-};
-
-const defaultHandlers: BuildErrorHandlers<ErrorStruct> = {
+export const defaultHandlers: BuildErrorHandlers<ErrorStruct> = {
   structPathError: (
     context: {
       pluginName: string;
@@ -104,7 +55,7 @@ const collectPathErrors = (
   return pathErrors.map((error) => handlers.structPathError(context, error));
 };
 
-const buildSingleCommand = (
+export const buildSingleCommand = (
   pluginName: string,
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
