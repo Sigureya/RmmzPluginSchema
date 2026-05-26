@@ -134,7 +134,7 @@ const aa = (a, r, e, t = b) => A(a.attr.struct, `${r}["${a.name}"]`, e, t), ra =
   const s = v("param", "plugin", t, r);
   return $(s, e);
 }) }), Wa = (a, r) => {
-  const e = pa(a, r);
+  const e = a.flatMap((t) => pa(t, r));
   return new Map(e);
 }, pa = (a, r) => {
   const e = N(a.schema.structs);
