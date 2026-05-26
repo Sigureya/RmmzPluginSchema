@@ -149,11 +149,11 @@ const aa = (a, r, e, t = b) => A(a.attr.struct, `${r}["${a.name}"]`, e, t), ra =
 }, ga = (a, r, e) => a.params.map((t) => {
   const s = v("param", t.name, t, r);
   return $(s, e);
-}), T = (a, r, e, t) => r.map((s) => [B(a, s.command), E(a, s, e, t)]), B = (a, r) => `${a}:${r}`, Xa = (a, r) => {
-  const e = B(a.parameters[0], a.parameters[1]), t = r.get(e);
-  if (!t) return;
-  const s = C(a.parameters[3]);
-  return F(s, t);
+}), T = (a, r, e, t) => r.map((s) => [B(a, s.command), E(a, s, e, t)]), B = (a, r) => `${a}:${r}`, Xa = (a, r, e = C) => {
+  const t = B(a.parameters[0], a.parameters[1]), s = r.get(t);
+  if (!s) return;
+  const m = e(a.parameters[3]);
+  return F(m, s);
 }, Ya = (a) => {
   const r = a.flatMap((e) => e.extractorEntries);
   return new Map(r);
