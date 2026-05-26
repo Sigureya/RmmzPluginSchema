@@ -47,12 +47,24 @@ const msg1: MessageOfparsePluginParamRecordEx = {
 const paresdPlugin: ParsedPlugin = {
   locale: "ja",
   meta: {},
-  params: [],
+  params: [
+    { name: "textParam", attr: { kind: "string", default: "" } },
+    { name: "numParam", attr: { kind: "number", default: "0" } },
+    { name: "boolParam", attr: { kind: "boolean", default: "false" } },
+  ],
   commands: [
     { command: "cmd", args: [], desc: "test desc", text: "mock text" },
   ],
-  structs: [],
-  helpLines: [],
+  structs: [
+    {
+      name: "Person",
+      params: [
+        { name: "name", attr: { kind: "string", default: "Alice" } },
+        { name: "age", attr: { kind: "number", default: "17" } },
+      ],
+    },
+  ],
+  helpLines: ["abc", "xyz"],
   dependencies: {
     base: [],
     orderAfter: [],
@@ -132,6 +144,27 @@ describe("rmmz", () => {
         paresdPlugin,
         deepJSONParseMock,
       );
+
+      const expected: PluginSchemaArray = {
+        commands: [
+          { args: [], command: "cmd", desc: "test desc", text: "mock text" },
+        ],
+        params: [
+          { attr: { default: "", kind: "string" }, name: "textParam" },
+          { attr: { default: 0, kind: "number" }, name: "numParam" },
+          { attr: { default: false, kind: "boolean" }, name: "boolParam" },
+        ],
+        structs: [
+          {
+            struct: "Person",
+            params: [
+              { attr: { default: "Alice", kind: "string" }, name: "name" },
+              { attr: { default: 17, kind: "number" }, name: "age" },
+            ],
+          },
+        ],
+      };
+      expect(schema).toEqual(expected);
       expect(deepJSONParseMock.parseObject).not.toHaveBeenCalled();
       expect(deepJSONParseMock.parseObjectArray).not.toHaveBeenCalled();
       expect(deepJSONParseMock.parseStringArray).not.toHaveBeenCalled();
