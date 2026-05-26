@@ -3,10 +3,10 @@ import type {
   PluginScalarParam,
   PluginArrayParamType,
   PluginParamsRecord,
+  PluginCommandData,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
-import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin/types/pluginCommand";
 import { extractPluginCommandArgs } from "./core";
 import type {
   CommandArgExtractors,
@@ -25,6 +25,7 @@ import type {
 export const extractArgsFromPluiginCommand = (
   command: PluginCommandData,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
+  parseFn = parseDeepRecord,
 ): CommandExtractResult | undefined => {
   const key: CommandMapKey = pluginComamndName(
     command.parameters[0],
@@ -34,7 +35,7 @@ export const extractArgsFromPluiginCommand = (
   if (!extractor) {
     return undefined;
   }
-  const args = parseDeepRecord(command.parameters[3]);
+  const args = parseFn(command.parameters[3]);
   return extractPluginCommandArgs(args, extractor);
 };
 

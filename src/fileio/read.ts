@@ -3,6 +3,7 @@ import type {
   PluginParamsRecord,
   ResultOfparsePluginParamRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { parsePluginParamRecord2 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   MessageOfparsePluginParamRecordEx,
   PluginReadResult,
@@ -14,7 +15,7 @@ export const readPluginInfosSafe = async (
   parsePluginList: (
     source: string,
     msg: MessageOfparsePluginParamRecordEx,
-  ) => ResultOfparsePluginParamRecord,
+  ) => ResultOfparsePluginParamRecord = parsePluginParamRecord2,
 ): Promise<ResultOfparsePluginParamRecord> => {
   try {
     const source = await readPluginInfos();
