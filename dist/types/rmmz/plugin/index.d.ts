@@ -1,5 +1,6 @@
 export * from './core';
 export * from './pluginsJS';
+export * from './types';
 export type { ClassifiedPluginParams, ClassifiedPluginParamsEx, } from './core/params/types/classifyTypes';
 export type { DeepJSONParserHandlers } from './core/deepJSONHandler';
 export { parsePlugin, parsePluginByLocale } from './core/parse';

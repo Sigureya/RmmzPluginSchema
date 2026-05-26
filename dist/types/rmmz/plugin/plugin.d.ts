@@ -5,5 +5,8 @@ import { PluginJSON } from './core/pluginJSONTypes';
 import { PluginParamsRecord } from './pluginsJS/types';
 import { PluginInput } from './types';
 export declare const paramObjectFromPluginRecord: (record: PluginParamsRecord) => Record<string, JSONValue>;
+/**
+ * @deprecated Use `pluginSourceToArraySchema` instead.
+ */
 export declare const pluginSourceToJSON: (text: string) => PluginJSON;
 export declare const pluginSourceToArraySchema: (input: PluginInput, parser?: DeepJSONParserHandlers) => PluginSchema;
