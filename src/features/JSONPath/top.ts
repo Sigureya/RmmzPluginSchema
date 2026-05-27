@@ -1,9 +1,12 @@
+import type { PluginReadResult } from "@RmmzPluginSchema/fileio/types";
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
   PluginCommandSchemaArray,
   ClassifiedPluginParams,
   PluginParam,
+  PluginSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
 import type { CommandBuildResult } from "./core";
 import { buildSingleCommand, defaultHandlers } from "./core/commandBuild";
 import type { BuildErrorHandlers } from "./core/createPath/types/handlers";
@@ -16,6 +19,8 @@ import type {
   ParamBuildResult,
 } from "./core/paramBuild";
 import { defaultParamBuildHandlers, buildSingleParam } from "./core/paramBuild";
+import type { ConvertPluginResult } from "./core/types";
+import { jsonPathFromPluginSchema } from "./plugin";
 
 type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
 
@@ -73,4 +78,35 @@ export const buildParamExtractors = (
       errors: [],
     },
   );
+};
+
+export const jsonPathFromPluginReadResult = (
+  readResult: PluginReadResult,
+  factoryFn: (path: string) => JSONPathReader,
+): null | ConvertPluginResult => {
+  if (readResult.plugin === null) {
+    return null;
+  }
+  const schema: PluginSchemaArray = compilePluginAsArraySchema(
+    readResult.plugin,
+  );
+  return jsonPathFromPluginSchema(
+    {
+      pluginName: readResult.record.name,
+      schema,
+    },
+    readResult.record,
+    factoryFn,
+  );
+};
+
+export const jsonPathFromPluginReadResults = (
+  readResults: ReadonlyArray<PluginReadResult>,
+  factoryFn: (path: string) => JSONPathReader,
+): ConvertPluginResult[] => {
+  return readResults
+    .map((readResult): null | ConvertPluginResult => {
+      return jsonPathFromPluginReadResult(readResult, factoryFn);
+    })
+    .filter((result): result is ConvertPluginResult => result !== null);
 };
