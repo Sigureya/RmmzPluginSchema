@@ -10,6 +10,8 @@ import type {
   CommandMapKey,
   CommandArgExtractors,
   CommandExtractResult,
+  ParamBuildResult,
+  PluginValuesExtractorBundle,
 } from "./features";
 import { buildPluginValueExtractorV8 } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
@@ -240,22 +242,6 @@ const createJSONPathErrorHandlers = (): MockedObject<JSONPathErrorHandles> => {
   };
 };
 
-const createStructMap = (): ReadonlyMap<string, ClassifiedPluginParams> =>
-  new Map<string, ClassifiedPluginParams>([
-    [
-      "Person",
-      {
-        structs: [],
-        structArrays: [],
-        scalarArrays: [],
-        scalars: [
-          { name: "name", attr: { kind: "string", default: "Alice" } },
-          { name: "age", attr: { kind: "number", default: 17 } },
-        ],
-      },
-    ],
-  ]);
-
 describe("File IO", () => {
   const mockSrc = "mock plugin list source";
   const context: ResultOfparsePluginParamRecord = {
@@ -412,44 +398,66 @@ describe("rmmz", () => {
     });
   });
 });
-const commandMap: ReadonlyMap<CommandMapKey, CommandArgExtractors> = new Map<
-  CommandMapKey,
-  CommandArgExtractors
->([
-  [
-    "MockPlugin:cmd",
-    {
-      commandName: "cmd",
-      desc: "test desc",
-      pluginName: "MockPlugin",
-      text: "mock text",
-      extractors: [
-        {
-          structs: [],
-          structArrays: [],
-          top: {
-            arrays: [],
-            bundleName: "",
-            scalar: {
-              record: {
-                value: valueArg.attr,
-                note: noteArg.attr,
-              },
-              jsonPathJS: new JSONPathJS(`$["value","note"]`),
-            },
-          },
-          rootName: "cmd",
-          rootCategory: "args",
-        },
-      ],
-    },
-  ],
-]);
 
-const pluginCommand: PluginCommandData = {
-  code: 357,
-  parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
-};
+const paramExtractor: PluginValuesExtractorBundle[] = [
+  {
+    rootCategory: "param",
+    rootName: "plugin",
+    structArrays: [],
+    structs: [],
+    top: {
+      arrays: [],
+      bundleName: "string",
+      scalar: {
+        jsonPathJS: new JSONPathJS(`$["textParam"]`),
+        record: {
+          textParam: {
+            default: "",
+            kind: "string",
+          },
+        },
+      },
+    },
+  },
+  {
+    rootCategory: "param",
+    rootName: "plugin",
+    structArrays: [],
+    structs: [],
+    top: {
+      arrays: [],
+      bundleName: "number",
+      scalar: {
+        jsonPathJS: new JSONPathJS(`$["numParam"]`),
+        record: {
+          numParam: {
+            default: 0,
+            kind: "number",
+          },
+        },
+      },
+    },
+  },
+  {
+    rootCategory: "param",
+    rootName: "plugin",
+    structArrays: [],
+    structs: [],
+    top: {
+      arrays: [],
+      bundleName: "boolean",
+      scalar: {
+        jsonPathJS: new JSONPathJS(`$["boolParam"]`),
+        record: {
+          boolParam: {
+            default: false,
+            kind: "boolean",
+          },
+        },
+      },
+    },
+  },
+];
 
 const cmdExtractor: CommandArgExtractors = {
   commandName: "cmd",
@@ -492,6 +500,16 @@ const cmdExtractor: CommandArgExtractors = {
   ],
 };
 
+const createCommandMap = (): ReadonlyMap<CommandMapKey, CommandArgExtractors> =>
+  new Map<CommandMapKey, CommandArgExtractors>([
+    ["MockPlugin:cmd", cmdExtractor],
+  ]);
+
+const pluginCommand: PluginCommandData = {
+  code: 357,
+  parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
+};
+
 describe("JSON Path", () => {
   describe("buildPluginValueExtractorV8", () => {
     test("normal - param", () => {
@@ -507,6 +525,7 @@ describe("JSON Path", () => {
       expect(paramHandlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
       expect(paramHandlers.structPathError).not.toHaveBeenCalled();
       expect(result.pluginName).toBe("MockPlugin");
+      expect(result.params.extractors).toEqual(paramExtractor);
     });
     test("normal - command", () => {
       const commandHandlers = createJSONPathErrorHandlers();
@@ -580,7 +599,7 @@ describe("JSON Path", () => {
       };
       const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
         pluginCommand,
-        commandMap,
+        createCommandMap(),
         handlers,
         parseFn,
       );
@@ -608,7 +627,7 @@ describe("JSON Path", () => {
       };
       const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
         pluginCommand,
-        commandMap,
+        createCommandMap(),
         handlers,
         parseFn,
       );
