@@ -20,7 +20,6 @@ import type {
   ResultOfparsePluginParamRecord,
   ClassifiedPluginParams,
   PluginCommandData,
-  PluginScalarParam,
   NumberParam,
 } from "./rmmz";
 import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
@@ -395,6 +394,37 @@ describe("JSON Path", () => {
     expect(handlers.undefinedCommand).not.toHaveBeenCalled();
     expect(handlers.deepJSONParseError).not.toHaveBeenCalled();
     expect(handlers.extractArgsError).not.toHaveBeenCalled();
+    expect(result).toEqual(expected);
+  });
+  test("JSONのパースに失敗する場合", () => {
+    const parseError = new Error("parse error");
+    const errorMessage: CommandExtractError = {
+      message: "xxx",
+      source: "deepJSONParseError",
+    };
+    const handlers = createCommandExtractMessageHandlers(errorMessage);
+    const parseFn = vi.fn(() => {
+      throw parseError;
+    });
+    const expected: CommandExtractResult = {
+      pluginName: "MockPlugin",
+      commandName: "cmd",
+      args: [],
+      error: errorMessage,
+    };
+    const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
+      pluginCommand,
+      commandMap,
+      handlers,
+      parseFn,
+    );
+    expect(parseFn).toHaveBeenCalledWith(pluginCommand.parameters[3]);
+    expect(handlers.undefinedCommand).not.toHaveBeenCalled();
+    expect(handlers.extractArgsError).not.toHaveBeenCalled();
+    expect(handlers.deepJSONParseError).toHaveBeenCalledWith(
+      pluginCommand,
+      parseError,
+    );
     expect(result).toEqual(expected);
   });
 });
