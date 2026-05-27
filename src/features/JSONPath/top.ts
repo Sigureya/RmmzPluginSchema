@@ -18,7 +18,6 @@ import {
 import type {
   CommandExtractorEntry,
   CommandArgExtractors,
-  CommandBuildResult,
   CommandExtractMessageHandlers,
   CommandExtractResult,
   CommandMapKey,
@@ -31,16 +30,18 @@ import {
   defaultCommandExtractHandlers,
   extractArgsFromPluginCommandHandled,
 } from "./core/command2";
-import { buildSingleCommand, defaultHandlers } from "./core/commandBuild";
+import { buildSingleCommand } from "./core/commandBuild";
 import type { BuildErrorHandlers } from "./core/createPath/types/handlers";
 import type {
   ErrorStruct,
   PluginErrorStruct,
 } from "./core/extractor/types/error";
 import type {
-  ParamBuildErrorHandlers,
+  CommandBuildResult,
+  EEBudnleV8,
   ParamBuildResult,
-} from "./core/paramBuild";
+} from "./core/extractor/types/extractor";
+import type { ParamBuildErrorHandlers } from "./core/paramBuild";
 import { defaultParamBuildHandlers, buildSingleParam } from "./core/paramBuild";
 import type {
   CommandExtractorEntryList,
@@ -95,7 +96,7 @@ export const buildPluginValueExtractorV8 = (
   factoryFn: (path: string) => JSONPathReader,
   paramErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct>,
   commandErrorHandlers: BuildErrorHandlers<ErrorStruct>,
-) => {
+): EEBudnleV8 => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
   const map: MapType = createClassifiedStructMap(schema.structs);
   return {

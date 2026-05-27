@@ -9,11 +9,6 @@ import type { PluginValuesExtractorBundle } from "./extractor/types";
 import type { PluginErrorStruct } from "./extractor/types/error";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export interface ParamBuildResult<T = PluginErrorStruct> {
-  extractors: PluginValuesExtractorBundle[];
-  errors: T[];
-}
-
 export interface ParamBuildErrorHandlers<E> {
   structPathError(context: ParamBuildContext, error: StructPathError): E;
   compileJSONPathSchemaError(context: ParamBuildContext, error: unknown): E;
