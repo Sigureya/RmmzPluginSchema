@@ -13,8 +13,16 @@ import type {
   ParamBuildResult,
   PluginValuesExtractorBundle,
 } from "./features";
-import { buildPluginValueExtractorV8 } from "./features";
+import {
+  buildPluginValueExtractorV8,
+  extractPluginParamFromRecord,
+} from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
+import type {
+  ParamReadHandlers,
+  ParamReadResultV4,
+} from "./features/JSONPath/core/param2";
+import { extractPluginParamFromRecord4 } from "./features/JSONPath/core/param2";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readPluginInfosSafe, readAllPluginBodies } from "./fileio";
@@ -208,6 +216,17 @@ const createParamErrorHandlers = (): MockedObject<ParamErrorHandles> => {
     structPathError: vi.fn<ParamErrorHandles["structPathError"]>(
       () => mockParamStructPathError,
     ),
+  };
+};
+
+interface EEEEO {}
+
+const createParamReadErrorHandlers = (
+  errorInfo: EEEEO,
+): MockedObject<ParamReadHandlers<EEEEO>> => {
+  type ParseErrorHandler = ParamReadHandlers<EEEEO>;
+  return {
+    parseError: vi.fn<ParseErrorHandler["parseError"]>(() => errorInfo),
   };
 };
 
@@ -543,6 +562,46 @@ describe("JSON Path", () => {
       expect(result.commands.extractors[0]).toEqual(cmdExtractor);
     });
   });
+
+  describe("createCommandMap", () => {
+    test("parse error", () => {
+      const errors = new Error("parse error");
+      const parseFn = vi.fn(() => {
+        throw errors;
+      });
+      const handlers = createParamReadErrorHandlers({});
+      const plugin: PluginParamsRecord = {
+        name: "MockPlugin",
+        parameters: {
+          textParam: "mock text",
+          numParam: "42",
+          boolParam: "true",
+        },
+        description: "",
+        status: true,
+      };
+
+      const expected: ParamReadResultV4<EEEEO> = {
+        errorKind: "parseError",
+        errorInfo: {},
+        pluginName: "MockPlugin",
+        params: [],
+      };
+
+      const result = extractPluginParamFromRecord4(
+        plugin,
+        paramExtractor,
+        parseFn,
+        handlers,
+      );
+      expect(parseFn).toHaveBeenCalledOnce();
+      expect(parseFn).toHaveBeenCalledWith(plugin.parameters);
+      expect(handlers.parseError).toHaveBeenCalledOnce();
+      expect(handlers.parseError).toHaveBeenCalledWith(plugin, errors);
+      expect(result).toEqual(expected);
+    });
+  });
+
   describe("extractArgsFromPluginCommandHandled", () => {
     test("Mapに登録されてない場合", () => {
       const expected: Required<CommandExtractResult> = {
