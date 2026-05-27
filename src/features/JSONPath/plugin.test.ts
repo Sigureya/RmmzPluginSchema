@@ -8,11 +8,8 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin/types/pluginCommand";
 import { JSONPathJS } from "jsonpath-js";
-import {
-  extractArgsFromPluiginCommand,
-  jsonPathFromPluginSchema,
-  mergeCommandMap,
-} from "./plugin";
+import { mergeCommandMap } from "./pluginOld";
+import { extractArgsFromPluiginCommand, jsonPathFromPluginSchema } from "./top";
 
 const minimumSchema: PluginMinimumSchema = {
   pluginName: "MockPlugin",

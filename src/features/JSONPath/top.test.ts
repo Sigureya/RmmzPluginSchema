@@ -9,8 +9,9 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { ConvertPluginResult, PluginExtractedValue } from "./core";
-import { extractArgsFromPluiginCommand, mergeCommandMap } from "./plugin";
+import { mergeCommandMap } from "./pluginOld";
 import {
+  extractArgsFromPluiginCommand,
   jsonPathFromPluginReadResult,
   jsonPathFromPluginReadResults,
 } from "./top";

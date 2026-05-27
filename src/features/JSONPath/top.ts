@@ -5,9 +5,23 @@ import type {
   ClassifiedPluginParams,
   PluginParam,
   PluginSchemaArray,
+  PluginCommandData,
+  PluginArrayParamType,
+  PluginParamsRecord,
+  PluginScalarParam,
+  PluginSchemaOf,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
-import type { CommandBuildResult } from "./core";
+import {
+  createPluginValueExtractor,
+  extractPluginParamFromRecord,
+  type CommandArgExtractors,
+  type CommandBuildResult,
+  type CommandExtractMessageHandlers,
+  type CommandExtractResult,
+  type CommandMapKey,
+} from "./core";
+import { extractArgsFromPluginCommandHandled } from "./core/command2";
 import { buildSingleCommand, defaultHandlers } from "./core/commandBuild";
 import type { BuildErrorHandlers } from "./core/createPath/types/handlers";
 import type {
@@ -19,10 +33,43 @@ import type {
   ParamBuildResult,
 } from "./core/paramBuild";
 import { defaultParamBuildHandlers, buildSingleParam } from "./core/paramBuild";
-import type { ConvertPluginResult } from "./core/types";
-import { jsonPathFromPluginSchema } from "./plugin";
+import type {
+  ConvertPluginResult,
+  ConvertPluginResultEx,
+  PluginExtractorBundle,
+} from "./core/types";
+import { defaultCommandExtractHandlers } from "./pluginOld";
 
 type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
+export const jsonPathFromPluginSchema = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
+>(
+  schema: PluginSchemaOf<S, A>,
+  record: PluginParamsRecord,
+  factoryFn: (path: string) => JSONPathReader,
+): ConvertPluginResultEx<S, A> => {
+  const extractor: PluginExtractorBundle = createPluginValueExtractor(
+    schema.pluginName,
+    schema.schema,
+    factoryFn,
+  );
+  const { params } = extractPluginParamFromRecord(record, extractor.params);
+  return {
+    record: record,
+    schema,
+    extractorEntries: extractor.commands,
+    params: params,
+  };
+};
+
+export const extractArgsFromPluiginCommand = (
+  command: PluginCommandData,
+  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
+  handlers: CommandExtractMessageHandlers = defaultCommandExtractHandlers,
+): CommandExtractResult => {
+  return extractArgsFromPluginCommandHandled(command, map, handlers);
+};
 
 export const buildCommandExtractorsV2 = (
   pluginName: string,
