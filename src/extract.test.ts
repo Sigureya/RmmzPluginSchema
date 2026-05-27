@@ -1,16 +1,19 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import { JSONPathJS } from "jsonpath-js";
-import {
-  buildCommandExtractorsV2,
-  type CommandArgExtractors,
-  type CommandExtractError,
-  type CommandExtractMessageHandlers,
-  type CommandExtractResult,
-  type CommandMapKey,
+import type {
+  CommandArgExtractors,
+  CommandExtractError,
+  CommandExtractMessageHandlers,
+  CommandExtractResult,
+  CommandMapKey,
 } from "./features";
+import { buildCommandExtractorsV2 } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
-import type { BuildErrorHandlers } from "./features/JSONPath/core/createPath/types/handlers";
+import type {
+  BuildErrorHandlers,
+  JSONPathErrorContext,
+} from "./features/JSONPath/core/createPath/types/handlers";
 import type { ErrorStruct } from "./features/JSONPath/core/extractor/types/error";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
@@ -418,13 +421,13 @@ const pluginCommand: PluginCommandData = {
   parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
 };
 describe("JSON Path", () => {
-  describe("", () => {
-    test("buildCommandExtractorsV2", () => {
+  describe("buildCommandExtractorsV2", () => {
+    test("Factory Error", () => {
       const structMap = createStructMap();
       const handlers = createJSONPathErrorHandlers();
-
+      const error = new Error("jsonPathFactory error");
       const jsonPathFactory = vi.fn(() => {
-        throw new Error("jsonPathFactory error");
+        throw error;
       });
 
       const expectedErrors: ErrorStruct[] = [
@@ -432,7 +435,7 @@ describe("JSON Path", () => {
         mockCompileJSONPathSchemaError,
       ];
       const result = buildCommandExtractorsV2(
-        "",
+        "MockPlugin",
         schema.commands,
         structMap,
         jsonPathFactory,
@@ -441,6 +444,26 @@ describe("JSON Path", () => {
       expect(jsonPathFactory).toHaveBeenCalled();
       expect(handlers.structPathError).not.toHaveBeenCalled();
       expect(handlers.compileJSONPathSchemaError).toHaveBeenCalled();
+      expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledWith<
+        [JSONPathErrorContext, unknown]
+      >(
+        {
+          argName: "value",
+          commandName: "cmd",
+          pluginName: "MockPlugin",
+        },
+        error,
+      );
+      expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledWith<
+        [JSONPathErrorContext, unknown]
+      >(
+        {
+          argName: "note",
+          commandName: "cmd",
+          pluginName: "MockPlugin",
+        },
+        error,
+      );
       expect(result.errors).toEqual(expectedErrors);
     });
   });
