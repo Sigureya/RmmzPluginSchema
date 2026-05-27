@@ -1,27 +1,36 @@
 import type { PluginReadResult } from "@RmmzPluginSchema/fileio/types";
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  PluginCommandSchemaArray,
-  ClassifiedPluginParams,
-  PluginParam,
-  PluginSchemaArray,
-  PluginCommandData,
-  PluginArrayParamType,
-  PluginParamsRecord,
   PluginScalarParam,
+  PluginArrayParamType,
   PluginSchemaOf,
+  PluginParamsRecord,
+  PluginCommandData,
+  PluginSchemaArray,
+  ClassifiedPluginParams,
+  PluginCommandSchemaArray,
+  PluginParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
-  compilePluginAsArraySchema,
   createClassifiedStructMap,
+  compilePluginAsArraySchema,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  CommandExtractorEntry,
+  BuildErrorHandlers,
   CommandArgExtractors,
   CommandBuildResult,
   CommandExtractMessageHandlers,
+  CommandExtractorEntry,
+  CommandExtractorEntryList,
   CommandExtractResult,
   CommandMapKey,
+  ConvertPluginResult,
+  ConvertPluginResultEx,
+  EEBudnleV8,
+  ErrorStruct,
+  ParamBuildResult,
+  PluginErrorStruct,
+  PluginExtractorBundle,
 } from "./core";
 import {
   createPluginValueExtractor,
@@ -31,23 +40,9 @@ import {
   defaultCommandExtractHandlers,
   extractArgsFromPluginCommandHandled,
 } from "./core/command2";
-import { buildSingleCommand, defaultHandlers } from "./core/commandBuild";
-import type { BuildErrorHandlers } from "./core/createPath/types/handlers";
-import type {
-  ErrorStruct,
-  PluginErrorStruct,
-} from "./core/extractor/types/error";
-import type {
-  ParamBuildErrorHandlers,
-  ParamBuildResult,
-} from "./core/paramBuild";
+import { buildSingleCommand } from "./core/commandBuild";
+import type { ParamBuildErrorHandlers } from "./core/paramBuild";
 import { defaultParamBuildHandlers, buildSingleParam } from "./core/paramBuild";
-import type {
-  CommandExtractorEntryList,
-  ConvertPluginResult,
-  ConvertPluginResultEx,
-  PluginExtractorBundle,
-} from "./core/types";
 
 export const mergeCommandMap = (
   list: ReadonlyArray<CommandExtractorEntryList>,
@@ -95,7 +90,7 @@ export const buildPluginValueExtractorV8 = (
   factoryFn: (path: string) => JSONPathReader,
   paramErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct>,
   commandErrorHandlers: BuildErrorHandlers<ErrorStruct>,
-) => {
+): EEBudnleV8 => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
   const map: MapType = createClassifiedStructMap(schema.structs);
   return {
