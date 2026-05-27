@@ -76,16 +76,16 @@ export const buildSingleParam = (
       errors,
     };
   } catch (error) {
+    const compileError = handlers.compileJSONPathSchemaError(context, error);
     return {
-      extractor: compileJSONPathSchema(
-        {
-          ...path,
-          structs: { items: [], errors: [] },
-          structArrays: { items: [], errors: [] },
-        },
-        factoryFn,
-      ),
-      errors: [...errors, handlers.compileJSONPathSchemaError(context, error)],
+      extractor: {
+        rootCategory: path.rootCategory,
+        rootName: path.rootName,
+        top: undefined,
+        structs: [],
+        structArrays: [],
+      },
+      errors: [...errors, compileError],
     };
   }
 };
