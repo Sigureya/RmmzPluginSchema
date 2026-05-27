@@ -10,6 +10,8 @@ import {
   type CommandMapKey,
 } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
+import type { BuildErrorHandlers } from "./features/JSONPath/core/createPath/types/handlers";
+import type { ErrorStruct } from "./features/JSONPath/core/extractor/types/error";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
 import type {
@@ -174,6 +176,52 @@ const createCommandExtractMessageHandlers = (
     ),
   };
 };
+type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
+
+const mockCompileJSONPathSchemaError: ErrorStruct = {
+  argName: "",
+  commandName: "",
+  message: "compile error",
+  pluginName: "",
+  code: "compile_jsonpath_schema_error",
+  source: "compileJSONPathSchema",
+};
+
+const mockStructPathError: ErrorStruct = {
+  argName: "",
+  commandName: "",
+  message: "struct path error",
+  pluginName: "",
+  source: "createPath",
+  code: "struct_path_error",
+};
+
+const createJSONPathErrorHandlers = (): MockedObject<JSONPathErrorHandles> => {
+  return {
+    compileJSONPathSchemaError: vi.fn<
+      JSONPathErrorHandles["compileJSONPathSchemaError"]
+    >(() => mockCompileJSONPathSchemaError),
+    structPathError: vi.fn<JSONPathErrorHandles["structPathError"]>(
+      () => mockStructPathError,
+    ),
+  };
+};
+
+const createStructMap = (): ReadonlyMap<string, ClassifiedPluginParams> =>
+  new Map<string, ClassifiedPluginParams>([
+    [
+      "Person",
+      {
+        structs: [],
+        structArrays: [],
+        scalarArrays: [],
+        scalars: [
+          { name: "name", attr: { kind: "string", default: "Alice" } },
+          { name: "age", attr: { kind: "number", default: 17 } },
+        ],
+      },
+    ],
+  ]);
 
 describe("File IO", () => {
   const mockSrc = "mock plugin list source";
@@ -371,7 +419,30 @@ const pluginCommand: PluginCommandData = {
 };
 describe("JSON Path", () => {
   describe("", () => {
-    //    buildCommandExtractorsV2;
+    test("buildCommandExtractorsV2", () => {
+      const structMap = createStructMap();
+      const handlers = createJSONPathErrorHandlers();
+
+      const jsonPathFactory = vi.fn(() => {
+        throw new Error("jsonPathFactory error");
+      });
+
+      const expectedErrors: ErrorStruct[] = [
+        mockCompileJSONPathSchemaError,
+        mockCompileJSONPathSchemaError,
+      ];
+      const result = buildCommandExtractorsV2(
+        "",
+        schema.commands,
+        structMap,
+        jsonPathFactory,
+        handlers,
+      );
+      expect(jsonPathFactory).toHaveBeenCalled();
+      expect(handlers.structPathError).not.toHaveBeenCalled();
+      expect(handlers.compileJSONPathSchemaError).toHaveBeenCalled();
+      expect(result.errors).toEqual(expectedErrors);
+    });
   });
   describe("extractArgsFromPluginCommandHandled", () => {
     test("Mapに登録されてない場合", () => {
