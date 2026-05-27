@@ -4,11 +4,23 @@ import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { extractPluginCommandArgs } from "./command";
 import type {
   CommandArgExtractors,
+  CommandExtractError,
   CommandExtractMessageHandlers,
   CommandExtractResult,
   CommandMapKey,
 } from "./extractor/types";
 import { pluginComamndName } from "./schema";
+
+export const defaultCommandExtractHandlers: CommandExtractMessageHandlers = {
+  undefinedCommand: (command): CommandExtractError => ({
+    message: `undefined command: ${command.parameters[0]}:${command.parameters[1]}`,
+    source: "undefinedCommand",
+  }),
+  deepJSONParseError: (command, error): CommandExtractError => ({
+    message: `parse failed: ${command.parameters[0]}:${command.parameters[1]}: ${String(error)}`,
+    source: "deepJSONParseError",
+  }),
+};
 
 export const extractArgsFromPluginCommandHandled = (
   command: PluginCommandData,

@@ -2,17 +2,14 @@ import { describe, expect, test } from "vitest";
 import type {
   PluginArrayParamType,
   PluginMinimumSchema,
-  PluginCommandData,
   PluginParamsRecord,
   PluginScalarParam,
   PluginSchemaOf,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin/types/pluginCommand";
 import { JSONPathJS } from "jsonpath-js";
-import {
-  extractArgsFromPluiginCommand,
-  jsonPathFromPluginSchema,
-  mergeCommandMap,
-} from "./plugin";
+import { mergeCommandMap } from "./pluginOld";
+import { extractArgsFromPluiginCommand, jsonPathFromPluginSchema } from "./top";
 
 const minimumSchema: PluginMinimumSchema = {
   pluginName: "MockPlugin",
@@ -90,6 +87,7 @@ describe("jsonPathFromPluginSchema", () => {
     };
 
     const extracted = extractArgsFromPluiginCommand(command, commandMap);
+    expect(extracted.error).toBeUndefined();
     expect(extracted).toEqual({
       pluginName: "MockPlugin",
       commandName: "Add",
@@ -110,5 +108,22 @@ describe("jsonPathFromPluginSchema", () => {
         },
       ],
     });
+  });
+
+  test("未定義コマンドはerror付き結果を返す", () => {
+    const result = jsonPathFromPluginSchema(schema, record, (jsonPath) => {
+      return new JSONPathJS(jsonPath);
+    });
+    const commandMap = mergeCommandMap([result]);
+
+    const command: PluginCommandData = {
+      code: 357,
+      parameters: ["MockPlugin", "Unknown", "Unknown", {}],
+    };
+
+    const extracted = extractArgsFromPluiginCommand(command, commandMap);
+    expect(extracted.error).toBeDefined();
+    expect(extracted.error?.source).toBe("undefinedCommand");
+    expect(extracted.args).toEqual([]);
   });
 });
