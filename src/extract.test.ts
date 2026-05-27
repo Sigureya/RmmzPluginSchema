@@ -613,36 +613,6 @@ describe("JSON Path", () => {
   });
 
   describe("createCommandMap", () => {
-    describe("normal", () => {
-      const plugin: PluginParamsRecord = {
-        name: "MockPlugin",
-        parameters: {
-          textParam: "mock text",
-          numParam: "42",
-          boolParam: "true",
-        },
-        description: "",
-        status: true,
-      };
-      const paramValue = {
-        textParam: "mock text",
-        numParam: 42,
-        boolParam: true,
-      };
-      describe("deepJSON", () => {
-        test("pares", () => {
-          const result = parseDeepRecord(plugin.parameters);
-          expect(result).toEqual(paramValue);
-        });
-        test("stringify", () => {
-          const result = stringifyDeepRecord(paramValue);
-          expect(result).toEqual(plugin.parameters);
-        });
-      });
-      test.skip("normal", () => {
-        const handlers = createParamReadErrorHandlers({});
-      });
-    });
     test("parse error", () => {
       const errors = new Error("parse error");
       const parseFn = vi.fn(() => {
@@ -683,6 +653,82 @@ describe("JSON Path", () => {
   });
 
   describe("extractPluginParamFromRecord", () => {
+    describe("normal", () => {
+      const plugin: PluginParamsRecord = {
+        name: "MockPlugin",
+        parameters: {
+          textParam: "mock text",
+          numParam: "42",
+          boolParam: "true",
+        },
+        description: "",
+        status: true,
+      };
+      const paramValue = {
+        textParam: "mock text",
+        numParam: 42,
+        boolParam: true,
+      };
+      describe("deepJSON", () => {
+        test("pares", () => {
+          const result = parseDeepRecord(plugin.parameters);
+          expect(result).toEqual(paramValue);
+        });
+        test("stringify", () => {
+          const result = stringifyDeepRecord(paramValue);
+          expect(result).toEqual(plugin.parameters);
+        });
+      });
+      test("normal", () => {
+        const handlers = createParamReadErrorHandlers({});
+        const parseFn = vi.fn(() => paramValue);
+
+        const expected: ParamReadResultV4<EEEEO> = {
+          pluginName: "MockPlugin",
+          errorKind: "",
+          errorInfo: null,
+          params: [
+            {
+              param: {
+                name: "textParam",
+                attr: { default: "", kind: "string" },
+              },
+              value: "mock text",
+              structName: "",
+              rootName: "plugin",
+              rootType: "param",
+            },
+            {
+              param: { name: "numParam", attr: { default: 0, kind: "number" } },
+              value: 42,
+              structName: "",
+              rootName: "plugin",
+              rootType: "param",
+            },
+            {
+              param: {
+                name: "boolParam",
+                attr: { default: false, kind: "boolean" },
+              },
+              value: true,
+              structName: "",
+              rootName: "plugin",
+              rootType: "param",
+            },
+          ],
+        };
+        const result = extractPluginParamFromRecord4(
+          plugin,
+          paramExtractor,
+          parseFn,
+          handlers,
+        );
+        expect(parseFn).toHaveBeenCalledOnce();
+        expect(parseFn).toHaveBeenCalledWith(plugin.parameters);
+        expect(handlers.parseError).not.toHaveBeenCalled();
+        expect(result).toEqual(expected);
+      });
+    });
     test("parse error", () => {
       const record: PluginParamsRecord = {
         name: "BrokenPlugin",
