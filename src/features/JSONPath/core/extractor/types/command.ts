@@ -33,6 +33,10 @@ export interface CommandExtractMessageHandlers {
     command: PluginCommandData,
     error: unknown,
   ): CommandExtractError;
+  extractArgsError(
+    command: PluginCommandData,
+    error: unknown,
+  ): CommandExtractError;
 }
 
 export type CommandMapKey = `${string}:${string}`;
