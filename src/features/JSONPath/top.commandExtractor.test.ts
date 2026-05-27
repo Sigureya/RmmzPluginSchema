@@ -15,9 +15,13 @@ import type {
   CommandBuildResult,
   ErrorStruct,
   JSONPathErrorContext,
+  ParamBuildResult,
+  PluginErrorStruct,
 } from "./core";
-import { buildCommandExtractorsV2 } from "./top";
+import type { ParamBuildErrorHandlers } from "./core/paramBuild";
+import { buildCommandExtractorsV2, buildParamExtractors } from "./top";
 type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
+type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;
 
 const valueArg: PluginParamEx<NumberParam> = {
   name: "value",
@@ -128,6 +132,33 @@ const createJSONPathErrorHandlers = (): MockedObject<JSONPathErrorHandles> => {
   };
 };
 
+const mockParamCompileJSONPathSchemaError: PluginErrorStruct = {
+  paramName: "",
+  message: "compile error",
+  pluginName: "",
+  code: "compile_jsonpath_schema_error",
+  source: "compileJSONPathSchema",
+};
+
+const mockParamStructPathError: PluginErrorStruct = {
+  paramName: "",
+  message: "struct path error",
+  pluginName: "",
+  source: "createPath",
+  code: "struct_path_error",
+};
+
+const createParamErrorHandlers = (): MockedObject<ParamErrorHandles> => {
+  return {
+    compileJSONPathSchemaError: vi.fn<
+      ParamErrorHandles["compileJSONPathSchemaError"]
+    >(() => mockParamCompileJSONPathSchemaError),
+    structPathError: vi.fn<ParamErrorHandles["structPathError"]>(
+      () => mockParamStructPathError,
+    ),
+  };
+};
+
 const createStructMap = (): ReadonlyMap<string, ClassifiedPluginParams> =>
   new Map<string, ClassifiedPluginParams>([
     [
@@ -210,5 +241,66 @@ describe("buildCommandExtractorsV2", () => {
       error,
     );
     expect(result.errors).toEqual(expectedErrors);
+  });
+});
+
+describe("buildParamExtractors", () => {
+  test("normal", () => {
+    const handlers = createParamErrorHandlers();
+    const jsonPathFactory = vi.fn(
+      (path): JSONPathReader => new JSONPathJS(path),
+    );
+
+    const result: ParamBuildResult = buildParamExtractors(
+      "MockPlugin",
+      schema.params,
+      createStructMap(),
+      jsonPathFactory,
+      handlers,
+    );
+
+    expect(jsonPathFactory).toHaveBeenCalledWith(`$["textParam"]`);
+    expect(jsonPathFactory).toHaveBeenCalledWith(`$["numParam"]`);
+    expect(jsonPathFactory).toHaveBeenCalledWith(`$["boolParam"]`);
+    expect(handlers.structPathError).not.toHaveBeenCalled();
+    expect(handlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
+    expect(result.errors).toEqual([]);
+    expect(result.extractors).toHaveLength(3);
+    expect(result.extractors.map((x) => x.rootName)).toEqual([
+      "plugin",
+      "plugin",
+      "plugin",
+    ]);
+    expect(result.extractors.every((x) => x.rootCategory === "param")).toBe(
+      true,
+    );
+  });
+
+  test("Factory Error", () => {
+    const handlers = createParamErrorHandlers();
+    const error = new Error("jsonPathFactory error");
+    const jsonPathFactory = vi.fn((): JSONPathReader => {
+      throw error;
+    });
+
+    const result: ParamBuildResult = buildParamExtractors(
+      "MockPlugin",
+      schema.params,
+      createStructMap(),
+      jsonPathFactory,
+      handlers,
+    );
+
+    expect(handlers.structPathError).not.toHaveBeenCalled();
+    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledOnce();
+    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledWith(
+      {
+        pluginName: "MockPlugin",
+        paramName: "textParam",
+      },
+      error,
+    );
+    expect(result.errors).toEqual([mockParamCompileJSONPathSchemaError]);
+    expect(result.extractors).toHaveLength(3);
   });
 });
