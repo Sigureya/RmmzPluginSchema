@@ -1,9 +1,12 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
+import { JSONPathJS } from "jsonpath-js";
 import type {
+  CommandArgExtractors,
   CommandExtractError,
   CommandExtractMessageHandlers,
   CommandExtractResult,
+  CommandMapKey,
 } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
@@ -17,6 +20,8 @@ import type {
   ResultOfparsePluginParamRecord,
   ClassifiedPluginParams,
   PluginCommandData,
+  PluginScalarParam,
+  NumberParam,
 } from "./rmmz";
 import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 
@@ -288,14 +293,53 @@ describe("rmmz", () => {
     });
   });
 });
+const commandMap: ReadonlyMap<CommandMapKey, CommandArgExtractors> = new Map<
+  CommandMapKey,
+  CommandArgExtractors
+>([
+  [
+    "MockPlugin:cmd",
+    {
+      commandName: "cmd",
+      desc: "test desc",
+      pluginName: "MockPlugin",
+      text: "mock text",
+      extractors: [
+        {
+          structs: [],
+          structArrays: [],
+          top: {
+            arrays: [],
+            bundleName: "",
+            scalar: {
+              record: {
+                value: {
+                  kind: "number",
+                  default: 0,
+                } satisfies NumberParam,
+                note: {
+                  kind: "string",
+                  default: "",
+                },
+              },
+              jsonPathJS: new JSONPathJS(`$["note"]`),
+            },
+          },
+          rootName: "cmd",
+          rootCategory: "args",
+        },
+      ],
+    },
+  ],
+]);
 
 const pluginCommand: PluginCommandData = {
   code: 357,
   parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
 };
+
 describe("JSON Path", () => {
-  test("", () => {
-    const error = new Error("mock parse error");
+  test("Mapに登録されてない場合", () => {
     const expected: Required<CommandExtractResult> = {
       args: [],
       commandName: "cmd",
@@ -305,19 +349,50 @@ describe("JSON Path", () => {
         source: "source eee",
       },
     };
-    const parseFn = vi.fn(() => {
-      throw error;
-    });
+    const parseFn = vi.fn();
     const handlers = createCommandExtractMessageHandlers(expected.error);
 
     const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
       pluginCommand,
-      new Map([]),
+      new Map(),
       handlers,
       parseFn,
     );
-    expect(parseFn).not.toHaveBeenCalled();
     expect(handlers.undefinedCommand).toHaveBeenCalledWith(pluginCommand);
+    expect(handlers.deepJSONParseError).not.toHaveBeenCalled();
+    expect(handlers.extractArgsError).not.toHaveBeenCalled();
+    expect(parseFn).not.toHaveBeenCalled();
+    expect(result).toEqual(expected);
+  });
+  test("Mapに登録されてる場合", () => {
+    const value = { value: 42, note: "ok" };
+    const handlers = createCommandExtractMessageHandlers({
+      message: "normal",
+      source: "normal",
+    });
+    const parseFn = vi.fn(() => value);
+
+    const expected: CommandExtractResult = {
+      pluginName: "MockPlugin",
+      commandName: "cmd",
+      args: [
+        {
+          rootType: "args",
+          rootName: "cmd",
+          structName: "",
+          param: { name: "note", attr: { kind: "string", default: "" } },
+          value: "ok",
+        },
+      ],
+    };
+    const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
+      pluginCommand,
+      commandMap,
+      handlers,
+      parseFn,
+    );
+    expect(parseFn).toHaveBeenCalledWith(pluginCommand.parameters[3]);
+    expect(handlers.undefinedCommand).not.toHaveBeenCalled();
     expect(handlers.deepJSONParseError).not.toHaveBeenCalled();
     expect(handlers.extractArgsError).not.toHaveBeenCalled();
     expect(result).toEqual(expected);
