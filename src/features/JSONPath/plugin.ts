@@ -5,17 +5,22 @@ import type {
   PluginParamsRecord,
   PluginCommandData,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginSchemaOf } from "@RmmzPluginSchema/rmmz/plugin/core/pluginJSON2type";
-import { extractPluginCommandArgs } from "./core";
+import {
+  extractArgsFromPluginCommandHandled,
+  defaultCommandExtractHandlers,
+} from "./core/command2";
 import type {
   CommandArgExtractors,
   CommandExtractorEntry,
+  CommandExtractMessageHandlers,
   CommandExtractResult,
   CommandMapKey,
 } from "./core/extractor/types";
+export { defaultCommandExtractHandlers } from "./core/command2";
+export type { CommandExtractMessageHandlers } from "./core/extractor/types";
 import { extractPluginParamFromRecord } from "./core/param";
-import { createPluginValueExtractor, pluginComamndName } from "./core/schema";
+import { createPluginValueExtractor } from "./core/schema";
 import type {
   CommandExtractorEntryList,
   PluginExtractorBundle,
@@ -25,18 +30,9 @@ import type {
 export const extractArgsFromPluiginCommand = (
   command: PluginCommandData,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
-  parseFn = parseDeepRecord,
-): CommandExtractResult | undefined => {
-  const key: CommandMapKey = pluginComamndName(
-    command.parameters[0],
-    command.parameters[1],
-  );
-  const extractor = map.get(key);
-  if (!extractor) {
-    return undefined;
-  }
-  const args = parseFn(command.parameters[3]);
-  return extractPluginCommandArgs(args, extractor);
+  handlers: CommandExtractMessageHandlers = defaultCommandExtractHandlers,
+): CommandExtractResult => {
+  return extractArgsFromPluginCommandHandled(command, map, handlers);
 };
 
 export const mergeCommandMap = (
