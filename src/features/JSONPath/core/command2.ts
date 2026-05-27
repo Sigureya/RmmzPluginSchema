@@ -20,6 +20,10 @@ export const defaultCommandExtractHandlers: CommandExtractMessageHandlers = {
     message: `parse failed: ${command.parameters[0]}:${command.parameters[1]}: ${String(error)}`,
     source: "deepJSONParseError",
   }),
+  extractArgsError: (command, error): CommandExtractError => ({
+    message: `extract args failed: ${command.parameters[0]}:${command.parameters[1]}: ${String(error)}`,
+    source: "extractArgsError",
+  }),
 };
 
 export const extractArgsFromPluginCommandHandled = (
@@ -34,13 +38,33 @@ export const extractArgsFromPluginCommandHandled = (
     command.parameters[0],
     command.parameters[1],
   );
+  const extractor = map.get(key);
+  if (!extractor) {
+    return makeEmptyCommandResult(command, handlers.undefinedCommand(command));
+  }
   try {
     const parsed = parseFn(command.parameters[3]);
-    return extractCommandArgsByKeyHandled(parsed, key, command, map, handlers);
+    return ee7(parsed, extractor, command, handlers);
   } catch (error) {
     return makeEmptyCommandResult(
       command,
       handlers.deepJSONParseError(command, error),
+    );
+  }
+};
+
+const ee7 = (
+  value: Record<string, JSONValue>,
+  extractor: CommandArgExtractors,
+  command: PluginCommandData,
+  handlers: CommandExtractMessageHandlers,
+) => {
+  try {
+    return extractPluginCommandArgs(value, extractor);
+  } catch (e) {
+    return makeEmptyCommandResult(
+      command,
+      handlers.extractArgsError(command, e),
     );
   }
 };
@@ -55,18 +79,4 @@ const makeEmptyCommandResult = (
     args: [],
     error,
   };
-};
-
-const extractCommandArgsByKeyHandled = (
-  value: Record<string, JSONValue>,
-  key: CommandMapKey,
-  command: PluginCommandData,
-  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
-  handlers: CommandExtractMessageHandlers,
-): CommandExtractResult => {
-  const extractor = map.get(key);
-  if (!extractor) {
-    return makeEmptyCommandResult(command, handlers.undefinedCommand(command));
-  }
-  return extractPluginCommandArgs(value, extractor);
 };
