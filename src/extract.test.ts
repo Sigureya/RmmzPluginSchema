@@ -25,7 +25,12 @@ import type {
   PluginReadResult,
 } from "./fileio";
 import { readPluginInfosSafe, readAllPluginBodies } from "./fileio";
-import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
+import {
+  classifyPluginParams,
+  compilePluginAsArraySchema,
+  parseDeepRecord,
+  stringifyDeepRecord,
+} from "./rmmz";
 import type {
   PluginSchemaArray,
   PluginTokens,
@@ -42,6 +47,10 @@ import type {
 
 // 意図的に単一ファイルにまとめている。
 // これらの処理はパイプラインの最初から最後までを担う
+interface Person {
+  name: string;
+  age: number;
+}
 
 const mockStructDefault = {
   mockText: "mock text",
@@ -435,6 +444,27 @@ describe("rmmz", () => {
       expect(result).toEqual(classify);
     });
   });
+  describe("deepJSON", () => {
+    describe("simple type", () => {
+      const deepJSON: Record<keyof Person, string> = {
+        name: "bob",
+        age: "30",
+      };
+      const normalJSON: Person = {
+        name: "bob",
+        age: 30,
+      };
+
+      test("parse", () => {
+        const result = parseDeepRecord(deepJSON);
+        expect(result).toEqual(normalJSON);
+      });
+      test("stringify", () => {
+        const result = stringifyDeepRecord(normalJSON);
+        expect(result).toEqual(deepJSON);
+      });
+    });
+  });
 });
 
 const paramExtractor: PluginValuesExtractorBundle[] = [
@@ -583,12 +613,43 @@ describe("JSON Path", () => {
   });
 
   describe("createCommandMap", () => {
+    describe("normal", () => {
+      const plugin: PluginParamsRecord = {
+        name: "MockPlugin",
+        parameters: {
+          textParam: "mock text",
+          numParam: "42",
+          boolParam: "true",
+        },
+        description: "",
+        status: true,
+      };
+      const paramValue = {
+        textParam: "mock text",
+        numParam: 42,
+        boolParam: true,
+      };
+      describe("deepJSON", () => {
+        test("pares", () => {
+          const result = parseDeepRecord(plugin.parameters);
+          expect(result).toEqual(paramValue);
+        });
+        test("stringify", () => {
+          const result = stringifyDeepRecord(paramValue);
+          expect(result).toEqual(plugin.parameters);
+        });
+      });
+      test.skip("normal", () => {
+        const handlers = createParamReadErrorHandlers({});
+      });
+    });
     test("parse error", () => {
       const errors = new Error("parse error");
       const parseFn = vi.fn(() => {
         throw errors;
       });
-      const handlers = createParamReadErrorHandlers({});
+      const errorInfo = { code: "E_PARSE", message: "invalid json" };
+      const handlers = createParamReadErrorHandlers(errorInfo);
       const plugin: PluginParamsRecord = {
         name: "MockPlugin",
         parameters: {
@@ -602,7 +663,7 @@ describe("JSON Path", () => {
 
       const expected: ParamReadResultV4<EEEEO> = {
         errorKind: "parseError",
-        errorInfo: {},
+        errorInfo: errorInfo,
         pluginName: "MockPlugin",
         params: [],
       };
