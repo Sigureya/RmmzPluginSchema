@@ -18,7 +18,10 @@ import type {
   ParamBuildResult,
   PluginErrorStruct,
 } from "./core";
-import type { ParamBuildErrorHandlers } from "./core/paramBuild";
+import type {
+  ParamBuildContext,
+  ParamBuildErrorHandlers,
+} from "./core/paramBuild";
 import { buildCommandExtractorsV2, buildParamExtractors } from "./top";
 type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
 type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;
@@ -278,7 +281,7 @@ describe("buildParamExtractors", () => {
 
   test("Factory Error", () => {
     const handlers = createParamErrorHandlers();
-    const error = new Error("jsonPathFactory error");
+    const error = new Error("jsonPathFactory error2");
     const jsonPathFactory = vi.fn((): JSONPathReader => {
       throw error;
     });
@@ -291,16 +294,37 @@ describe("buildParamExtractors", () => {
       handlers,
     );
 
-    expect(handlers.structPathError).not.toHaveBeenCalled();
-    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledOnce();
-    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledWith(
+    const errorContexts: ParamBuildContext[] = [
       {
         pluginName: "MockPlugin",
         paramName: "textParam",
       },
-      error,
+      {
+        pluginName: "MockPlugin",
+        paramName: "numParam",
+      },
+      {
+        pluginName: "MockPlugin",
+        paramName: "boolParam",
+      },
+    ];
+    errorContexts.forEach((context) => {
+      expect(
+        handlers.compileJSONPathSchemaError,
+        context.paramName,
+      ).toHaveBeenCalledWith(context, error);
+    });
+
+    expect(handlers.structPathError).not.toHaveBeenCalled();
+    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledTimes(
+      schema.params.length,
     );
-    expect(result.errors).toEqual([mockParamCompileJSONPathSchemaError]);
+    expect(result.errors).toEqual([
+      mockParamCompileJSONPathSchemaError,
+      mockParamCompileJSONPathSchemaError,
+      mockParamCompileJSONPathSchemaError,
+    ]);
     expect(result.extractors).toHaveLength(3);
+    expect(result.extractors.every((x) => x.top === undefined)).toBe(true);
   });
 });
