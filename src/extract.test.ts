@@ -2,23 +2,21 @@ import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
 import { JSONPathJS } from "jsonpath-js";
 import type {
-  CommandArgExtractors,
-  CommandBuildResult,
   CommandExtractError,
   CommandExtractMessageHandlers,
-  CommandExtractResult,
-  CommandMapKey,
-} from "./features";
-import { buildCommandExtractorsV2 } from "./features";
-import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
-import type {
+  PluginErrorStruct,
   BuildErrorHandlers,
-  JSONPathErrorContext,
-} from "./features/JSONPath/core/createPath/types/handlers";
-import type { ErrorStruct } from "./features/JSONPath/core/extractor/types/error";
+  ErrorStruct,
+  CommandMapKey,
+  CommandArgExtractors,
+  CommandExtractResult,
+} from "./features";
+import { buildPluginValueExtractorV8 } from "./features";
+import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
+import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
-import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
-import type { JSONPathReader } from "./libs";
+import { readPluginInfosSafe, readAllPluginBodies } from "./fileio";
+import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 import type {
   PluginSchemaArray,
   PluginTokens,
@@ -32,7 +30,6 @@ import type {
   StringParam,
   PluginParamEx,
 } from "./rmmz";
-import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 
 // 意図的に単一ファイルにまとめている。
 // これらの処理はパイプラインの最初から最後までを担う
@@ -184,6 +181,34 @@ const createCommandExtractMessageHandlers = (
     ),
   };
 };
+type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;
+const mockParamCompileJSONPathSchemaError: PluginErrorStruct = {
+  paramName: "",
+  message: "compile error",
+  pluginName: "",
+  code: "compile_jsonpath_schema_error",
+  source: "compileJSONPathSchema",
+};
+
+const mockParamStructPathError: PluginErrorStruct = {
+  paramName: "",
+  message: "struct path error",
+  pluginName: "",
+  source: "createPath",
+  code: "struct_path_error",
+};
+
+const createParamErrorHandlers = (): MockedObject<ParamErrorHandles> => {
+  return {
+    compileJSONPathSchemaError: vi.fn<
+      ParamErrorHandles["compileJSONPathSchemaError"]
+    >(() => mockParamCompileJSONPathSchemaError),
+    structPathError: vi.fn<ParamErrorHandles["structPathError"]>(
+      () => mockParamStructPathError,
+    ),
+  };
+};
+
 type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
 
 const mockCompileJSONPathSchemaError: ErrorStruct = {
@@ -468,6 +493,37 @@ const cmdExtractor: CommandArgExtractors = {
 };
 
 describe("JSON Path", () => {
+  describe("buildPluginValueExtractorV8", () => {
+    test("normal - param", () => {
+      const commandHandlers = createJSONPathErrorHandlers();
+      const paramHandlers = createParamErrorHandlers();
+      const result = buildPluginValueExtractorV8(
+        "MockPlugin",
+        schema,
+        (path) => new JSONPathJS(path),
+        paramHandlers,
+        commandHandlers,
+      );
+      expect(paramHandlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
+      expect(paramHandlers.structPathError).not.toHaveBeenCalled();
+      expect(result.pluginName).toBe("MockPlugin");
+    });
+    test("normal - command", () => {
+      const commandHandlers = createJSONPathErrorHandlers();
+      const paramHandlers = createParamErrorHandlers();
+      const result = buildPluginValueExtractorV8(
+        "MockPlugin",
+        schema,
+        (path) => new JSONPathJS(path),
+        paramHandlers,
+        commandHandlers,
+      );
+      expect(commandHandlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
+      expect(commandHandlers.structPathError).not.toHaveBeenCalled();
+      expect(result.pluginName).toBe("MockPlugin");
+      expect(result.commands.extractors[0]).toEqual(cmdExtractor);
+    });
+  });
   describe("extractArgsFromPluginCommandHandled", () => {
     test("Mapに登録されてない場合", () => {
       const expected: Required<CommandExtractResult> = {
