@@ -11,7 +11,10 @@ import type {
   PluginScalarParam,
   PluginSchemaOf,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
+import {
+  compilePluginAsArraySchema,
+  createClassifiedStructMap,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   CommandExtractorEntry,
   CommandArgExtractors,
@@ -46,9 +49,6 @@ import type {
   PluginExtractorBundle,
 } from "./core/types";
 
-/**
- * @deprecated 消す可能性は高いが、とりあえず残す
- */
 export const mergeCommandMap = (
   list: ReadonlyArray<CommandExtractorEntryList>,
 ): Map<CommandMapKey, CommandArgExtractors> => {
@@ -89,12 +89,40 @@ export const extractArgsFromPluiginCommand = (
   return extractArgsFromPluginCommandHandled(command, map, handlers);
 };
 
+export const buildPluginValueExtractorV8 = (
+  pluginName: string,
+  schema: PluginSchemaArray,
+  factoryFn: (path: string) => JSONPathReader,
+  paramErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct>,
+  commandErrorHandlers: BuildErrorHandlers<ErrorStruct>,
+) => {
+  type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
+  const map: MapType = createClassifiedStructMap(schema.structs);
+  return {
+    pluginName,
+    commands: buildCommandExtractorsV2(
+      pluginName,
+      schema.commands,
+      map,
+      factoryFn,
+      commandErrorHandlers,
+    ),
+    params: buildParamExtractors(
+      pluginName,
+      schema.params,
+      map,
+      factoryFn,
+      paramErrorHandlers,
+    ),
+  };
+};
+
 export const buildCommandExtractorsV2 = (
   pluginName: string,
   commands: ReadonlyArray<PluginCommandSchemaArray>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
-  handlers: BuildErrorHandlers<ErrorStruct> = defaultHandlers,
+  handlers: BuildErrorHandlers<ErrorStruct>,
 ): CommandBuildResultE => {
   return commands.reduce<CommandBuildResultE>(
     (state, command) => {
