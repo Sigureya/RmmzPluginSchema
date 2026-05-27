@@ -10,11 +10,20 @@ import type {
   CommandMapKey,
   CommandArgExtractors,
   CommandExtractResult,
+  PluginValuesExtractorBundle,
 } from "./features";
 import { buildPluginValueExtractorV8 } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
+import type {
+  ParamReadHandlers,
+  ParamReadResultV4,
+} from "./features/JSONPath/core/param2";
+import { extractPluginParamFromRecord4 } from "./features/JSONPath/core/param2";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
-import type { MessageOfparsePluginParamRecordEx } from "./fileio";
+import type {
+  MessageOfparsePluginParamRecordEx,
+  PluginReadResult,
+} from "./fileio";
 import { readPluginInfosSafe, readAllPluginBodies } from "./fileio";
 import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 import type {
@@ -40,7 +49,14 @@ const mockStructDefault = {
   mockBool: false,
 };
 
-const pluginsRecord: PluginParamsRecord[] = [];
+const pluginsRecord: PluginParamsRecord[] = [
+  {
+    name: "TestPlugin",
+    status: true,
+    description: "for unit test",
+    parameters: {},
+  },
+];
 const msg1: MessageOfparsePluginParamRecordEx = {
   readErrorPluginsJS: "Failed to read plugins.js",
   readErrorPluginBody: "Failed to read plugin file",
@@ -209,6 +225,17 @@ const createParamErrorHandlers = (): MockedObject<ParamErrorHandles> => {
   };
 };
 
+interface EEEEO {}
+
+const createParamReadErrorHandlers = (
+  errorInfo: EEEEO,
+): MockedObject<ParamReadHandlers<EEEEO>> => {
+  type ParseErrorHandler = ParamReadHandlers<EEEEO>;
+  return {
+    parseError: vi.fn<ParseErrorHandler["parseError"]>(() => errorInfo),
+  };
+};
+
 type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
 
 const mockCompileJSONPathSchemaError: ErrorStruct = {
@@ -240,22 +267,6 @@ const createJSONPathErrorHandlers = (): MockedObject<JSONPathErrorHandles> => {
   };
 };
 
-const createStructMap = (): ReadonlyMap<string, ClassifiedPluginParams> =>
-  new Map<string, ClassifiedPluginParams>([
-    [
-      "Person",
-      {
-        structs: [],
-        structArrays: [],
-        scalarArrays: [],
-        scalars: [
-          { name: "name", attr: { kind: "string", default: "Alice" } },
-          { name: "age", attr: { kind: "number", default: 17 } },
-        ],
-      },
-    ],
-  ]);
-
 describe("File IO", () => {
   const mockSrc = "mock plugin list source";
   const context: ResultOfparsePluginParamRecord = {
@@ -275,7 +286,8 @@ describe("File IO", () => {
           source: string,
           msg: MessageOfparsePluginParamRecordEx,
         ) => ResultOfparsePluginParamRecord
-      >((a, b): ResultOfparsePluginParamRecord => {
+      >((src: string, b): ResultOfparsePluginParamRecord => {
+        expect(src).toBe(mockSrc);
         return {
           plugins: pluginsRecord,
           complete: true,
@@ -293,28 +305,43 @@ describe("File IO", () => {
   });
   describe("readAllPluginBodies", () => {
     const mockBodySrc = "mock plugin body source";
-    test("normal", async () => {
-      const readPluginFn = vi
-        .fn<(pluginName: string) => Promise<string>>()
-        .mockResolvedValue(mockBodySrc);
-      const parsePluginBodyFn = vi.fn<(src: string) => ParsedPlugin>(() => {
-        return paresdPlugin;
-      });
-      const result = readAllPluginBodies(
-        context,
-        msg1,
-        readPluginFn,
-        parsePluginBodyFn,
-      );
-      expect(result.length).toBe(pluginsRecord.length);
-      expect(readPluginFn).toHaveBeenCalledTimes(pluginsRecord.length);
-      expect(parsePluginBodyFn).toHaveBeenCalledTimes(pluginsRecord.length);
-      context.plugins.forEach((plugin: PluginParamsRecord, index) => {
-        expect(readPluginFn).toHaveBeenCalledWith(plugin.name);
-        expect(parsePluginBodyFn).toHaveBeenNthCalledWith(
-          index + 1,
-          mockBodySrc,
+    describe("normal", () => {
+      test("result", async () => {
+        const readPluginFn = () => Promise.resolve(mockBodySrc);
+        const parsePluginBodyFn = () => paresdPlugin;
+
+        const expected: PluginReadResult[] = context.plugins.map(
+          (p): PluginReadResult => ({
+            plugin: paresdPlugin,
+            error: "",
+            record: p,
+          }),
         );
+        const result: PluginReadResult[] = await Promise.all(
+          readAllPluginBodies(context, msg1, readPluginFn, parsePluginBodyFn),
+        );
+        expect(result).toEqual(expected);
+      });
+      test("calles", async () => {
+        const readPluginFn = vi
+          .fn<(pluginName: string) => Promise<string>>()
+          .mockResolvedValue(mockBodySrc);
+        const parsePluginBodyFn = vi.fn<(src: string) => ParsedPlugin>(() => {
+          return paresdPlugin;
+        });
+        const result = await Promise.all(
+          readAllPluginBodies(context, msg1, readPluginFn, parsePluginBodyFn),
+        );
+        expect(result.length).toBe(context.plugins.length);
+        expect(readPluginFn).toHaveBeenCalledTimes(context.plugins.length);
+        expect(parsePluginBodyFn).toHaveBeenCalledTimes(context.plugins.length);
+        context.plugins.forEach((plugin: PluginParamsRecord, index) => {
+          expect(readPluginFn).toHaveBeenCalledWith(plugin.name);
+          expect(parsePluginBodyFn).toHaveBeenNthCalledWith(
+            index + 1,
+            mockBodySrc,
+          );
+        });
       });
     });
   });
@@ -340,10 +367,7 @@ describe("rmmz", () => {
           {
             command: "add",
             args: [
-              {
-                name: "personArg",
-                attr: { kind: "struct", struct: "Person" },
-              },
+              { name: "personArg", attr: { kind: "struct", struct: "Person" } },
             ],
           },
         ],
@@ -412,44 +436,66 @@ describe("rmmz", () => {
     });
   });
 });
-const commandMap: ReadonlyMap<CommandMapKey, CommandArgExtractors> = new Map<
-  CommandMapKey,
-  CommandArgExtractors
->([
-  [
-    "MockPlugin:cmd",
-    {
-      commandName: "cmd",
-      desc: "test desc",
-      pluginName: "MockPlugin",
-      text: "mock text",
-      extractors: [
-        {
-          structs: [],
-          structArrays: [],
-          top: {
-            arrays: [],
-            bundleName: "",
-            scalar: {
-              record: {
-                value: valueArg.attr,
-                note: noteArg.attr,
-              },
-              jsonPathJS: new JSONPathJS(`$["value","note"]`),
-            },
-          },
-          rootName: "cmd",
-          rootCategory: "args",
-        },
-      ],
-    },
-  ],
-]);
 
-const pluginCommand: PluginCommandData = {
-  code: 357,
-  parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
-};
+const paramExtractor: PluginValuesExtractorBundle[] = [
+  {
+    rootCategory: "param",
+    rootName: "plugin",
+    structArrays: [],
+    structs: [],
+    top: {
+      arrays: [],
+      bundleName: "string",
+      scalar: {
+        jsonPathJS: new JSONPathJS(`$["textParam"]`),
+        record: {
+          textParam: {
+            default: "",
+            kind: "string",
+          },
+        },
+      },
+    },
+  },
+  {
+    rootCategory: "param",
+    rootName: "plugin",
+    structArrays: [],
+    structs: [],
+    top: {
+      arrays: [],
+      bundleName: "number",
+      scalar: {
+        jsonPathJS: new JSONPathJS(`$["numParam"]`),
+        record: {
+          numParam: {
+            default: 0,
+            kind: "number",
+          },
+        },
+      },
+    },
+  },
+  {
+    rootCategory: "param",
+    rootName: "plugin",
+    structArrays: [],
+    structs: [],
+    top: {
+      arrays: [],
+      bundleName: "boolean",
+      scalar: {
+        jsonPathJS: new JSONPathJS(`$["boolParam"]`),
+        record: {
+          boolParam: {
+            default: false,
+            kind: "boolean",
+          },
+        },
+      },
+    },
+  },
+];
 
 const cmdExtractor: CommandArgExtractors = {
   commandName: "cmd",
@@ -492,6 +538,16 @@ const cmdExtractor: CommandArgExtractors = {
   ],
 };
 
+const createCommandMap = (): ReadonlyMap<CommandMapKey, CommandArgExtractors> =>
+  new Map<CommandMapKey, CommandArgExtractors>([
+    ["MockPlugin:cmd", cmdExtractor],
+  ]);
+
+const pluginCommand: PluginCommandData = {
+  code: 357,
+  parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
+};
+
 describe("JSON Path", () => {
   describe("buildPluginValueExtractorV8", () => {
     test("normal - param", () => {
@@ -507,6 +563,7 @@ describe("JSON Path", () => {
       expect(paramHandlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
       expect(paramHandlers.structPathError).not.toHaveBeenCalled();
       expect(result.pluginName).toBe("MockPlugin");
+      expect(result.params.extractors).toEqual(paramExtractor);
     });
     test("normal - command", () => {
       const commandHandlers = createJSONPathErrorHandlers();
@@ -522,6 +579,85 @@ describe("JSON Path", () => {
       expect(commandHandlers.structPathError).not.toHaveBeenCalled();
       expect(result.pluginName).toBe("MockPlugin");
       expect(result.commands.extractors[0]).toEqual(cmdExtractor);
+    });
+  });
+
+  describe("createCommandMap", () => {
+    test("parse error", () => {
+      const errors = new Error("parse error");
+      const parseFn = vi.fn(() => {
+        throw errors;
+      });
+      const handlers = createParamReadErrorHandlers({});
+      const plugin: PluginParamsRecord = {
+        name: "MockPlugin",
+        parameters: {
+          textParam: "mock text",
+          numParam: "42",
+          boolParam: "true",
+        },
+        description: "",
+        status: true,
+      };
+
+      const expected: ParamReadResultV4<EEEEO> = {
+        errorKind: "parseError",
+        errorInfo: {},
+        pluginName: "MockPlugin",
+        params: [],
+      };
+
+      const result = extractPluginParamFromRecord4(
+        plugin,
+        paramExtractor,
+        parseFn,
+        handlers,
+      );
+      expect(parseFn).toHaveBeenCalledOnce();
+      expect(parseFn).toHaveBeenCalledWith(plugin.parameters);
+      expect(handlers.parseError).toHaveBeenCalledOnce();
+      expect(handlers.parseError).toHaveBeenCalledWith(plugin, errors);
+      expect(result).toEqual(expected);
+    });
+  });
+
+  describe("extractPluginParamFromRecord", () => {
+    test("parse error", () => {
+      const record: PluginParamsRecord = {
+        name: "BrokenPlugin",
+        status: false,
+        description: "parse fail case",
+        parameters: {
+          broken: "{",
+        },
+      };
+
+      const errorINfo = { code: "E_PARSE", message: "invalid json" };
+
+      const handlers = createParamReadErrorHandlers(errorINfo);
+      const error = new Error("parse error");
+      const parseFn = vi.fn(() => {
+        throw error;
+      });
+
+      const expected: ParamReadResultV4<EEEEO> = {
+        pluginName: "BrokenPlugin",
+        errorKind: "parseError",
+        errorInfo: errorINfo,
+        params: [],
+      };
+
+      const result = extractPluginParamFromRecord4(
+        record,
+        paramExtractor,
+        parseFn,
+        handlers,
+      );
+      expect(parseFn).toHaveBeenCalledOnce();
+      expect(parseFn).toHaveBeenCalledWith(record.parameters);
+      expect(handlers.parseError).toHaveBeenCalledOnce();
+      expect(handlers.parseError).toHaveBeenCalledWith(record, error);
+      expect(result).toEqual(expected);
     });
   });
   describe("extractArgsFromPluginCommandHandled", () => {
@@ -580,7 +716,7 @@ describe("JSON Path", () => {
       };
       const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
         pluginCommand,
-        commandMap,
+        createCommandMap(),
         handlers,
         parseFn,
       );
@@ -608,7 +744,7 @@ describe("JSON Path", () => {
       };
       const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
         pluginCommand,
-        commandMap,
+        createCommandMap(),
         handlers,
         parseFn,
       );
