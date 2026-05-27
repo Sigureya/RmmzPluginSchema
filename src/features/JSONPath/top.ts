@@ -12,6 +12,7 @@ import type {
   PluginSchemaOf,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
+import type { CommandExtractorEntry } from "./core";
 import {
   createPluginValueExtractor,
   extractPluginParamFromRecord,
@@ -21,7 +22,10 @@ import {
   type CommandExtractResult,
   type CommandMapKey,
 } from "./core";
-import { extractArgsFromPluginCommandHandled } from "./core/command2";
+import {
+  defaultCommandExtractHandlers,
+  extractArgsFromPluginCommandHandled,
+} from "./core/command2";
 import { buildSingleCommand, defaultHandlers } from "./core/commandBuild";
 import type { BuildErrorHandlers } from "./core/createPath/types/handlers";
 import type {
@@ -34,11 +38,23 @@ import type {
 } from "./core/paramBuild";
 import { defaultParamBuildHandlers, buildSingleParam } from "./core/paramBuild";
 import type {
+  CommandExtractorEntryList,
   ConvertPluginResult,
   ConvertPluginResultEx,
   PluginExtractorBundle,
 } from "./core/types";
-import { defaultCommandExtractHandlers } from "./pluginOld";
+
+/**
+ * @deprecated 消す可能性は高いが、とりあえず残す
+ */
+export const mergeCommandMap = (
+  list: ReadonlyArray<CommandExtractorEntryList>,
+): Map<CommandMapKey, CommandArgExtractors> => {
+  const src: CommandExtractorEntry[] = list.flatMap(
+    (item) => item.extractorEntries,
+  );
+  return new Map(src);
+};
 
 type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
 export const jsonPathFromPluginSchema = <
