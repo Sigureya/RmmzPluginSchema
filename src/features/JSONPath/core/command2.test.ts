@@ -22,6 +22,10 @@ const handlers: CommandExtractMessageHandlers = {
     message: `parse failed: ${command.parameters[0]}:${command.parameters[1]}:${String(error)}`,
     source: "deepJSONParseError",
   }),
+  extractArgsError: (command, error) => ({
+    message: `extract args failed: ${command.parameters[0]}:${command.parameters[1]}:${String(error)}`,
+    source: "extractArgsError",
+  }),
 };
 
 const createCommand = (
@@ -87,6 +91,10 @@ describe("command2 handled extraction", () => {
     const result = extractArgsFromPluginCommandHandled(command, map, {
       undefinedCommand,
       deepJSONParseError,
+      extractArgsError: () => ({
+        message: "custom extract args error",
+        source: "extractArgsError",
+      }),
     });
 
     expect(undefinedCommand).toHaveBeenCalledTimes(1);
@@ -115,6 +123,10 @@ describe("command2 handled extraction", () => {
       {
         undefinedCommand,
         deepJSONParseError,
+        extractArgsError: () => ({
+          message: "custom extract args error",
+          source: "extractArgsError",
+        }),
       },
       () => {
         throw parseError;
