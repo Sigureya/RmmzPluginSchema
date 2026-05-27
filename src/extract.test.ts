@@ -3,6 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   CommandArgExtractors,
+  CommandBuildResult,
   CommandExtractError,
   CommandExtractMessageHandlers,
   CommandExtractResult,
@@ -17,6 +18,7 @@ import type {
 import type { ErrorStruct } from "./features/JSONPath/core/extractor/types/error";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
+import type { JSONPathReader } from "./libs";
 import type {
   PluginSchemaArray,
   PluginTokens,
@@ -31,6 +33,9 @@ import type {
   PluginParamEx,
 } from "./rmmz";
 import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
+
+// 意図的に単一ファイルにまとめている。
+// これらの処理はパイプラインの最初から最後までを担う
 
 const mockStructDefault = {
   mockText: "mock text",
@@ -420,8 +425,72 @@ const pluginCommand: PluginCommandData = {
   code: 357,
   parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
 };
+
+const cmdExtractor: CommandArgExtractors = {
+  commandName: "cmd",
+  desc: "test desc",
+  pluginName: "MockPlugin",
+  text: "mock text",
+  extractors: [
+    {
+      rootCategory: "args",
+      rootName: "cmd",
+      structArrays: [],
+      structs: [],
+      top: {
+        bundleName: "number",
+        arrays: [],
+        scalar: {
+          jsonPathJS: new JSONPathJS(`$["value"]`),
+          record: {
+            value: valueArg.attr,
+          },
+        },
+      },
+    },
+    {
+      rootName: "cmd",
+      rootCategory: "args",
+      structArrays: [],
+      structs: [],
+      top: {
+        arrays: [],
+        bundleName: "string",
+        scalar: {
+          jsonPathJS: new JSONPathJS(`$["note"]`),
+          record: {
+            note: noteArg.attr,
+          },
+        },
+      },
+    },
+  ],
+};
+
 describe("JSON Path", () => {
   describe("buildCommandExtractorsV2", () => {
+    test("normal", () => {
+      const handlers = createJSONPathErrorHandlers();
+      const jsonPathFactory = vi.fn(
+        (path): JSONPathReader => new JSONPathJS(path),
+      );
+      const expected: CommandArgExtractors[] = [cmdExtractor];
+      const result: CommandBuildResult<ErrorStruct> = buildCommandExtractorsV2(
+        "MockPlugin",
+        schema.commands,
+        createStructMap(),
+        jsonPathFactory,
+        handlers,
+      );
+      expect(jsonPathFactory).toHaveBeenCalled();
+      expect(jsonPathFactory).toHaveBeenCalledWith(`$["value"]`);
+      expect(jsonPathFactory).toHaveBeenCalledWith(`$["note"]`);
+      expect(handlers.structPathError).not.toHaveBeenCalled();
+      expect(handlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
+      expect(result.errors).toEqual([]);
+      expect(result.extractors).toEqual(expected);
+    });
+
     test("Factory Error", () => {
       const structMap = createStructMap();
       const handlers = createJSONPathErrorHandlers();
