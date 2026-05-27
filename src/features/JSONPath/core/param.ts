@@ -5,8 +5,8 @@ import type {
 import type {
   PluginArrayParamType,
   ClassifiedPluginParamsTyped,
-  PluginParamsRecord,
   PluginScalarParam,
+  PluginParamsRecordMinimum,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { createPluginValuesPath } from "./createPath";
@@ -20,7 +20,7 @@ import type {
 import { compileJSONPathSchema } from "./pathToMemo";
 
 export const extractPluginParamFromRecord = (
-  record: PluginParamsRecord,
+  record: PluginParamsRecordMinimum,
   paramExtractor: ReadonlyArray<PluginValuesExtractorBundle>,
 ): ParamExtractResult => {
   const parsed: Record<string, JSONValue> = parseDeepRecord(record.parameters);
