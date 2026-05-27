@@ -14,7 +14,7 @@
     "rootDir": "src",
     "paths": {
       "@RmmzPluginSchema/rmmz/*": ["./src/rmmz/*"],
-      "@RmmzPluginSchema/fileip/*": ["./src/fileio/*"],
+      "@RmmzPluginSchema/fileio/*": ["./src/fileio/*"],
 
       "@RmmzPluginSchema/libs/*": ["./src/libs/*"]
     }
