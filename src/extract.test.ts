@@ -308,21 +308,18 @@ describe("File IO", () => {
       const parsePluginBodyFn = vi.fn<(src: string) => ParsedPlugin>(() => {
         return paresdPlugin;
       });
-      const result = readAllPluginBodies(
-        context,
-        msg1,
-        readPluginFn,
-        parsePluginBodyFn,
+      const result = await Promise.all(
+        readAllPluginBodies(context, msg1, readPluginFn, parsePluginBodyFn),
       );
-      expect(result.length).toBe(pluginsRecord.length);
-      expect(readPluginFn).toHaveBeenCalledTimes(pluginsRecord.length);
-      //      expect(parsePluginBodyFn).toHaveBeenCalledTimes(pluginsRecord.length);
+      expect(result.length).toBe(context.plugins.length);
+      expect(readPluginFn).toHaveBeenCalledTimes(context.plugins.length);
+      expect(parsePluginBodyFn).toHaveBeenCalledTimes(context.plugins.length);
       context.plugins.forEach((plugin: PluginParamsRecord, index) => {
         expect(readPluginFn).toHaveBeenCalledWith(plugin.name);
-        // expect(parsePluginBodyFn).toHaveBeenNthCalledWith(
-        //   index + 1,
-        //   mockBodySrc,
-        // );
+        expect(parsePluginBodyFn).toHaveBeenNthCalledWith(
+          index + 1,
+          mockBodySrc,
+        );
       });
     });
   });
