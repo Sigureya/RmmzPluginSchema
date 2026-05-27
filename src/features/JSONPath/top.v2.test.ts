@@ -130,6 +130,10 @@ describe("top v2 command extraction", () => {
         source: "deepJSONParseError",
         message: "custom parse error",
       }),
+      extractArgsError: () => ({
+        source: "extractArgsError",
+        message: "custom extract args error",
+      }),
     };
 
     const extracted = extractArgsFromPluiginCommand(
