@@ -1,5 +1,11 @@
 import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
+import type {
+  CommandExtractError,
+  CommandExtractMessageHandlers,
+  CommandExtractResult,
+} from "./features";
+import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import { readAllPluginBodies, readPluginInfosSafe } from "./fileio";
 import type {
@@ -10,6 +16,7 @@ import type {
   PluginParamsRecord,
   ResultOfparsePluginParamRecord,
   ClassifiedPluginParams,
+  PluginCommandData,
 } from "./rmmz";
 import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 
@@ -39,6 +46,22 @@ const createDeepJSONParseMock = (): MockedObject<DeepJSONParserHandlers> => {
         value: ["mock string"],
       };
     }),
+  };
+};
+
+const createCommandExtractMessageHandlers = (
+  commandError: CommandExtractError,
+): MockedObject<CommandExtractMessageHandlers> => {
+  return {
+    undefinedCommand: vi.fn<CommandExtractMessageHandlers["undefinedCommand"]>(
+      () => commandError,
+    ),
+    deepJSONParseError: vi.fn<
+      CommandExtractMessageHandlers["deepJSONParseError"]
+    >(() => commandError),
+    extractArgsError: vi.fn<CommandExtractMessageHandlers["extractArgsError"]>(
+      () => commandError,
+    ),
   };
 };
 
@@ -263,5 +286,40 @@ describe("rmmz", () => {
       );
       expect(result).toEqual(classify);
     });
+  });
+});
+
+const pluginCommand: PluginCommandData = {
+  code: 357,
+  parameters: ["MockPlugin", "cmd", "test desc", { value: "42", note: "ok" }],
+};
+describe("JSON Path", () => {
+  test("", () => {
+    const error = new Error("mock parse error");
+    const expected: Required<CommandExtractResult> = {
+      args: [],
+      commandName: "cmd",
+      pluginName: "MockPlugin",
+      error: {
+        message: "error msg",
+        source: "source eee",
+      },
+    };
+    const parseFn = vi.fn(() => {
+      throw error;
+    });
+    const handlers = createCommandExtractMessageHandlers(expected.error);
+
+    const result: CommandExtractResult = extractArgsFromPluginCommandHandled(
+      pluginCommand,
+      new Map([]),
+      handlers,
+      parseFn,
+    );
+    expect(parseFn).not.toHaveBeenCalled();
+    expect(handlers.undefinedCommand).toHaveBeenCalledWith(pluginCommand);
+    expect(handlers.deepJSONParseError).not.toHaveBeenCalled();
+    expect(handlers.extractArgsError).not.toHaveBeenCalled();
+    expect(result).toEqual(expected);
   });
 });
