@@ -12,15 +12,17 @@ import type {
   PluginSchemaOf,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginAsArraySchema } from "@RmmzPluginSchema/rmmz/plugin";
-import type { CommandExtractorEntry } from "./core";
+import type {
+  CommandExtractorEntry,
+  CommandArgExtractors,
+  CommandBuildResult,
+  CommandExtractMessageHandlers,
+  CommandExtractResult,
+  CommandMapKey,
+} from "./core";
 import {
   createPluginValueExtractor,
   extractPluginParamFromRecord,
-  type CommandArgExtractors,
-  type CommandBuildResult,
-  type CommandExtractMessageHandlers,
-  type CommandExtractResult,
-  type CommandMapKey,
 } from "./core";
 import {
   defaultCommandExtractHandlers,
@@ -143,6 +145,10 @@ export const buildParamExtractors = (
   );
 };
 
+/**
+ * @deprecated
+ * @todo エラー情報が欠落しているので、後で消す
+ */
 export const jsonPathFromPluginReadResult = (
   readResult: PluginReadResult,
   factoryFn: (path: string) => JSONPathReader,
@@ -163,6 +169,10 @@ export const jsonPathFromPluginReadResult = (
   );
 };
 
+/**
+ * @deprecated
+ * @todo エラー情報が欠落しているので、後で消す
+ */
 export const jsonPathFromPluginReadResults = (
   readResults: ReadonlyArray<PluginReadResult>,
   factoryFn: (path: string) => JSONPathReader,
