@@ -20,7 +20,10 @@ import type {
 } from "./features/JSONPath/core/param2";
 import { extractPluginParamFromRecord4 } from "./features/JSONPath/core/param2";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
-import type { MessageOfparsePluginParamRecordEx } from "./fileio";
+import type {
+  MessageOfparsePluginParamRecordEx,
+  PluginReadResult,
+} from "./fileio";
 import { readPluginInfosSafe, readAllPluginBodies } from "./fileio";
 import { classifyPluginParams, compilePluginAsArraySchema } from "./rmmz";
 import type {
@@ -283,7 +286,8 @@ describe("File IO", () => {
           source: string,
           msg: MessageOfparsePluginParamRecordEx,
         ) => ResultOfparsePluginParamRecord
-      >((a, b): ResultOfparsePluginParamRecord => {
+      >((src: string, b): ResultOfparsePluginParamRecord => {
+        expect(src).toBe(mockSrc);
         return {
           plugins: pluginsRecord,
           complete: true,
@@ -301,25 +305,43 @@ describe("File IO", () => {
   });
   describe("readAllPluginBodies", () => {
     const mockBodySrc = "mock plugin body source";
-    test("normal", async () => {
-      const readPluginFn = vi
-        .fn<(pluginName: string) => Promise<string>>()
-        .mockResolvedValue(mockBodySrc);
-      const parsePluginBodyFn = vi.fn<(src: string) => ParsedPlugin>(() => {
-        return paresdPlugin;
-      });
-      const result = await Promise.all(
-        readAllPluginBodies(context, msg1, readPluginFn, parsePluginBodyFn),
-      );
-      expect(result.length).toBe(context.plugins.length);
-      expect(readPluginFn).toHaveBeenCalledTimes(context.plugins.length);
-      expect(parsePluginBodyFn).toHaveBeenCalledTimes(context.plugins.length);
-      context.plugins.forEach((plugin: PluginParamsRecord, index) => {
-        expect(readPluginFn).toHaveBeenCalledWith(plugin.name);
-        expect(parsePluginBodyFn).toHaveBeenNthCalledWith(
-          index + 1,
-          mockBodySrc,
+    describe("normal", () => {
+      test("result", async () => {
+        const readPluginFn = () => Promise.resolve(mockBodySrc);
+        const parsePluginBodyFn = () => paresdPlugin;
+
+        const expected: PluginReadResult[] = context.plugins.map(
+          (p): PluginReadResult => ({
+            plugin: paresdPlugin,
+            error: "",
+            record: p,
+          }),
         );
+        const result: PluginReadResult[] = await Promise.all(
+          readAllPluginBodies(context, msg1, readPluginFn, parsePluginBodyFn),
+        );
+        expect(result).toEqual(expected);
+      });
+      test("calles", async () => {
+        const readPluginFn = vi
+          .fn<(pluginName: string) => Promise<string>>()
+          .mockResolvedValue(mockBodySrc);
+        const parsePluginBodyFn = vi.fn<(src: string) => ParsedPlugin>(() => {
+          return paresdPlugin;
+        });
+        const result = await Promise.all(
+          readAllPluginBodies(context, msg1, readPluginFn, parsePluginBodyFn),
+        );
+        expect(result.length).toBe(context.plugins.length);
+        expect(readPluginFn).toHaveBeenCalledTimes(context.plugins.length);
+        expect(parsePluginBodyFn).toHaveBeenCalledTimes(context.plugins.length);
+        context.plugins.forEach((plugin: PluginParamsRecord, index) => {
+          expect(readPluginFn).toHaveBeenCalledWith(plugin.name);
+          expect(parsePluginBodyFn).toHaveBeenNthCalledWith(
+            index + 1,
+            mockBodySrc,
+          );
+        });
       });
     });
   });
