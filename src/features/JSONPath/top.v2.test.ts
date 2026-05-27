@@ -8,7 +8,11 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin/types/pluginCommand";
 import { JSONPathJS } from "jsonpath-js";
-import type { CommandExtractMessageHandlers } from "./core";
+import type {
+  CommandExtractError,
+  CommandExtractMessageHandlers,
+  PluginExtractedValue,
+} from "./core";
 import {
   extractArgsFromPluiginCommand,
   jsonPathFromPluginSchema,
@@ -67,12 +71,7 @@ describe("top v2 command extraction", () => {
       parameters: ["MockPlugin", "Add", "Add", { value: "42", note: "ok" }],
     };
 
-    const extracted = extractArgsFromPluiginCommand(command, commandMap);
-
-    expect(extracted.error).toBeUndefined();
-    expect(extracted.pluginName).toBe("MockPlugin");
-    expect(extracted.commandName).toBe("Add");
-    expect(extracted.args).toEqual([
+    const expectedArgs: PluginExtractedValue[] = [
       {
         rootType: "args",
         rootName: "Add",
@@ -87,7 +86,14 @@ describe("top v2 command extraction", () => {
         param: { name: "note", attr: { kind: "string", default: "" } },
         value: "ok",
       },
-    ]);
+    ];
+
+    const extracted = extractArgsFromPluiginCommand(command, commandMap);
+
+    expect(extracted.error).toBeUndefined();
+    expect(extracted.pluginName).toBe("MockPlugin");
+    expect(extracted.commandName).toBe("Add");
+    expect(extracted.args).toEqual(expectedArgs);
   });
 
   test("異常系: 未定義コマンドはerror付きで返る", () => {
@@ -96,13 +102,16 @@ describe("top v2 command extraction", () => {
       code: 357,
       parameters: ["MockPlugin", "Unknown", "Unknown", {}],
     };
+    const error: CommandExtractError = {
+      source: "undefinedCommand",
+      message: "undefined command: MockPlugin:Unknown",
+    };
 
     const extracted = extractArgsFromPluiginCommand(command, commandMap);
 
     expect(extracted.args).toEqual([]);
     expect(extracted.error).toBeDefined();
-    expect(extracted.error?.source).toBe("undefinedCommand");
-    expect(extracted.error?.message).toContain("MockPlugin:Unknown");
+    expect(extracted.error).toEqual(error);
   });
 
   test("異常系: handlers を差し替えるとerror内容を上書きできる", () => {
@@ -111,9 +120,9 @@ describe("top v2 command extraction", () => {
       code: 357,
       parameters: ["RemovedPlugin", "Unknown", "UnknownTitle", {}],
     };
-    const expectedError = {
-      message: "custom undefined command",
-      source: "undefinedCommand",
+    const expectedError: CommandExtractError = {
+      message: "error message!",
+      source: "source!",
     };
     const handlers: CommandExtractMessageHandlers = {
       undefinedCommand: () => expectedError,
