@@ -10,27 +10,6 @@ import type { CommandArgExtractors } from "./extractor/types";
 import type { ErrorStruct } from "./extractor/types/error";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const defaultCommandBuildErrorHandlers: CommandBuildErrorHandlers<ErrorStruct> =
-  {
-    commandStructPathError: (context, error: StructPathError) => ({
-      code: error.code,
-      source: "createPath",
-      pluginName: context.pluginName,
-      commandName: context.commandName,
-      argName: context.argName,
-      path: error.path,
-      message: `${error.code}: ${error.path}`,
-    }),
-    commandCompileJSONPathSchemaError: (context, error: unknown) => ({
-      code: "compile_jsonpath_schema_error",
-      source: "compileJSONPathSchema",
-      pluginName: context.pluginName,
-      commandName: context.commandName,
-      argName: context.argName,
-      message: String(error),
-    }),
-  };
-
 const collectPathErrors = (
   pluginName: string,
   commandName: string,

@@ -21,16 +21,10 @@ import type {
   ParamBuildResult,
   PluginErrorStruct,
 } from "./core";
-import {
-  defaultPluginCommandExtractErrorHandlers,
-  extractArgsFromPluginCommandHandled,
-} from "./core/command2";
+import { extractArgsFromPluginCommandHandled } from "./core/command2";
 import { buildSingleCommand } from "./core/commandBuild";
 import type { ParamBuildErrorHandlers } from "./core/paramBuild";
-import {
-  defaultPluginParamBuildErrorHandlers,
-  buildSingleParam,
-} from "./core/paramBuild";
+import { buildSingleParam } from "./core/paramBuild";
 
 export const mergeCommandMap = (
   list: ReadonlyArray<CommandExtractorEntryList>,
@@ -46,7 +40,7 @@ type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
 export const extractArgsFromPluiginCommand = (
   command: PluginCommandData,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
-  handlers: PluginCommandExtractErrorHandlers = defaultPluginCommandExtractErrorHandlers,
+  handlers: PluginCommandExtractErrorHandlers,
 ): CommandExtractResult => {
   return extractArgsFromPluginCommandHandled(command, map, handlers);
 };
@@ -112,7 +106,7 @@ export const buildParamExtractors = (
   params: ReadonlyArray<PluginParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
-  handlers: ParamBuildErrorHandlers<PluginErrorStruct> = defaultPluginParamBuildErrorHandlers,
+  handlers: ParamBuildErrorHandlers<PluginErrorStruct>,
 ): ParamBuildResult => {
   return params.reduce<ParamBuildResult>(
     (state, param) => {

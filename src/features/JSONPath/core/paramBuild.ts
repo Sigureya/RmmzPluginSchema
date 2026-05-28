@@ -27,25 +27,6 @@ interface BuildSingleParamResult {
   errors: PluginErrorStruct[];
 }
 
-export const defaultPluginParamBuildErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct> =
-  {
-    paramStructPathError: (context, error) => ({
-      code: error.code,
-      source: "createPath",
-      pluginName: context.pluginName,
-      paramName: context.paramName,
-      path: error.path,
-      message: `${error.code}: ${error.path}`,
-    }),
-    paramCompileJSONPathSchemaError: (context, error) => ({
-      code: "compile_jsonpath_schema_error",
-      source: "compileJSONPathSchema",
-      pluginName: context.pluginName,
-      paramName: context.paramName,
-      message: String(error),
-    }),
-  };
-
 const collectPathErrorsForParam = (
   context: ParamBuildContext,
   pathErrors: StructPathError[],
