@@ -5,7 +5,7 @@ import type {
   PluginCommandSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginCommandExtractor } from "./command";
-import { extractArgsFromPluginCommandHandled } from "./command2";
+import { extractArgsFromPluginCommand } from "./command2";
 import type {
   CommandArgExtractors,
   CommandExtractError,
@@ -67,7 +67,7 @@ describe("command2 handled extraction", () => {
   test("正常系: PluginCommandDataから値を抽出できる", () => {
     const command = createCommand("MockPlugin", "Add", { value: "42" });
 
-    const result = extractArgsFromPluginCommandHandled(command, map, handlers);
+    const result = extractArgsFromPluginCommand(command, map, handlers);
 
     expect(result.error).toBeUndefined();
     expect(result.pluginName).toBe("MockPlugin");
@@ -88,7 +88,7 @@ describe("command2 handled extraction", () => {
     const commandNotFoundError = vi.fn(handlers.commandNotFoundError);
     const commandParseError = vi.fn(handlers.commandParseError);
 
-    const result = extractArgsFromPluginCommandHandled(command, map, {
+    const result = extractArgsFromPluginCommand(command, map, {
       commandNotFoundError,
       commandParseError,
       commandArgsError: () => ({
@@ -121,7 +121,7 @@ describe("command2 handled extraction", () => {
       message: "parse failed: MockPlugin:Add:Error: boom",
       source: "commandParseError",
     };
-    const result = extractArgsFromPluginCommandHandled(
+    const result = extractArgsFromPluginCommand(
       command,
       map,
       {
@@ -158,12 +158,9 @@ describe("command2 handled extraction", () => {
       message: "undefined command: MockPlugin:Unknown",
       source: "commandNotFoundError",
     };
-    const result = extractArgsFromPluginCommandHandled(
-      command,
-      map,
-      handlers,
-      () => ({ value: 1 }),
-    );
+    const result = extractArgsFromPluginCommand(command, map, handlers, () => ({
+      value: 1,
+    }));
 
     expect(result.args).toEqual([]);
     expect(result.error).toEqual(expecetdError);

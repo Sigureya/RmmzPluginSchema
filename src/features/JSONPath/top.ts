@@ -1,6 +1,5 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  PluginCommandData,
   PluginSchemaArray,
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
@@ -11,17 +10,14 @@ import type {
   CommandBuildErrorHandlers,
   CommandArgExtractors,
   CommandBuildResult,
-  PluginCommandExtractErrorHandlers,
   CommandExtractorEntry,
   CommandExtractorEntryList,
-  CommandExtractResult,
   CommandMapKey,
   PluginExtractionBuildBundle,
   ErrorStruct,
   ParamBuildResult,
   PluginErrorStruct,
 } from "./core";
-import { extractArgsFromPluginCommandHandled } from "./core/command2";
 import { buildSingleCommand } from "./core/commandBuild";
 import type { ParamBuildErrorHandlers } from "./core/paramBuild";
 import { buildSingleParam } from "./core/paramBuild";
@@ -39,17 +35,6 @@ export const mergeCommandMap = (
 };
 
 type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
-
-/**
- * @deprecated pipelines 起点の現行フローでは未使用です。`extractPluginCommandWithExtractor` を利用してください。
- */
-export const extractArgsFromPluiginCommand = (
-  command: PluginCommandData,
-  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
-  handlers: PluginCommandExtractErrorHandlers,
-): CommandExtractResult => {
-  return extractArgsFromPluginCommandHandled(command, map, handlers);
-};
 
 export const buildPluginValueExtractor = (
   pluginName: string,
