@@ -42,7 +42,8 @@ import type {
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 
 export interface ExtractFileSystem {
-  readFile(path: string): Promise<string>;
+  readPluginList(): Promise<string>;
+  readPluginBody(pluginName: string): Promise<string>;
 }
 
 export interface ExtractAppHandlers<E> {
@@ -112,7 +113,6 @@ export const createDefaultExtractAppHandlers = <E>(
 };
 
 export const extractFromBasePath = async <E>(
-  basePath: string,
   fs: ExtractFileSystem,
   handlers: ExtractAppHandlers<E>,
   options: ExtractApplicationOptions = {},
@@ -122,7 +122,7 @@ export const extractFromBasePath = async <E>(
 
   const pluginList = await readPluginInfosSafe(
     messages,
-    () => fs.readFile(resolvePluginsListPath(basePath)),
+    () => fs.readPluginList(),
     handlers.parsePluginList,
   );
   if (!pluginList.complete || pluginList.invalidPlugins > 0) {
@@ -140,7 +140,7 @@ export const extractFromBasePath = async <E>(
   const readTasks = readAllPluginBodies(
     pluginList,
     messages,
-    (pluginName) => fs.readFile(resolvePluginBodyPath(basePath, pluginName)),
+    (pluginName) => fs.readPluginBody(pluginName),
     handlers.parsePluginBody,
   );
   const readResults = await Promise.all(readTasks);
@@ -245,21 +245,6 @@ const extractSinglePlugin = <E>(
     commandExtractors: built.commands.extractors,
     errors,
   };
-};
-
-const normalizeBasePath = (basePath: string): string => {
-  return basePath.replace(/[\\/]+$/u, "");
-};
-
-const resolvePluginsListPath = (basePath: string): string => {
-  return `${normalizeBasePath(basePath)}/js/plugins.js`;
-};
-
-const resolvePluginBodyPath = (
-  basePath: string,
-  pluginName: string,
-): string => {
-  return `${normalizeBasePath(basePath)}/js/plugins/${pluginName}.js`;
 };
 
 const resolveStatus = <E>(
