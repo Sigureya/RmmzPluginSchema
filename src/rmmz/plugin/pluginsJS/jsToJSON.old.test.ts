@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { convertPluginsJSToJSON, parsePluginParamRecord } from "./jsToJSON";
+import { convertPluginsJSToJSON } from "./jsToJSON";
 import type { PluginParamsRecord } from "./types";
 
 describe("convertPluginsJSToJSON", () => {
@@ -39,10 +39,6 @@ describe("convertPluginsJSToJSON", () => {
     test("jsonParse", () => {
       const src = `[${expectedOutput.join("")}]`;
       const value = JSON.parse(src);
-      expect(value).toEqual(expectedValues);
-    });
-    test("parsePluginParamObject", () => {
-      const value = parsePluginParamRecord(input.join("\n"));
       expect(value).toEqual(expectedValues);
     });
   });
