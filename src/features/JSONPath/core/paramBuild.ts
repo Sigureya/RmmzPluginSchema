@@ -10,8 +10,11 @@ import type { PluginErrorStruct } from "./extractor/types/error";
 import { compileJSONPathSchema } from "./pathToMemo";
 
 export interface ParamBuildErrorHandlers<E> {
-  structPathError(context: ParamBuildContext, error: StructPathError): E;
-  compileJSONPathSchemaError(context: ParamBuildContext, error: unknown): E;
+  paramStructPathError(context: ParamBuildContext, error: StructPathError): E;
+  paramCompileJSONPathSchemaError(
+    context: ParamBuildContext,
+    error: unknown,
+  ): E;
 }
 
 export interface ParamBuildContext {
@@ -24,9 +27,9 @@ interface BuildSingleParamResult {
   errors: PluginErrorStruct[];
 }
 
-export const defaultParamBuildHandlers: ParamBuildErrorHandlers<PluginErrorStruct> =
+export const defaultPluginParamBuildErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct> =
   {
-    structPathError: (context, error) => ({
+    paramStructPathError: (context, error) => ({
       code: error.code,
       source: "createPath",
       pluginName: context.pluginName,
@@ -34,7 +37,7 @@ export const defaultParamBuildHandlers: ParamBuildErrorHandlers<PluginErrorStruc
       path: error.path,
       message: `${error.code}: ${error.path}`,
     }),
-    compileJSONPathSchemaError: (context, error) => ({
+    paramCompileJSONPathSchemaError: (context, error) => ({
       code: "compile_jsonpath_schema_error",
       source: "compileJSONPathSchema",
       pluginName: context.pluginName,
@@ -48,7 +51,9 @@ const collectPathErrorsForParam = (
   pathErrors: StructPathError[],
   handlers: ParamBuildErrorHandlers<PluginErrorStruct>,
 ): PluginErrorStruct[] => {
-  return pathErrors.map((error) => handlers.structPathError(context, error));
+  return pathErrors.map((error) =>
+    handlers.paramStructPathError(context, error),
+  );
 };
 
 export const buildSingleParam = (
@@ -76,7 +81,10 @@ export const buildSingleParam = (
       errors,
     };
   } catch (error) {
-    const compileError = handlers.compileJSONPathSchemaError(context, error);
+    const compileError = handlers.paramCompileJSONPathSchemaError(
+      context,
+      error,
+    );
     return {
       extractor: {
         rootCategory: path.rootCategory,

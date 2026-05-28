@@ -18,8 +18,13 @@ import type {
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export interface ParamReadHandlers<T> {
-  parseError(record: PluginParamsRecord, error: unknown): T;
+export interface PluginParamReadContext {
+  pluginName: string;
+  record: PluginParamsRecord;
+}
+
+export interface PluginParamReadErrorHandlers<T> {
+  pluginParamsParseError(context: PluginParamReadContext, error: unknown): T;
 }
 
 export interface ParamReadResult<T> {
@@ -33,21 +38,25 @@ export const extractPluginParamFromRecord = <T>(
   record: PluginParamsRecord,
   paramExtractor: ReadonlyArray<PluginValuesExtractorBundle>,
   parseFn: (value: Record<string, string>) => Record<string, JSONValue>,
-  errorHandlers: ParamReadHandlers<T>,
+  errorHandlers: PluginParamReadErrorHandlers<T>,
 ): ParamReadResult<T> => {
+  const context: PluginParamReadContext = {
+    pluginName: record.name,
+    record,
+  };
   try {
     const parsed = parseFn(record.parameters);
     return {
-      pluginName: record.name,
+      pluginName: context.pluginName,
       params: extractAllPluginValues(parsed, paramExtractor),
       errorKind: "",
       errorInfo: null,
     };
   } catch (error) {
     return {
-      pluginName: record.name,
+      pluginName: context.pluginName,
       errorKind: "parseError",
-      errorInfo: errorHandlers.parseError(record, error),
+      errorInfo: errorHandlers.pluginParamsParseError(context, error),
       params: [],
     };
   }

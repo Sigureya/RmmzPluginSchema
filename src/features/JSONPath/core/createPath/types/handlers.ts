@@ -1,12 +1,18 @@
 import type { StructPathError } from "./errorTypes";
 
-export interface JSONPathErrorContext {
+export interface CommandBuildContext {
   pluginName: string;
   commandName: string;
   argName: string;
 }
 
-export interface BuildErrorHandlers<E> {
-  structPathError(context: JSONPathErrorContext, error: StructPathError): E;
-  compileJSONPathSchemaError(context: JSONPathErrorContext, error: unknown): E;
+export interface CommandBuildErrorHandlers<E> {
+  commandStructPathError(
+    context: CommandBuildContext,
+    error: StructPathError,
+  ): E;
+  commandCompileJSONPathSchemaError(
+    context: CommandBuildContext,
+    error: unknown,
+  ): E;
 }

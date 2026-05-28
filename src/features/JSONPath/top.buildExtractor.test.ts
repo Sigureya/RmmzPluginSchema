@@ -10,11 +10,11 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
-  BuildErrorHandlers,
+  CommandBuildErrorHandlers,
   CommandArgExtractors,
   CommandBuildResult,
   ErrorStruct,
-  JSONPathErrorContext,
+  CommandBuildContext,
   ParamBuildResult,
   PluginErrorStruct,
 } from "./core";
@@ -23,7 +23,7 @@ import type {
   ParamBuildErrorHandlers,
 } from "./core/paramBuild";
 import { buildCommandExtractors, buildParamExtractors } from "./top";
-type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
+type JSONPathErrorHandles = CommandBuildErrorHandlers<ErrorStruct>;
 type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;
 
 const valueArg: PluginParamEx<NumberParam> = {
@@ -126,12 +126,12 @@ const mockStructPathError: ErrorStruct = {
 
 const createJSONPathErrorHandlers = (): MockedObject<JSONPathErrorHandles> => {
   return {
-    compileJSONPathSchemaError: vi.fn<
-      JSONPathErrorHandles["compileJSONPathSchemaError"]
+    commandCompileJSONPathSchemaError: vi.fn<
+      JSONPathErrorHandles["commandCompileJSONPathSchemaError"]
     >(() => mockCompileJSONPathSchemaError),
-    structPathError: vi.fn<JSONPathErrorHandles["structPathError"]>(
-      () => mockStructPathError,
-    ),
+    commandStructPathError: vi.fn<
+      JSONPathErrorHandles["commandStructPathError"]
+    >(() => mockStructPathError),
   };
 };
 
@@ -153,10 +153,10 @@ const mockParamStructPathError: PluginErrorStruct = {
 
 const createParamErrorHandlers = (): MockedObject<ParamErrorHandles> => {
   return {
-    compileJSONPathSchemaError: vi.fn<
-      ParamErrorHandles["compileJSONPathSchemaError"]
+    paramCompileJSONPathSchemaError: vi.fn<
+      ParamErrorHandles["paramCompileJSONPathSchemaError"]
     >(() => mockParamCompileJSONPathSchemaError),
-    structPathError: vi.fn<ParamErrorHandles["structPathError"]>(
+    paramStructPathError: vi.fn<ParamErrorHandles["paramStructPathError"]>(
       () => mockParamStructPathError,
     ),
   };
@@ -195,8 +195,8 @@ describe("buildCommandExtractorsV2", () => {
     expect(jsonPathFactory).toHaveBeenCalled();
     expect(jsonPathFactory).toHaveBeenCalledWith(`$["value"]`);
     expect(jsonPathFactory).toHaveBeenCalledWith(`$["note"]`);
-    expect(handlers.structPathError).not.toHaveBeenCalled();
-    expect(handlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
+    expect(handlers.commandStructPathError).not.toHaveBeenCalled();
+    expect(handlers.commandCompileJSONPathSchemaError).not.toHaveBeenCalled();
     expect(result.errors).toEqual([]);
     expect(result.extractors).toEqual(expected);
   });
@@ -221,10 +221,10 @@ describe("buildCommandExtractorsV2", () => {
       handlers,
     );
     expect(jsonPathFactory).toHaveBeenCalled();
-    expect(handlers.structPathError).not.toHaveBeenCalled();
-    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalled();
-    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledWith<
-      [JSONPathErrorContext, unknown]
+    expect(handlers.commandStructPathError).not.toHaveBeenCalled();
+    expect(handlers.commandCompileJSONPathSchemaError).toHaveBeenCalled();
+    expect(handlers.commandCompileJSONPathSchemaError).toHaveBeenCalledWith<
+      [CommandBuildContext, unknown]
     >(
       {
         argName: "value",
@@ -233,8 +233,8 @@ describe("buildCommandExtractorsV2", () => {
       },
       error,
     );
-    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledWith<
-      [JSONPathErrorContext, unknown]
+    expect(handlers.commandCompileJSONPathSchemaError).toHaveBeenCalledWith<
+      [CommandBuildContext, unknown]
     >(
       {
         argName: "note",
@@ -265,8 +265,8 @@ describe("buildParamExtractors", () => {
     expect(jsonPathFactory).toHaveBeenCalledWith(`$["textParam"]`);
     expect(jsonPathFactory).toHaveBeenCalledWith(`$["numParam"]`);
     expect(jsonPathFactory).toHaveBeenCalledWith(`$["boolParam"]`);
-    expect(handlers.structPathError).not.toHaveBeenCalled();
-    expect(handlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
+    expect(handlers.paramStructPathError).not.toHaveBeenCalled();
+    expect(handlers.paramCompileJSONPathSchemaError).not.toHaveBeenCalled();
     expect(result.errors).toEqual([]);
     expect(result.extractors).toHaveLength(3);
     expect(result.extractors.map((x) => x.rootName)).toEqual([
@@ -310,13 +310,13 @@ describe("buildParamExtractors", () => {
     ];
     errorContexts.forEach((context) => {
       expect(
-        handlers.compileJSONPathSchemaError,
+        handlers.paramCompileJSONPathSchemaError,
         context.paramName,
       ).toHaveBeenCalledWith(context, error);
     });
 
-    expect(handlers.structPathError).not.toHaveBeenCalled();
-    expect(handlers.compileJSONPathSchemaError).toHaveBeenCalledTimes(
+    expect(handlers.paramStructPathError).not.toHaveBeenCalled();
+    expect(handlers.paramCompileJSONPathSchemaError).toHaveBeenCalledTimes(
       schema.params.length,
     );
     expect(result.errors).toEqual([

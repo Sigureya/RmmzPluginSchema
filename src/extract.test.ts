@@ -581,7 +581,7 @@ const pluginCommand: PluginCommandData = {
 };
 
 describe("JSON Path", () => {
-  describe("buildPluginValueExtractorV8", () => {
+  describe("buildPluginValueExtractor", () => {
     test("normal - param", () => {
       const commandHandlers = createJSONPathErrorHandlers();
       const paramHandlers = createParamErrorHandlers();

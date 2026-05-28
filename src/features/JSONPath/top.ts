@@ -8,10 +8,10 @@ import type {
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
-  BuildErrorHandlers,
+  CommandBuildErrorHandlers,
   CommandArgExtractors,
   CommandBuildResult,
-  CommandExtractMessageHandlers,
+  PluginCommandExtractErrorHandlers,
   CommandExtractorEntry,
   CommandExtractorEntryList,
   CommandExtractResult,
@@ -22,12 +22,15 @@ import type {
   PluginErrorStruct,
 } from "./core";
 import {
-  defaultCommandExtractHandlers,
+  defaultPluginCommandExtractErrorHandlers,
   extractArgsFromPluginCommandHandled,
 } from "./core/command2";
 import { buildSingleCommand } from "./core/commandBuild";
 import type { ParamBuildErrorHandlers } from "./core/paramBuild";
-import { defaultParamBuildHandlers, buildSingleParam } from "./core/paramBuild";
+import {
+  defaultPluginParamBuildErrorHandlers,
+  buildSingleParam,
+} from "./core/paramBuild";
 
 export const mergeCommandMap = (
   list: ReadonlyArray<CommandExtractorEntryList>,
@@ -43,7 +46,7 @@ type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
 export const extractArgsFromPluiginCommand = (
   command: PluginCommandData,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
-  handlers: CommandExtractMessageHandlers = defaultCommandExtractHandlers,
+  handlers: PluginCommandExtractErrorHandlers = defaultPluginCommandExtractErrorHandlers,
 ): CommandExtractResult => {
   return extractArgsFromPluginCommandHandled(command, map, handlers);
 };
@@ -53,7 +56,7 @@ export const buildPluginValueExtractor = (
   schema: PluginSchemaArray,
   factoryFn: (path: string) => JSONPathReader,
   paramErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct>,
-  commandErrorHandlers: BuildErrorHandlers<ErrorStruct>,
+  commandErrorHandlers: CommandBuildErrorHandlers<ErrorStruct>,
 ): PluginExtractionBuildBundle => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
   const map: MapType = createClassifiedStructMap(schema.structs);
@@ -81,7 +84,7 @@ export const buildCommandExtractors = (
   commands: ReadonlyArray<PluginCommandSchemaArray>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
-  handlers: BuildErrorHandlers<ErrorStruct>,
+  handlers: CommandBuildErrorHandlers<ErrorStruct>,
 ): CommandBuildResultE => {
   return commands.reduce<CommandBuildResultE>(
     (state, command) => {
@@ -109,7 +112,7 @@ export const buildParamExtractors = (
   params: ReadonlyArray<PluginParam>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
-  handlers: ParamBuildErrorHandlers<PluginErrorStruct> = defaultParamBuildHandlers,
+  handlers: ParamBuildErrorHandlers<PluginErrorStruct> = defaultPluginParamBuildErrorHandlers,
 ): ParamBuildResult => {
   return params.reduce<ParamBuildResult>(
     (state, param) => {

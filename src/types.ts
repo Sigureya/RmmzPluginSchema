@@ -1,12 +1,12 @@
 import type {
   PluginErrorStruct,
-  BuildErrorHandlers,
+  CommandBuildErrorHandlers,
   ErrorStruct,
-  CommandExtractMessageHandlers,
+  PluginCommandExtractErrorHandlers,
   PluginExtractedValue,
   CommandArgExtractors,
 } from "./features";
-import type { ParamReadHandlers } from "./features/JSONPath/core/param";
+import type { PluginParamReadErrorHandlers } from "./features/JSONPath/core/param";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import type { JSONValue, JSONPathReader } from "./libs";
@@ -36,9 +36,9 @@ export interface PluginExtractionHandlers<E> {
   jsonPath: (path: string) => JSONPathReader;
   deepJSON: DeepJSONParserHandlers;
   paramBuild: ParamBuildErrorHandlers<PluginErrorStruct>;
-  commandBuild: BuildErrorHandlers<ErrorStruct>;
-  paramRead: ParamReadHandlers<E>;
-  commandExtract: CommandExtractMessageHandlers;
+  commandBuild: CommandBuildErrorHandlers<ErrorStruct>;
+  paramRead: PluginParamReadErrorHandlers<E>;
+  commandExtract: PluginCommandExtractErrorHandlers;
 }
 
 export interface PluginExtractionOptions {
