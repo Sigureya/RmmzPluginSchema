@@ -510,7 +510,7 @@ describe("classroom path generation and value extraction", () => {
       );
     });
     test("例外が飛ぼうが全てのFactoryが動く", () => {
-      const mockFn = vi.fn((path) => {
+      const mockFn = vi.fn(() => {
         throw new Error("Factory error");
       });
       compileJSONPathSchema(pathSchema, mockFn);
