@@ -6,7 +6,7 @@ import type {
   PluginExtractedValue,
   CommandArgExtractors,
 } from "./features";
-import type { ParamReadHandlers } from "./features/JSONPath/core/param2";
+import type { ParamReadHandlers } from "./features/JSONPath/core/param";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import type { JSONValue, JSONPathReader } from "./libs";

@@ -1,297 +1,122 @@
+import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
-import type {
-  BooleanParam,
-  NumberParam,
-  ClassifiedPluginParams,
-  ClassifiedPluginParamsEx,
-  PluginParamsRecord,
-} from "@RmmzPluginSchema/rmmz/plugin";
-import { stringifyDeepJSON } from "@RmmzPluginSchema/rmmz/plugin";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
+import type { PluginParamsRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type {
-  PluginExtractedValue,
-  ParamExtractResult,
-  PluginParamsSchema,
-  PluginParamExtractor,
-} from "./extractor/types";
-import {
-  compilePluginParamExtractor,
-  extractPluginParam,
-  extractPluginParamFromRecord,
-} from "./param";
+import type { PluginValuesExtractorBundle } from "./extractor/types";
+import type { ParamReadHandlers } from "./param";
+import { extractPluginParamFromRecord } from "./param";
 
-interface Person {
-  name: string;
-  age: number;
-}
-
-interface Person2 {
-  "first name": string;
-  age: number;
-}
-
-const mockData = {
-  enable: true,
-  "flug enabled": false,
-  threshold: 42,
-  person: {
-    name: "Alice",
-    age: 30,
-  },
-  dummy: "ignore me",
+const createErrorHandlers = <T>(e: T): MockedObject<ParamReadHandlers<T>> => {
+  type H = ParamReadHandlers<T>;
+  return {
+    parseError: vi.fn<H["parseError"]>((): T => {
+      return e;
+    }),
+  };
 };
 
-const createMockFn = () => vi.fn((path: string) => new JSONPathJS(path));
-
-const createMockParam = (): Record<string, string> => {
-  const e2: [string, string][] = Object.entries(mockData).map(
-    ([key, value]): [string, string] => [key, stringifyDeepJSON(value)],
-  );
-  return Object.fromEntries(e2);
-};
-
-describe("plugin param extractor", () => {
-  describe("normal input", () => {
-    const schemaPerson: ClassifiedPluginParamsEx<Person> = {
-      scalars: [
-        { name: "name", attr: { kind: "string", default: "" } },
-        { name: "age", attr: { kind: "number", default: 0 } },
-      ],
-      scalarArrays: [],
-      structArrays: [],
-      structs: [],
-    };
-
-    const pluginParamsSchema: PluginParamsSchema<
-      NumberParam | BooleanParam,
-      never
-    > = {
-      pluginName: "TestPlugin",
-      schema: {
-        params: [
-          { name: "enable", attr: { kind: "boolean", default: false } },
-          { name: "threshold", attr: { kind: "number", default: 10 } },
-          { name: "person", attr: { kind: "struct", struct: "Person" } },
-        ],
+describe("extractPluginParamFromRecord4", () => {
+  test("returns extracted params when parse succeeds", () => {
+    const record: PluginParamsRecord = {
+      name: "TestPlugin",
+      status: true,
+      description: "for unit test",
+      parameters: {
+        enabled: "true",
       },
     };
 
-    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
-      ["Person", schemaPerson],
-    ]);
-    test("create memo", () => {
-      const mockFn = createMockFn();
-      compilePluginParamExtractor(pluginParamsSchema, structMap, mockFn);
-      expect(mockFn).toHaveBeenCalledTimes(3);
-      expect(mockFn).toHaveBeenNthCalledWith(1, `$["enable"]`);
-      expect(mockFn).toHaveBeenNthCalledWith(2, `$["threshold"]`);
-      expect(mockFn).toHaveBeenNthCalledWith(3, '$["person"]["name","age"]');
+    const extractors: PluginValuesExtractorBundle[] = [
+      {
+        rootName: "plugin",
+        rootCategory: "param",
+        top: {
+          bundleName: "",
+          scalar: {
+            jsonPathJS: new JSONPathJS('$["enabled"]'),
+            record: {
+              enabled: { kind: "boolean", default: false },
+            },
+          },
+          arrays: [],
+        },
+        structs: [],
+        structArrays: [],
+      },
+    ];
+
+    const parseFn = vi.fn(
+      (): Record<string, JSONValue> => ({
+        enabled: true,
+      }),
+    );
+    const handlers = createErrorHandlers({
+      code: "E_PARSE",
+      message: "invalid json",
     });
-    test("extract values", () => {
-      const expected: PluginExtractedValue[] = [
+
+    const result = extractPluginParamFromRecord(
+      record,
+      extractors,
+      parseFn,
+      handlers,
+    );
+
+    expect(parseFn).toHaveBeenCalledTimes(1);
+    expect(parseFn).toHaveBeenCalledWith(record.parameters);
+    expect(handlers.parseError).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      pluginName: "TestPlugin",
+      errorKind: "",
+      errorInfo: null,
+      params: [
         {
-          structName: "",
-          param: { name: "enable", attr: { kind: "boolean", default: false } },
           rootName: "plugin",
           rootType: "param",
+          structName: "",
+          param: { name: "enabled", attr: { kind: "boolean", default: false } },
           value: true,
         },
-        {
-          structName: "",
-          param: { name: "threshold", attr: { kind: "number", default: 10 } },
-          rootName: "plugin",
-          rootType: "param",
-          value: 42,
-        },
-        {
-          structName: "Person",
-          param: { name: "name", attr: { kind: "string", default: "" } },
-          rootName: "person",
-          rootType: "param",
-          value: "Alice",
-        },
-        {
-          structName: "Person",
-          param: { name: "age", attr: { kind: "number", default: 0 } },
-          rootName: "person",
-          rootType: "param",
-          value: 30,
-        },
-      ];
-      const memo: PluginParamExtractor = compilePluginParamExtractor(
-        pluginParamsSchema,
-        structMap,
-        (path) => new JSONPathJS(path),
-      );
-      const result: ParamExtractResult = extractPluginParam(mockData, memo);
-      expect(result.pluginName).toBe("TestPlugin");
-      expect(result.params).toEqual(expected);
-    });
-    test("extract from record", () => {
-      const expected: PluginExtractedValue[] = [
-        {
-          structName: "Person",
-          param: {
-            attr: {
-              default: "",
-              kind: "string",
-            },
-            name: "name",
-          },
-          rootName: "person",
-          rootType: "param",
-          value: "Alice",
-        },
-        {
-          structName: "Person",
-          param: {
-            attr: {
-              default: 0,
-              kind: "number",
-            },
-            name: "age",
-          },
-          rootName: "person",
-          rootType: "param",
-          value: 30,
-        },
-      ];
-
-      const memo: PluginParamExtractor = compilePluginParamExtractor(
-        pluginParamsSchema,
-        structMap,
-        (path) => new JSONPathJS(path),
-      );
-
-      const record: PluginParamsRecord = {
-        name: "TestPlugin",
-        parameters: createMockParam(),
-        status: true,
-        description: "Test plugin for param extraction",
-      };
-      const result: ParamExtractResult = extractPluginParamFromRecord(
-        record,
-        memo.extractors,
-      );
-      expect(result.pluginName).toBe("TestPlugin");
-      expect(result.params).toEqual(expected);
+      ],
     });
   });
 
-  describe("xx input", () => {
-    const schemaPerson: ClassifiedPluginParamsEx<Person2> = {
-      scalars: [
-        { name: "first name", attr: { kind: "string", default: "" } },
-        { name: "age", attr: { kind: "number", default: 0 } },
-      ],
-      scalarArrays: [],
-      structArrays: [],
-      structs: [],
-    };
-
-    const pluginParamsSchema: PluginParamsSchema = {
-      pluginName: "TestPlugin",
-      schema: {
-        params: [
-          { name: "flug enabled", attr: { kind: "boolean", default: false } },
-          { name: "person", attr: { kind: "struct", struct: "Person2" } },
-        ],
+  test("returns parseError result when parse function throws", () => {
+    const record: PluginParamsRecord = {
+      name: "BrokenPlugin",
+      status: false,
+      description: "parse fail case",
+      parameters: {
+        broken: "{",
       },
     };
-    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map([
-      ["Person2", schemaPerson],
-    ]);
-    test("create memo", () => {
-      const mockFn = createMockFn();
-      compilePluginParamExtractor(pluginParamsSchema, structMap, mockFn);
-      expect(mockFn).toHaveBeenCalledTimes(
-        pluginParamsSchema.schema.params.length,
-      );
-      expect(mockFn).toHaveBeenNthCalledWith(1, `$["flug enabled"]`);
-      expect(mockFn).toHaveBeenNthCalledWith(
-        2,
-        '$["person"]["first name","age"]',
-      );
-    });
-    test("extract values", () => {
-      const expected: PluginExtractedValue[] = [
-        {
-          param: {
-            attr: { default: false, kind: "boolean" },
-            name: "flug enabled",
-          },
-          rootName: "plugin",
-          rootType: "param",
-          structName: "",
-          value: false,
-        },
-        {
-          param: {
-            attr: { default: 0, kind: "number" },
-            name: "age",
-          },
-          rootName: "person",
-          rootType: "param",
-          structName: "Person2",
-          value: 30,
-        },
-      ];
-      const memo: PluginParamExtractor = compilePluginParamExtractor(
-        pluginParamsSchema,
-        structMap,
-        (path) => new JSONPathJS(path),
-      );
-      const result: ParamExtractResult = extractPluginParam(mockData, memo);
-      expect(result.pluginName).toBe("TestPlugin");
-      expect(result.params).toEqual(expected);
-    });
-  });
+    const extractors: PluginValuesExtractorBundle[] = [];
 
-  describe("undefined struct input", () => {
-    const pluginParamsSchema: PluginParamsSchema = {
-      pluginName: "TestPlugin",
-      schema: {
-        params: [
-          { name: "enable", attr: { kind: "boolean", default: false } },
-          { name: "broken", attr: { kind: "struct", struct: "Missing" } },
-        ],
-      },
+    const thrown = new Error("invalid json");
+    const parseFn = vi.fn((): Record<string, JSONValue> => {
+      throw thrown;
+    });
+    const parseErrorResult = { code: "E_PARSE", message: "invalid json" };
+    const handlers = createErrorHandlers(parseErrorResult);
+
+    const expected: typeof result = {
+      pluginName: "BrokenPlugin",
+      errorKind: "parseError",
+      errorInfo: parseErrorResult,
+      params: [],
     };
-    const structMap: ReadonlyMap<string, ClassifiedPluginParams> = new Map();
 
-    test("compilePluginParamExtractor は未定義structがあっても処理継続できる", () => {
-      const mockFn = createMockFn();
-      const memo = compilePluginParamExtractor(
-        pluginParamsSchema,
-        structMap,
-        mockFn,
-      );
+    const result = extractPluginParamFromRecord(
+      record,
+      extractors,
+      parseFn,
+      handlers,
+    );
 
-      expect(memo.extractors).toHaveLength(2);
-      expect(mockFn).toHaveBeenCalledTimes(1);
-      expect(mockFn).toHaveBeenNthCalledWith(1, `$["enable"]`);
-    });
-
-    test("extractPluginParam は抽出可能な値のみ返す", () => {
-      const memo: PluginParamExtractor = compilePluginParamExtractor(
-        pluginParamsSchema,
-        structMap,
-        (path) => new JSONPathJS(path),
-      );
-
-      const expectedParams: PluginExtractedValue[] = [
-        {
-          rootType: "param",
-          rootName: "plugin",
-          structName: "",
-          param: { name: "enable", attr: { kind: "boolean", default: false } },
-          value: true,
-        },
-      ];
-      const result: ParamExtractResult = extractPluginParam(mockData, memo);
-
-      expect(result.pluginName).toBe("TestPlugin");
-      expect(result.params).toEqual(expectedParams);
-    });
+    expect(parseFn).toHaveBeenCalledOnce();
+    expect(handlers.parseError).toHaveBeenCalledOnce();
+    expect(handlers.parseError).toHaveBeenCalledWith(record, thrown);
+    expect(result).toEqual(expected);
   });
 });

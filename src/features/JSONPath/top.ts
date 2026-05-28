@@ -1,20 +1,12 @@
-import type { PluginReadResult } from "@RmmzPluginSchema/fileio/types";
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  PluginScalarParam,
-  PluginArrayParamType,
-  PluginSchemaOf,
-  PluginParamsRecord,
   PluginCommandData,
   PluginSchemaArray,
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
   PluginParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import {
-  createClassifiedStructMap,
-  compilePluginAsArraySchema,
-} from "@RmmzPluginSchema/rmmz/plugin";
+import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import type {
   BuildErrorHandlers,
   CommandArgExtractors,
@@ -24,17 +16,10 @@ import type {
   CommandExtractorEntryList,
   CommandExtractResult,
   CommandMapKey,
-  ConvertPluginResult,
-  ConvertPluginResultEx,
-  EEBudnleV8,
+  PluginExtractionBuildBundle,
   ErrorStruct,
   ParamBuildResult,
   PluginErrorStruct,
-  PluginExtractorBundle,
-} from "./core";
-import {
-  createPluginValueExtractor,
-  extractPluginParamFromRecord,
 } from "./core";
 import {
   defaultCommandExtractHandlers,
@@ -54,27 +39,6 @@ export const mergeCommandMap = (
 };
 
 type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
-export const jsonPathFromPluginSchema = <
-  S extends PluginScalarParam,
-  A extends PluginArrayParamType,
->(
-  schema: PluginSchemaOf<S, A>,
-  record: PluginParamsRecord,
-  factoryFn: (path: string) => JSONPathReader,
-): ConvertPluginResultEx<S, A> => {
-  const extractor: PluginExtractorBundle = createPluginValueExtractor(
-    schema.pluginName,
-    schema.schema,
-    factoryFn,
-  );
-  const { params } = extractPluginParamFromRecord(record, extractor.params);
-  return {
-    record: record,
-    schema,
-    extractorEntries: extractor.commands,
-    params: params,
-  };
-};
 
 export const extractArgsFromPluiginCommand = (
   command: PluginCommandData,
@@ -90,7 +54,7 @@ export const buildPluginValueExtractorV8 = (
   factoryFn: (path: string) => JSONPathReader,
   paramErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct>,
   commandErrorHandlers: BuildErrorHandlers<ErrorStruct>,
-): EEBudnleV8 => {
+): PluginExtractionBuildBundle => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
   const map: MapType = createClassifiedStructMap(schema.structs);
   return {
@@ -166,43 +130,4 @@ export const buildParamExtractors = (
       errors: [],
     },
   );
-};
-
-/**
- * @deprecated
- * @todo エラー情報が欠落しているので、後で消す
- */
-export const jsonPathFromPluginReadResult = (
-  readResult: PluginReadResult,
-  factoryFn: (path: string) => JSONPathReader,
-): null | ConvertPluginResult => {
-  if (readResult.plugin === null) {
-    return null;
-  }
-  const schema: PluginSchemaArray = compilePluginAsArraySchema(
-    readResult.plugin,
-  );
-  return jsonPathFromPluginSchema(
-    {
-      pluginName: readResult.record.name,
-      schema,
-    },
-    readResult.record,
-    factoryFn,
-  );
-};
-
-/**
- * @deprecated
- * @todo エラー情報が欠落しているので、後で消す
- */
-export const jsonPathFromPluginReadResults = (
-  readResults: ReadonlyArray<PluginReadResult>,
-  factoryFn: (path: string) => JSONPathReader,
-): ConvertPluginResult[] => {
-  return readResults
-    .map((readResult): null | ConvertPluginResult => {
-      return jsonPathFromPluginReadResult(readResult, factoryFn);
-    })
-    .filter((result): result is ConvertPluginResult => result !== null);
 };
