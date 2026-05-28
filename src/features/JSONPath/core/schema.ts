@@ -21,6 +21,9 @@ import type {
 import { compileJSONPathSchema } from "./pathToMemo";
 import type { PluginExtractorBundle } from "./types";
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。`buildPluginValueExtractor` を利用してください。
+ */
 export const createPluginCommandExtractorMap = (
   schema: ReadonlyArray<PluginMinimumSchema>,
   factoryFn: (path: string) => JSONPathReader,
@@ -31,6 +34,9 @@ export const createPluginCommandExtractorMap = (
   return new Map(entries);
 };
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。`buildPluginValueExtractor` を利用してください。
+ */
 export const createPluginCommandExtractor = (
   schema: PluginMinimumSchema,
   factoryFn: (path: string) => JSONPathReader,
@@ -44,6 +50,9 @@ export const createPluginCommandExtractor = (
   );
 };
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。`buildPluginValueExtractor` を利用してください。
+ */
 export const createPluginValueExtractor = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType,

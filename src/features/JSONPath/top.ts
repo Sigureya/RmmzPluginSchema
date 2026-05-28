@@ -26,6 +26,9 @@ import { buildSingleCommand } from "./core/commandBuild";
 import type { ParamBuildErrorHandlers } from "./core/paramBuild";
 import { buildSingleParam } from "./core/paramBuild";
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export const mergeCommandMap = (
   list: ReadonlyArray<CommandExtractorEntryList>,
 ): Map<CommandMapKey, CommandArgExtractors> => {
@@ -37,6 +40,9 @@ export const mergeCommandMap = (
 
 type CommandBuildResultE = CommandBuildResult<ErrorStruct>;
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。`extractPluginCommandWithExtractor` を利用してください。
+ */
 export const extractArgsFromPluiginCommand = (
   command: PluginCommandData,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
