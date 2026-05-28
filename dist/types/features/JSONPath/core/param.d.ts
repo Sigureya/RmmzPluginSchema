@@ -1,13 +1,7 @@
 import { JSONPathReader, JSONValue } from '../../../libs/jsonPath';
 import { ClassifiedPluginParamsTyped, PluginArrayParamType, PluginParamsRecord, PluginScalarParam } from '../../../rmmz/plugin';
+import { PluginParamReadErrorHandlers } from '../../../rmmz/plugin/pluginsJS/types/handlers';
 import { PluginExtractedValue, PluginParamExtractor, PluginParamsSchema, PluginValuesExtractorBundle } from './extractor/types';
-export interface PluginParamReadContext {
-    pluginName: string;
-    record: PluginParamsRecord;
-}
-export interface PluginParamReadErrorHandlers<T> {
-    pluginParamsParseError(context: PluginParamReadContext, error: unknown): T;
-}
 export interface ParamReadResult<T> {
     errorInfo: T | null;
     pluginName: string;
