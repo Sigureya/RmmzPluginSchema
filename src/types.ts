@@ -17,12 +17,12 @@ import type {
   PluginParamsRecord,
 } from "./rmmz";
 
-export interface PluginFileSystem {
+export interface PluginFileReader {
   readPluginList(): Promise<string>;
   readPluginBody(pluginName: string): Promise<string>;
 }
 
-export interface PluginParser {
+export interface PluginParseHandlers {
   parsePluginList: (
     source: string,
     msg: MessageOfparsePluginParamRecordEx,
@@ -31,8 +31,8 @@ export interface PluginParser {
   parseDeepRecord: (value: Record<string, string>) => Record<string, JSONValue>;
 }
 
-export interface PluginExtractAppHandlers<E> {
-  parser: PluginParser;
+export interface PluginExtractionHandlers<E> {
+  parser: PluginParseHandlers;
   jsonPath: (path: string) => JSONPathReader;
   deepJSON: DeepJSONParserHandlers;
   paramBuild: ParamBuildErrorHandlers<PluginErrorStruct>;
@@ -41,11 +41,11 @@ export interface PluginExtractAppHandlers<E> {
   commandExtract: CommandExtractMessageHandlers;
 }
 
-export interface ExtractApplicationOptions {
+export interface PluginExtractionOptions {
   messages?: MessageOfparsePluginParamRecordEx;
 }
 
-export type ExtractErrorPhase =
+export type PluginExtractionErrorPhase =
   | "readPluginList"
   | "readPluginBody"
   | "parsePluginBody"
@@ -53,24 +53,24 @@ export type ExtractErrorPhase =
   | "buildCommand"
   | "parseParam";
 
-export interface ExtractAppError<E> {
-  phase: ExtractErrorPhase;
+export interface PluginExtractionError<E> {
+  phase: PluginExtractionErrorPhase;
   pluginName: string;
   message: string;
   detail?: unknown;
   errorInfo?: E;
 }
 
-export interface ExtractedPluginResult<E> {
+export interface PluginExtractionItemResult<E> {
   pluginName: string;
   record: PluginParamsRecord;
   params: PluginExtractedValue[];
   commandExtractors: CommandArgExtractors[];
-  errors: ExtractAppError<E>[];
+  errors: PluginExtractionError<E>[];
 }
 
-export interface ExtractApplicationResult<E> {
+export interface PluginExtractionResult<E> {
   status: "success" | "partial" | "failure";
-  plugins: ExtractedPluginResult<E>[];
-  allErrors: ExtractAppError<E>[];
+  plugins: PluginExtractionItemResult<E>[];
+  allErrors: PluginExtractionError<E>[];
 }
