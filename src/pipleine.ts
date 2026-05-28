@@ -1,14 +1,6 @@
 import { JSONPathJS } from "jsonpath-js";
 import { buildPluginValueExtractorV8 } from "./features";
-import type {
-  BuildErrorHandlers,
-  CommandArgExtractors,
-  CommandExtractMessageHandlers,
-  EEBudnleV8,
-  ErrorStruct,
-  PluginErrorStruct,
-  PluginExtractedValue,
-} from "./features";
+import type { EEBudnleV8 } from "./features";
 import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2";
 import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
 import type {
@@ -16,7 +8,6 @@ import type {
   ParamReadResultV4,
 } from "./features/JSONPath/core/param2";
 import { extractPluginParamFromRecord4 } from "./features/JSONPath/core/param2";
-import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import { defaultParamBuildHandlers } from "./features/JSONPath/core/paramBuild";
 import {
   READ_PLUGIN_MESSAGES,
@@ -27,75 +18,22 @@ import type {
   MessageOfparsePluginParamRecordEx,
   PluginReadResult,
 } from "./fileio";
-import type { JSONPathReader, JSONValue } from "./libs";
 import {
   compilePluginAsArraySchema,
   parseDeepRecord,
   parsePluginByLocale,
   parsePluginParamRecord2,
 } from "./rmmz";
-import type {
-  DeepJSONParserHandlers,
-  ParsedPlugin,
-  PluginParamsRecord,
-  ResultOfparsePluginParamRecord,
-} from "./rmmz";
+import type { ResultOfparsePluginParamRecord } from "./rmmz";
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
-
-export interface ExtractFileSystem {
-  readPluginList(): Promise<string>;
-  readPluginBody(pluginName: string): Promise<string>;
-}
-
-export interface ExtractAppHandlers<E> {
-  parsePluginList: (
-    source: string,
-    msg: MessageOfparsePluginParamRecordEx,
-  ) => ResultOfparsePluginParamRecord;
-  parsePluginBody: (src: string) => ParsedPlugin;
-  parseDeepRecord: (value: Record<string, string>) => Record<string, JSONValue>;
-  jsonPath: (path: string) => JSONPathReader;
-  deepJSON: DeepJSONParserHandlers;
-  paramBuild: ParamBuildErrorHandlers<PluginErrorStruct>;
-  commandBuild: BuildErrorHandlers<ErrorStruct>;
-  paramRead: ParamReadHandlers<E>;
-  commandExtract: CommandExtractMessageHandlers;
-}
-
-export interface ExtractApplicationOptions {
-  messages?: MessageOfparsePluginParamRecordEx;
-}
-
-export type ExtractErrorPhase =
-  | "readPluginList"
-  | "readPluginBody"
-  | "parsePluginBody"
-  | "buildParam"
-  | "buildCommand"
-  | "parseParam"
-  | "extractCommand";
-
-export interface ExtractAppError<E> {
-  phase: ExtractErrorPhase;
-  pluginName: string;
-  message: string;
-  detail?: unknown;
-  errorInfo?: E;
-}
-
-export interface ExtractedPluginResult<E> {
-  pluginName: string;
-  record: PluginParamsRecord;
-  params: PluginExtractedValue[];
-  commandExtractors: CommandArgExtractors[];
-  errors: ExtractAppError<E>[];
-}
-
-export interface ExtractApplicationResult<E> {
-  status: "success" | "partial" | "failure";
-  plugins: ExtractedPluginResult<E>[];
-  allErrors: ExtractAppError<E>[];
-}
+import type {
+  ExtractAppHandlers,
+  ExtractFileSystem,
+  ExtractApplicationOptions,
+  ExtractApplicationResult,
+  ExtractAppError,
+  ExtractedPluginResult,
+} from "./types";
 
 export const createDefaultExtractAppHandlers = <E>(
   paramRead: ParamReadHandlers<E>,
