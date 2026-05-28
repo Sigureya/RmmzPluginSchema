@@ -11,16 +11,25 @@ import type {
   PluginValuesExtractorBundle,
 } from "./extractor/types";
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface PluginExtractorBundle {
   pluginName: string;
   params: PluginValuesExtractorBundle[];
   commands: CommandExtractorEntry[];
 }
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface CommandExtractorEntryList {
   extractorEntries: CommandExtractorEntry[];
 }
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface ConvertPluginResult {
   params: PluginExtractedValue<PluginParam>[];
   record: PluginParamsRecord;
@@ -28,6 +37,9 @@ export interface ConvertPluginResult {
   extractorEntries: CommandExtractorEntry[];
 }
 
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface ConvertPluginResultEx<
   S extends PluginScalarParam,
   A extends PluginArrayParamType,
