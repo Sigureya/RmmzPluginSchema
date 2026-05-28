@@ -18,10 +18,6 @@ export interface PluginCommandExtractionOutput {
   error?: CommandExtractError;
 }
 
-const commandMapKey = (command: PluginCommandData): CommandMapKey => {
-  return `${command.parameters[0]}:${command.parameters[1]}`;
-};
-
 export const createCommandExtractorMapFromPipeline = <E>(
   input: PluginExtractionResult<E>,
 ): Map<CommandMapKey, CommandArgExtractors> => {
