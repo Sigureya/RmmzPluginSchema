@@ -3,9 +3,9 @@ import { describe, expect, test, vi } from "vitest";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   CommandExtractError,
-  CommandExtractMessageHandlers,
+  PluginCommandExtractErrorHandlers,
   PluginErrorStruct,
-  BuildErrorHandlers,
+  CommandBuildErrorHandlers,
   ErrorStruct,
   CommandMapKey,
   CommandArgExtractors,
@@ -15,7 +15,7 @@ import type {
 import { buildPluginValueExtractor } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
 import type {
-  ParamReadHandlers,
+  PluginParamReadErrorHandlers,
   ParamReadResult,
 } from "./features/JSONPath/core/param";
 import { extractPluginParamFromRecord } from "./features/JSONPath/core/param";
@@ -193,17 +193,17 @@ const createDeepJSONParseMock = (): MockedObject<DeepJSONParserHandlers> => {
 
 const createCommandExtractMessageHandlers = (
   commandError: CommandExtractError,
-): MockedObject<CommandExtractMessageHandlers> => {
+): MockedObject<PluginCommandExtractErrorHandlers> => {
   return {
-    undefinedCommand: vi.fn<CommandExtractMessageHandlers["undefinedCommand"]>(
-      () => commandError,
-    ),
-    deepJSONParseError: vi.fn<
-      CommandExtractMessageHandlers["deepJSONParseError"]
+    commandNotFoundError: vi.fn<
+      PluginCommandExtractErrorHandlers["commandNotFoundError"]
     >(() => commandError),
-    extractArgsError: vi.fn<CommandExtractMessageHandlers["extractArgsError"]>(
-      () => commandError,
-    ),
+    commandParseError: vi.fn<
+      PluginCommandExtractErrorHandlers["commandParseError"]
+    >(() => commandError),
+    commandArgsError: vi.fn<
+      PluginCommandExtractErrorHandlers["commandArgsError"]
+    >(() => commandError),
   };
 };
 type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;
@@ -225,10 +225,10 @@ const mockParamStructPathError: PluginErrorStruct = {
 
 const createParamErrorHandlers = (): MockedObject<ParamErrorHandles> => {
   return {
-    compileJSONPathSchemaError: vi.fn<
-      ParamErrorHandles["compileJSONPathSchemaError"]
+    paramCompileJSONPathSchemaError: vi.fn<
+      ParamErrorHandles["paramCompileJSONPathSchemaError"]
     >(() => mockParamCompileJSONPathSchemaError),
-    structPathError: vi.fn<ParamErrorHandles["structPathError"]>(
+    paramStructPathError: vi.fn<ParamErrorHandles["paramStructPathError"]>(
       () => mockParamStructPathError,
     ),
   };
@@ -238,14 +238,16 @@ interface EEEEO {}
 
 const createParamReadErrorHandlers = (
   errorInfo: EEEEO,
-): MockedObject<ParamReadHandlers<EEEEO>> => {
-  type ParseErrorHandler = ParamReadHandlers<EEEEO>;
+): MockedObject<PluginParamReadErrorHandlers<EEEEO>> => {
+  type ParseErrorHandler = PluginParamReadErrorHandlers<EEEEO>;
   return {
-    parseError: vi.fn<ParseErrorHandler["parseError"]>(() => errorInfo),
+    pluginParamsParseError: vi.fn<ParseErrorHandler["pluginParamsParseError"]>(
+      () => errorInfo,
+    ),
   };
 };
 
-type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
+type JSONPathErrorHandles = CommandBuildErrorHandlers<ErrorStruct>;
 
 const mockCompileJSONPathSchemaError: ErrorStruct = {
   argName: "",
@@ -267,12 +269,12 @@ const mockStructPathError: ErrorStruct = {
 
 const createJSONPathErrorHandlers = (): MockedObject<JSONPathErrorHandles> => {
   return {
-    compileJSONPathSchemaError: vi.fn<
-      JSONPathErrorHandles["compileJSONPathSchemaError"]
+    commandCompileJSONPathSchemaError: vi.fn<
+      JSONPathErrorHandles["commandCompileJSONPathSchemaError"]
     >(() => mockCompileJSONPathSchemaError),
-    structPathError: vi.fn<JSONPathErrorHandles["structPathError"]>(
-      () => mockStructPathError,
-    ),
+    commandStructPathError: vi.fn<
+      JSONPathErrorHandles["commandStructPathError"]
+    >(() => mockStructPathError),
   };
 };
 
@@ -590,8 +592,10 @@ describe("JSON Path", () => {
         paramHandlers,
         commandHandlers,
       );
-      expect(paramHandlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
-      expect(paramHandlers.structPathError).not.toHaveBeenCalled();
+      expect(
+        paramHandlers.paramCompileJSONPathSchemaError,
+      ).not.toHaveBeenCalled();
+      expect(paramHandlers.paramStructPathError).not.toHaveBeenCalled();
       expect(result.pluginName).toBe("MockPlugin");
       expect(result.params.extractors).toEqual(paramExtractor);
     });
@@ -605,8 +609,10 @@ describe("JSON Path", () => {
         paramHandlers,
         commandHandlers,
       );
-      expect(commandHandlers.compileJSONPathSchemaError).not.toHaveBeenCalled();
-      expect(commandHandlers.structPathError).not.toHaveBeenCalled();
+      expect(
+        commandHandlers.commandCompileJSONPathSchemaError,
+      ).not.toHaveBeenCalled();
+      expect(commandHandlers.commandStructPathError).not.toHaveBeenCalled();
       expect(result.pluginName).toBe("MockPlugin");
       expect(result.commands.extractors[0]).toEqual(cmdExtractor);
     });
@@ -646,8 +652,14 @@ describe("JSON Path", () => {
       );
       expect(parseFn).toHaveBeenCalledOnce();
       expect(parseFn).toHaveBeenCalledWith(plugin.parameters);
-      expect(handlers.parseError).toHaveBeenCalledOnce();
-      expect(handlers.parseError).toHaveBeenCalledWith(plugin, errors);
+      expect(handlers.pluginParamsParseError).toHaveBeenCalledOnce();
+      expect(handlers.pluginParamsParseError).toHaveBeenCalledWith(
+        {
+          pluginName: "MockPlugin",
+          record: plugin,
+        },
+        errors,
+      );
       expect(result).toEqual(expected);
     });
   });
@@ -725,7 +737,7 @@ describe("JSON Path", () => {
         );
         expect(parseFn).toHaveBeenCalledOnce();
         expect(parseFn).toHaveBeenCalledWith(plugin.parameters);
-        expect(handlers.parseError).not.toHaveBeenCalled();
+        expect(handlers.pluginParamsParseError).not.toHaveBeenCalled();
         expect(result).toEqual(expected);
       });
     });
@@ -762,8 +774,14 @@ describe("JSON Path", () => {
       );
       expect(parseFn).toHaveBeenCalledOnce();
       expect(parseFn).toHaveBeenCalledWith(record.parameters);
-      expect(handlers.parseError).toHaveBeenCalledOnce();
-      expect(handlers.parseError).toHaveBeenCalledWith(record, error);
+      expect(handlers.pluginParamsParseError).toHaveBeenCalledOnce();
+      expect(handlers.pluginParamsParseError).toHaveBeenCalledWith(
+        {
+          pluginName: "BrokenPlugin",
+          record,
+        },
+        error,
+      );
       expect(result).toEqual(expected);
     });
   });
@@ -787,9 +805,13 @@ describe("JSON Path", () => {
         handlers,
         parseFn,
       );
-      expect(handlers.undefinedCommand).toHaveBeenCalledWith(pluginCommand);
-      expect(handlers.deepJSONParseError).not.toHaveBeenCalled();
-      expect(handlers.extractArgsError).not.toHaveBeenCalled();
+      expect(handlers.commandNotFoundError).toHaveBeenCalledWith({
+        command: pluginCommand,
+        pluginName: "MockPlugin",
+        commandName: "cmd",
+      });
+      expect(handlers.commandParseError).not.toHaveBeenCalled();
+      expect(handlers.commandArgsError).not.toHaveBeenCalled();
       expect(parseFn).not.toHaveBeenCalled();
       expect(result).toEqual(expected);
     });
@@ -828,16 +850,16 @@ describe("JSON Path", () => {
         parseFn,
       );
       expect(parseFn).toHaveBeenCalledWith(pluginCommand.parameters[3]);
-      expect(handlers.undefinedCommand).not.toHaveBeenCalled();
-      expect(handlers.deepJSONParseError).not.toHaveBeenCalled();
-      expect(handlers.extractArgsError).not.toHaveBeenCalled();
+      expect(handlers.commandNotFoundError).not.toHaveBeenCalled();
+      expect(handlers.commandParseError).not.toHaveBeenCalled();
+      expect(handlers.commandArgsError).not.toHaveBeenCalled();
       expect(result).toEqual(expected);
     });
     test("JSONのパースに失敗する場合", () => {
       const parseError = new Error("parse error");
       const errorMessage: CommandExtractError = {
         message: "xxx",
-        source: "deepJSONParseError",
+        source: "commandParseError",
       };
       const handlers = createCommandExtractMessageHandlers(errorMessage);
       const parseFn = vi.fn(() => {
@@ -856,11 +878,15 @@ describe("JSON Path", () => {
         parseFn,
       );
       expect(parseFn).toHaveBeenCalledWith(pluginCommand.parameters[3]);
-      expect(handlers.undefinedCommand).not.toHaveBeenCalled();
-      expect(handlers.extractArgsError).not.toHaveBeenCalled();
-      expect(handlers.deepJSONParseError).toHaveBeenCalledOnce();
-      expect(handlers.deepJSONParseError).toHaveBeenCalledWith(
-        pluginCommand,
+      expect(handlers.commandNotFoundError).not.toHaveBeenCalled();
+      expect(handlers.commandArgsError).not.toHaveBeenCalled();
+      expect(handlers.commandParseError).toHaveBeenCalledOnce();
+      expect(handlers.commandParseError).toHaveBeenCalledWith(
+        {
+          command: pluginCommand,
+          pluginName: "MockPlugin",
+          commandName: "cmd",
+        },
         parseError,
       );
       expect(result).toEqual(expected);
