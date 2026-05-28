@@ -17,7 +17,7 @@ import type {
 import {
   compilePluginParamExtractor,
   extractPluginParam,
-  extractPluginParamFromRecord,
+  extractPluginParamFromRecordOld,
 } from "./param";
 
 interface Person {
@@ -169,7 +169,7 @@ describe("plugin param extractor", () => {
         status: true,
         description: "Test plugin for param extraction",
       };
-      const result: ParamExtractResult = extractPluginParamFromRecord(
+      const result: ParamExtractResult = extractPluginParamFromRecordOld(
         record,
         memo.extractors,
       );

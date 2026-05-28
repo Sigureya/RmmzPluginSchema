@@ -10,19 +10,19 @@ export interface ParamReadHandlers<T> {
   parseError(record: PluginParamsRecord, error: unknown): T;
 }
 
-export interface ParamReadResultV4<T> {
+export interface ParamReadResult<T> {
   errorInfo: T | null;
   pluginName: string;
   params: PluginExtractedValue[];
   errorKind: "parseError" | "";
 }
 
-export const extractPluginParamFromRecord4 = <T>(
+export const extractPluginParamFromRecord = <T>(
   record: PluginParamsRecord,
   paramExtractor: ReadonlyArray<PluginValuesExtractorBundle>,
   parseFn: (value: Record<string, string>) => Record<string, JSONValue>,
   errorHandlers: ParamReadHandlers<T>,
-): ParamReadResultV4<T> => {
+): ParamReadResult<T> => {
   try {
     const parsed = parseFn(record.parameters);
     return {

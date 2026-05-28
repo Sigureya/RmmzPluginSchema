@@ -5,7 +5,7 @@ import type { PluginParamsRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { PluginValuesExtractorBundle } from "./extractor/types";
 import type { ParamReadHandlers } from "./param2";
-import { extractPluginParamFromRecord4 } from "./param2";
+import { extractPluginParamFromRecord } from "./param2";
 
 const createErrorHandlers = <T>(e: T): MockedObject<ParamReadHandlers<T>> => {
   type H = ParamReadHandlers<T>;
@@ -56,7 +56,7 @@ describe("extractPluginParamFromRecord4", () => {
       message: "invalid json",
     });
 
-    const result = extractPluginParamFromRecord4(
+    const result = extractPluginParamFromRecord(
       record,
       extractors,
       parseFn,
@@ -107,7 +107,7 @@ describe("extractPluginParamFromRecord4", () => {
       params: [],
     };
 
-    const result = extractPluginParamFromRecord4(
+    const result = extractPluginParamFromRecord(
       record,
       extractors,
       parseFn,

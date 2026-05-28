@@ -5,9 +5,9 @@ import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2
 import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
 import type {
   ParamReadHandlers,
-  ParamReadResultV4,
+  ParamReadResult,
 } from "./features/JSONPath/core/param2";
-import { extractPluginParamFromRecord4 } from "./features/JSONPath/core/param2";
+import { extractPluginParamFromRecord } from "./features/JSONPath/core/param2";
 import { defaultParamBuildHandlers } from "./features/JSONPath/core/paramBuild";
 import {
   READ_PLUGIN_MESSAGES,
@@ -159,7 +159,7 @@ const extractSinglePlugin = <E>(
       handlers.commandBuild,
     );
 
-  const paramResult: ParamReadResultV4<E> = extractPluginParamFromRecord4(
+  const paramResult: ParamReadResult<E> = extractPluginParamFromRecord(
     readResult.record,
     extractionBuildBundle.params.extractors,
     handlers.parser.parseDeepRecord,
@@ -182,7 +182,7 @@ const extractSinglePlugin = <E>(
 const buildPluginExtractionErrors = <E>(
   pluginName: string,
   built: PluginExtractionBuildBundle,
-  paramReadResult: ParamReadResultV4<E>,
+  paramReadResult: ParamReadResult<E>,
 ): PluginExtractionError<E>[] => {
   const errors: PluginExtractionError<E>[] = [];
   errors.push(

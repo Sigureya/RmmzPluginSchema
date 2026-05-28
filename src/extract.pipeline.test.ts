@@ -16,9 +16,9 @@ import { buildPluginValueExtractorV8 } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
 import type {
   ParamReadHandlers,
-  ParamReadResultV4,
+  ParamReadResult,
 } from "./features/JSONPath/core/param2";
-import { extractPluginParamFromRecord4 } from "./features/JSONPath/core/param2";
+import { extractPluginParamFromRecord } from "./features/JSONPath/core/param2";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type {
   MessageOfparsePluginParamRecordEx,
@@ -631,14 +631,14 @@ describe("JSON Path", () => {
         status: true,
       };
 
-      const expected: ParamReadResultV4<EEEEO> = {
+      const expected: ParamReadResult<EEEEO> = {
         errorKind: "parseError",
         errorInfo: errorInfo,
         pluginName: "MockPlugin",
         params: [],
       };
 
-      const result = extractPluginParamFromRecord4(
+      const result = extractPluginParamFromRecord(
         plugin,
         paramExtractor,
         parseFn,
@@ -683,7 +683,7 @@ describe("JSON Path", () => {
         const handlers = createParamReadErrorHandlers({});
         const parseFn = vi.fn(() => paramValue);
 
-        const expected: ParamReadResultV4<EEEEO> = {
+        const expected: ParamReadResult<EEEEO> = {
           pluginName: "MockPlugin",
           errorKind: "",
           errorInfo: null,
@@ -717,7 +717,7 @@ describe("JSON Path", () => {
             },
           ],
         };
-        const result = extractPluginParamFromRecord4(
+        const result = extractPluginParamFromRecord(
           plugin,
           paramExtractor,
           parseFn,
@@ -747,14 +747,14 @@ describe("JSON Path", () => {
         throw error;
       });
 
-      const expected: ParamReadResultV4<EEEEO> = {
+      const expected: ParamReadResult<EEEEO> = {
         pluginName: "BrokenPlugin",
         errorKind: "parseError",
         errorInfo: errorINfo,
         params: [],
       };
 
-      const result = extractPluginParamFromRecord4(
+      const result = extractPluginParamFromRecord(
         record,
         paramExtractor,
         parseFn,

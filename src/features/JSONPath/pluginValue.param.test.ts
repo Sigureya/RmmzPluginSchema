@@ -1,22 +1,24 @@
-import { describe, expect, test } from "vitest";
+import type { MockedObject } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
   PluginParam,
   PluginParamsRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { stringifyDeepJSON } from "@RmmzPluginSchema/rmmz/plugin";
+import {
+  parseDeepRecord,
+  stringifyDeepJSON,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type {
   PluginValuesPath,
   ParamExtractResult,
   PluginParamsSchema,
 } from "./core";
-import {
-  compilePluginParamExtractor,
-  createPluginValuesPath,
-  extractPluginParamFromRecord,
-} from "./core";
+import { compilePluginParamExtractor, createPluginValuesPath } from "./core";
+import type { ParamReadHandlers } from "./core/param2";
+import { extractPluginParamFromRecord } from "./core/param2";
 
 interface Item {
   name: string;
@@ -178,14 +180,26 @@ const runTestCase = (testCase: TestCase, record2: PluginParamsRecord) => {
     });
 
     test("値の取り出しは成功したか", () => {
+      const errorHandlers: MockedObject<ParamReadHandlers<{}>> = {
+        parseError: vi.fn(),
+      };
+
       const memo = compilePluginParamExtractor(
         pluginSchema,
         structsMap,
         (jsonPath) => new JSONPathJS(jsonPath),
       );
 
-      const result = extractPluginParamFromRecord(record2, memo.extractors);
-      expect(result).toEqual(testCase.expected);
+      const result = extractPluginParamFromRecord(
+        record2,
+        memo.extractors,
+        (v) => parseDeepRecord(v),
+        errorHandlers,
+      );
+      expect(errorHandlers.parseError).not.toHaveBeenCalled();
+      expect(result.pluginName).toBe(testCase.expected.pluginName);
+      expect(result.params).toEqual(testCase.expected.params);
+      expect(result.errorInfo).toBeNull();
     });
   });
 };

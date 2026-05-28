@@ -19,7 +19,10 @@ import type {
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const extractPluginParamFromRecord = (
+/**
+ * @deprecated use extractPluginParamFromRecord4 instead. This function does not handle parse error and will throw if parse failed.
+ */
+export const extractPluginParamFromRecordOld = (
   record: PluginParamsRecordMinimum,
   paramExtractor: ReadonlyArray<PluginValuesExtractorBundle>,
 ): ParamExtractResult => {
