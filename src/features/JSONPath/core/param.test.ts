@@ -4,8 +4,8 @@ import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type { PluginParamsRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { PluginValuesExtractorBundle } from "./extractor/types";
-import type { ParamReadHandlers } from "./param2";
-import { extractPluginParamFromRecord } from "./param2";
+import type { ParamReadHandlers } from "./param";
+import { extractPluginParamFromRecord } from "./param";
 
 const createErrorHandlers = <T>(e: T): MockedObject<ParamReadHandlers<T>> => {
   type H = ParamReadHandlers<T>;

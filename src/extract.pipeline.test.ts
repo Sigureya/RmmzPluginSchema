@@ -17,8 +17,8 @@ import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/co
 import type {
   ParamReadHandlers,
   ParamReadResult,
-} from "./features/JSONPath/core/param2";
-import { extractPluginParamFromRecord } from "./features/JSONPath/core/param2";
+} from "./features/JSONPath/core/param";
+import { extractPluginParamFromRecord } from "./features/JSONPath/core/param";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type {
   MessageOfparsePluginParamRecordEx,

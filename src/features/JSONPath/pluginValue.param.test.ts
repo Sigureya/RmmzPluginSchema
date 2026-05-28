@@ -17,8 +17,8 @@ import type {
   PluginParamsSchema,
 } from "./core";
 import { compilePluginParamExtractor, createPluginValuesPath } from "./core";
-import type { ParamReadHandlers } from "./core/param2";
-import { extractPluginParamFromRecord } from "./core/param2";
+import type { ParamReadHandlers } from "./core/param";
+import { extractPluginParamFromRecord } from "./core/param";
 
 interface Item {
   name: string;

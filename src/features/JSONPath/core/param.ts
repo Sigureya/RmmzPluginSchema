@@ -1,10 +1,22 @@
-import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import type { PluginParamsRecord } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  JSONPathReader,
+  JSONValue,
+} from "@RmmzPluginSchema/libs/jsonPath";
+import type {
+  ClassifiedPluginParamsTyped,
+  PluginArrayParamType,
+  PluginParamsRecord,
+  PluginScalarParam,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { createPluginValuesPath } from "./createPath";
 import { extractAllPluginValues } from "./extractor/extractor";
 import type {
   PluginExtractedValue,
+  PluginParamExtractor,
+  PluginParamsSchema,
   PluginValuesExtractorBundle,
 } from "./extractor/types";
+import { compileJSONPathSchema } from "./pathToMemo";
 
 export interface ParamReadHandlers<T> {
   parseError(record: PluginParamsRecord, error: unknown): T;
@@ -39,4 +51,22 @@ export const extractPluginParamFromRecord = <T>(
       params: [],
     };
   }
+};
+
+export const compilePluginParamExtractor = <
+  S extends PluginScalarParam,
+  A extends PluginArrayParamType,
+>(
+  plugin: PluginParamsSchema<S, A>,
+  structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>,
+  factoryFn: (path: string) => JSONPathReader,
+): PluginParamExtractor<S, A> => {
+  type BundlerType = PluginValuesExtractorBundle<S, A>;
+  return {
+    pluginName: plugin.pluginName,
+    extractors: plugin.schema.params.map((param): BundlerType => {
+      const path = createPluginValuesPath("param", "plugin", param, structMap);
+      return compileJSONPathSchema(path, factoryFn);
+    }),
+  };
 };
