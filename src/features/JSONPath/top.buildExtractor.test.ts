@@ -22,7 +22,7 @@ import type {
   ParamBuildContext,
   ParamBuildErrorHandlers,
 } from "./core/paramBuild";
-import { buildCommandExtractorsV2, buildParamExtractors } from "./top";
+import { buildCommandExtractors, buildParamExtractors } from "./top";
 type JSONPathErrorHandles = BuildErrorHandlers<ErrorStruct>;
 type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;
 
@@ -185,7 +185,7 @@ describe("buildCommandExtractorsV2", () => {
       (path): JSONPathReader => new JSONPathJS(path),
     );
     const expected: CommandArgExtractors[] = [cmdExtractor];
-    const result: CommandBuildResult<ErrorStruct> = buildCommandExtractorsV2(
+    const result: CommandBuildResult<ErrorStruct> = buildCommandExtractors(
       "MockPlugin",
       schema.commands,
       createStructMap(),
@@ -213,7 +213,7 @@ describe("buildCommandExtractorsV2", () => {
       mockCompileJSONPathSchemaError,
       mockCompileJSONPathSchemaError,
     ];
-    const result = buildCommandExtractorsV2(
+    const result = buildCommandExtractors(
       "MockPlugin",
       schema.commands,
       structMap,

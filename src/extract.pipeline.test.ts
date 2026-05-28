@@ -12,7 +12,7 @@ import type {
   CommandExtractResult,
   PluginValuesExtractorBundle,
 } from "./features";
-import { buildPluginValueExtractorV8 } from "./features";
+import { buildPluginValueExtractor } from "./features";
 import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
 import type {
   ParamReadHandlers,
@@ -583,7 +583,7 @@ describe("JSON Path", () => {
     test("normal - param", () => {
       const commandHandlers = createJSONPathErrorHandlers();
       const paramHandlers = createParamErrorHandlers();
-      const result = buildPluginValueExtractorV8(
+      const result = buildPluginValueExtractor(
         "MockPlugin",
         schema,
         (path) => new JSONPathJS(path),
@@ -598,7 +598,7 @@ describe("JSON Path", () => {
     test("normal - command", () => {
       const commandHandlers = createJSONPathErrorHandlers();
       const paramHandlers = createParamErrorHandlers();
-      const result = buildPluginValueExtractorV8(
+      const result = buildPluginValueExtractor(
         "MockPlugin",
         schema,
         (path) => new JSONPathJS(path),
