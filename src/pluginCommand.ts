@@ -9,7 +9,7 @@ import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/co
 import type { JSONValue } from "./libs";
 import type { PluginCommandData } from "./rmmz";
 import { parseDeepRecord } from "./rmmz";
-import type { PluginExtractionResult } from "./types";
+import type { PluginCommandExtractorSource } from "./types";
 
 export interface PluginCommandExtractionOutput {
   pluginName: string;
@@ -18,8 +18,8 @@ export interface PluginCommandExtractionOutput {
   error?: CommandExtractError;
 }
 
-export const createCommandExtractorMapFromPipeline = <E>(
-  input: PluginExtractionResult<E>,
+export const createCommandExtractorMapFromPipeline = (
+  input: PluginCommandExtractorSource,
 ): Map<CommandMapKey, CommandArgExtractors> => {
   const entries = input.plugins.flatMap((plugin) =>
     plugin.commandExtractors.map(

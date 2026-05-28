@@ -64,7 +64,35 @@ export interface PluginExtractionItemResult<E> {
   errors: PluginExtractionError<E>[];
 }
 
-export interface PluginExtractionResult<E> {
+export interface PluginCommandExtractorSourceItem {
+  commandExtractors: CommandArgExtractors[];
+}
+
+export interface PluginCommandExtractorSource {
+  plugins: PluginCommandExtractorSourceItem[];
+}
+
+export interface PluginParamSourceItem {
+  pluginName: string;
+  params: PluginExtractedValue[];
+}
+
+export interface PluginParamSource {
+  plugins: PluginParamSourceItem[];
+}
+
+export interface PluginParamSourceItemWithErrors<
+  E,
+> extends PluginParamSourceItem {
+  errors: PluginExtractionError<E>[];
+}
+
+export interface PluginParamSourceWithErrors<E> {
+  plugins: PluginParamSourceItemWithErrors<E>[];
+}
+
+export interface PluginExtractionResult<E>
+  extends PluginCommandExtractorSource, PluginParamSourceWithErrors<E> {
   status: "success" | "partial" | "failure";
   plugins: PluginExtractionItemResult<E>[];
   allErrors: PluginExtractionError<E>[];
