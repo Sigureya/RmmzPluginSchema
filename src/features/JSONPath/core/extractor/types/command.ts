@@ -2,6 +2,12 @@ import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginValuesExtractorBundle } from "./bundle";
 import type { PluginExtractedValue } from "./result";
 
+export interface PluginCommandExtractContext {
+  command: PluginCommandData;
+  pluginName: string;
+  commandName: string;
+}
+
 export interface CommandArgExtractors {
   pluginName: string;
   commandName: string;
@@ -22,14 +28,16 @@ export interface CommandExtractError {
   source: string;
 }
 
-export interface CommandExtractMessageHandlers {
-  undefinedCommand(command: PluginCommandData): CommandExtractError;
-  deepJSONParseError(
-    command: PluginCommandData,
+export interface PluginCommandExtractErrorHandlers {
+  commandNotFoundError(
+    context: PluginCommandExtractContext,
+  ): CommandExtractError;
+  commandParseError(
+    context: PluginCommandExtractContext,
     error: unknown,
   ): CommandExtractError;
-  extractArgsError(
-    command: PluginCommandData,
+  commandArgsError(
+    context: PluginCommandExtractContext,
     error: unknown,
   ): CommandExtractError;
 }
