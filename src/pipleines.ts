@@ -1,5 +1,5 @@
 import { JSONPathJS } from "jsonpath-js";
-import { buildPluginValueExtractorV8 } from "./features";
+import { buildPluginValueExtractor } from "./features";
 import type { PluginExtractionBuildBundle } from "./features";
 import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2";
 import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
@@ -151,7 +151,7 @@ const extractSinglePlugin = <E>(
     handlers.deepJSON,
   );
   const extractionBuildBundle: PluginExtractionBuildBundle =
-    buildPluginValueExtractorV8(
+    buildPluginValueExtractor(
       pluginName,
       schema,
       handlers.jsonPath,

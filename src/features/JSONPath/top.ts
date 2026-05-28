@@ -48,7 +48,7 @@ export const extractArgsFromPluiginCommand = (
   return extractArgsFromPluginCommandHandled(command, map, handlers);
 };
 
-export const buildPluginValueExtractorV8 = (
+export const buildPluginValueExtractor = (
   pluginName: string,
   schema: PluginSchemaArray,
   factoryFn: (path: string) => JSONPathReader,
@@ -59,7 +59,7 @@ export const buildPluginValueExtractorV8 = (
   const map: MapType = createClassifiedStructMap(schema.structs);
   return {
     pluginName,
-    commands: buildCommandExtractorsV2(
+    commands: buildCommandExtractors(
       pluginName,
       schema.commands,
       map,
@@ -76,7 +76,7 @@ export const buildPluginValueExtractorV8 = (
   };
 };
 
-export const buildCommandExtractorsV2 = (
+export const buildCommandExtractors = (
   pluginName: string,
   commands: ReadonlyArray<PluginCommandSchemaArray>,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
