@@ -1,5 +1,9 @@
 import type { PluginExtractedValue } from "./features";
-import type { PluginExtractionError, PluginExtractionResult } from "./types";
+import type {
+  PluginExtractionError,
+  PluginParamSource,
+  PluginParamSourceWithErrors,
+} from "./types";
 
 export interface PluginParamExtractionOutput {
   pluginName: string;
@@ -13,7 +17,7 @@ export interface PluginParamExtractionOutputWithError<E> {
 }
 
 export const createPluginParamsFromPipeline = (
-  input: PluginExtractionResult<unknown>,
+  input: PluginParamSource,
 ): PluginParamExtractionOutput[] => {
   return input.plugins.map(
     (plugin): PluginParamExtractionOutput => ({
@@ -24,7 +28,7 @@ export const createPluginParamsFromPipeline = (
 };
 
 export const createPluginParamsWithErrorsFromPipeline = <E>(
-  input: PluginExtractionResult<E>,
+  input: PluginParamSourceWithErrors<E>,
 ): PluginParamExtractionOutputWithError<E>[] => {
   return input.plugins.map(
     (plugin): PluginParamExtractionOutputWithError<E> => ({

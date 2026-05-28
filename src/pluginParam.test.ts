@@ -3,30 +3,13 @@ import {
   createPluginParamsFromPipeline,
   createPluginParamsWithErrorsFromPipeline,
 } from "./pluginParam";
-import type { PluginExtractionResult } from "./types";
+import type { PluginParamSourceWithErrors } from "./types";
 
-const createPipelineResult = (): PluginExtractionResult<string> => {
+const createPipelineResult = (): PluginParamSourceWithErrors<string> => {
   return {
-    status: "partial",
-    allErrors: [
-      {
-        phase: "parseParam",
-        pluginName: "PluginB",
-        message: "plugin parameter parse failed",
-        errorInfo: "parse-error",
-      },
-    ],
     plugins: [
       {
         pluginName: "PluginA",
-        record: {
-          name: "PluginA",
-          status: true,
-          description: "plugin a",
-          parameters: {
-            textParam: "hello",
-          },
-        },
         params: [
           {
             rootType: "param",
@@ -42,21 +25,11 @@ const createPipelineResult = (): PluginExtractionResult<string> => {
             value: "hello",
           },
         ],
-        commandExtractors: [],
         errors: [],
       },
       {
         pluginName: "PluginB",
-        record: {
-          name: "PluginB",
-          status: true,
-          description: "plugin b",
-          parameters: {
-            broken: "{",
-          },
-        },
         params: [],
-        commandExtractors: [],
         errors: [
           {
             phase: "parseParam",

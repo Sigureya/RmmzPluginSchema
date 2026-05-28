@@ -5,7 +5,7 @@ import {
   extractPluginCommandWithExtractor,
 } from "./pluginCommand";
 import type { PluginCommandData } from "./rmmz";
-import type { PluginExtractionResult } from "./types";
+import type { PluginCommandExtractorSource } from "./types";
 import type {
   CommandArgExtractors,
   PluginCommandExtractErrorHandlers,
@@ -77,22 +77,11 @@ const createExtractor = (): CommandArgExtractors => {
   };
 };
 
-const createPipelineResult = (): PluginExtractionResult<unknown> => {
+const createPipelineResult = (): PluginCommandExtractorSource => {
   return {
-    status: "success",
-    allErrors: [],
     plugins: [
       {
-        pluginName: "MockPlugin",
-        record: {
-          name: "MockPlugin",
-          status: true,
-          description: "",
-          parameters: {},
-        },
-        params: [],
         commandExtractors: [createExtractor()],
-        errors: [],
       },
     ],
   };
