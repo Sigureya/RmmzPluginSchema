@@ -18,6 +18,7 @@ import {
 } from "./fileio";
 import type {
   MessageOfparsePluginParamRecordEx,
+  PluginFileReader,
   PluginReadResult,
 } from "./fileio";
 import {
@@ -30,7 +31,6 @@ import type { PluginSchemaArray, ResultOfparsePluginParamRecord } from "./rmmz";
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 import type {
   PluginExtractionHandlers,
-  PluginFileReader,
   PluginExtractionOptions,
   PluginExtractionResult,
   PluginExtractionError,

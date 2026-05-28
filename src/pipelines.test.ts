@@ -3,9 +3,10 @@ import type {
   ErrorStruct,
   PluginErrorStruct,
 } from "./features/JSONPath/core/extractor/types/error";
+import type { PluginFileReader } from "./fileio";
 import { runPluginExtractionPipeline } from "./pipleines";
 import type { ParsedPlugin } from "./rmmz";
-import type { PluginExtractionHandlers, PluginFileReader } from "./types";
+import type { PluginExtractionHandlers } from "./types";
 
 type ErrorInfo = string;
 
