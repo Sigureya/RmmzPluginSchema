@@ -8,6 +8,10 @@ import type {
   PluginParamsRecord,
   PluginScalarParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  PluginParamReadErrorHandlers,
+  PluginParamReadContext,
+} from "@RmmzPluginSchema/rmmz/plugin/pluginsJS/types/handlers";
 import { createPluginValuesPath } from "./createPath";
 import { extractAllPluginValues } from "./extractor/extractor";
 import type {
@@ -17,15 +21,6 @@ import type {
   PluginValuesExtractorBundle,
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
-
-export interface PluginParamReadContext {
-  pluginName: string;
-  record: PluginParamsRecord;
-}
-
-export interface PluginParamReadErrorHandlers<T> {
-  pluginParamsParseError(context: PluginParamReadContext, error: unknown): T;
-}
 
 export interface ParamReadResult<T> {
   errorInfo: T | null;

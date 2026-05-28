@@ -6,10 +6,7 @@ import {
 } from "./defaultHandlres";
 import { buildPluginValueExtractor } from "./features";
 import type { PluginExtractionBuildBundle } from "./features";
-import type {
-  PluginParamReadErrorHandlers,
-  ParamReadResult,
-} from "./features/JSONPath/core/param";
+import type { ParamReadResult } from "./features/JSONPath/core/param";
 import { extractPluginParamFromRecord } from "./features/JSONPath/core/param";
 import {
   READ_PLUGIN_MESSAGES,
@@ -27,7 +24,11 @@ import {
   parsePluginByLocale,
   parsePluginParamRecord2,
 } from "./rmmz";
-import type { PluginSchemaArray, ResultOfparsePluginParamRecord } from "./rmmz";
+import type {
+  PluginParamReadErrorHandlers,
+  PluginSchemaArray,
+  ResultOfparsePluginParamRecord,
+} from "./rmmz";
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 import type {
   PluginExtractionHandlers,

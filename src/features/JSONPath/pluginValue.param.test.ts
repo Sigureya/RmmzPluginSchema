@@ -4,6 +4,7 @@ import type {
   ClassifiedPluginParams,
   ClassifiedPluginParamsEx,
   PluginParam,
+  PluginParamReadErrorHandlers,
   PluginParamsRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
@@ -17,7 +18,6 @@ import type {
   PluginParamsSchema,
 } from "./core";
 import { compilePluginParamExtractor, createPluginValuesPath } from "./core";
-import type { PluginParamReadErrorHandlers } from "./core/param";
 import { extractPluginParamFromRecord } from "./core/param";
 
 interface Item {

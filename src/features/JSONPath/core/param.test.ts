@@ -1,10 +1,12 @@
 import type { MockedObject } from "vitest";
 import { describe, test, expect, vi } from "vitest";
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import type { PluginParamsRecord } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  PluginParamReadErrorHandlers,
+  PluginParamsRecord,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { PluginValuesExtractorBundle } from "./extractor/types";
-import type { PluginParamReadErrorHandlers } from "./param";
 import { extractPluginParamFromRecord } from "./param";
 
 const createErrorHandlers = <T>(
