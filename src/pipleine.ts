@@ -4,6 +4,7 @@ import type {
   BuildErrorHandlers,
   CommandArgExtractors,
   CommandExtractMessageHandlers,
+  EEBudnleV8,
   ErrorStruct,
   PluginErrorStruct,
   PluginExtractedValue,
@@ -163,30 +164,22 @@ const extractSinglePlugin = <E>(
   handlers: ExtractAppHandlers<E>,
 ): ExtractedPluginResult<E> => {
   const pluginName = readResult.record.name;
-  const errors: ExtractAppError<E>[] = [];
-
-  //   if (readResult.error) {
-  //     errors.push({
-  //       phase: "readPluginBody",
-  //       pluginName,
-  //       message: readResult.error,
-  //     });
-  //   }
 
   if (readResult.plugin === null) {
-    // if (!readResult.error) {
-    //   errors.push({
-    //     phase: "parsePluginBody",
-    //     pluginName,
-    //     message: "plugin body parse failed",
-    //   });
-    // }
     return {
-      pluginName,
+      pluginName: readResult.record.name,
       record: readResult.record,
       params: [],
       commandExtractors: [],
-      errors,
+      errors: readResult.error
+        ? [
+            {
+              phase: "parsePluginBody",
+              pluginName,
+              message: "plugin body parse failed",
+            },
+          ]
+        : [],
     };
   }
 
@@ -202,49 +195,57 @@ const extractSinglePlugin = <E>(
     handlers.commandBuild,
   );
 
-  //   errors.push(
-  //     ...built.params.errors.map(
-  //       (error): ExtractAppError<E> => ({
-  //         phase: "buildParam",
-  //         pluginName,
-  //         message: error.message,
-  //         detail: error,
-  //       }),
-  //     ),
-  //   );
-  //   errors.push(
-  //     ...built.commands.errors.map(
-  //       (error): ExtractAppError<E> => ({
-  //         phase: "buildCommand",
-  //         pluginName,
-  //         message: error.message,
-  //         detail: error,
-  //       }),
-  //     ),
-  //   );
-
   const paramResult: ParamReadResultV4<E> = extractPluginParamFromRecord4(
     readResult.record,
     built.params.extractors,
     handlers.parseDeepRecord,
     handlers.paramRead,
   );
-  //   if (paramResult.errorKind === "parseError") {
-  //     errors.push({
-  //       phase: "parseParam",
-  //       pluginName,
-  //       message: "plugin parameter parse failed",
-  //       errorInfo: paramResult.errorInfo ?? undefined,
-  //     });
-  //   }
 
   return {
     pluginName,
     record: readResult.record,
     params: paramResult.params,
     commandExtractors: built.commands.extractors,
-    errors,
+    errors: errorCCC(pluginName, built, paramResult),
   };
+};
+
+const errorCCC = <E>(
+  pluginName: string,
+  built: EEBudnleV8,
+  p: ParamReadResultV4<E>,
+): ExtractAppError<E>[] => {
+  const errors: ExtractAppError<E>[] = [];
+  errors.push(
+    ...built.params.errors.map(
+      (error): ExtractAppError<E> => ({
+        phase: "buildParam",
+        pluginName,
+        message: error.message,
+        detail: error,
+      }),
+    ),
+  );
+  errors.push(
+    ...built.commands.errors.map(
+      (error): ExtractAppError<E> => ({
+        phase: "buildCommand",
+        pluginName,
+        message: error.message,
+        detail: error,
+      }),
+    ),
+  );
+  if (p.errorKind === "parseError") {
+    errors.push({
+      phase: "parseParam",
+      pluginName,
+      message: "plugin parameter parse failed",
+      errorInfo: p.errorInfo || undefined,
+    });
+  }
+  return errors;
 };
 
 const resolveStatus = <E>(
