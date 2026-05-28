@@ -1,20 +1,32 @@
 import { PluginScalarParam, PluginArrayParamType, PluginParam, PluginParamsRecord } from '../../../rmmz/plugin';
 import { PluginSchemaOf } from '../../../rmmz/plugin/core/pluginJSON2type';
 import { CommandExtractorEntry, PluginExtractedValue, PluginValuesExtractorBundle } from './extractor/types';
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface PluginExtractorBundle {
     pluginName: string;
     params: PluginValuesExtractorBundle[];
     commands: CommandExtractorEntry[];
 }
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface CommandExtractorEntryList {
     extractorEntries: CommandExtractorEntry[];
 }
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface ConvertPluginResult {
     params: PluginExtractedValue<PluginParam>[];
     record: PluginParamsRecord;
     schema: PluginSchemaOf<PluginScalarParam, PluginArrayParamType>;
     extractorEntries: CommandExtractorEntry[];
 }
+/**
+ * @deprecated pipelines 起点の現行フローでは未使用です。
+ */
 export interface ConvertPluginResultEx<S extends PluginScalarParam, A extends PluginArrayParamType> extends ConvertPluginResult {
     params: PluginExtractedValue<PluginParam>[];
     record: PluginParamsRecord;

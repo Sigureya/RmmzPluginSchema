@@ -3,7 +3,11 @@ export interface PluginInfo {
     name: string;
     status: boolean;
 }
-export interface PluginParamsRecord extends PluginInfo {
+export interface PluginParamsRecordMinimum {
+    name: string;
+    parameters: Record<string, string>;
+}
+export interface PluginParamsRecord extends PluginInfo, PluginParamsRecordMinimum {
     name: string;
     status: boolean;
     description: string;

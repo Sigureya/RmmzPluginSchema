@@ -1,7 +1,7 @@
 import { JSONPathReader, JSONValue } from '../../../libs/jsonPath';
-import { PluginSchema, PluginCommandSchemaArray, PluginArrayParamType, PluginScalarParam, ClassifiedPluginParamsTyped } from '../../../rmmz/plugin';
+import { PluginSchema, PluginCommandSchemaArray, ClassifiedPluginParams } from '../../../rmmz/plugin';
 import { CommandArgExtractors, CommandExtractResult, CommandMapKey, CommandExtractorEntry } from './extractor/types';
-export declare const compilePluginCommandExtractor: <S extends PluginScalarParam, A extends PluginArrayParamType>(pluginName: string, schema: PluginCommandSchemaArray, structMap: ReadonlyMap<string, ClassifiedPluginParamsTyped<S, A>>, factoryFn: (path: string) => JSONPathReader) => CommandArgExtractors;
+export declare const compilePluginCommandExtractor: (pluginName: string, schema: PluginCommandSchemaArray, structMap: ReadonlyMap<string, ClassifiedPluginParams>, factoryFn: (path: string) => JSONPathReader) => CommandArgExtractors;
 export declare const extractPluginCommandArgs: (value: Record<string, JSONValue>, extractor: CommandArgExtractors) => CommandExtractResult;
 export declare const extractCommandArgsByKey: (value: Record<string, JSONValue>, key: CommandMapKey, map: ReadonlyMap<CommandMapKey, CommandArgExtractors>) => CommandExtractResult | undefined;
 /**
