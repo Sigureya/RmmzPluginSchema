@@ -5,7 +5,7 @@ import type {
   PluginCommandExtractErrorHandlers,
   PluginExtractedValue,
 } from "./features";
-import { extractArgsFromPluginCommandHandled } from "./features/JSONPath/core/command2";
+import { extractArgsFromPluginCommand } from "./features/JSONPath/core/command2";
 import type { JSONValue } from "./libs";
 import type { PluginCommandData } from "./rmmz";
 import { parseDeepRecord } from "./rmmz";
@@ -40,12 +40,7 @@ export const extractPluginCommandWithExtractor = (
     record: Record<string, string>,
   ) => Record<string, JSONValue> = parseDeepRecord,
 ): PluginCommandExtractionOutput => {
-  const result = extractArgsFromPluginCommandHandled(
-    command,
-    map,
-    handlers,
-    parseFn,
-  );
+  const result = extractArgsFromPluginCommand(command, map, handlers, parseFn);
   return {
     pluginName: result.pluginName,
     commandName: result.commandName,

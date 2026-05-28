@@ -11,7 +11,7 @@ import type {
 } from "./extractor/types";
 import { pluginComamndName } from "./schema";
 
-export const extractArgsFromPluginCommandHandled = (
+export const extractArgsFromPluginCommand = (
   command: PluginCommandData,
   map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
   handlers: PluginCommandExtractErrorHandlers,
