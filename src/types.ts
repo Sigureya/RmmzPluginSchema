@@ -6,7 +6,6 @@ import type {
   PluginExtractedValue,
   CommandArgExtractors,
 } from "./features";
-import type { PluginParamReadErrorHandlers } from "./features/JSONPath/core/param";
 import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import type { JSONValue, JSONPathReader } from "./libs";
@@ -15,6 +14,7 @@ import type {
   ParsedPlugin,
   DeepJSONParserHandlers,
   PluginParamsRecord,
+  PluginParamReadErrorHandlers,
 } from "./rmmz";
 
 export interface PluginParseHandlers {
