@@ -1,14 +1,16 @@
 import { JSONPathJS } from "jsonpath-js";
+import {
+  defaultCommandBuildErrorHandlers,
+  defaultPluginCommandExtractErrorHandlers,
+  defaultPluginParamBuildErrorHandlers,
+} from "./defaultHandlres";
 import { buildPluginValueExtractor } from "./features";
 import type { PluginExtractionBuildBundle } from "./features";
-import { defaultPluginCommandExtractErrorHandlers } from "./features/JSONPath/core/command2";
-import { defaultCommandBuildErrorHandlers } from "./features/JSONPath/core/commandBuild";
 import type {
   PluginParamReadErrorHandlers,
   ParamReadResult,
 } from "./features/JSONPath/core/param";
 import { extractPluginParamFromRecord } from "./features/JSONPath/core/param";
-import { defaultPluginParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import {
   READ_PLUGIN_MESSAGES,
   readAllPluginBodies,

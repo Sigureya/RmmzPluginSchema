@@ -4,29 +4,12 @@ import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { extractPluginCommandArgs } from "./command";
 import type {
   CommandArgExtractors,
-  CommandExtractError,
   PluginCommandExtractContext,
   PluginCommandExtractErrorHandlers,
   CommandExtractResult,
   CommandMapKey,
 } from "./extractor/types";
 import { pluginComamndName } from "./schema";
-
-export const defaultPluginCommandExtractErrorHandlers: PluginCommandExtractErrorHandlers =
-  {
-    commandNotFoundError: (context): CommandExtractError => ({
-      message: `undefined command: ${context.pluginName}:${context.commandName}`,
-      source: "commandNotFoundError",
-    }),
-    commandParseError: (context, error): CommandExtractError => ({
-      message: `parse failed: ${context.pluginName}:${context.commandName}: ${String(error)}`,
-      source: "commandParseError",
-    }),
-    commandArgsError: (context, error): CommandExtractError => ({
-      message: `extract args failed: ${context.pluginName}:${context.commandName}: ${String(error)}`,
-      source: "commandArgsError",
-    }),
-  };
 
 export const extractArgsFromPluginCommandHandled = (
   command: PluginCommandData,
