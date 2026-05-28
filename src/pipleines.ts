@@ -1,14 +1,14 @@
 import { JSONPathJS } from "jsonpath-js";
 import { buildPluginValueExtractor } from "./features";
 import type { PluginExtractionBuildBundle } from "./features";
-import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2";
-import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
+import { defaultPluginCommandExtractErrorHandlers } from "./features/JSONPath/core/command2";
+import { defaultCommandBuildErrorHandlers } from "./features/JSONPath/core/commandBuild";
 import type {
-  ParamReadHandlers,
+  PluginParamReadErrorHandlers,
   ParamReadResult,
 } from "./features/JSONPath/core/param";
 import { extractPluginParamFromRecord } from "./features/JSONPath/core/param";
-import { defaultParamBuildHandlers } from "./features/JSONPath/core/paramBuild";
+import { defaultPluginParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import {
   READ_PLUGIN_MESSAGES,
   readAllPluginBodies,
@@ -36,7 +36,7 @@ import type {
 } from "./types";
 
 export const createDefaultPluginExtractionHandlers = <E>(
-  paramRead: ParamReadHandlers<E>,
+  paramRead: PluginParamReadErrorHandlers<E>,
 ): PluginExtractionHandlers<E> => {
   return {
     parser: {
@@ -46,10 +46,10 @@ export const createDefaultPluginExtractionHandlers = <E>(
     },
     jsonPath: (path: string) => new JSONPathJS(path),
     deepJSON: createDeepJSONParserHandlers(),
-    paramBuild: defaultParamBuildHandlers,
-    commandBuild: defaultCommandBuildHandlers,
+    paramBuild: defaultPluginParamBuildErrorHandlers,
+    commandBuild: defaultCommandBuildErrorHandlers,
     paramRead,
-    commandExtract: defaultCommandExtractHandlers,
+    commandExtract: defaultPluginCommandExtractErrorHandlers,
   };
 };
 

@@ -4,55 +4,44 @@ import type {
   PluginCommandSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { StructPathError } from "./createPath/types";
-import type { BuildErrorHandlers } from "./createPath/types/handlers";
+import type { CommandBuildErrorHandlers } from "./createPath/types/handlers";
 import { createPluginValuesPath } from "./createPath/valuePath";
 import type { CommandArgExtractors } from "./extractor/types";
 import type { ErrorStruct } from "./extractor/types/error";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-export const defaultHandlers: BuildErrorHandlers<ErrorStruct> = {
-  structPathError: (
-    context: {
-      pluginName: string;
-      commandName: string;
-      argName: string;
-    },
-    error: StructPathError,
-  ) => ({
-    code: error.code,
-    source: "createPath",
-    pluginName: context.pluginName,
-    commandName: context.commandName,
-    argName: context.argName,
-    path: error.path,
-    message: `${error.code}: ${error.path}`,
-  }),
-  compileJSONPathSchemaError: (
-    context: {
-      pluginName: string;
-      commandName: string;
-      argName: string;
-    },
-    error: unknown,
-  ) => ({
-    code: "compile_jsonpath_schema_error",
-    source: "compileJSONPathSchema",
-    pluginName: context.pluginName,
-    commandName: context.commandName,
-    argName: context.argName,
-    message: String(error),
-  }),
-};
+export const defaultCommandBuildErrorHandlers: CommandBuildErrorHandlers<ErrorStruct> =
+  {
+    commandStructPathError: (context, error: StructPathError) => ({
+      code: error.code,
+      source: "createPath",
+      pluginName: context.pluginName,
+      commandName: context.commandName,
+      argName: context.argName,
+      path: error.path,
+      message: `${error.code}: ${error.path}`,
+    }),
+    commandCompileJSONPathSchemaError: (context, error: unknown) => ({
+      code: "compile_jsonpath_schema_error",
+      source: "compileJSONPathSchema",
+      pluginName: context.pluginName,
+      commandName: context.commandName,
+      argName: context.argName,
+      message: String(error),
+    }),
+  };
 
 const collectPathErrors = (
   pluginName: string,
   commandName: string,
   argName: string,
   pathErrors: StructPathError[],
-  handlers: BuildErrorHandlers<ErrorStruct>,
+  handlers: CommandBuildErrorHandlers<ErrorStruct>,
 ): ErrorStruct[] => {
   const context = { pluginName, commandName, argName };
-  return pathErrors.map((error) => handlers.structPathError(context, error));
+  return pathErrors.map((error) =>
+    handlers.commandStructPathError(context, error),
+  );
 };
 
 export const buildSingleCommand = (
@@ -60,7 +49,7 @@ export const buildSingleCommand = (
   schema: PluginCommandSchemaArray,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
-  handlers: BuildErrorHandlers<ErrorStruct>,
+  handlers: CommandBuildErrorHandlers<ErrorStruct>,
 ): { extractor: CommandArgExtractors; errors: ErrorStruct[] } => {
   const errors: ErrorStruct[] = [];
 
@@ -80,7 +69,7 @@ export const buildSingleCommand = (
       return [compileJSONPathSchema(path, factoryFn)];
     } catch (error) {
       errors.push(
-        handlers.compileJSONPathSchemaError(
+        handlers.commandCompileJSONPathSchemaError(
           {
             pluginName,
             commandName: schema.command,
