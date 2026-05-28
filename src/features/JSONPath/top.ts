@@ -16,7 +16,7 @@ import type {
   CommandExtractorEntryList,
   CommandExtractResult,
   CommandMapKey,
-  EEBudnleV8,
+  PluginExtractionBuildBundle,
   ErrorStruct,
   ParamBuildResult,
   PluginErrorStruct,
@@ -54,7 +54,7 @@ export const buildPluginValueExtractorV8 = (
   factoryFn: (path: string) => JSONPathReader,
   paramErrorHandlers: ParamBuildErrorHandlers<PluginErrorStruct>,
   commandErrorHandlers: BuildErrorHandlers<ErrorStruct>,
-): EEBudnleV8 => {
+): PluginExtractionBuildBundle => {
   type MapType = ReadonlyMap<string, ClassifiedPluginParams>;
   const map: MapType = createClassifiedStructMap(schema.structs);
   return {

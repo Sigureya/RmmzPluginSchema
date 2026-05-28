@@ -1,6 +1,6 @@
 import { JSONPathJS } from "jsonpath-js";
 import { buildPluginValueExtractorV8 } from "./features";
-import type { EEBudnleV8 as PluginExtractionBuildBundle } from "./features";
+import type { PluginExtractionBuildBundle } from "./features";
 import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2";
 import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
 import type {

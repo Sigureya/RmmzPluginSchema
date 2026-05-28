@@ -2,7 +2,7 @@ import type { PluginValuesExtractorBundle } from "./bundle";
 import type { CommandArgExtractors } from "./command";
 import type { ErrorStruct, PluginErrorStruct } from "./error";
 
-export interface EEBudnleV8 {
+export interface PluginExtractionBuildBundle {
   pluginName: string;
   commands: CommandBuildResult<ErrorStruct>;
   params: ParamBuildResult;
