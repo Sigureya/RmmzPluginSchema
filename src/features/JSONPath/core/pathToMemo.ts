@@ -16,12 +16,23 @@ import type {
   PluginScalarValueExtractor,
 } from "./extractor/types";
 
+type Type = "struct" | "structArray" | "scalar";
+interface PPContext {
+  path: string;
+  type: Type;
+}
+
+interface ErrorHandlers2 {
+  pathXXXError(context: PPContext): unknown;
+}
+
 export const compileJSONPathSchema = <
   S extends PluginScalarParam,
   A extends PluginArrayParamType,
 >(
   path: PluginValuesPathSchema<S, A>,
   factoryFn: (path: string) => JSONPathReader,
+  handlers?: ErrorHandlers2,
 ): PluginValuesExtractorBundle<S, A> => {
   const top = path.scalars
     ? compileStructExtractor(path.scalars, factoryFn)
