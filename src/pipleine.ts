@@ -75,7 +75,7 @@ export type ExtractErrorPhase =
   | "parseParam"
   | "extractCommand";
 
-export interface ExtractAppError<E = unknown> {
+export interface ExtractAppError<E> {
   phase: ExtractErrorPhase;
   pluginName: string;
   message: string;
@@ -83,7 +83,7 @@ export interface ExtractAppError<E = unknown> {
   errorInfo?: E;
 }
 
-export interface ExtractedPluginResult<E = unknown> {
+export interface ExtractedPluginResult<E> {
   pluginName: string;
   record: PluginParamsRecord;
   params: PluginExtractedValue[];
@@ -91,7 +91,7 @@ export interface ExtractedPluginResult<E = unknown> {
   errors: ExtractAppError<E>[];
 }
 
-export interface ExtractApplicationResult<E = unknown> {
+export interface ExtractApplicationResult<E> {
   status: "success" | "partial" | "failure";
   plugins: ExtractedPluginResult<E>[];
   allErrors: ExtractAppError<E>[];
@@ -138,17 +138,9 @@ export const extractFromBasePath = async <E>(
     });
   }
 
-  const readTasks = readAllPluginBodies(
-    pluginList,
-    messages,
-    (pluginName) => fs.readPluginBody(pluginName),
-    handlers.parsePluginBody,
+  const plugins = await Promise.all(
+    readAllXXX(pluginList, messages, fs, handlers),
   );
-  const readResults = await Promise.all(readTasks);
-
-  const plugins = readResults.map((readResult) => {
-    return extractSinglePlugin(readResult, handlers);
-  });
 
   plugins.forEach((p) => allErrors.push(...p.errors));
 
@@ -157,6 +149,22 @@ export const extractFromBasePath = async <E>(
     plugins,
     allErrors,
   };
+};
+
+const readAllXXX = <E>(
+  pluginList: ResultOfparsePluginParamRecord,
+  messages: MessageOfparsePluginParamRecordEx,
+  fs: ExtractFileSystem,
+  handlers: ExtractAppHandlers<E>,
+): Promise<ExtractedPluginResult<E>>[] => {
+  return readAllPluginBodies(
+    pluginList,
+    messages,
+    (pluginName) => fs.readPluginBody(pluginName),
+    handlers.parsePluginBody,
+  ).map(async (task): Promise<ExtractedPluginResult<E>> => {
+    return extractSinglePlugin(await task, handlers);
+  });
 };
 
 const extractSinglePlugin = <E>(
