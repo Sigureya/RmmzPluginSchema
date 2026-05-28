@@ -509,6 +509,28 @@ describe("classroom path generation and value extraction", () => {
         `$["classroom"]["students"][*]["nicknames"][*]`,
       );
     });
+    test("例外が飛ぼうが全てのFactoryが動く", () => {
+      const mockFn = vi.fn((path) => {
+        throw new Error("Factory error");
+      });
+      compileJSONPathSchema(pathSchema, mockFn);
+      expect(mockFn).toBeCalledTimes(7);
+      expect(mockFn).toBeCalledWith('$["classroom"]["className"]');
+      expect(mockFn).toBeCalledWith('$["classroom"]["teacher"]["name","age"]');
+      expect(mockFn).toBeCalledWith(`$["classroom"]["teacher"]["items"][*]`);
+      expect(mockFn).toBeCalledWith(
+        `$["classroom"]["teacher"]["nicknames"][*]`,
+      );
+      expect(mockFn).toBeCalledWith(
+        '$["classroom"]["students"][*]["name","age"]',
+      );
+      expect(mockFn).toBeCalledWith(
+        `$["classroom"]["students"][*]["items"][*]`,
+      );
+      expect(mockFn).toBeCalledWith(
+        `$["classroom"]["students"][*]["nicknames"][*]`,
+      );
+    });
   });
   test("extracts all expected scalar values from ClassRoom object", () => {
     const paramObject = {
