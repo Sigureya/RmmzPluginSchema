@@ -11,12 +11,12 @@ import type {
   CommandArgExtractors,
   CommandExtractResult,
   PluginValuesExtractorBundle,
+  ParamBuildErrorHandlers,
 } from "./features";
 import { buildPluginValueExtractor } from "./features";
 import { extractArgsFromPluginCommand } from "./features/JSONPath/core/command2";
 import type { ParamReadResult } from "./features/JSONPath/core/param";
 import { extractPluginParamFromRecord } from "./features/JSONPath/core/param";
-import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 import type {
   MessageOfparsePluginParamRecordEx,
   PluginReadResult,

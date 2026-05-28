@@ -16,3 +16,16 @@ export interface CommandBuildErrorHandlers<E> {
     error: unknown,
   ): E;
 }
+
+export interface ParamBuildErrorHandlers<E> {
+  paramStructPathError(context: ParamBuildContext, error: StructPathError): E;
+  paramCompileJSONPathSchemaError(
+    context: ParamBuildContext,
+    error: unknown,
+  ): E;
+}
+
+export interface ParamBuildContext {
+  pluginName: string;
+  paramName: string;
+}

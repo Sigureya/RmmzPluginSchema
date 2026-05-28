@@ -1,26 +1,19 @@
 import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
-  ClassifiedPluginParams,
   PluginParam,
+  ClassifiedPluginParams,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { StructPathError } from "./createPath/types";
-import { createPluginValuesPath } from "./createPath/valuePath";
-import type { PluginValuesExtractorBundle } from "./extractor/types";
-import type { PluginErrorStruct } from "./extractor/types/error";
+import type {
+  ParamBuildContext,
+  StructPathError,
+  ParamBuildErrorHandlers,
+} from "./createPath";
+import { createPluginValuesPath } from "./createPath";
+import type {
+  PluginValuesExtractorBundle,
+  PluginErrorStruct,
+} from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
-
-export interface ParamBuildErrorHandlers<E> {
-  paramStructPathError(context: ParamBuildContext, error: StructPathError): E;
-  paramCompileJSONPathSchemaError(
-    context: ParamBuildContext,
-    error: unknown,
-  ): E;
-}
-
-export interface ParamBuildContext {
-  pluginName: string;
-  paramName: string;
-}
 
 interface BuildSingleParamResult {
   extractor: PluginValuesExtractorBundle;
