@@ -6,6 +6,7 @@ export interface ErrorStruct {
   argName: string;
   path?: string;
   message: string;
+  info?: unknown;
 }
 
 export interface PluginErrorStruct {
@@ -15,4 +16,5 @@ export interface PluginErrorStruct {
   paramName: string;
   path?: string;
   message: string;
+  info?: unknown;
 }

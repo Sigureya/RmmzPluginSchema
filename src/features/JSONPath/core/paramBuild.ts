@@ -27,14 +27,21 @@ interface BuildSingleParamResult {
   errors: PluginErrorStruct[];
 }
 
-const collectPathErrorsForParam = (
+const collectPathErrorsForParam = <T>(
   context: ParamBuildContext,
   pathErrors: StructPathError[],
-  handlers: ParamBuildErrorHandlers<PluginErrorStruct>,
+  handlers: ParamBuildErrorHandlers<T>,
 ): PluginErrorStruct[] => {
-  return pathErrors.map((error) =>
-    handlers.paramStructPathError(context, error),
-  );
+  return pathErrors.map((error): PluginErrorStruct => {
+    return {
+      code: "paramStructPathError",
+      source: "createPath",
+      pluginName: context.pluginName,
+      paramName: context.paramName,
+      message: `Path error at "${error.path}": ${error.code}`,
+      info: handlers.paramStructPathError(context, error),
+    };
+  });
 };
 
 export const buildSingleParam = (
