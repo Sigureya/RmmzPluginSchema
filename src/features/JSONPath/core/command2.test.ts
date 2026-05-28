@@ -9,22 +9,22 @@ import { extractArgsFromPluginCommandHandled } from "./command2";
 import type {
   CommandArgExtractors,
   CommandExtractError,
-  CommandExtractMessageHandlers,
+  PluginCommandExtractErrorHandlers,
   CommandMapKey,
 } from "./extractor/types";
 
-const handlers: CommandExtractMessageHandlers = {
-  undefinedCommand: (command) => ({
-    message: `undefined command: ${command.parameters[0]}:${command.parameters[1]}`,
-    source: "undefinedCommand",
+const handlers: PluginCommandExtractErrorHandlers = {
+  commandNotFoundError: (context) => ({
+    message: `undefined command: ${context.pluginName}:${context.commandName}`,
+    source: "commandNotFoundError",
   }),
-  deepJSONParseError: (command, error) => ({
-    message: `parse failed: ${command.parameters[0]}:${command.parameters[1]}:${String(error)}`,
-    source: "deepJSONParseError",
+  commandParseError: (context, error) => ({
+    message: `parse failed: ${context.pluginName}:${context.commandName}:${String(error)}`,
+    source: "commandParseError",
   }),
-  extractArgsError: (command, error) => ({
-    message: `extract args failed: ${command.parameters[0]}:${command.parameters[1]}:${String(error)}`,
-    source: "extractArgsError",
+  commandArgsError: (context, error) => ({
+    message: `extract args failed: ${context.pluginName}:${context.commandName}:${String(error)}`,
+    source: "commandArgsError",
   }),
 };
 
@@ -85,47 +85,51 @@ describe("command2 handled extraction", () => {
 
   test("異常系: 未定義コマンドはhandlers.undefinedCommandでerrorを返す", () => {
     const command = createCommand("MockPlugin", "Unknown", { value: "10" });
-    const undefinedCommand = vi.fn(handlers.undefinedCommand);
-    const deepJSONParseError = vi.fn(handlers.deepJSONParseError);
+    const commandNotFoundError = vi.fn(handlers.commandNotFoundError);
+    const commandParseError = vi.fn(handlers.commandParseError);
 
     const result = extractArgsFromPluginCommandHandled(command, map, {
-      undefinedCommand,
-      deepJSONParseError,
-      extractArgsError: () => ({
+      commandNotFoundError,
+      commandParseError,
+      commandArgsError: () => ({
         message: "custom extract args error",
-        source: "extractArgsError",
+        source: "commandArgsError",
       }),
     });
 
-    expect(undefinedCommand).toHaveBeenCalledTimes(1);
-    expect(undefinedCommand).toHaveBeenCalledWith(command);
-    expect(deepJSONParseError).not.toHaveBeenCalled();
+    expect(commandNotFoundError).toHaveBeenCalledTimes(1);
+    expect(commandNotFoundError).toHaveBeenCalledWith({
+      command,
+      pluginName: "MockPlugin",
+      commandName: "Unknown",
+    });
+    expect(commandParseError).not.toHaveBeenCalled();
     expect(result.args).toEqual([]);
     expect(result.error).toEqual({
       message: "undefined command: MockPlugin:Unknown",
-      source: "undefinedCommand",
+      source: "commandNotFoundError",
     });
   });
 
   test("異常系: parse失敗時はhandlers.deepJSONParseErrorでerrorを返す", () => {
     const command = createCommand("MockPlugin", "Add", { value: "x" });
     const parseError = new Error("boom");
-    const undefinedCommand = vi.fn(handlers.undefinedCommand);
-    const deepJSONParseError = vi.fn(handlers.deepJSONParseError);
+    const commandNotFoundError = vi.fn(handlers.commandNotFoundError);
+    const commandParseError = vi.fn(handlers.commandParseError);
 
     const expectedError: CommandExtractError = {
       message: "parse failed: MockPlugin:Add:Error: boom",
-      source: "deepJSONParseError",
+      source: "commandParseError",
     };
     const result = extractArgsFromPluginCommandHandled(
       command,
       map,
       {
-        undefinedCommand,
-        deepJSONParseError,
-        extractArgsError: () => ({
+        commandNotFoundError,
+        commandParseError,
+        commandArgsError: () => ({
           message: "custom extract args error",
-          source: "extractArgsError",
+          source: "commandArgsError",
         }),
       },
       () => {
@@ -133,9 +137,16 @@ describe("command2 handled extraction", () => {
       },
     );
 
-    expect(deepJSONParseError).toHaveBeenCalledTimes(1);
-    expect(deepJSONParseError).toHaveBeenCalledWith(command, parseError);
-    expect(undefinedCommand).not.toHaveBeenCalled();
+    expect(commandParseError).toHaveBeenCalledTimes(1);
+    expect(commandParseError).toHaveBeenCalledWith(
+      {
+        command,
+        pluginName: "MockPlugin",
+        commandName: "Add",
+      },
+      parseError,
+    );
+    expect(commandNotFoundError).not.toHaveBeenCalled();
     expect(result.args).toEqual([]);
     expect(result.error).toEqual(expectedError);
   });
@@ -145,7 +156,7 @@ describe("command2 handled extraction", () => {
 
     const expecetdError: CommandExtractError = {
       message: "undefined command: MockPlugin:Unknown",
-      source: "undefinedCommand",
+      source: "commandNotFoundError",
     };
     const result = extractArgsFromPluginCommandHandled(
       command,

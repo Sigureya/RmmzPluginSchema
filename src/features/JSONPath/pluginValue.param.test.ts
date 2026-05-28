@@ -17,7 +17,7 @@ import type {
   PluginParamsSchema,
 } from "./core";
 import { compilePluginParamExtractor, createPluginValuesPath } from "./core";
-import type { ParamReadHandlers } from "./core/param";
+import type { PluginParamReadErrorHandlers } from "./core/param";
 import { extractPluginParamFromRecord } from "./core/param";
 
 interface Item {
@@ -180,8 +180,8 @@ const runTestCase = (testCase: TestCase, record2: PluginParamsRecord) => {
     });
 
     test("値の取り出しは成功したか", () => {
-      const errorHandlers: MockedObject<ParamReadHandlers<{}>> = {
-        parseError: vi.fn(),
+      const errorHandlers: MockedObject<PluginParamReadErrorHandlers<{}>> = {
+        pluginParamsParseError: vi.fn(),
       };
 
       const memo = compilePluginParamExtractor(
@@ -196,7 +196,7 @@ const runTestCase = (testCase: TestCase, record2: PluginParamsRecord) => {
         (v) => parseDeepRecord(v),
         errorHandlers,
       );
-      expect(errorHandlers.parseError).not.toHaveBeenCalled();
+      expect(errorHandlers.pluginParamsParseError).not.toHaveBeenCalled();
       expect(result.pluginName).toBe(testCase.expected.pluginName);
       expect(result.params).toEqual(testCase.expected.params);
       expect(result.errorInfo).toBeNull();

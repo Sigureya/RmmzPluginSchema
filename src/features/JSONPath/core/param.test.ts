@@ -4,13 +4,15 @@ import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type { PluginParamsRecord } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
 import type { PluginValuesExtractorBundle } from "./extractor/types";
-import type { ParamReadHandlers } from "./param";
+import type { PluginParamReadErrorHandlers } from "./param";
 import { extractPluginParamFromRecord } from "./param";
 
-const createErrorHandlers = <T>(e: T): MockedObject<ParamReadHandlers<T>> => {
-  type H = ParamReadHandlers<T>;
+const createErrorHandlers = <T>(
+  e: T,
+): MockedObject<PluginParamReadErrorHandlers<T>> => {
+  type H = PluginParamReadErrorHandlers<T>;
   return {
-    parseError: vi.fn<H["parseError"]>((): T => {
+    pluginParamsParseError: vi.fn<H["pluginParamsParseError"]>((): T => {
       return e;
     }),
   };
@@ -65,7 +67,7 @@ describe("extractPluginParamFromRecord4", () => {
 
     expect(parseFn).toHaveBeenCalledTimes(1);
     expect(parseFn).toHaveBeenCalledWith(record.parameters);
-    expect(handlers.parseError).not.toHaveBeenCalled();
+    expect(handlers.pluginParamsParseError).not.toHaveBeenCalled();
     expect(result).toEqual({
       pluginName: "TestPlugin",
       errorKind: "",
@@ -115,8 +117,14 @@ describe("extractPluginParamFromRecord4", () => {
     );
 
     expect(parseFn).toHaveBeenCalledOnce();
-    expect(handlers.parseError).toHaveBeenCalledOnce();
-    expect(handlers.parseError).toHaveBeenCalledWith(record, thrown);
+    expect(handlers.pluginParamsParseError).toHaveBeenCalledOnce();
+    expect(handlers.pluginParamsParseError).toHaveBeenCalledWith(
+      {
+        pluginName: "BrokenPlugin",
+        record,
+      },
+      thrown,
+    );
     expect(result).toEqual(expected);
   });
 });
