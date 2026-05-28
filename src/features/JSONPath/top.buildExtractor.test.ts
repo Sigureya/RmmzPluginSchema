@@ -17,11 +17,9 @@ import type {
   CommandBuildContext,
   ParamBuildResult,
   PluginErrorStruct,
-} from "./core";
-import type {
-  ParamBuildContext,
   ParamBuildErrorHandlers,
-} from "./core/paramBuild";
+  ParamBuildContext,
+} from "./core";
 import { buildCommandExtractors, buildParamExtractors } from "./top";
 type JSONPathErrorHandles = CommandBuildErrorHandlers<ErrorStruct>;
 type ParamErrorHandles = ParamBuildErrorHandlers<PluginErrorStruct>;

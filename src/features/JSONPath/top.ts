@@ -17,9 +17,9 @@ import type {
   ErrorStruct,
   ParamBuildResult,
   PluginErrorStruct,
+  ParamBuildErrorHandlers,
 } from "./core";
 import { buildSingleCommand } from "./core/commandBuild";
-import type { ParamBuildErrorHandlers } from "./core/paramBuild";
 import { buildSingleParam } from "./core/paramBuild";
 
 /**

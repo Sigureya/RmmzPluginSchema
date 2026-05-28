@@ -5,8 +5,8 @@ import type {
   ErrorStruct,
   StructPathError,
   PluginErrorStruct,
+  ParamBuildErrorHandlers,
 } from "./features";
-import type { ParamBuildErrorHandlers } from "./features/JSONPath/core/paramBuild";
 
 export const defaultPluginCommandExtractErrorHandlers: PluginCommandExtractErrorHandlers =
   {
