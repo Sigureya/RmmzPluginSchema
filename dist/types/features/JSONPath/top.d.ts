@@ -1,7 +1,6 @@
 import { JSONPathReader } from '../../libs/jsonPath';
 import { PluginSchemaArray, ClassifiedPluginParams, PluginCommandSchemaArray, PluginParam } from '../../rmmz/plugin';
-import { CommandBuildErrorHandlers, CommandArgExtractors, CommandBuildResult, CommandExtractorEntryList, CommandMapKey, PluginExtractionBuildBundle, ErrorStruct, ParamBuildResult, PluginErrorStruct } from './core';
-import { ParamBuildErrorHandlers } from './core/paramBuild';
+import { CommandBuildErrorHandlers, CommandArgExtractors, CommandBuildResult, CommandExtractorEntryList, CommandMapKey, PluginExtractionBuildBundle, ErrorStruct, ParamBuildResult, PluginErrorStruct, ParamBuildErrorHandlers } from './core';
 /**
  * @deprecated pipelines 起点の現行フローでは未使用です。
  */
