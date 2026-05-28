@@ -1,6 +1,6 @@
 import { JSONPathJS } from "jsonpath-js";
 import { buildPluginValueExtractorV8 } from "./features";
-import type { EEBudnleV8 } from "./features";
+import type { EEBudnleV8 as PluginExtractionBuildBundle } from "./features";
 import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2";
 import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
 import type {
@@ -24,7 +24,7 @@ import {
   parsePluginByLocale,
   parsePluginParamRecord2,
 } from "./rmmz";
-import type { ResultOfparsePluginParamRecord } from "./rmmz";
+import type { PluginSchemaArray, ResultOfparsePluginParamRecord } from "./rmmz";
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 import type {
   PluginExtractionHandlers,
@@ -146,17 +146,18 @@ const extractSinglePlugin = <E>(
     };
   }
 
-  const schema = compilePluginAsArraySchema(
+  const schema: PluginSchemaArray = compilePluginAsArraySchema(
     readResult.plugin,
     handlers.deepJSON,
   );
-  const extractionBuildBundle = buildPluginValueExtractorV8(
-    pluginName,
-    schema,
-    handlers.jsonPath,
-    handlers.paramBuild,
-    handlers.commandBuild,
-  );
+  const extractionBuildBundle: PluginExtractionBuildBundle =
+    buildPluginValueExtractorV8(
+      pluginName,
+      schema,
+      handlers.jsonPath,
+      handlers.paramBuild,
+      handlers.commandBuild,
+    );
 
   const paramResult: ParamReadResultV4<E> = extractPluginParamFromRecord4(
     readResult.record,
@@ -180,7 +181,7 @@ const extractSinglePlugin = <E>(
 
 const buildPluginExtractionErrors = <E>(
   pluginName: string,
-  built: EEBudnleV8,
+  built: PluginExtractionBuildBundle,
   paramReadResult: ParamReadResultV4<E>,
 ): PluginExtractionError<E>[] => {
   const errors: PluginExtractionError<E>[] = [];
