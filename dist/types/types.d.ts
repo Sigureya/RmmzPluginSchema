@@ -1,5 +1,4 @@
-import { PluginErrorStruct, CommandBuildErrorHandlers, ErrorStruct, PluginCommandExtractErrorHandlers, PluginExtractedValue, CommandArgExtractors } from './features';
-import { ParamBuildErrorHandlers } from './features/JSONPath/core/paramBuild';
+import { PluginErrorStruct, CommandBuildErrorHandlers, ErrorStruct, PluginCommandExtractErrorHandlers, PluginExtractedValue, CommandArgExtractors, ParamBuildErrorHandlers } from './features';
 import { MessageOfparsePluginParamRecordEx } from './fileio';
 import { JSONValue, JSONPathReader } from './libs';
 import { ResultOfparsePluginParamRecord, ParsedPlugin, DeepJSONParserHandlers, PluginParamsRecord, PluginParamReadErrorHandlers } from './rmmz';
