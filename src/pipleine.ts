@@ -27,8 +27,8 @@ import {
 import type { ResultOfparsePluginParamRecord } from "./rmmz";
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 import type {
-  ExtractAppHandlers,
-  ExtractFileSystem,
+  PluginExtractAppHandlers,
+  PluginFileSystem,
   ExtractApplicationOptions,
   ExtractApplicationResult,
   ExtractAppError,
@@ -37,11 +37,13 @@ import type {
 
 export const createDefaultExtractAppHandlers = <E>(
   paramRead: ParamReadHandlers<E>,
-): ExtractAppHandlers<E> => {
+): PluginExtractAppHandlers<E> => {
   return {
-    parsePluginList: parsePluginParamRecord2,
-    parsePluginBody: parsePluginByLocale,
-    parseDeepRecord: parseDeepRecord,
+    parser: {
+      parsePluginList: (source, msg) => parsePluginParamRecord2(source, msg),
+      parsePluginBody: (src) => parsePluginByLocale(src),
+      parseDeepRecord: (value) => parseDeepRecord(value),
+    },
     jsonPath: (path: string) => new JSONPathJS(path),
     deepJSON: createDeepJSONParserHandlers(),
     paramBuild: defaultParamBuildHandlers,
@@ -52,8 +54,8 @@ export const createDefaultExtractAppHandlers = <E>(
 };
 
 export const extractFromBasePath = async <E>(
-  fs: ExtractFileSystem,
-  handlers: ExtractAppHandlers<E>,
+  fs: PluginFileSystem,
+  handlers: PluginExtractAppHandlers<E>,
   options: ExtractApplicationOptions = {},
 ): Promise<ExtractApplicationResult<E>> => {
   const messages = options.messages ?? READ_PLUGIN_MESSAGES;
@@ -62,7 +64,7 @@ export const extractFromBasePath = async <E>(
   const pluginList = await readPluginInfosSafe(
     messages,
     () => fs.readPluginList(),
-    handlers.parsePluginList,
+    (source, msg) => handlers.parser.parsePluginList(source, msg),
   );
   if (!pluginList.complete || pluginList.invalidPlugins > 0) {
     allErrors.push({
@@ -92,14 +94,14 @@ export const extractFromBasePath = async <E>(
 const readAllXXX = <E>(
   pluginList: ResultOfparsePluginParamRecord,
   messages: MessageOfparsePluginParamRecordEx,
-  fs: ExtractFileSystem,
-  handlers: ExtractAppHandlers<E>,
+  fs: PluginFileSystem,
+  handlers: PluginExtractAppHandlers<E>,
 ): Promise<ExtractedPluginResult<E>>[] => {
   return readAllPluginBodies(
     pluginList,
     messages,
-    (pluginName) => fs.readPluginBody(pluginName),
-    handlers.parsePluginBody,
+    (pluginName: string) => fs.readPluginBody(pluginName),
+    (src: string) => handlers.parser.parsePluginBody(src),
   ).map(async (task): Promise<ExtractedPluginResult<E>> => {
     return extractSinglePlugin(await task, handlers);
   });
@@ -107,7 +109,7 @@ const readAllXXX = <E>(
 
 const extractSinglePlugin = <E>(
   readResult: PluginReadResult,
-  handlers: ExtractAppHandlers<E>,
+  handlers: PluginExtractAppHandlers<E>,
 ): ExtractedPluginResult<E> => {
   const pluginName = readResult.record.name;
 
@@ -144,7 +146,7 @@ const extractSinglePlugin = <E>(
   const paramResult: ParamReadResultV4<E> = extractPluginParamFromRecord4(
     readResult.record,
     built.params.extractors,
-    handlers.parseDeepRecord,
+    handlers.parser.parseDeepRecord,
     handlers.paramRead,
   );
 

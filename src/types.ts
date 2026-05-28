@@ -17,18 +17,22 @@ import type {
   PluginParamsRecord,
 } from "./rmmz";
 
-export interface ExtractFileSystem {
+export interface PluginFileSystem {
   readPluginList(): Promise<string>;
   readPluginBody(pluginName: string): Promise<string>;
 }
 
-export interface ExtractAppHandlers<E> {
+export interface PluginParser {
   parsePluginList: (
     source: string,
     msg: MessageOfparsePluginParamRecordEx,
   ) => ResultOfparsePluginParamRecord;
   parsePluginBody: (src: string) => ParsedPlugin;
   parseDeepRecord: (value: Record<string, string>) => Record<string, JSONValue>;
+}
+
+export interface PluginExtractAppHandlers<E> {
+  parser: PluginParser;
   jsonPath: (path: string) => JSONPathReader;
   deepJSON: DeepJSONParserHandlers;
   paramBuild: ParamBuildErrorHandlers<PluginErrorStruct>;
