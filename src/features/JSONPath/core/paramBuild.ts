@@ -44,12 +44,12 @@ const collectPathErrorsForParam = <T>(
   });
 };
 
-export const buildSingleParam = <T>(
+export const buildSingleParam = (
   pluginName: string,
   param: PluginParam,
   structMap: ReadonlyMap<string, ClassifiedPluginParams>,
   factoryFn: (path: string) => JSONPathReader,
-  handlers: ParamBuildErrorHandlers<T>,
+  handlers: ParamBuildErrorHandlers<PluginErrorStruct>,
 ): BuildSingleParamResult => {
   const context: ParamBuildContext = {
     pluginName,
@@ -69,14 +69,10 @@ export const buildSingleParam = <T>(
       errors,
     };
   } catch (error) {
-    const compileError: PluginErrorStruct = {
-      code: "compileJSONPathSchemaError",
-      source: "createPath",
-      pluginName,
-      paramName: param.name,
-      message: "Failed to compile JSONPath schema",
-      info: handlers.paramCompileJSONPathSchemaError(context, error),
-    };
+    const compileError = handlers.paramCompileJSONPathSchemaError(
+      context,
+      error,
+    );
     return {
       extractor: {
         rootCategory: path.rootCategory,

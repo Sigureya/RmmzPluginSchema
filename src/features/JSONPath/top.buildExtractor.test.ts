@@ -279,7 +279,7 @@ describe("buildParamExtractors", () => {
     );
   });
 
-  test.skip("Factory Error", () => {
+  test("Factory Error", () => {
     const handlers = createParamErrorHandlers();
     const error = new Error("jsonPathFactory error2");
     const jsonPathFactory = vi.fn((): JSONPathReader => {
