@@ -27,21 +27,23 @@ import {
 import type { ResultOfparsePluginParamRecord } from "./rmmz";
 import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 import type {
-  ExtractAppHandlers,
-  ExtractFileSystem,
-  ExtractApplicationOptions,
-  ExtractApplicationResult,
-  ExtractAppError,
-  ExtractedPluginResult,
+  PluginExtractionHandlers,
+  PluginFileReader,
+  PluginExtractionOptions,
+  PluginExtractionResult,
+  PluginExtractionError,
+  PluginExtractionItemResult,
 } from "./types";
 
 export const createDefaultExtractAppHandlers = <E>(
   paramRead: ParamReadHandlers<E>,
-): ExtractAppHandlers<E> => {
+): PluginExtractionHandlers<E> => {
   return {
-    parsePluginList: parsePluginParamRecord2,
-    parsePluginBody: parsePluginByLocale,
-    parseDeepRecord: parseDeepRecord,
+    parser: {
+      parsePluginList: (source, msg) => parsePluginParamRecord2(source, msg),
+      parsePluginBody: (src) => parsePluginByLocale(src),
+      parseDeepRecord: (value) => parseDeepRecord(value),
+    },
     jsonPath: (path: string) => new JSONPathJS(path),
     deepJSON: createDeepJSONParserHandlers(),
     paramBuild: defaultParamBuildHandlers,
@@ -52,17 +54,17 @@ export const createDefaultExtractAppHandlers = <E>(
 };
 
 export const extractFromBasePath = async <E>(
-  fs: ExtractFileSystem,
-  handlers: ExtractAppHandlers<E>,
-  options: ExtractApplicationOptions = {},
-): Promise<ExtractApplicationResult<E>> => {
+  fs: PluginFileReader,
+  handlers: PluginExtractionHandlers<E>,
+  options: PluginExtractionOptions = {},
+): Promise<PluginExtractionResult<E>> => {
   const messages = options.messages ?? READ_PLUGIN_MESSAGES;
-  const allErrors: ExtractAppError<E>[] = [];
+  const allErrors: PluginExtractionError<E>[] = [];
 
   const pluginList = await readPluginInfosSafe(
     messages,
     () => fs.readPluginList(),
-    handlers.parsePluginList,
+    (source, msg) => handlers.parser.parsePluginList(source, msg),
   );
   if (!pluginList.complete || pluginList.invalidPlugins > 0) {
     allErrors.push({
@@ -92,23 +94,23 @@ export const extractFromBasePath = async <E>(
 const readAllXXX = <E>(
   pluginList: ResultOfparsePluginParamRecord,
   messages: MessageOfparsePluginParamRecordEx,
-  fs: ExtractFileSystem,
-  handlers: ExtractAppHandlers<E>,
-): Promise<ExtractedPluginResult<E>>[] => {
+  fs: PluginFileReader,
+  handlers: PluginExtractionHandlers<E>,
+): Promise<PluginExtractionItemResult<E>>[] => {
   return readAllPluginBodies(
     pluginList,
     messages,
-    (pluginName) => fs.readPluginBody(pluginName),
-    handlers.parsePluginBody,
-  ).map(async (task): Promise<ExtractedPluginResult<E>> => {
+    (pluginName: string) => fs.readPluginBody(pluginName),
+    (src: string) => handlers.parser.parsePluginBody(src),
+  ).map(async (task): Promise<PluginExtractionItemResult<E>> => {
     return extractSinglePlugin(await task, handlers);
   });
 };
 
 const extractSinglePlugin = <E>(
   readResult: PluginReadResult,
-  handlers: ExtractAppHandlers<E>,
-): ExtractedPluginResult<E> => {
+  handlers: PluginExtractionHandlers<E>,
+): PluginExtractionItemResult<E> => {
   const pluginName = readResult.record.name;
 
   if (readResult.plugin === null) {
@@ -144,7 +146,7 @@ const extractSinglePlugin = <E>(
   const paramResult: ParamReadResultV4<E> = extractPluginParamFromRecord4(
     readResult.record,
     built.params.extractors,
-    handlers.parseDeepRecord,
+    handlers.parser.parseDeepRecord,
     handlers.paramRead,
   );
 
@@ -161,11 +163,11 @@ const errorCCC = <E>(
   pluginName: string,
   built: EEBudnleV8,
   p: ParamReadResultV4<E>,
-): ExtractAppError<E>[] => {
-  const errors: ExtractAppError<E>[] = [];
+): PluginExtractionError<E>[] => {
+  const errors: PluginExtractionError<E>[] = [];
   errors.push(
     ...built.params.errors.map(
-      (error): ExtractAppError<E> => ({
+      (error): PluginExtractionError<E> => ({
         phase: "buildParam",
         pluginName,
         message: error.message,
@@ -175,7 +177,7 @@ const errorCCC = <E>(
   );
   errors.push(
     ...built.commands.errors.map(
-      (error): ExtractAppError<E> => ({
+      (error): PluginExtractionError<E> => ({
         phase: "buildCommand",
         pluginName,
         message: error.message,
@@ -195,9 +197,9 @@ const errorCCC = <E>(
 };
 
 const resolveStatus = <E>(
-  plugins: ReadonlyArray<ExtractedPluginResult<E>>,
-  allErrors: ReadonlyArray<ExtractAppError<E>>,
-): ExtractApplicationResult<E>["status"] => {
+  plugins: ReadonlyArray<PluginExtractionItemResult<E>>,
+  allErrors: ReadonlyArray<PluginExtractionError<E>>,
+): PluginExtractionResult<E>["status"] => {
   if (allErrors.length === 0) {
     return "success";
   }
