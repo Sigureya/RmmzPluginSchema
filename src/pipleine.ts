@@ -4,16 +4,11 @@ import type {
   BuildErrorHandlers,
   CommandArgExtractors,
   CommandExtractMessageHandlers,
-  CommandExtractResult,
-  CommandMapKey,
   ErrorStruct,
   PluginErrorStruct,
   PluginExtractedValue,
 } from "./features";
-import {
-  defaultCommandExtractHandlers,
-  extractArgsFromPluginCommandHandled,
-} from "./features/JSONPath/core/command2";
+import { defaultCommandExtractHandlers } from "./features/JSONPath/core/command2";
 import { defaultHandlers as defaultCommandBuildHandlers } from "./features/JSONPath/core/commandBuild";
 import type {
   ParamReadHandlers,
@@ -41,7 +36,6 @@ import {
 import type {
   DeepJSONParserHandlers,
   ParsedPlugin,
-  PluginCommandData,
   PluginParamsRecord,
   ResultOfparsePluginParamRecord,
 } from "./rmmz";
@@ -68,7 +62,6 @@ export interface ExtractAppHandlers<E> {
 
 export interface ExtractApplicationOptions {
   messages?: MessageOfparsePluginParamRecordEx;
-  commands?: ReadonlyArray<PluginCommandData>;
 }
 
 export type ExtractErrorPhase =
@@ -93,7 +86,6 @@ export interface ExtractedPluginResult<E = unknown> {
   record: PluginParamsRecord;
   params: PluginExtractedValue[];
   commandExtractors: CommandArgExtractors[];
-  commandResults: CommandExtractResult[];
   errors: ExtractAppError<E>[];
 }
 
@@ -126,7 +118,6 @@ export const extractFromBasePath = async <E>(
   options: ExtractApplicationOptions = {},
 ): Promise<ExtractApplicationResult<E>> => {
   const messages = options.messages ?? READ_PLUGIN_MESSAGES;
-  const commands = options.commands ?? [];
   const allErrors: ExtractAppError<E>[] = [];
 
   const pluginList = await readPluginInfosSafe(
@@ -155,7 +146,7 @@ export const extractFromBasePath = async <E>(
   const readResults = await Promise.all(readTasks);
 
   const plugins = readResults.map((readResult) => {
-    return extractSinglePlugin(readResult, handlers, commands);
+    return extractSinglePlugin(readResult, handlers);
   });
 
   plugins.forEach((p) => allErrors.push(...p.errors));
@@ -170,7 +161,6 @@ export const extractFromBasePath = async <E>(
 const extractSinglePlugin = <E>(
   readResult: PluginReadResult,
   handlers: ExtractAppHandlers<E>,
-  commands: ReadonlyArray<PluginCommandData>,
 ): ExtractedPluginResult<E> => {
   const pluginName = readResult.record.name;
   const errors: ExtractAppError<E>[] = [];
@@ -196,7 +186,6 @@ const extractSinglePlugin = <E>(
       record: readResult.record,
       params: [],
       commandExtractors: [],
-      commandResults: [],
       errors,
     };
   }
@@ -249,35 +238,11 @@ const extractSinglePlugin = <E>(
   //     });
   //   }
 
-  const commandMap = toCommandMap(built.commands.extractors);
-  const commandResults = commands
-    .filter((command) => command.parameters[0] === pluginName)
-    .map((command) =>
-      extractArgsFromPluginCommandHandled(
-        command,
-        commandMap,
-        handlers.commandExtract,
-        handlers.parseDeepRecord,
-      ),
-    );
-
-  //   commandResults.forEach((result) => {
-  //     if (result.error) {
-  //       errors.push({
-  //         phase: "extractCommand",
-  //         pluginName,
-  //         message: result.error.message,
-  //         detail: result.error,
-  //       });
-  //     }
-  //   });
-
   return {
     pluginName,
     record: readResult.record,
     params: paramResult.params,
     commandExtractors: built.commands.extractors,
-    commandResults,
     errors,
   };
 };
@@ -308,14 +273,4 @@ const resolveStatus = <E>(
     return "partial";
   }
   return "failure";
-};
-
-const toCommandMap = (
-  extractors: ReadonlyArray<CommandArgExtractors>,
-): ReadonlyMap<CommandMapKey, CommandArgExtractors> => {
-  const entries = extractors.map((extractor) => {
-    const key: CommandMapKey = `${extractor.pluginName}:${extractor.commandName}`;
-    return [key, extractor] as const;
-  });
-  return new Map(entries);
 };
