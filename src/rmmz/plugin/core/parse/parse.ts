@@ -12,7 +12,7 @@ import {
   handleOrderBefore,
   handleValue,
 } from "./state";
-import { typeIsStruct } from "./struct";
+import { typeIsStruct, typeIsStructArray } from "./struct";
 import type {
   ParsedPlugin,
   PluginStructTokens,
@@ -266,6 +266,11 @@ const handleArgContext = (state: ParseState, value: string): ParseState => {
 };
 
 const handlerType = (state: ParseState, value: string): ParseState => {
+  if (typeIsStructArray(value)) {
+    const structName = value.slice(7, -3);
+    const addSturct = addParamField(state, KEYWORD_STRUCT, structName);
+    return addParamField(addSturct, KEYWORD_KIND, `${KEYWORD_STRUCT}[]`);
+  }
   if (typeIsStruct(value)) {
     const structName = value.slice(7, -1);
     const addSturct = addParamField(state, KEYWORD_STRUCT, structName);

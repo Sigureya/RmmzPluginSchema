@@ -39,7 +39,8 @@ describe("PluginExtractionPipeline", () => {
       {
         name: "nameTable",
         attr: {
-          kind: "struct<NameTable>[]",
+          kind: "struct[]",
+          struct: "NameTable",
           default: '["{\\"variableId\\":\\"0\\",\\"names\\":\\"[]\\"}"]',
         },
       },
