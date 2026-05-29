@@ -7,3 +7,9 @@ export const structName = (value: string): string => {
 export const typeIsStruct = (value: string): value is `struct<${string}>` => {
   return value.endsWith(">") && value.startsWith("struct<");
 };
+
+export const typeIsStructArray = (
+  value: string,
+): value is `struct<${string}>[]` => {
+  return value.endsWith(">[]") && value.startsWith("struct<");
+};
