@@ -56,6 +56,33 @@ describe("parsePlugin", () => {
       ];
       expect(result.params).toEqual(expected);
     });
+
+    test("struct array type in params", () => {
+      const srcArray = [
+        "/*:",
+        "@param people",
+        "@type struct<Person>[]",
+        "@desc people list",
+        "*/",
+        "/*~struct~Person",
+        "@param name",
+        "@type string",
+        "@default bob",
+        "*/",
+      ].join("\n");
+
+      const expectedParam: PluginParamTokens = {
+        name: "people",
+        attr: {
+          kind: "struct[]",
+          struct: "Person",
+          desc: "people list",
+        },
+      };
+
+      const result: ParsedPlugin = parsePluginByLocale(srcArray);
+      expect(result.params).toEqual([expectedParam]);
+    });
     test("structs is defined", () => {
       const result: ParsedPlugin = parsePluginByLocale(src);
       const struct: PluginStructTokens = {
