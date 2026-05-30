@@ -5,4 +5,5 @@ export type * from './parse/types/token';
 export type * from './pluginJSON2type';
 export type * from './pluginJSONTypes';
 export * from './rmmzJSON';
+export { createDeepJSONParserHandlers } from './deepJSONHandler';
 export { structDependencies } from './params/structDependencies';
