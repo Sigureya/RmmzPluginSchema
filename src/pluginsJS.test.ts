@@ -1,29 +1,60 @@
 import { readFile } from "fs/promises";
 import { resolve } from "path";
-import { describe, expect, test } from "vitest";
+import type { MockedObject } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { READ_PLUGIN_MESSAGES } from "./fileio";
-import type { ParsedPlugin, PluginStructEx } from "./rmmz";
+import type {
+  DeepJSONParserHandlers,
+  ParsedPlugin,
+  PluginParam,
+  PluginParamTokens,
+} from "./rmmz";
 import {
   compilePluginAsArraySchema,
+  parseDeepJSON,
   parsePluginByLocale,
   parsePluginParamRecord2,
 } from "./rmmz";
-import { createDeepJSONParserHandlers } from "./rmmz/plugin/core/deepJSONHandler";
 
-interface NameTable {
-  variableId: number;
-  names: string[];
-}
-
-const structNameTable: PluginStructEx<NameTable> = {
-  struct: "NameTable",
-  params: {
-    variableId: { kind: "number", default: 0 },
-    names: { kind: "string[]", default: [] },
-  },
-};
+const createDeepJSONParserHandlersX =
+  (): MockedObject<DeepJSONParserHandlers> => {
+    return {
+      parseObject: vi.fn(),
+      parseObjectArray: vi.fn<DeepJSONParserHandlers["parseObjectArray"]>(
+        (json) => {
+          const obj = parseDeepJSON(json);
+          if (Array.isArray(obj)) {
+            return {
+              errors: [],
+              value: obj as object[],
+            };
+          }
+          return {
+            errors: [],
+            value: [],
+          };
+        },
+      ),
+      parseStringArray: vi.fn<DeepJSONParserHandlers["parseStringArray"]>(
+        (json: string) => {
+          return {
+            errors: [],
+            value: JSON.parse(json),
+          };
+        },
+      ),
+    };
+  };
 
 describe("PluginExtractionPipeline", () => {
+  const nameTableTokens: PluginParamTokens = {
+    name: "nameTable",
+    attr: {
+      kind: "struct[]",
+      struct: "NameTable",
+      default: '["{\\"variableId\\":\\"0\\",\\"names\\":\\"[]\\"}"]',
+    },
+  };
   const expecetdParsedPlugin: ParsedPlugin = {
     locale: "ja",
     meta: {},
@@ -36,14 +67,7 @@ describe("PluginExtractionPipeline", () => {
     },
     params: [
       { name: "value", attr: { kind: "number", default: "0" } },
-      {
-        name: "nameTable",
-        attr: {
-          kind: "struct[]",
-          struct: "NameTable",
-          default: '["{\\"variableId\\":\\"0\\",\\"names\\":\\"[]\\"}"]',
-        },
-      },
+      nameTableTokens,
     ],
     structs: [
       {
@@ -78,41 +102,45 @@ describe("PluginExtractionPipeline", () => {
     const parsed = parsePluginByLocale(pluginBody);
     expect(parsed.params).toMatchObject(expecetdParsedPlugin.params);
     expect(parsed.structs).toMatchObject(expecetdParsedPlugin.structs);
-    // expect(parsed.structs).toMatchObject([
-    //   {
-    //     name: "nameTable",
-    //     params: [
-    //       {
-    //         name: "variableId",
-    //         attr: { kind: "number", default: 0 },
-    //       },
-    //       {
-    //         name: "names",
-    //         attr: { kind: "string[]", default: [] },
-    //       },
-    //     ],
-    //   },
-    // ]);
   });
-  test.skip("compile", () => {
-    const schema = compilePluginAsArraySchema(
-      expecetdParsedPlugin,
-      createDeepJSONParserHandlers(),
-    );
+  test("compile", () => {
+    const handlers = createDeepJSONParserHandlersX();
+    const schema = compilePluginAsArraySchema(expecetdParsedPlugin, handlers);
 
-    const paramNameTable = {
-      name: "nameTable",
-      attr: {
-        kind: "struct[]",
-        struct: "NameTable",
-        default: `[\"{\\\"variableId\\\":\\\"0\\\",\\\"names\\\":\\\"[]\\\"}\"]`,
+    const expectedParams: PluginParam[] = [
+      {
+        attr: {
+          default: 0,
+          kind: "number",
+        },
+        name: "value",
       },
+      {
+        name: "nameTable",
+        attr: {
+          kind: "struct[]",
+          struct: "NameTable",
+          default: [{ names: [], variableId: 0 }],
+        },
+      },
+    ];
+    const names: PluginParamTokens = {
+      attr: {
+        default: `[]`,
+        kind: "string[]",
+      },
+      name: "names",
     };
 
-    expect(schema.params).toMatchObject([
-      { name: "value", attr: { kind: "number", default: 0 } },
-      paramNameTable,
-    ]);
-    expect(schema.structs).toMatchObject([structNameTable]);
+    expect(handlers.parseObject).not.toHaveBeenCalled();
+    expect(handlers.parseObjectArray).toHaveBeenCalledWith(
+      nameTableTokens.attr.default,
+      nameTableTokens,
+    );
+    expect(handlers.parseStringArray).toHaveBeenCalledWith(
+      names.attr.default,
+      names,
+    );
+    expect(schema.params).toEqual(expectedParams);
   });
 });
