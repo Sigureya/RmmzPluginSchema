@@ -8,7 +8,9 @@ export const replaceParamV4 = (
   paths: readonly (readonly string[])[],
   replace: ReplaceFn,
 ): PluginParamsObject => ({
-  ...plugin,
+  description: plugin.description,
+  name: plugin.name,
+  status: plugin.status,
   parameters: paths.reduce<Record<string, JSONValue>>((parameters, path) => {
     const replaced = replacePath(parameters, path, replace);
     if (
@@ -24,7 +26,7 @@ export const replaceParamV4 = (
 
 const replacePath = (
   value: JSONValue,
-  path: readonly string[],
+  path: ReadonlyArray<string>,
   replace: ReplaceFn,
 ): JSONValue => {
   if (path.length === 0) {
@@ -60,5 +62,6 @@ const replacePath = (
   };
 };
 
-const replaceLeaf = (value: JSONValue, replace: ReplaceFn): JSONValue =>
-  typeof value === "string" ? (replace(value) ?? value) : value;
+const replaceLeaf = (value: JSONValue, replace: ReplaceFn): JSONValue => {
+  return typeof value === "string" ? (replace(value) ?? value) : value;
+};
