@@ -1,168 +1,138 @@
-import type { MockedObject } from "vitest";
 import { describe, expect, test, vi } from "vitest";
-import type { PluginParamsObject } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ReplaceHandler } from "./handlers";
-import { replaceXXX } from "./replace";
+import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
+import { ppxx } from "./replace";
 
-interface TestCase {
-  input: PluginParamsObject;
-  expected: PluginParamsObject;
-}
-
-const map = new Map<string, string>([
-  ["pluginD:enemy.name", "red dragon"],
-  ["pluginB:text", "xyz"],
-  ["pluginA:param1", "valueX"],
-  ["pluginA:param2", "valueY"],
-  ["pluginE:names[0]", "alice"],
-  ["pluginE:names[2]", "charlie"],
-  ["pluginF:nameTables[0].listName", "list-red"],
-  ["pluginF:nameTables[0].names[1]", "ruby"],
-  ["pluginF:nameTables[1].names[0]", "sapphire"],
+const dic = new Map<string, string>([
+  ["abc", "ABC"],
+  ["value1", "valueX"],
+  ["value2", "valueY"],
+  ["dragon", "red dragon"],
+  ["listName", "list-red"],
+  ["list-a", "list-x"],
+  ["garnet", "ruby"],
+  ["amethyst", "sapphire"],
+  ["emerald", "emerald"],
+  ["gamma", "charlie"],
+  ["alpha", "alice"],
 ]);
 
-const createMockReplaceHandler = (): MockedObject<ReplaceHandler> => {
-  return {
-    findNewText: vi.fn((path: string, oldValue) => {
-      return map.get(path);
-    }),
-    tansaStop: vi.fn((path: string) => {
-      return false;
-    }),
-  };
-};
+interface TestCase {
+  name: string;
+  input: Record<string, JSONValue>;
+  expected: Record<string, JSONValue>;
+  paths: string[][];
+  oldValues: string[];
+}
 
 const runTestCase = (testCase: TestCase) => {
-  describe(testCase.input.name, () => {
-    test("replaceXXX", () => {
-      const mockHandler = createMockReplaceHandler();
-      const result = replaceXXX(testCase.input, mockHandler);
+  describe(testCase.name, () => {
+    test("replaceParamV4", () => {
+      const result = ppxx(testCase.input, testCase.paths, (value) => {
+        return dic.get(value);
+      });
       expect(result).toEqual(testCase.expected);
+    });
+    test("replaceParamV4", () => {
+      const fn = vi.fn((value: string) => {
+        return dic.get(value);
+      });
+      ppxx(testCase.input, testCase.paths, fn);
+      testCase.oldValues.forEach((oldValue) => {
+        expect(fn).toHaveBeenCalledWith(oldValue);
+      });
     });
   });
 };
 
 const testCases: TestCase[] = [
   {
+    name: "Test case 1",
     input: {
-      description: "Test case 1",
-      name: "PluginA",
-      status: true,
-      parameters: {
-        param1: "value1",
-        param2: "value2",
+      param1: "value1",
+      param2: "value2",
+    },
+    expected: {
+      param1: "valueX",
+      param2: "valueY",
+    },
+    oldValues: ["value1", "value2"],
+    paths: [["param1"], ["param2"]],
+  },
+  {
+    name: "Test case 2",
+    input: {
+      image: "abc",
+      text: "abc",
+    },
+    expected: {
+      image: "abc",
+      text: "ABC",
+    },
+    oldValues: ["abc"],
+    paths: [["text"]],
+  },
+  {
+    name: "Test case 3",
+    oldValues: ["dragon"],
+    paths: [["enemy", "name"]],
+    input: {
+      enemy: {
+        name: "dragon",
+        image: "dragon",
       },
     },
     expected: {
-      description: "Test case 1",
-      name: "PluginA",
-      status: true,
-      parameters: {
-        param1: "valueX",
-        param2: "valueY",
+      enemy: {
+        name: "red dragon",
+        image: "dragon",
       },
     },
   },
   {
+    name: "Test case 4",
+    oldValues: ["alpha", "beta", "gamma"],
+    paths: [["names", "[]"]],
     input: {
-      description: "Test case 2",
-      name: "PluginB",
-      status: false,
-      parameters: {
-        image: "abc",
-        text: "abc",
-      },
+      names: ["alpha", "beta", "gamma"],
     },
     expected: {
-      description: "Test case 2",
-      name: "PluginB",
-      status: false,
-      parameters: {
-        image: "abc",
-        text: "xyz",
-      },
+      names: ["alice", "beta", "charlie"],
     },
   },
   {
+    name: "Test case 5",
+    oldValues: ["list-a", "list-b", "emerald", "garnet", "amethyst"],
+    paths: [
+      ["nameTables", "[]", "names", "[]"],
+      ["nameTables", "[]", "listName"],
+    ],
     input: {
-      description: "Test case 2",
-      name: "PluginD",
-      status: false,
-      parameters: {
-        enemy: {
-          name: "dragon",
-          image: "dragon",
+      nameTables: [
+        {
+          listName: "list-a",
+          variableId: 1,
+          names: ["emerald", "garnet"],
         },
-      },
-    },
-    expected: {
-      description: "Test case 2",
-      name: "PluginD",
-      status: false,
-      parameters: {
-        enemy: {
-          name: "red dragon",
-          image: "dragon",
+        {
+          listName: "list-b",
+          variableId: 2,
+          names: ["amethyst"],
         },
-      },
-    },
-  },
-  {
-    input: {
-      description: "Test case 3",
-      name: "PluginE",
-      status: true,
-      parameters: {
-        names: ["alpha", "beta", "gamma"],
-      },
+      ],
     },
     expected: {
-      description: "Test case 3",
-      name: "PluginE",
-      status: true,
-      parameters: {
-        names: ["alice", "beta", "charlie"],
-      },
-    },
-  },
-  {
-    input: {
-      description: "Test case 4",
-      name: "PluginF",
-      status: true,
-      parameters: {
-        nameTables: [
-          {
-            listName: "list-a",
-            variableId: 1,
-            names: ["emerald", "garnet"],
-          },
-          {
-            listName: "list-b",
-            variableId: 2,
-            names: ["amethyst"],
-          },
-        ],
-      },
-    },
-    expected: {
-      description: "Test case 4",
-      name: "PluginF",
-      status: true,
-      parameters: {
-        nameTables: [
-          {
-            listName: "list-red",
-            variableId: 1,
-            names: ["emerald", "ruby"],
-          },
-          {
-            listName: "list-b",
-            variableId: 2,
-            names: ["sapphire"],
-          },
-        ],
-      },
+      nameTables: [
+        {
+          listName: "list-x",
+          variableId: 1,
+          names: ["emerald", "ruby"],
+        },
+        {
+          listName: "list-b",
+          variableId: 2,
+          names: ["sapphire"],
+        },
+      ],
     },
   },
 ];

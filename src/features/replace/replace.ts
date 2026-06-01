@@ -1,60 +1,77 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import type { PluginParamsObject } from "@RmmzPluginSchema/rmmz/plugin";
-import type { ReplaceHandler } from "./handlers";
 
-const normalizePluginName = (name: string): string => {
-  if (name.length === 0) {
-    return name;
-  }
-  return `${name[0]?.toLowerCase() ?? ""}${name.slice(1)}`;
+type ReplaceFn = (value: string) => string | undefined;
+
+export const ppxx = (
+  params: Record<string, JSONValue>,
+  paths: readonly (readonly string[])[],
+  replace: ReplaceFn,
+): Record<string, JSONValue> => {
+  return paths.reduce<Record<string, JSONValue>>((parameters, path) => {
+    const replaced = replacePath(parameters, path, replace);
+    if (
+      replaced !== null &&
+      typeof replaced === "object" &&
+      !Array.isArray(replaced)
+    ) {
+      return replaced;
+    }
+    return parameters;
+  }, params);
 };
 
-const replaceStringValue = (
-  value: string,
-  path: string,
-  handlers: ReplaceHandler,
-): string => {
-  const nextValue = handlers.findNewText(path, value);
-  return nextValue ?? value;
+const replaceLeaf = (value: JSONValue, replace: ReplaceFn): JSONValue => {
+  return typeof value === "string" ? (replace(value) ?? value) : value;
 };
 
-const replaceJSONValue = (
+const replacePath = (
   value: JSONValue,
-  path: string,
-  handlers: ReplaceHandler,
+  path: ReadonlyArray<string>,
+  replace: ReplaceFn,
 ): JSONValue => {
-  if (handlers.tansaStop(path)) {
+  if (path.length === 0) {
     return value;
   }
-  if (typeof value === "string") {
-    return replaceStringValue(value, path, handlers);
-  }
-  if (Array.isArray(value)) {
-    return value.map((item, index) =>
-      replaceJSONValue(item, `${path}[${index}]`, handlers),
-    );
-  }
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value).map(([key, child]) => {
-        return [key, replaceJSONValue(child, `${path}.${key}`, handlers)];
-      }),
-    );
-  }
-  return value;
-};
 
-export const replaceXXX = (
-  plugin: PluginParamsObject,
-  handlers: ReplaceHandler,
-): PluginParamsObject => {
-  const pluginName = normalizePluginName(plugin.name);
-  return {
-    ...plugin,
-    parameters: Object.fromEntries(
-      Object.entries(plugin.parameters).map(([key, value]) => {
-        return [key, replaceJSONValue(value, `${pluginName}:${key}`, handlers)];
-      }),
-    ),
-  };
+  const [head, ...tail] = path;
+
+  if (head === "[]") {
+    if (!Array.isArray(value)) {
+      return value;
+    }
+
+    const next = value.map((item) =>
+      tail.length === 0
+        ? replaceLeaf(item, replace)
+        : replacePath(item, tail, replace),
+    );
+
+    return next.every((item, index) => item === value[index]) ? value : next;
+  }
+
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    return value;
+  }
+
+  if (!(head in value)) {
+    return value;
+  }
+
+  const current = value[head];
+
+  const next =
+    tail.length === 0
+      ? replaceLeaf(current, replace)
+      : replacePath(current, tail, replace);
+
+  if (next === current) {
+    return value;
+  }
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      key,
+      key === head ? next : item,
+    ]),
+  );
 };
