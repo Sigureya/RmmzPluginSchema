@@ -4,7 +4,7 @@ import type {
   PluginCommandSchemaArray,
   ParamKinds,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { collectStructsByKinds } from "./collectStructs/collectStructs";
+import { collectStructsByKinds } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginParamGroups } from "./filter/types";
 import { filterPluginCommand } from "./xxx";
 
