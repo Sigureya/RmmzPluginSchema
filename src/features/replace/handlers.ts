@@ -3,10 +3,15 @@ export interface ReplaceHandler2 {
   findNewText(oldValue: string): string | undefined;
 }
 
-export interface TargetPath {
+export interface TargetPath extends PluginParamPath {
   pluginName: string;
   paramsPath: string[][];
   commands: CommandXX[];
+}
+
+export interface PluginParamPath {
+  pluginName: string;
+  paramsPath: string[][];
 }
 
 export interface CommandXX {
