@@ -7,7 +7,7 @@ import type {
   PluginSchemaArray,
   PluginSchemaArrayFiltered,
   PluginScalarParam,
-  PluginMinimumSchema,
+  PluginCommandMinimumSchema,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { createClassifiedStructMap } from "@RmmzPluginSchema/rmmz/plugin";
 import { compilePluginCommandExtractor } from "./command";
@@ -25,7 +25,7 @@ import type { PluginExtractorBundle } from "./types";
  * @deprecated pipelines 起点の現行フローでは未使用です。`buildPluginValueExtractor` を利用してください。
  */
 export const createPluginCommandExtractorMap = (
-  schema: ReadonlyArray<PluginMinimumSchema>,
+  schema: ReadonlyArray<PluginCommandMinimumSchema>,
   factoryFn: (path: string) => JSONPathReader,
 ): Map<CommandMapKey, CommandArgExtractors> => {
   const entries: CommandExtractorEntry[] = schema.flatMap((item) =>
@@ -38,7 +38,7 @@ export const createPluginCommandExtractorMap = (
  * @deprecated pipelines 起点の現行フローでは未使用です。`buildPluginValueExtractor` を利用してください。
  */
 export const createPluginCommandExtractor = (
-  schema: PluginMinimumSchema,
+  schema: PluginCommandMinimumSchema,
   factoryFn: (path: string) => JSONPathReader,
 ): CommandExtractorEntry[] => {
   const structMap = createClassifiedStructMap(schema.schema.structs);
