@@ -9,6 +9,8 @@ import type {
   PrimitiveParam,
   PluginScalarParam,
   ParamKinds,
+  PluginParam,
+  PluginParamEx,
 } from "./types";
 import type { StructCollection } from "./types/structCollection";
 
@@ -35,6 +37,40 @@ export const createStructMap = (
       s.params.map((p) => p.attr),
     ]),
   );
+};
+
+export function filterStructParamsByFn(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PrimitiveParam, name: string) => boolean,
+) {
+  return collectStructsByFnCore(
+    schema,
+    (param): param is PluginParamEx<PrimitiveParam> => {
+      return fn(param.attr, param.name);
+    },
+  );
+}
+
+const collectStructsByFnCore = <T extends PrimitiveParam>(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PluginParam) => param is PluginParamEx<T, string>,
+) => {
+  const matchedStructs = schema
+    .map((s) => {
+      return {
+        struct: s.struct,
+        params: s.params.filter((p) => fn(p)),
+      };
+    })
+    .filter((s) => s.params.length > 0);
+  const structMap = createStructMap(matchedStructs);
+  const set = new Set(
+    matchedStructs.flatMap((s) => structDependencies(s.struct, structMap)),
+  );
+  return {
+    sttuctName: set,
+    structs: matchedStructs.filter((s) => set.has(s.struct)),
+  };
 };
 
 export const collectStructsByKinds = (
