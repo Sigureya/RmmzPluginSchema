@@ -55,22 +55,35 @@ const collectStructsByFnCore = <T extends PrimitiveParam>(
   schema: ReadonlyArray<PluginStructSchemaArray>,
   fn: (param: PluginParam) => param is PluginParamEx<T, string>,
 ) => {
-  const matchedStructs = schema
-    .map((s) => {
+  const matchedStructs = ppff(schema, fn);
+  const structMap = createStructMap(matchedStructs);
+  const set = new Set(
+    matchedStructs.flatMap((s) => structDependencies(s.struct, structMap)),
+  );
+  const ss2 = ppff(matchedStructs, (param) => {
+    if (param.attr.kind === "struct" || param.attr.kind === "struct[]") {
+      return set.has(param.attr.struct);
+    }
+    return true;
+  });
+  return {
+    sttuctName: new Set(ss2.map((s) => s.struct)),
+    structs: ss2,
+  };
+};
+
+const ppff = (
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PluginParam) => boolean,
+): PluginStructSchemaArray[] => {
+  return schema
+    .map((s): PluginStructSchemaArray => {
       return {
         struct: s.struct,
         params: s.params.filter((p) => fn(p)),
       };
     })
     .filter((s) => s.params.length > 0);
-  const structMap = createStructMap(matchedStructs);
-  const set = new Set(
-    matchedStructs.flatMap((s) => structDependencies(s.struct, structMap)),
-  );
-  return {
-    sttuctName: set,
-    structs: matchedStructs.filter((s) => set.has(s.struct)),
-  };
 };
 
 export const collectStructsByKinds = (
