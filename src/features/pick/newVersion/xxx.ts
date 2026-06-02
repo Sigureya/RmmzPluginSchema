@@ -2,9 +2,9 @@ import type {
   ParamKinds,
   PluginSchemaArray,
   PluginCommandSchemaArray,
+  ReadonlyStructCollection,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { collectStructsByKinds } from "./collectStructs/collectStructs";
-import type { ReadonlyStructCollection } from "./collectStructs/types";
+import { collectStructsByKinds } from "@RmmzPluginSchema/rmmz/plugin";
 import type { ParamFilterCriteria } from "./filter/filterParamArray2";
 import { filterParams2 } from "./filter/filterParamArray2";
 import type { PluginParamGroups } from "./filter/types";
