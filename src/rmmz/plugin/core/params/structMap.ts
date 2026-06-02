@@ -12,6 +12,8 @@ import type {
   ParamKinds,
   PluginParam,
   PluginParamEx,
+  PluginSchemaArray,
+  PluginCommandSchemaArray,
 } from "./types";
 import type { StructCollection } from "./types/structCollection";
 import { hasStructAttr } from "./typeTest";
@@ -68,6 +70,42 @@ const isAnyAttributeKindMatched = (
   return struct.params.some((p) => {
     return single.has(p.attr.kind) || array.has(p.attr.kind);
   });
+};
+
+export const filterPluginSchemaByFn = (
+  schema: PluginSchemaArray,
+  fn: (param: PrimitiveParam, name: string) => boolean,
+): PluginSchemaArray => {
+  const structCollection = filterStructParamsByFn(schema.structs, fn);
+  const params = schema.params.filter((param) => {
+    return hasStructAttr(param)
+      ? structCollection.structName.has(param.attr.struct)
+      : fn(param.attr, param.name);
+  });
+  return {
+    params,
+    structs: structCollection.structs,
+    commands: filterCmd(structCollection.structName, schema.commands, fn),
+  };
+};
+
+const filterCmd = (
+  structNames: ReadonlySet<string>,
+  command: readonly PluginCommandSchemaArray[],
+  fn: (param: PrimitiveParam, name: string) => boolean,
+): PluginCommandSchemaArray[] => {
+  return command.map(
+    (cmd): PluginCommandSchemaArray => ({
+      command: cmd.command,
+      ...(cmd.desc ? { desc: cmd.desc } : {}),
+      ...(cmd.text ? { text: cmd.text } : {}),
+      args: cmd.args.filter((arg) => {
+        return hasStructAttr(arg)
+          ? structNames.has(arg.attr.struct)
+          : fn(arg.attr, arg.name);
+      }),
+    }),
+  );
 };
 
 export function filterStructParamsByFn(
