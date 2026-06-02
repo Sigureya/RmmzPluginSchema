@@ -1,3 +1,4 @@
+import { collectDependentStructNames } from "./arraySchemaDependent";
 import { classifyPluginParams } from "./classify";
 import { structDependencies } from "./structDependencies";
 import type {
@@ -13,6 +14,7 @@ import type {
   PluginParamEx,
 } from "./types";
 import type { StructCollection } from "./types/structCollection";
+import { hasStructAttr } from "./typeTest";
 
 export const createClassifiedStructMap = <
   S extends PluginScalarParam,
@@ -38,54 +40,6 @@ export const createStructMap = (
     ]),
   );
 };
-
-export function filterStructParamsByFn(
-  schema: ReadonlyArray<PluginStructSchemaArray>,
-  fn: (param: PrimitiveParam, name: string) => boolean,
-) {
-  return collectStructsByFnCore(
-    schema,
-    (param): param is PluginParamEx<PrimitiveParam> => {
-      return fn(param.attr, param.name);
-    },
-  );
-}
-
-const collectStructsByFnCore = <T extends PrimitiveParam>(
-  schema: ReadonlyArray<PluginStructSchemaArray>,
-  fn: (param: PluginParam) => param is PluginParamEx<T, string>,
-) => {
-  const matchedStructs = ppff(schema, fn);
-  const structMap = createStructMap(matchedStructs);
-  const set = new Set(
-    matchedStructs.flatMap((s) => structDependencies(s.struct, structMap)),
-  );
-  const ss2 = ppff(matchedStructs, (param) => {
-    if (param.attr.kind === "struct" || param.attr.kind === "struct[]") {
-      return set.has(param.attr.struct);
-    }
-    return true;
-  });
-  return {
-    sttuctName: new Set(ss2.map((s) => s.struct)),
-    structs: ss2,
-  };
-};
-
-const ppff = (
-  schema: ReadonlyArray<PluginStructSchemaArray>,
-  fn: (param: PluginParam) => boolean,
-): PluginStructSchemaArray[] => {
-  return schema
-    .map((s): PluginStructSchemaArray => {
-      return {
-        struct: s.struct,
-        params: s.params.filter((p) => fn(p)),
-      };
-    })
-    .filter((s) => s.params.length > 0);
-};
-
 export const collectStructsByKinds = (
   structs: ReadonlyArray<PluginStructSchemaArray>,
   kinds: ReadonlyArray<ParamKinds>,
@@ -115,3 +69,75 @@ const isAnyAttributeKindMatched = (
     return single.has(p.attr.kind) || array.has(p.attr.kind);
   });
 };
+
+export function filterStructParamsByFn(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PrimitiveParam, name: string) => boolean,
+) {
+  return collectStructsByFnCore(
+    schema,
+    (param): param is PluginParamEx<PrimitiveParam> => {
+      return fn(param.attr, param.name);
+    },
+  );
+}
+
+const collectStructsByFnCore = <T extends PrimitiveParam>(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PluginParam) => param is PluginParamEx<T, string>,
+) => {
+  const matchedParams = collectMatchedParams(schema, fn);
+
+  const matchedStructNames = collectMatchedStructNames(schema, matchedParams);
+
+  const retainedStructNames = collectDependentStructNames(
+    schema,
+    matchedStructNames,
+  );
+
+  const structs = filterStructs(schema, matchedParams, retainedStructNames);
+
+  return {
+    structName: new Set(structs.map((s) => s.struct)),
+    structs,
+  };
+};
+const collectMatchedParams = <T extends PrimitiveParam>(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PluginParam) => param is PluginParamEx<T, string>,
+): Set<PluginParam> =>
+  new Set(
+    schema.flatMap((struct) =>
+      struct.params.filter((param) => fn(param) && !hasStructAttr(param)),
+    ),
+  );
+
+const collectMatchedStructNames = (
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  matchedParams: ReadonlySet<PluginParam>,
+): Set<string> =>
+  new Set(
+    schema
+      .filter((struct) =>
+        struct.params.some((param) => matchedParams.has(param)),
+      )
+      .map((struct) => struct.struct),
+  );
+
+const filterStructs = (
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  matchedParams: ReadonlySet<PluginParam>,
+  retainedStructNames: ReadonlySet<string>,
+): PluginStructSchemaArray[] =>
+  schema
+    .map(
+      (struct): PluginStructSchemaArray => ({
+        struct: struct.struct,
+        params: struct.params.filter((param) =>
+          hasStructAttr(param)
+            ? retainedStructNames.has(param.attr.struct)
+            : matchedParams.has(param),
+        ),
+      }),
+    )
+    .filter((struct) => struct.params.length > 0);
