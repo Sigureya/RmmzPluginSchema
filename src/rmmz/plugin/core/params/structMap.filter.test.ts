@@ -136,8 +136,22 @@ const testCases: TestCase[] = [
   {
     caseName: "all string",
     schema: {
-      commands: [],
-      params: [],
+      commands: [
+        {
+          command: "ShowText",
+          args: [{ name: "text", attr: { kind: "string", default: "" } }],
+        },
+        {
+          command: "s1call",
+          args: [{ name: "s1", attr: { kind: "struct", struct: "s1" } }],
+        },
+      ],
+      params: [
+        {
+          name: "gameTitle",
+          attr: { kind: "string", default: "My Game" },
+        },
+      ],
       structs: [
         {
           struct: "s1",
