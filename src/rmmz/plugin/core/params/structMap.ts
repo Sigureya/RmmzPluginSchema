@@ -94,18 +94,20 @@ const filterCmd = (
   command: readonly PluginCommandSchemaArray[],
   fn: (param: PrimitiveParam, name: string) => boolean,
 ): PluginCommandSchemaArray[] => {
-  return command.map(
-    (cmd): PluginCommandSchemaArray => ({
-      command: cmd.command,
-      ...(cmd.desc ? { desc: cmd.desc } : {}),
-      ...(cmd.text ? { text: cmd.text } : {}),
-      args: cmd.args.filter((arg) => {
-        return hasStructAttr(arg)
-          ? structNames.has(arg.attr.struct)
-          : fn(arg.attr, arg.name);
+  return command
+    .map(
+      (cmd): PluginCommandSchemaArray => ({
+        command: cmd.command,
+        ...(cmd.desc ? { desc: cmd.desc } : {}),
+        ...(cmd.text ? { text: cmd.text } : {}),
+        args: cmd.args.filter((arg) => {
+          return hasStructAttr(arg)
+            ? structNames.has(arg.attr.struct)
+            : fn(arg.attr, arg.name);
+        }),
       }),
-    }),
-  );
+    )
+    .filter((cmd) => cmd.args.length > 0);
 };
 
 export function filterStructParamsByFn(
