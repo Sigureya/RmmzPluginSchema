@@ -1,11 +1,11 @@
 import { describe, test, expect } from "vitest";
-import type {
-  PrimitiveParam,
-  PluginStructSchemaArray,
-  PluginScalarParam,
+import {
+  type PrimitiveParam,
+  type PluginStructSchemaArray,
+  type PluginScalarParam,
+  collectStructsByKinds,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { collectStructsByKinds } from "./collectStructs";
-import type { StructCollection } from "./types";
+import type { StructCollection } from "./types/structCollection";
 
 const createMockStructsABCD = (
   param: PrimitiveParam,

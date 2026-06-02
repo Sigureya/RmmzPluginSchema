@@ -1,10 +1,7 @@
 import { describe, test, expect } from "vitest";
-import type {
-  PluginStructSchemaArray,
-  ParamKinds,
-} from "@RmmzPluginSchema/rmmz/plugin";
-import { collectStructsByKinds } from "./collectStructs";
-import type { StructCollection } from "./types";
+import { collectStructsByKinds } from "./structMap";
+import type { ParamKinds, PluginStructSchemaArray } from "./types";
+import type { StructCollection } from "./types/structCollection";
 
 const mockStructs: PluginStructSchemaArray[] = [
   {
