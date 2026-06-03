@@ -187,7 +187,6 @@ describe("createTextParamDictionary", () => {
     const schema: Plugin = {
       pluginName: "PluginStruct",
       schema: {
-        commands: [],
         structs: [
           {
             struct: "AnyStruct",
@@ -207,6 +206,15 @@ describe("createTextParamDictionary", () => {
             attr: mockAnyParam,
           },
         ],
+        commands: [
+          {
+            command: "anyCommand",
+            args: [
+              { name: "arg1", attr: mockAnyParam },
+              { name: "arg2", attr: { kind: "any", default: "" } },
+            ],
+          },
+        ],
       },
     };
     test("does not apply anyFn to struct fields", () => {
@@ -218,7 +226,12 @@ describe("createTextParamDictionary", () => {
           ["structParam", "field2"],
           ["anyParam"],
         ],
-        commands: [],
+        commands: [
+          {
+            commandName: "anyCommand",
+            argsPath: [["arg1"], ["arg2"]],
+          },
+        ],
       };
       const result = createTextParamDictionary(schema, anyFn);
       expect(result).toEqual(expected);
@@ -242,17 +255,27 @@ describe("createTextParamDictionary", () => {
       const expected: TargetPath = {
         pluginName: "PluginStruct",
         paramsPath: [["structParam", "field1"]],
-        commands: [],
+        commands: [
+          {
+            commandName: "anyCommand",
+            argsPath: [["arg1"]],
+          },
+        ],
       };
       const result = createTextParamDictionary(schema, anyFn);
       expect(result).toEqual(expected);
     });
-    test("struct fields are included regardless of anyFn result", () => {
+    test("anyFn is applied only to top-level any params and command args, not struct fields", () => {
       const anyFn = (attr: PrimitiveParam, name: string) => name !== "field1";
       const expected: TargetPath = {
         pluginName: "PluginStruct",
         paramsPath: [["structParam", "field2"], ["anyParam"]],
-        commands: [],
+        commands: [
+          {
+            commandName: "anyCommand",
+            argsPath: [["arg2"]],
+          },
+        ],
       };
       const result = createTextParamDictionary(schema, anyFn);
       expect(result).toEqual(expected);
