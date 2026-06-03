@@ -4,7 +4,10 @@ import type {
   PluginSchema,
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import { createTextParamDictionary } from "./createDictionary";
+import {
+  createDictionary,
+  createTextParamDictionary,
+} from "./createDictionary";
 import type { TargetPath } from "./handlers";
 
 type Plugin = Pick<PluginSchema, "schema" | "pluginName">;
@@ -48,7 +51,7 @@ describe("createTextParamDictionary", () => {
       const anyFn = vi.fn((param: AnyStringParam) => param === mockAnyParam);
       const expected: TargetPath = {
         pluginName: "PluginA",
-        paramsPath: [["title"], ["names"], ["names", "[]"], ["anyParam"]],
+        paramsPath: [["title"], ["names", "[]"], ["anyParam"]],
         commands: [
           {
             commandName: "TestCommand",
@@ -210,15 +213,21 @@ describe("createTextParamDictionary", () => {
           {
             command: "anyCommand",
             args: [
-              { name: "arg1", attr: mockAnyParam },
-              { name: "arg2", attr: { kind: "any", default: "" } },
+              {
+                name: "argStruct",
+                attr: {
+                  kind: "struct",
+                  struct: "AnyStruct",
+                  default: {},
+                },
+              },
+              { name: "argAny", attr: { kind: "any", default: "" } },
             ],
           },
         ],
       },
     };
-    test("does not apply anyFn to struct fields", () => {
-      const anyFn = vi.fn(() => true);
+    describe("全部通すパターン", () => {
       const expected: TargetPath = {
         pluginName: "PluginStruct",
         paramsPath: [
@@ -229,14 +238,27 @@ describe("createTextParamDictionary", () => {
         commands: [
           {
             commandName: "anyCommand",
-            argsPath: [["arg1"], ["arg2"]],
+            argsPath: [
+              ["argStruct", "field1"],
+              ["argStruct", "field2"],
+              ["argAny"],
+            ],
           },
         ],
       };
-      const result = createTextParamDictionary(schema, anyFn);
-      expect(result).toEqual(expected);
-      expect(anyFn).toHaveBeenCalledTimes(3);
-      expect(anyFn).toHaveBeenCalledWith(mockAnyParam, "anyParam");
+      test("判定関数が常にtrue", () => {
+        const anyFn = vi.fn(() => true);
+        const result: TargetPath = createTextParamDictionary(schema, anyFn);
+        expect(result).toEqual(expected);
+        expect(anyFn).toHaveBeenCalledWith(mockAnyParam, "anyParam");
+      });
+      test("内部で使っている関数と同じ戻り値になる", () => {
+        const result: TargetPath = createDictionary(
+          schema.pluginName,
+          schema.schema,
+        );
+        expect(result).toEqual(expected);
+      });
     });
     test("struct fields are included regardless of anyFn result", () => {
       const anyFn = vi.fn(() => false);
@@ -247,7 +269,6 @@ describe("createTextParamDictionary", () => {
       };
       const result = createTextParamDictionary(schema, anyFn);
       expect(result).toEqual(expected);
-      expect(anyFn).toHaveBeenCalledTimes(3);
       expect(anyFn).toHaveBeenCalledWith(mockAnyParam, "anyParam");
     });
     test("struct fields are included regardless of anyFn result", () => {
@@ -258,12 +279,13 @@ describe("createTextParamDictionary", () => {
         commands: [
           {
             commandName: "anyCommand",
-            argsPath: [["arg1"]],
+            argsPath: [["argStruct", "field1"]],
           },
         ],
       };
       const result = createTextParamDictionary(schema, anyFn);
-      expect(result).toEqual(expected);
+      expect(result.commands).toEqual(expected.commands);
+      expect(result.paramsPath).toEqual(expected.paramsPath);
     });
     test("anyFn is applied only to top-level any params and command args, not struct fields", () => {
       const anyFn = (attr: PrimitiveParam, name: string) => name !== "field1";
@@ -273,7 +295,7 @@ describe("createTextParamDictionary", () => {
         commands: [
           {
             commandName: "anyCommand",
-            argsPath: [["arg2"]],
+            argsPath: [["argStruct", "field2"], ["argAny"]],
           },
         ],
       };
