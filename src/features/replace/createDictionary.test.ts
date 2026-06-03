@@ -191,4 +191,43 @@ describe("createDictionary", () => {
 
     expect(createDictionary("PluginA", schema)).toEqual(expected);
   });
+  test("command with struct", () => {
+    const schema: PluginSchemaArray = {
+      structs: [
+        {
+          struct: "Vector2",
+          params: [
+            { name: "x", attr: { kind: "number", default: 0 } },
+            { name: "y", attr: { kind: "number", default: 0 } },
+          ],
+        },
+      ],
+      params: [],
+      commands: [
+        {
+          command: "move",
+          args: [
+            {
+              name: "position",
+              attr: { kind: "struct", struct: "Vector2", default: {} },
+            },
+          ],
+        },
+      ],
+    };
+    const expected: TargetPath = {
+      pluginName: "PluginA",
+      paramsPath: [],
+      commands: [
+        {
+          commandName: "move",
+          argsPath: [
+            ["position", "x"],
+            ["position", "y"],
+          ],
+        },
+      ],
+    };
+    expect(createDictionary("PluginA", schema)).toEqual(expected);
+  });
 });
