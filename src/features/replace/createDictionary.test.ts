@@ -29,7 +29,7 @@ describe("createDictionary", () => {
     };
     const expected: TargetPath = {
       pluginName: "PluginA",
-      paramsPath: [["names"], ["names", "[]"]],
+      paramsPath: [["names", "[]"]],
       commands: [],
     };
 
@@ -58,7 +58,10 @@ describe("createDictionary", () => {
 
     const expected: TargetPath = {
       pluginName: "PluginA",
-      paramsPath: [["enemy"], ["enemy", "name"], ["enemy", "hp"]],
+      paramsPath: [
+        ["enemy", "name"],
+        ["enemy", "hp"],
+      ],
       commands: [],
     };
 
@@ -104,8 +107,6 @@ describe("createDictionary", () => {
     const expected: TargetPath = {
       pluginName: "PluginA",
       paramsPath: [
-        ["nameTables"],
-        ["nameTables", "[]"],
         ["nameTables", "[]", "variableId"],
         ["nameTables", "[]", "names"],
         ["nameTables", "[]", "names", "[]"],
@@ -150,7 +151,6 @@ describe("createDictionary", () => {
           commandName: "changeName",
           argsPath: [
             ["actorId"],
-            ["nameTable"],
             ["nameTable", "[]"],
             ["nameTable", "[]", "variableId"],
             ["nameTable", "[]", "names"],
@@ -185,7 +185,10 @@ describe("createDictionary", () => {
 
     const expected: TargetPath = {
       pluginName: "PluginA",
-      paramsPath: [["root"], ["root", "name"], ["root", "child"]],
+      paramsPath: [
+        ["root", "name"],
+        ["root", "child"],
+      ],
       commands: [],
     };
 
