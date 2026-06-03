@@ -1,11 +1,9 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 
-type ReplaceFn = (value: string) => string | undefined;
-
 export const ppxx = (
   params: Record<string, JSONValue>,
   paths: readonly (readonly string[])[],
-  replace: ReplaceFn,
+  replace: (value: string) => string | undefined,
 ): Record<string, JSONValue> => {
   return paths.reduce<Record<string, JSONValue>>((parameters, path) => {
     const replaced = replacePath(parameters, path, replace);
@@ -19,6 +17,8 @@ export const ppxx = (
     return parameters;
   }, params);
 };
+
+type ReplaceFn = (value: string) => string | undefined;
 
 const replaceLeaf = (value: JSONValue, replace: ReplaceFn): JSONValue => {
   return typeof value === "string" ? (replace(value) ?? value) : value;
