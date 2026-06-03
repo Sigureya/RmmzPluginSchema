@@ -2,24 +2,28 @@ import { describe, expect, test, vi } from "vitest";
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import { ppxx } from "./replace";
 
+const OLD_TEXT_A = "oldTextA";
+const NEW_TEXT_A = "newTextA";
+const OLD_TEXT_B = "oldTextB";
+const NEW_TEXT_B = "newTextB";
+const OLD_TEXT_C = "oldTextC";
+const NEW_TEXT_C = "newTextC";
+
+const IGNORE_TEXT = "ignoreText";
+
+const NON_REPLACE_TEXT = "nonReplaceText";
+
 const dic = new Map<string, string>([
-  ["abc", "ABC"],
-  ["value1", "valueX"],
-  ["value2", "valueY"],
-  ["dragon", "red dragon"],
-  ["listName", "list-red"],
-  ["list-a", "list-x"],
-  ["garnet", "ruby"],
-  ["amethyst", "sapphire"],
-  ["emerald", "emerald"],
-  ["gamma", "charlie"],
-  ["alpha", "alice"],
+  [OLD_TEXT_A, NEW_TEXT_A],
+  [OLD_TEXT_B, NEW_TEXT_B],
+  [OLD_TEXT_C, NEW_TEXT_C],
 ]);
 
 interface TestCase {
   name: string;
   input: Record<string, JSONValue>;
   expected: Record<string, JSONValue>;
+  numCalls?: number;
   paths: string[][];
   oldValues: string[];
 }
@@ -37,9 +41,13 @@ const runTestCase = (testCase: TestCase) => {
         return dic.get(value);
       });
       ppxx(testCase.input, testCase.paths, fn);
+      expect(fn).not.toHaveBeenCalledWith(IGNORE_TEXT);
       testCase.oldValues.forEach((oldValue) => {
         expect(fn).toHaveBeenCalledWith(oldValue);
       });
+      expect(fn).toHaveBeenCalledTimes(
+        testCase.numCalls ?? testCase.oldValues.length,
+      );
     });
   });
 };
@@ -48,60 +56,63 @@ const testCases: TestCase[] = [
   {
     name: "Test case 1",
     input: {
-      param1: "value1",
-      param2: "value2",
+      param1: OLD_TEXT_A,
+      param2: OLD_TEXT_B,
     },
     expected: {
-      param1: "valueX",
-      param2: "valueY",
+      param1: NEW_TEXT_A,
+      param2: NEW_TEXT_B,
     },
-    oldValues: ["value1", "value2"],
+    oldValues: [OLD_TEXT_A, OLD_TEXT_B],
+    numCalls: 2,
     paths: [["param1"], ["param2"]],
   },
   {
     name: "Test case 2",
     input: {
-      image: "abc",
-      text: "abc",
+      image: IGNORE_TEXT,
+      text: OLD_TEXT_B,
     },
     expected: {
-      image: "abc",
-      text: "ABC",
+      image: IGNORE_TEXT,
+      text: NEW_TEXT_B,
     },
-    oldValues: ["abc"],
+    oldValues: [OLD_TEXT_B],
     paths: [["text"]],
   },
   {
     name: "Test case 3",
-    oldValues: ["dragon"],
+    oldValues: [OLD_TEXT_A],
     paths: [["enemy", "name"]],
     input: {
       enemy: {
-        name: "dragon",
-        image: "dragon",
+        name: OLD_TEXT_A,
+        image: IGNORE_TEXT,
       },
     },
     expected: {
       enemy: {
-        name: "red dragon",
-        image: "dragon",
+        name: NEW_TEXT_A,
+        image: IGNORE_TEXT,
       },
     },
   },
   {
     name: "Test case 4",
-    oldValues: ["alpha", "beta", "gamma"],
+    oldValues: [NON_REPLACE_TEXT, NON_REPLACE_TEXT, OLD_TEXT_A],
     paths: [["names", "[]"]],
     input: {
-      names: ["alpha", "beta", "gamma"],
+      names: [NON_REPLACE_TEXT, NON_REPLACE_TEXT, OLD_TEXT_A],
     },
     expected: {
-      names: ["alice", "beta", "charlie"],
+      names: [NON_REPLACE_TEXT, NON_REPLACE_TEXT, NEW_TEXT_A],
     },
   },
   {
     name: "Test case 5",
-    oldValues: ["list-a", "list-b", "emerald", "garnet", "amethyst"],
+    numCalls: 5,
+    oldValues: [OLD_TEXT_A, OLD_TEXT_B, NON_REPLACE_TEXT, OLD_TEXT_C],
+
     paths: [
       ["nameTables", "[]", "names", "[]"],
       ["nameTables", "[]", "listName"],
@@ -109,28 +120,28 @@ const testCases: TestCase[] = [
     input: {
       nameTables: [
         {
-          listName: "list-a",
+          listName: OLD_TEXT_A,
           variableId: 1,
-          names: ["emerald", "garnet"],
+          names: [OLD_TEXT_A, OLD_TEXT_B],
         },
         {
-          listName: "list-b",
+          listName: NON_REPLACE_TEXT,
           variableId: 2,
-          names: ["amethyst"],
+          names: [OLD_TEXT_C],
         },
       ],
     },
     expected: {
       nameTables: [
         {
-          listName: "list-x",
+          listName: NEW_TEXT_A,
           variableId: 1,
-          names: ["emerald", "ruby"],
+          names: [NEW_TEXT_A, NEW_TEXT_B],
         },
         {
-          listName: "list-b",
+          listName: NON_REPLACE_TEXT,
           variableId: 2,
-          names: ["sapphire"],
+          names: [NEW_TEXT_C],
         },
       ],
     },
