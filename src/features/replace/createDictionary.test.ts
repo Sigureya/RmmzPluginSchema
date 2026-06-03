@@ -29,7 +29,7 @@ describe("createDictionary", () => {
     };
     const expected: TargetPath = {
       pluginName: "PluginA",
-      paramsPath: [["names"], ["names", "[]"]],
+      paramsPath: [["names", "[]"]],
       commands: [],
     };
 
@@ -58,7 +58,10 @@ describe("createDictionary", () => {
 
     const expected: TargetPath = {
       pluginName: "PluginA",
-      paramsPath: [["enemy"], ["enemy", "name"], ["enemy", "hp"]],
+      paramsPath: [
+        ["enemy", "name"],
+        ["enemy", "hp"],
+      ],
       commands: [],
     };
 
@@ -104,10 +107,7 @@ describe("createDictionary", () => {
     const expected: TargetPath = {
       pluginName: "PluginA",
       paramsPath: [
-        ["nameTables"],
-        ["nameTables", "[]"],
         ["nameTables", "[]", "variableId"],
-        ["nameTables", "[]", "names"],
         ["nameTables", "[]", "names", "[]"],
       ],
       commands: [],
@@ -150,10 +150,7 @@ describe("createDictionary", () => {
           commandName: "changeName",
           argsPath: [
             ["actorId"],
-            ["nameTable"],
-            ["nameTable", "[]"],
             ["nameTable", "[]", "variableId"],
-            ["nameTable", "[]", "names"],
             ["nameTable", "[]", "names", "[]"],
           ],
         },
@@ -185,10 +182,52 @@ describe("createDictionary", () => {
 
     const expected: TargetPath = {
       pluginName: "PluginA",
-      paramsPath: [["root"], ["root", "name"], ["root", "child"]],
+      paramsPath: [
+        ["root", "name"],
+        ["root", "child"],
+      ],
       commands: [],
     };
 
+    expect(createDictionary("PluginA", schema)).toEqual(expected);
+  });
+  test("command with struct", () => {
+    const schema: PluginSchemaArray = {
+      structs: [
+        {
+          struct: "Vector2",
+          params: [
+            { name: "x", attr: { kind: "number", default: 0 } },
+            { name: "y", attr: { kind: "number", default: 0 } },
+          ],
+        },
+      ],
+      params: [],
+      commands: [
+        {
+          command: "move",
+          args: [
+            {
+              name: "position",
+              attr: { kind: "struct", struct: "Vector2", default: {} },
+            },
+          ],
+        },
+      ],
+    };
+    const expected: TargetPath = {
+      pluginName: "PluginA",
+      paramsPath: [],
+      commands: [
+        {
+          commandName: "move",
+          argsPath: [
+            ["position", "x"],
+            ["position", "y"],
+          ],
+        },
+      ],
+    };
     expect(createDictionary("PluginA", schema)).toEqual(expected);
   });
 });
