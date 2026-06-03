@@ -108,7 +108,6 @@ describe("createDictionary", () => {
       pluginName: "PluginA",
       paramsPath: [
         ["nameTables", "[]", "variableId"],
-        ["nameTables", "[]", "names"],
         ["nameTables", "[]", "names", "[]"],
       ],
       commands: [],
@@ -151,9 +150,7 @@ describe("createDictionary", () => {
           commandName: "changeName",
           argsPath: [
             ["actorId"],
-            ["nameTable", "[]"],
             ["nameTable", "[]", "variableId"],
-            ["nameTable", "[]", "names"],
             ["nameTable", "[]", "names", "[]"],
           ],
         },
