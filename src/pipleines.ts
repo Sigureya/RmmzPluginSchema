@@ -137,6 +137,11 @@ const extractSinglePlugin = <E>(
       record: readResult.record,
       params: [],
       commandExtractors: [],
+      schema: {
+        structs: [],
+        params: [],
+        commands: [],
+      },
       errors: readResult.error
         ? [
             {
@@ -171,6 +176,7 @@ const extractSinglePlugin = <E>(
 
   return {
     pluginName,
+    schema,
     record: readResult.record,
     params: paramResult.params,
     commandExtractors: extractionBuildBundle.commands.extractors,

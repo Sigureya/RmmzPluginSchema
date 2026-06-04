@@ -6,12 +6,12 @@ import type {
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { filterPluginSchemaByFn } from "@RmmzPluginSchema/rmmz/plugin";
-import type { TargetPath } from "./handlers";
+import type { PluginReplacePath } from "./types";
 
 export const createTextParamDictionary = (
   { schema, pluginName }: Pick<PluginSchema, "schema" | "pluginName">,
   anyFn: (anyParam: AnyStringParam, name: string) => boolean,
-): TargetPath => {
+): PluginReplacePath => {
   const newSchema: PluginSchemaArray = filterPluginSchemaByFn(
     schema,
     (param, name) => {
@@ -27,7 +27,7 @@ export const createTextParamDictionary = (
 export const createDictionary = (
   pluginName: string,
   schema: PluginSchemaArray,
-): TargetPath => {
+): PluginReplacePath => {
   const structMap = new Map(schema.structs.map((s) => [s.struct, s]));
   return {
     pluginName,
