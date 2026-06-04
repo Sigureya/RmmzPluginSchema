@@ -15,6 +15,7 @@ import type {
   DeepJSONParserHandlers,
   PluginParamsRecord,
   PluginParamReadErrorHandlers,
+  PluginSchemaArray,
 } from "./rmmz";
 
 export interface PluginParseHandlers {
@@ -58,6 +59,7 @@ export interface PluginExtractionError<E> {
 
 export interface PluginExtractionItemResult<E> {
   pluginName: string;
+  schema: PluginSchemaArray;
   record: PluginParamsRecord;
   params: PluginExtractedValue[];
   commandExtractors: CommandArgExtractors[];
