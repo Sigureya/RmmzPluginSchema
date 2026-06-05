@@ -1,6 +1,6 @@
 import { PluginArrayParamType, PluginParamEx2, PluginSchemaArray, PluginSchemaArrayFiltered, PluginScalarParam, PluginCommandSchemaArray, PluginStructSchemaArray } from './params';
 import { PluginDependencies } from './parse';
-export interface PluginMinimumSchema {
+export interface PluginCommandMinimumSchema {
     pluginName: string;
     schema: {
         commands: PluginCommandSchemaArray[];
@@ -12,7 +12,7 @@ export interface PluginMetaKeywords {
     plugindesc?: string;
     url?: string;
 }
-export interface PluginSchema extends PluginMinimumSchema {
+export interface PluginSchema extends PluginCommandMinimumSchema {
     locale: string;
     pluginName: string;
     target: string;
@@ -20,6 +20,6 @@ export interface PluginSchema extends PluginMinimumSchema {
     dependencies: PluginDependencies;
     schema: PluginSchemaArray;
 }
-export interface PluginSchemaOf<S extends PluginScalarParam, A extends PluginArrayParamType> extends PluginMinimumSchema {
+export interface PluginSchemaOf<S extends PluginScalarParam, A extends PluginArrayParamType> extends PluginCommandMinimumSchema {
     schema: PluginSchemaArrayFiltered<PluginParamEx2<S, A>>;
 }
