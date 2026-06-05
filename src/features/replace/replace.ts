@@ -1,4 +1,18 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
+import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin";
+import type { PluginCommandPathData, PluginCommandPathMap } from "./types";
+
+const replaceRuntimePluginCommand = (
+  command: PluginCommandData & { indent: number },
+  map: PluginCommandPathMap,
+  handlers: {},
+) => {
+  const key = `${command.parameters[0]}:${command.parameters[1]}`;
+  const commandPathData = map.get(key);
+  if (!commandPathData) {
+    return command;
+  }
+};
 
 export const replacePluginValue = (
   params: Record<string, JSONValue>,
