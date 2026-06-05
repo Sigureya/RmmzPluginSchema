@@ -1,7 +1,7 @@
 import { PluginErrorStruct, CommandBuildErrorHandlers, ErrorStruct, PluginCommandExtractErrorHandlers, PluginExtractedValue, CommandArgExtractors, ParamBuildErrorHandlers } from './features';
 import { MessageOfparsePluginParamRecordEx } from './fileio';
 import { JSONValue, JSONPathReader } from './libs';
-import { ResultOfparsePluginParamRecord, ParsedPlugin, DeepJSONParserHandlers, PluginParamsRecord, PluginParamReadErrorHandlers } from './rmmz';
+import { ResultOfparsePluginParamRecord, ParsedPlugin, DeepJSONParserHandlers, PluginParamsRecord, PluginParamReadErrorHandlers, PluginSchemaArray } from './rmmz';
 export interface PluginParseHandlers {
     parsePluginList: (source: string, msg: MessageOfparsePluginParamRecordEx) => ResultOfparsePluginParamRecord;
     parsePluginBody: (src: string) => ParsedPlugin;
@@ -29,6 +29,7 @@ export interface PluginExtractionError<E> {
 }
 export interface PluginExtractionItemResult<E> {
     pluginName: string;
+    schema: PluginSchemaArray;
     record: PluginParamsRecord;
     params: PluginExtractedValue[];
     commandExtractors: CommandArgExtractors[];

@@ -1,4 +1,4 @@
-import { ParamKinds } from '../../../../rmmz/plugin';
+import { ParamKinds } from './paramUnion';
 export interface StructCollection {
     matchedStructs: Set<string>;
     nestedStructs: Set<string>;
