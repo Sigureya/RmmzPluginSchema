@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import { ppxx } from "./replace";
+import { replacePluginValue } from "./replace";
 
 const OLD_TEXT_A = "oldTextA";
 const NEW_TEXT_A = "newTextA";
@@ -31,16 +31,20 @@ interface TestCase {
 const runTestCase = (testCase: TestCase) => {
   describe(testCase.name, () => {
     test("replaceParamV4", () => {
-      const result = ppxx(testCase.input, testCase.paths, (value) => {
-        return dic.get(value);
-      });
+      const result = replacePluginValue(
+        testCase.input,
+        testCase.paths,
+        (value) => {
+          return dic.get(value);
+        },
+      );
       expect(result).toEqual(testCase.expected);
     });
     test("replaceParamV4", () => {
       const fn = vi.fn((value: string) => {
         return dic.get(value);
       });
-      ppxx(testCase.input, testCase.paths, fn);
+      replacePluginValue(testCase.input, testCase.paths, fn);
       expect(fn).not.toHaveBeenCalledWith(IGNORE_TEXT);
       testCase.oldValues.forEach((oldValue) => {
         expect(fn).toHaveBeenCalledWith(oldValue);

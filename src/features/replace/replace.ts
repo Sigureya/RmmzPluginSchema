@@ -1,6 +1,6 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 
-export const ppxx = (
+export const replacePluginValue = (
   params: Record<string, JSONValue>,
   paths: readonly (readonly string[])[],
   replace: (value: string) => string | undefined,
