@@ -99,6 +99,7 @@ describe("pluginCommand", () => {
     const handlers = createCommandHandlers();
     const command: PluginCommandData = {
       code: 357,
+      indent: 0,
       parameters: ["MockPlugin", "cmd", "", { value: "42", note: "ok" }],
     };
 
@@ -117,6 +118,7 @@ describe("pluginCommand", () => {
     const handlers = createCommandHandlers();
     const command: PluginCommandData = {
       code: 357,
+      indent: 0,
       parameters: ["MissingPlugin", "missing", "", { value: "1" }],
     };
 
@@ -135,6 +137,7 @@ describe("pluginCommand", () => {
     const parseFn = vi.fn(() => ({ value: 100, note: "memo" }));
     const command: PluginCommandData = {
       code: 357,
+      indent: 0,
       parameters: ["MockPlugin", "cmd", "", { value: "42", note: "ok" }],
     };
 

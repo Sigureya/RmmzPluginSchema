@@ -34,6 +34,7 @@ const createCommand = (
   args: Record<string, string>,
 ): PluginCommandData => ({
   code: 357,
+  indent: 0,
   parameters: [pluginName, commandName, commandName, args],
 });
 
