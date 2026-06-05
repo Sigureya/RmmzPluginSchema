@@ -8,7 +8,7 @@ import {
   createDictionary,
   createTextParamDictionary,
 } from "./createDictionary";
-import type { PluginReplacePath } from "./types";
+import type { PluginReplacePathData } from "./types";
 
 type Plugin = Pick<PluginSchema, "schema" | "pluginName">;
 const mockAnyParam: AnyStringParam = {
@@ -49,7 +49,7 @@ describe("createTextParamDictionary", () => {
     };
     test("collects only string and any params", () => {
       const anyFn = vi.fn((param: AnyStringParam) => param === mockAnyParam);
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginA",
         paramsPath: [["title"], ["names", "[]"], ["anyParam"]],
         commands: [
@@ -111,7 +111,7 @@ describe("createTextParamDictionary", () => {
       },
     };
     test("returns empty paths when no string or any params are present", () => {
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginB",
         paramsPath: [],
         commands: [],
@@ -145,7 +145,7 @@ describe("createTextParamDictionary", () => {
       const anyFn = vi.fn(
         (param: AnyStringParam, name: string) => name === "anyParam1",
       );
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginAny",
         paramsPath: [["anyParam1"]],
         commands: [],
@@ -159,7 +159,7 @@ describe("createTextParamDictionary", () => {
     });
     test("returns empty paramsPath if no any params pass the filter", () => {
       const anyFn = vi.fn(() => false);
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginAny",
         paramsPath: [],
         commands: [],
@@ -173,7 +173,7 @@ describe("createTextParamDictionary", () => {
     });
     test("returns all any params if all pass the filter", () => {
       const anyFn = vi.fn(() => true);
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginAny",
         paramsPath: [["anyParam1"], ["anyParam2"]],
         commands: [],
@@ -228,7 +228,7 @@ describe("createTextParamDictionary", () => {
       },
     };
     describe("全部通すパターン", () => {
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginStruct",
         paramsPath: [
           ["structParam", "field1"],
@@ -248,7 +248,7 @@ describe("createTextParamDictionary", () => {
       };
       test("判定関数が常にtrue", () => {
         const anyFn = vi.fn(() => true);
-        const result: PluginReplacePath = createTextParamDictionary(
+        const result: PluginReplacePathData = createTextParamDictionary(
           schema,
           anyFn,
         );
@@ -256,7 +256,7 @@ describe("createTextParamDictionary", () => {
         expect(anyFn).toHaveBeenCalledWith(mockAnyParam, "anyParam");
       });
       test("内部で使っている関数と同じ戻り値になる", () => {
-        const result: PluginReplacePath = createDictionary(
+        const result: PluginReplacePathData = createDictionary(
           schema.pluginName,
           schema.schema,
         );
@@ -265,7 +265,7 @@ describe("createTextParamDictionary", () => {
     });
     test("struct fields are included regardless of anyFn result", () => {
       const anyFn = vi.fn(() => false);
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginStruct",
         paramsPath: [],
         commands: [],
@@ -276,7 +276,7 @@ describe("createTextParamDictionary", () => {
     });
     test("struct fields are included regardless of anyFn result", () => {
       const anyFn = (attr: PrimitiveParam, name: string) => name === "field1";
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginStruct",
         paramsPath: [["structParam", "field1"]],
         commands: [
@@ -292,7 +292,7 @@ describe("createTextParamDictionary", () => {
     });
     test("anyFn is applied only to top-level any params and command args, not struct fields", () => {
       const anyFn = (attr: PrimitiveParam, name: string) => name !== "field1";
-      const expected: PluginReplacePath = {
+      const expected: PluginReplacePathData = {
         pluginName: "PluginStruct",
         paramsPath: [["structParam", "field2"], ["anyParam"]],
         commands: [

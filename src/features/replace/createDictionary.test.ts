@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import type { PluginSchemaArray } from "@RmmzPluginSchema/rmmz/plugin";
 import { createDictionary } from "./createDictionary";
-import type { PluginReplacePath } from "./types";
+import type { PluginReplacePathData } from "./types";
 
 describe("createDictionary", () => {
   test("collects primitive param paths", () => {
@@ -13,7 +13,7 @@ describe("createDictionary", () => {
         { name: "actorId", attr: { kind: "number", default: 0 } },
       ],
     };
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [["title"], ["actorId"]],
       commands: [],
@@ -27,7 +27,7 @@ describe("createDictionary", () => {
       structs: [],
       params: [{ name: "names", attr: { kind: "string[]", default: [] } }],
     };
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [["names", "[]"]],
       commands: [],
@@ -56,7 +56,7 @@ describe("createDictionary", () => {
       ],
     };
 
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [
         ["enemy", "name"],
@@ -104,7 +104,7 @@ describe("createDictionary", () => {
       ],
     };
 
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [
         ["nameTables", "[]", "variableId"],
@@ -142,7 +142,7 @@ describe("createDictionary", () => {
       ],
     };
 
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [],
       commands: [
@@ -180,7 +180,7 @@ describe("createDictionary", () => {
       ],
     };
 
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [
         ["root", "name"],
@@ -215,7 +215,7 @@ describe("createDictionary", () => {
         },
       ],
     };
-    const expected: PluginReplacePath = {
+    const expected: PluginReplacePathData = {
       pluginName: "PluginA",
       paramsPath: [],
       commands: [
