@@ -12,8 +12,11 @@ import type {
   ParamKinds,
   PluginParam,
   PluginParamEx,
+  StructPluginParam,
   PluginSchemaArray,
   PluginCommandSchemaArray,
+  PluginCommandSchemaArrayFiltered,
+  PluginSchemaArrayFiltered,
 } from "./types";
 import type { StructCollection } from "./types/structCollection";
 import { hasStructAttr } from "./typeTest";
@@ -72,60 +75,94 @@ const isAnyAttributeKindMatched = (
   });
 };
 
-export const filterPluginSchemaByFn = (
+export function filterPluginSchemaByFn(
   schema: PluginSchemaArray,
   fn: (param: PrimitiveParam, name: string) => boolean,
-): PluginSchemaArray => {
-  const structCollection = filterStructParamsByFn(schema.structs, fn);
-  const params = schema.params.filter((param) => {
-    return hasStructAttr(param)
-      ? structCollection.structName.has(param.attr.struct)
-      : fn(param.attr, param.name);
-  });
+): PluginSchemaArray;
+
+export function filterPluginSchemaByFn<T extends PrimitiveParam>(
+  schema: PluginSchemaArray,
+  fn: (param: PrimitiveParam, name: string) => param is T,
+): PluginSchemaArrayFiltered<PluginParamEx<T>>;
+
+export function filterPluginSchemaByFn<T extends PrimitiveParam>(
+  schema: PluginSchemaArray,
+  fn: (param: PrimitiveParam, name: string) => boolean,
+): PluginSchemaArrayFiltered<PluginParamEx<T>> {
+  const guard = (param: PrimitiveParam, name: string): param is T =>
+    fn(param, name);
+  const structCollection = filterStructParamsByFn(schema.structs, guard);
+  const params = schema.params.filter(
+    (param): param is PluginParamEx<T> | StructPluginParam => {
+      return hasStructAttr(param)
+        ? structCollection.structName.has(param.attr.struct)
+        : guard(param.attr, param.name);
+    },
+  );
   return {
     params,
     structs: structCollection.structs,
-    commands: filterCmd(structCollection.structName, schema.commands, fn),
+    commands: filterCmd(structCollection.structName, schema.commands, guard),
   };
-};
+}
 
-const filterCmd = (
+const filterCmd = <T extends PrimitiveParam>(
   structNames: ReadonlySet<string>,
   command: readonly PluginCommandSchemaArray[],
-  fn: (param: PrimitiveParam, name: string) => boolean,
-): PluginCommandSchemaArray[] => {
+  fn: (param: PrimitiveParam, name: string) => param is T,
+): PluginCommandSchemaArrayFiltered<PluginParamEx<T> | StructPluginParam>[] => {
   return command
     .map(
-      (cmd): PluginCommandSchemaArray => ({
+      (
+        cmd,
+      ): PluginCommandSchemaArrayFiltered<
+        PluginParamEx<T> | StructPluginParam
+      > => ({
         command: cmd.command,
         ...(cmd.desc ? { desc: cmd.desc } : {}),
         ...(cmd.text ? { text: cmd.text } : {}),
-        args: cmd.args.filter((arg) => {
-          return hasStructAttr(arg)
-            ? structNames.has(arg.attr.struct)
-            : fn(arg.attr, arg.name);
-        }),
+        args: cmd.args.filter(
+          (arg): arg is PluginParamEx<T> | StructPluginParam => {
+            return hasStructAttr(arg)
+              ? structNames.has(arg.attr.struct)
+              : fn(arg.attr, arg.name);
+          },
+        ),
       }),
     )
     .filter((cmd) => cmd.args.length > 0);
 };
 
+type StructFilterResult<T extends PrimitiveParam> = {
+  structName: Set<string>;
+  structs: PluginStructSchemaArrayFiltered<
+    PluginParamEx<T> | StructPluginParam
+  >[];
+};
+
+export function filterStructParamsByFn<T extends PrimitiveParam>(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PrimitiveParam, name: string) => param is T,
+): StructFilterResult<T>;
+
 export function filterStructParamsByFn(
   schema: ReadonlyArray<PluginStructSchemaArray>,
   fn: (param: PrimitiveParam, name: string) => boolean,
-) {
-  return collectStructsByFnCore(
-    schema,
-    (param): param is PluginParamEx<PrimitiveParam> => {
-      return fn(param.attr, param.name);
-    },
-  );
+): StructFilterResult<PrimitiveParam>;
+
+export function filterStructParamsByFn<T extends PrimitiveParam>(
+  schema: ReadonlyArray<PluginStructSchemaArray>,
+  fn: (param: PrimitiveParam, name: string) => boolean,
+): StructFilterResult<T> {
+  return collectStructsByFnCore(schema, (param): param is PluginParamEx<T> => {
+    return fn(param.attr, param.name);
+  });
 }
 
 const collectStructsByFnCore = <T extends PrimitiveParam>(
   schema: ReadonlyArray<PluginStructSchemaArray>,
   fn: (param: PluginParam) => param is PluginParamEx<T, string>,
-) => {
+): StructFilterResult<T> => {
   const matchedParams = collectMatchedParams(schema, fn);
 
   const matchedStructNames = collectMatchedStructNames(schema, matchedParams);
@@ -145,38 +182,50 @@ const collectStructsByFnCore = <T extends PrimitiveParam>(
 const collectMatchedParams = <T extends PrimitiveParam>(
   schema: ReadonlyArray<PluginStructSchemaArray>,
   fn: (param: PluginParam) => param is PluginParamEx<T, string>,
-): Set<PluginParam> =>
+): Set<PluginParamEx<T>> =>
   new Set(
     schema.flatMap((struct) =>
-      struct.params.filter((param) => fn(param) && !hasStructAttr(param)),
+      struct.params.filter(
+        (param): param is PluginParamEx<T> =>
+          fn(param) && !hasStructAttr(param),
+      ),
     ),
   );
 
-const collectMatchedStructNames = (
+const collectMatchedStructNames = <T extends PrimitiveParam>(
   schema: ReadonlyArray<PluginStructSchemaArray>,
-  matchedParams: ReadonlySet<PluginParam>,
+  matchedParams: ReadonlySet<PluginParamEx<T>>,
 ): Set<string> =>
   new Set(
     schema
       .filter((struct) =>
-        struct.params.some((param) => matchedParams.has(param)),
+        struct.params.some(
+          (param): param is PluginParamEx<T> =>
+            !hasStructAttr(param) &&
+            matchedParams.has(param as PluginParamEx<T>),
+        ),
       )
       .map((struct) => struct.struct),
   );
 
-const filterStructs = (
+const filterStructs = <T extends PrimitiveParam>(
   schema: ReadonlyArray<PluginStructSchemaArray>,
-  matchedParams: ReadonlySet<PluginParam>,
+  matchedParams: ReadonlySet<PluginParamEx<T>>,
   retainedStructNames: ReadonlySet<string>,
-): PluginStructSchemaArray[] =>
+): PluginStructSchemaArrayFiltered<PluginParamEx<T> | StructPluginParam>[] =>
   schema
     .map(
-      (struct): PluginStructSchemaArray => ({
+      (
+        struct,
+      ): PluginStructSchemaArrayFiltered<
+        PluginParamEx<T> | StructPluginParam
+      > => ({
         struct: struct.struct,
-        params: struct.params.filter((param) =>
-          hasStructAttr(param)
-            ? retainedStructNames.has(param.attr.struct)
-            : matchedParams.has(param),
+        params: struct.params.filter(
+          (param): param is PluginParamEx<T> | StructPluginParam =>
+            hasStructAttr(param)
+              ? retainedStructNames.has(param.attr.struct)
+              : matchedParams.has(param as PluginParamEx<T>),
         ),
       }),
     )
