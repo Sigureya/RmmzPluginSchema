@@ -1,13 +1,16 @@
-export interface PluginReplacePath extends PluginParamPath {
+export interface PluginReplacePathData extends PluginParamPathData {
     pluginName: string;
     paramsPath: string[][];
-    commands: PluginCommandPath[];
+    commands: PluginCommandPathData[];
 }
-export interface PluginParamPath {
+export interface PluginParamPathData {
     pluginName: string;
     paramsPath: string[][];
 }
-export interface PluginCommandPath {
+export interface PluginCommandPathData {
     commandName: string;
     argsPath: string[][];
 }
+export type PluginCommandPathMap = ReadonlyMap<string, {
+    argsPath: string[][];
+}>;
