@@ -212,14 +212,13 @@ const filterStructs = <T extends PrimitiveParam>(
   schema: ReadonlyArray<PluginStructSchemaArray>,
   matchedParams: ReadonlySet<PluginParamEx<T>>,
   retainedStructNames: ReadonlySet<string>,
-): PluginStructSchemaArrayFiltered<PluginParamEx<T> | StructPluginParam>[] =>
-  schema
+): PluginStructSchemaArrayFiltered<PluginParamEx<T> | StructPluginParam>[] => {
+  type Maped = PluginStructSchemaArrayFiltered<
+    PluginParamEx<T> | StructPluginParam
+  >;
+  return schema
     .map(
-      (
-        struct,
-      ): PluginStructSchemaArrayFiltered<
-        PluginParamEx<T> | StructPluginParam
-      > => ({
+      (struct: PluginStructSchemaArray): Maped => ({
         struct: struct.struct,
         params: struct.params.filter(
           (param): param is PluginParamEx<T> | StructPluginParam =>
@@ -230,3 +229,4 @@ const filterStructs = <T extends PrimitiveParam>(
       }),
     )
     .filter((struct) => struct.params.length > 0);
+};
