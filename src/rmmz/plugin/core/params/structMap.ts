@@ -17,6 +17,12 @@ import type {
   PluginCommandSchemaArray,
   PluginCommandSchemaArrayFiltered,
   PluginSchemaArrayFiltered,
+  AnyStringParam,
+  ComboParam,
+  StringArrayParam,
+  StringParam,
+  StructRefParam,
+  StructArrayRefParam,
 } from "./types";
 import type { StructCollection } from "./types/structCollection";
 import { hasStructAttr } from "./typeTest";
@@ -73,6 +79,18 @@ const isAnyAttributeKindMatched = (
   return struct.params.some((p) => {
     return single.has(p.attr.kind) || array.has(p.attr.kind);
   });
+};
+
+export const filterPluginSchemaStringParams = (schema: PluginSchemaArray) => {
+  type SS = StringParam | StringArrayParam | ComboParam | AnyStringParam;
+  return filterPluginSchemaByFn<SS | StructRefParam | StructArrayRefParam>(
+    schema,
+    (param): param is SS =>
+      param.kind === "string" ||
+      param.kind === "string[]" ||
+      param.kind === "combo" ||
+      param.kind === "any",
+  );
 };
 
 export function filterPluginSchemaByFn(
