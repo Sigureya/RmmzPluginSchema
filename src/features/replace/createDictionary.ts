@@ -21,10 +21,10 @@ export const createTextParamDictionary = (
       return param.kind === "string" || param.kind === "string[]";
     },
   );
-  return createDictionary(pluginName, newSchema);
+  return createPluginParamDictionary(pluginName, newSchema);
 };
 
-export const createDictionary = (
+export const createPluginParamDictionary = (
   pluginName: string,
   schema: PluginSchemaArray,
 ): PluginReplacePathData => {

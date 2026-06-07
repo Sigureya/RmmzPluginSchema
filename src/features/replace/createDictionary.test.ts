@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import type { PluginSchemaArray } from "@RmmzPluginSchema/rmmz/plugin";
-import { createDictionary } from "./createDictionary";
+import { createPluginParamDictionary } from "./createDictionary";
 import type { PluginReplacePathData } from "./types";
 
 describe("createDictionary", () => {
@@ -18,7 +18,7 @@ describe("createDictionary", () => {
       paramsPath: [["title"], ["actorId"]],
       commands: [],
     };
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
 
   test("collects array param paths", () => {
@@ -33,7 +33,7 @@ describe("createDictionary", () => {
       commands: [],
     };
 
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
 
   test("collects struct paths", () => {
@@ -65,7 +65,7 @@ describe("createDictionary", () => {
       commands: [],
     };
 
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
 
   test("collects struct array paths", () => {
@@ -113,7 +113,7 @@ describe("createDictionary", () => {
       commands: [],
     };
 
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
 
   test("collects command argument paths", () => {
@@ -157,7 +157,7 @@ describe("createDictionary", () => {
       ],
     };
 
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
 
   test("stops recursive struct expansion", () => {
@@ -189,7 +189,7 @@ describe("createDictionary", () => {
       commands: [],
     };
 
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
   test("command with struct", () => {
     const schema: PluginSchemaArray = {
@@ -228,6 +228,6 @@ describe("createDictionary", () => {
         },
       ],
     };
-    expect(createDictionary("PluginA", schema)).toEqual(expected);
+    expect(createPluginParamDictionary("PluginA", schema)).toEqual(expected);
   });
 });
