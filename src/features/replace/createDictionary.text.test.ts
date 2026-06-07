@@ -5,7 +5,7 @@ import type {
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import {
-  createDictionary,
+  createPluginParamDictionary,
   createTextParamDictionary,
 } from "./createDictionary";
 import type { PluginReplacePathData } from "./types";
@@ -256,7 +256,7 @@ describe("createTextParamDictionary", () => {
         expect(anyFn).toHaveBeenCalledWith(mockAnyParam, "anyParam");
       });
       test("内部で使っている関数と同じ戻り値になる", () => {
-        const result: PluginReplacePathData = createDictionary(
+        const result: PluginReplacePathData = createPluginParamDictionary(
           schema.pluginName,
           schema.schema,
         );

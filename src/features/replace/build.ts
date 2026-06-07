@@ -4,7 +4,7 @@ import type {
   PluginReplacePathData,
 } from "./types";
 
-const ggg = (
+export const createPluginCommandMap = (
   pluginList: ReadonlyArray<PluginReplacePathData>,
 ): PluginCommandPathMap => {
   return new Map(
