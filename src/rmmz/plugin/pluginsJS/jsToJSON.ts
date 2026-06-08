@@ -18,6 +18,16 @@ export const convertPluginsJSToJSON = (src: string): string[] => {
   return src.split("\n").filter((line) => !isIgnoredLine(line));
 };
 
+/**
+ * @deprecated Use parsePluginParamRecord instead. This function is only exported for testing purposes and may be removed in the future.
+ */
+export const parsePluginParamRecord2 = (
+  src: string,
+  msg: MessageOfparsePluginParamRecord,
+): ResultOfparsePluginParamRecord => {
+  return parsePluginParamRecord(src, msg);
+};
+
 export const parsePluginParamRecord = (
   src: string,
   msg: MessageOfparsePluginParamRecord,
