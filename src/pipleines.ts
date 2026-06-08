@@ -22,7 +22,7 @@ import {
   compilePluginAsArraySchema,
   parseDeepRecord,
   parsePluginByLocale,
-  parsePluginParamRecord2,
+  parsePluginParamRecord,
 } from "./rmmz";
 import type {
   PluginParamReadErrorHandlers,
@@ -43,7 +43,7 @@ export const createDefaultPluginExtractionHandlers = <E>(
 ): PluginExtractionHandlers<E> => {
   return {
     parser: {
-      parsePluginList: (source, msg) => parsePluginParamRecord2(source, msg),
+      parsePluginList: (source, msg) => parsePluginParamRecord(source, msg),
       parsePluginBody: (src) => parsePluginByLocale(src),
       parseDeepRecord: (value) => parseDeepRecord(value),
     },

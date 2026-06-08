@@ -18,7 +18,7 @@ export const convertPluginsJSToJSON = (src: string): string[] => {
   return src.split("\n").filter((line) => !isIgnoredLine(line));
 };
 
-export const parsePluginParamRecord2 = (
+export const parsePluginParamRecord = (
   src: string,
   msg: MessageOfparsePluginParamRecord,
 ): ResultOfparsePluginParamRecord => {
