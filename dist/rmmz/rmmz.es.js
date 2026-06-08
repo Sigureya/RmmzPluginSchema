@@ -1,35 +1,35 @@
-import { Z as F, _ as M, $ as v, a0 as R, a1 as Z, a2 as K, a3 as H, a4 as Y, a5 as q, a6 as G, a7 as U, a8 as X, a9 as g, aa as P, ab as Q, W as rr, X as er, Y as ar, I as tr, d as nr, G as sr, o as cr, q as mr, w as or, u as ir } from "../shared/structMap.es.js";
-import { c as oe, a as ie, b as ue, e as le, f as pe, g as de, h as fe, i as ge, j as Pe, k as be, l as ye, m as he, n as Ae, r as Se, s as ve, t as Oe, v as xe, x as Ne, y as Ce, z as ke, A as Be, B as je, C as we, D as Te, E as _e, F as Ee, H as Fe, p as De, J as Le, K as Je, L as Ie, M as Ve, N as $e, O as We } from "../shared/structMap.es.js";
-const D = (r, e) => {
+import { Z as E, _ as W, $ as v, a0 as z, a1 as Z, a2 as G, a3 as K, a4 as H, a5 as Y, a6 as q, a7 as U, a8 as X, a9 as g, aa as P, ab as Q, W as rr, X as er, Y as ar, I as tr, d as nr, G as sr, o as cr, q as mr, w as or, u as ir } from "../shared/structMap.es.js";
+import { c as le, a as de, b as pe, e as fe, f as ge, g as Pe, h as ye, i as be, j as he, k as Se, l as Ae, m as ve, n as Oe, r as xe, s as Ne, t as Ce, v as ke, x as Be, y as je, z as we, A as Te, B as _e, C as De, D as Ee, E as Fe, F as Je, H as Le, p as $e, J as Ie, K as Re, L as Ve, M as Me, N as We, O as ze } from "../shared/structMap.es.js";
+const F = (r, e) => {
   const a = Object.entries(e).filter(([t]) => t in r).map(([t, c]) => [t, c(r[t])]);
   return Object.fromEntries(a);
 }, l = (r, e, a, t) => ({
   default: e,
-  ...D(a, t),
+  ...F(a, t),
   kind: r
-}), h = (r, e, a) => ({ default: [], ...D(e, a), kind: r }), ur = (r, e) => {
+}), h = (r, e, a) => ({ default: [], ...F(e, a), kind: r }), ur = (r, e) => {
   const a = r.map((t) => t.locale === "" ? t.struct : t.locale === e ? `${t.struct}!` : "");
   return new Set(a);
-}, L = "BODY", J = "STRUCT", b = "NONE", I = (r) => {
+}, J = "BODY", L = "STRUCT", y = "NONE", $ = (r) => {
   const e = r.split(`
-`), a = { structs: [], bodies: [], structName: void 0, locale: "", lines: [], blockType: b }, t = e.reduce((c, s) => lr(c, s), a);
+`), a = { structs: [], bodies: [], structName: void 0, locale: "", lines: [], blockType: y }, t = e.reduce((c, s) => lr(c, s), a);
   return {
     structs: t.structs,
     bodies: t.bodies
   };
 }, lr = (r, e) => {
   const a = e.trim(), t = a.match(/^\/\*~struct~([A-Za-z0-9_]*)(?::([A-Za-z0-9_-]+))?/);
-  return t ? pr(r, t) : /^\/\*:/.test(a) ? fr(r, a) : a === "*/" ? r.lines.length > 0 ? C(r) : r : { ...r, lines: r.lines.concat([a]) };
-}, pr = (r, e) => {
+  return t ? dr(r, t) : /^\/\*:/.test(a) ? fr(r, a) : a === "*/" ? r.lines.length > 0 ? C(r) : r : { ...r, lines: r.lines.concat([a]) };
+}, dr = (r, e) => {
   const a = r.lines.length > 0 ? C(r) : r, t = e[1] || void 0;
   return {
     ...a,
     structName: t,
-    blockType: t ? J : "INVALID",
+    blockType: t ? L : "INVALID",
     locale: e[2] ?? "",
     lines: []
   };
-}, dr = (r) => {
+}, pr = (r) => {
   if (r) {
     const e = r.match(/^\/\*:(\w+)/);
     if (e) return e[1];
@@ -37,41 +37,41 @@ const D = (r, e) => {
   return "";
 }, fr = (r, e) => ({
   ...r.lines.length > 0 ? C(r) : r,
-  locale: dr(e),
-  blockType: L,
+  locale: pr(e),
+  blockType: J,
   lines: []
 }), C = (r) => {
-  if (r.blockType === L) {
+  if (r.blockType === J) {
     const e = { locale: r.locale, lines: [...r.lines] };
     return {
       ...r,
       bodies: r.bodies.concat([e]),
       lines: [],
-      blockType: b,
+      blockType: y,
       locale: ""
     };
   }
-  return r.structName && r.blockType === J ? {
+  return r.structName && r.blockType === L ? {
     ...r,
     structs: r.structs.concat([{ struct: r.structName, locale: r.locale, lines: [...r.lines] }]),
-    blockType: b,
+    blockType: y,
     structName: void 0,
     locale: "",
     lines: []
-  } : { ...r, blockType: b, structName: void 0, locale: "", lines: [] };
+  } : { ...r, blockType: y, structName: void 0, locale: "", lines: [] };
 }, gr = (r) => r.currentOption ? { items: r.items.concat({
   option: r.currentOption,
   value: r.currentOption
-}) } : r, x = (r) => ({ ...typeof r.desc == "string" ? { desc: r.desc } : {}, ...typeof r.text == "string" ? { text: r.text } : {} }), y = (r) => {
-  const e = Pr(r), a = yr(e);
-  return br(a);
+}) } : r, x = (r) => ({ ...typeof r.desc == "string" ? { desc: r.desc } : {}, ...typeof r.text == "string" ? { text: r.text } : {} }), b = (r) => {
+  const e = Pr(r), a = br(e);
+  return yr(a);
 }, Pr = (r) => {
   if (r.currentParam && r.currentOption) {
     const e = r.currentParam.attr.kind;
     if (e === "select" || e === "combo") return { ...r, currentParam: { ...r.currentParam, options: gr(r.currentOption).items } };
   }
   return r;
-}, br = (r) => r.currentParam ? { ...r, params: [...r.params, r.currentParam], currentCommand: null, currentOption: null, currentParam: null, currentContext: null } : r, yr = (r) => {
+}, yr = (r) => r.currentParam ? { ...r, params: [...r.params, r.currentParam], currentCommand: null, currentOption: null, currentParam: null, currentContext: null } : r, br = (r) => {
   if (!r.currentCommand) return r;
   const e = r.currentParam ? [...r.currentCommand.args, r.currentParam] : r.currentCommand.args, a = {
     ...x(r.currentCommand),
@@ -79,8 +79,8 @@ const D = (r, e) => {
     args: e
   };
   return { ...r, commands: [...r.commands, a], currentCommand: null, currentParam: null, currentContext: null, currentOption: null };
-}, qr = (r) => {
-  const e = I(r);
+}, Ur = (r) => {
+  const e = $(r);
   return e.bodies.map((a) => ((t, c) => {
     const s = k(t);
     return {
@@ -90,14 +90,14 @@ const D = (r, e) => {
       helpLines: s.helpLines,
       meta: s.meta,
       dependencies: s.dependencies,
-      structs: c.filter((o) => o.locale === t.locale).map((o) => $(o))
+      structs: c.filter((o) => o.locale === t.locale).map((o) => R(o))
     };
   })(a, e.structs));
-}, V = (r, e = "") => {
-  const a = I(r), t = ((o, d) => {
-    const f = ur(o, d);
-    return o.filter((p) => p.locale === "" && f.has(p.struct) ? !f.has(`${p.struct}!`) : p.locale === d && f.has(`${p.struct}!`));
-  })(a.structs, e).map((o) => $(o)), c = ((o, d) => o.reduce((f, p) => p.locale === d || p.locale === "" && f === void 0 ? p : f, void 0))(a.bodies, e);
+}, I = (r, e = "") => {
+  const a = $(r), t = ((o, p) => {
+    const f = ur(o, p);
+    return o.filter((d) => d.locale === "" && f.has(d.struct) ? !f.has(`${d.struct}!`) : d.locale === p && f.has(`${d.struct}!`));
+  })(a.structs, e).map((o) => R(o)), c = ((o, p) => o.reduce((f, d) => d.locale === p || d.locale === "" && f === void 0 ? d : f, void 0))(a.bodies, e);
   if (!c) return {
     locale: e,
     params: [],
@@ -117,32 +117,32 @@ const D = (r, e) => {
     structs: t,
     dependencies: s.dependencies
   };
-}, $ = (r) => {
+}, R = (r) => {
   const e = k(r);
   return { name: r.struct, params: e.params };
 }, k = (r) => {
-  const e = r.lines.reduce((a, t) => Ar(a, t), hr());
-  return y(e);
+  const e = r.lines.reduce((a, t) => Sr(a, t), hr());
+  return b(e);
 }, hr = () => ({ helpLines: [], params: [], commands: [], currentParam: null, currentCommand: null, currentContext: null, currentOption: null, dependencies: {
   base: [],
   orderBefore: [],
   orderAfter: []
-}, meta: {} }), Ar = (r, e, a = Sr) => {
+}, meta: {} }), Sr = (r, e, a = Ar) => {
   const t = e.trimEnd().replace(/^[\*\s]*/, "");
-  if (!t.startsWith("@")) return r.currentContext === F ? { ...r, helpLines: r.helpLines.concat(t) } : r;
+  if (!t.startsWith("@")) return r.currentContext === E ? { ...r, helpLines: r.helpLines.concat(t) } : r;
   const c = t.match(/^@(\S+)\s*(.*)$/);
   if (!c) return r;
-  const [, s, o] = c, d = a[s];
-  return d ? d(r, o.trim()) : r;
+  const [, s, o] = c, p = a[s];
+  return p ? p(r, o.trim()) : r;
 }, m = (r, e, a) => r.currentParam && !(e in r.currentParam.attr) ? { ...r, currentParam: {
   ...r.currentParam,
   attr: { ...r.currentParam.attr, [e]: a }
-} } : r, O = (r, e, a) => ({ ...r, meta: { [e]: a, ...r.meta } }), Sr = {
+} } : r, O = (r, e, a) => ({ ...r, meta: { [e]: a, ...r.meta } }), Ar = {
   param: (r, e) => {
-    const a = y(r);
+    const a = b(r);
     return a.params.some((t) => t.name === e) ? a : {
       ...a,
-      currentContext: M,
+      currentContext: W,
       currentParam: { name: e, attr: {} }
     };
   },
@@ -154,16 +154,16 @@ const D = (r, e) => {
   } } : r,
   desc: (r, e) => r.currentParam ? m(r, Q, e) : r.currentCommand ? { ...r, currentCommand: { ...r.currentCommand, desc: e } } : r,
   command: (r, e) => {
-    const a = y(r);
+    const a = b(r);
     return a.commands.some((t) => t.command === e) ? a : { ...a, currentCommand: { command: e, args: [] }, currentParam: null };
   },
   arg: (r, e) => {
     if (!r.currentCommand) return r;
     if (!r.currentParam) return { ...r, currentParam: { name: e, attr: {} } };
     const a = { ...x(r.currentCommand), command: r.currentCommand.command, args: r.currentCommand.args.concat(r.currentParam) };
-    return { ...r, commands: r.commands, currentCommand: a, currentContext: R, currentParam: { name: e, attr: {} } };
+    return { ...r, commands: r.commands, currentCommand: a, currentContext: z, currentParam: { name: e, attr: {} } };
   },
-  help: (r) => ({ ...y(r), currentContext: F }),
+  help: (r) => ({ ...b(r), currentContext: E }),
   option: (r, e) => {
     if (!r.currentParam) return r;
     const a = ((t, c) => t.currentOption ? { items: t.items.concat({ option: t.currentOption, value: t.currentOption }), currentOption: c } : { items: t.items, currentOption: c })(r.currentOption ?? {
@@ -191,11 +191,11 @@ const D = (r, e) => {
   },
   parent: (r, e) => m(r, X, e),
   default: (r, e) => m(r, U, e),
-  on: (r, e) => m(r, G, e),
-  off: (r, e) => m(r, q, e),
-  min: (r, e) => m(r, Y, e),
-  max: (r, e) => m(r, H, e),
-  decimals: (r, e) => m(r, K, e),
+  on: (r, e) => m(r, q, e),
+  off: (r, e) => m(r, Y, e),
+  min: (r, e) => m(r, H, e),
+  max: (r, e) => m(r, K, e),
+  decimals: (r, e) => m(r, G, e),
   dir: (r, e) => m(r, Z, e),
   base: (r, e) => {
     return { ...r, dependencies: (a = r.dependencies, t = e, { orderAfter: a.orderAfter, orderBefore: a.orderBefore, base: a.base.concat(t) }) };
@@ -218,25 +218,25 @@ const D = (r, e) => {
   author: (r, e) => O(r, ar, e),
   plugindesc: (r, e) => O(r, er, e),
   url: (r, e) => O(r, rr, e)
-}, vr = { notNumber: "isNaN", notInteger: "notInteger" }, W = (r, e, a = vr) => {
+}, vr = { notNumber: "isNaN", notInteger: "notInteger" }, V = (r, e, a = vr) => {
   if (P in r.attr) {
     const t = xr[r.attr.kind];
     if (t) return t(r, e, a);
   }
   return {
     name: r.name,
-    attr: l("any", "", r.attr, A)
+    attr: l("any", "", r.attr, S)
   };
-}, n = (r) => r, z = (r) => r.replace("[", "").replace("]", "").split(",").map((e) => parseFloat(e.replaceAll('"', "").trim())).filter((e) => !isNaN(e)), A = {
+}, n = (r) => r, M = (r) => r.replace("[", "").replace("]", "").split(",").map((e) => parseFloat(e.replaceAll('"', "").trim())).filter((e) => !isNaN(e)), S = {
   default: n,
   text: n,
   desc: n,
   parent: n
-}, Or = (r) => ({ option: r.option, value: r.value }), _ = (r, e) => ({ name: r.name, attr: l(e, "", r.attr, A) }), E = (r, e, a) => {
+}, Or = (r) => ({ option: r.option, value: r.value }), _ = (r, e) => ({ name: r.name, attr: l(e, "", r.attr, S) }), D = (r, e, a) => {
   const { value: t, errors: c } = e.parseStringArray(r.attr.default || "[]", r), s = { default: () => t, text: n, desc: n, parent: n };
   return { name: r.name, attr: h(a, r.attr, s), ...N(c) };
 }, i = (r, e) => {
-  const a = { default: (t) => z(t), text: n, desc: n, parent: n };
+  const a = { default: (t) => M(t), text: n, desc: n, parent: n };
   return { name: r.name, attr: h(e, r.attr, a) };
 }, u = (r, e) => {
   const a = { default: (t) => parseInt(t, 10), text: n, desc: n, parent: n };
@@ -283,11 +283,11 @@ const D = (r, e) => {
   combo: (r) => {
     var a;
     const e = ((a = r.options) == null ? void 0 : a.map((t) => t.option)) ?? [];
-    return { name: r.name, attr: { ...l("combo", "", r.attr, A), options: e } };
+    return { name: r.name, attr: { ...l("combo", "", r.attr, S), options: e } };
   },
   select: (r) => {
     const e = r.options ? r.options.map(Or) : [];
-    return { name: r.name, attr: { ...l("select", "", r.attr, A), options: e } };
+    return { name: r.name, attr: { ...l("select", "", r.attr, S), options: e } };
   },
   struct: (r, e) => {
     const { errors: a, value: t } = e.parseObject(r.attr.default || "{}", r), c = { text: n, desc: n, parent: n }, s = a.length === 0 ? t : {};
@@ -323,13 +323,13 @@ const D = (r, e) => {
     }] } : { name: r.name, attr: c };
   },
   "number[]": (r) => {
-    const e = { default: (a) => z(a), text: n, desc: n, decimals: (a) => parseInt(a, 10), min: (a) => parseFloat(a), max: (a) => parseFloat(a), parent: n };
+    const e = { default: (a) => M(a), text: n, desc: n, decimals: (a) => parseInt(a, 10), min: (a) => parseFloat(a), max: (a) => parseFloat(a), parent: n };
     return { name: r.name, attr: h("number[]", r.attr, e) };
   },
   string: (r) => _(r, "string"),
-  "string[]": (r, e) => E(r, e, "string[]"),
+  "string[]": (r, e) => D(r, e, "string[]"),
   multiline_string: (r) => _(r, "multiline_string"),
-  "multiline_string[]": (r, e) => E(r, e, "multiline_string[]")
+  "multiline_string[]": (r, e) => D(r, e, "multiline_string[]")
 }, B = () => ({ parseStringArray: (r) => ({ value: Nr(r), errors: [] }), parseObjectArray: () => ({ value: [], errors: [] }), parseObject: (r) => ({
   value: tr(r),
   errors: []
@@ -344,12 +344,12 @@ const D = (r, e) => {
   params: j(r.params, e),
   commands: kr(r.commands, e),
   structs: Br(r.structs, e)
-}), j = (r, e) => r.map((a) => W(a, e)), kr = (r, e) => r.map((a) => ({
+}), j = (r, e) => r.map((a) => V(a, e)), kr = (r, e) => r.map((a) => ({
   command: a.command,
   desc: a.desc,
   text: a.text,
   args: j(a.args, e)
-})), Br = (r, e) => r.map((a) => ({ struct: a.name, params: j(a.params, e) })), Gr = (r) => S(r, mr), Ur = (r) => S(r, or), Xr = (r) => S(r, sr), Qr = (r) => S(r, ir), S = (r, e) => {
+})), Br = (r, e) => r.map((a) => ({ struct: a.name, params: j(a.params, e) })), Xr = (r) => A(r, mr), Qr = (r) => A(r, or), re = (r) => A(r, sr), ee = (r) => A(r, ir), A = (r, e) => {
   const a = r.structs.filter((s) => s.params.some((o) => e(o))), t = new Set(a.map((s) => s.struct)), c = nr(r.structs, t);
   return {
     structs: jr(r.structs, c, e),
@@ -377,19 +377,20 @@ const D = (r, e) => {
   troop: 0,
   enemy: 0,
   common_event: 0
-}, _r = ["data", "system", "system"], Er = (r) => {
+}, _r = ["data", "system", "system"], Dr = (r) => {
   const e = Tr[r];
   return e === void 0 ? { author: "rmmz", module: "unknown", kind: r } : { author: "rmmz", module: _r[e], kind: [r, "variable", "switch"][e] };
-}, re = (r) => {
-  const e = Er(r.kind);
+}, ae = (r) => {
+  const e = Dr(r.kind);
   return e.author === r.author && e.module === r.module && e.kind === r.kind;
-}, ee = (r) => (r.attr.kind === "struct" || r.attr.kind === "struct[]") && !!Array.isArray(r.errors) && r.errors.length > 0, Fr = (r) => !Array.isArray(r) && typeof r == "object" && r !== null && !!(Dr(r) && Lr(r) && Jr(r) && "parameters" in r) && Ir(r), Dr = (r) => "name" in r && typeof r.name == "string", Lr = (r) => "status" in r && typeof r.status == "boolean", Jr = (r) => "description" in r && typeof r.description == "string", Ir = (r) => typeof r.parameters == "object" && r.parameters !== null && Object.values(r.parameters).every((e) => typeof e == "string"), Vr = /\s*\/\//, $r = /\s*[var|let|const]\s+[^\s]+\s*=/, Wr = /^\s{0,3}[\[|\]\;]/, zr = (r) => r.split(`
-`).filter((e) => !((a) => Vr.test(a) || Wr.test(a) || $r.test(a))(e)), ae = (r, e) => {
-  const a = `[${zr(r).join("")}]`;
+}, te = (r) => (r.attr.kind === "struct" || r.attr.kind === "struct[]") && !!Array.isArray(r.errors) && r.errors.length > 0, Er = (r) => !Array.isArray(r) && typeof r == "object" && r !== null && !!(Fr(r) && Jr(r) && Lr(r) && "parameters" in r) && $r(r), Fr = (r) => "name" in r && typeof r.name == "string", Jr = (r) => "status" in r && typeof r.status == "boolean", Lr = (r) => "description" in r && typeof r.description == "string", $r = (r) => typeof r.parameters == "object" && r.parameters !== null && Object.values(r.parameters).every((e) => typeof e == "string"), Ir = ["// Generated by RPG Maker.", "// Do not edit this file directly.", "var $plugins ="].join(`
+`), Rr = /\s*\/\//, Vr = /\s*[var|let|const]\s+[^\s]+\s*=/, Mr = /^\s{0,3}[\[|\]\;]/, Wr = (r) => r.split(`
+`).filter((e) => !((a) => Rr.test(a) || Mr.test(a) || Vr.test(a))(e)), ne = (r, e) => zr(r, e), zr = (r, e) => {
+  const a = `[${Wr(r).join("")}]`;
   try {
     const t = JSON.parse(a);
     if (!Array.isArray(t)) return { complete: !1, plugins: [], message: e.notArray, invalidPlugins: 0 };
-    const c = t.filter(Fr), s = t.length - c.length;
+    const c = t.filter(Er), s = t.length - c.length;
     return { complete: s === 0, plugins: c, invalidPlugins: s, message: s <= 0 ? e.success : e.partialSuccess };
   } catch (t) {
     return {
@@ -400,93 +401,104 @@ const D = (r, e) => {
       error: t
     };
   }
-}, te = (r, e) => {
-  const a = Rr(e);
-  return r.map((t) => ({ description: t.description, name: t.name, status: t.status, parameters: Mr(t, a) }));
-}, Mr = (r, e) => {
+}, se = (r) => {
+  const e = JSON.stringify(r, null, 2);
+  return `${Ir}
+${e}
+;`;
+}, ce = (r, e) => {
+  const a = Gr(e);
+  return r.map((t) => ({
+    description: t.description,
+    name: t.name,
+    status: t.status,
+    parameters: Zr(t, a)
+  }));
+}, Zr = (r, e) => {
   const a = e.get(r.name);
   if (!a) return r.parameters;
   const t = Object.entries(r.parameters).filter(([c]) => !a.has(c));
   return Object.fromEntries(t);
-}, Rr = (r) => new Map(r.map((e) => [e.pluginName, new Set(e.params)])), Zr = (r) => {
+}, Gr = (r) => new Map(r.map((e) => [e.pluginName, new Set(e.params)])), Kr = (r) => {
   const e = B();
-  return {
-    target: "MZ",
-    meta: r.meta,
-    commands: Kr(r.commands, e),
-    params: T(r.params, e),
-    structs: Hr(r.structs, e)
-  };
+  return { target: "MZ", meta: r.meta, commands: Hr(r.commands, e), params: T(r.params, e), structs: Yr(r.structs, e) };
 }, T = (r, e) => Object.fromEntries(r.map((a) => {
-  const t = W(a, e);
+  const t = V(a, e);
   return [a.name, t.attr];
-})), Kr = (r, e) => Object.fromEntries(r.map((a) => [a.command, {
-  desc: a.desc,
-  text: a.text,
-  args: T(a.args, e)
-}])), Hr = (r, e) => Object.fromEntries(r.map((a) => [a.name, { params: T(a.params, e) }])), ne = (r) => ((e) => Zr(V(e, "")))(r), se = (r, e = B()) => {
-  const a = V(r.source, r.locale);
-  return { locale: r.locale, meta: a.meta, pluginName: r.pluginName, target: "MZ", dependencies: a.dependencies, schema: Cr(a, e) };
+})), Hr = (r, e) => Object.fromEntries(r.map((a) => [a.command, { desc: a.desc, text: a.text, args: T(a.args, e) }])), Yr = (r, e) => Object.fromEntries(r.map((a) => [a.name, {
+  params: T(a.params, e)
+}])), me = (r) => ((e) => Kr(I(e, "")))(r), oe = (r, e = B()) => {
+  const a = I(r.source, r.locale);
+  return {
+    locale: r.locale,
+    meta: a.meta,
+    pluginName: r.pluginName,
+    target: "MZ",
+    dependencies: a.dependencies,
+    schema: Cr(a, e)
+  };
 };
 export {
-  oe as classifyFileParams,
-  ie as classifyPluginParams,
-  ue as classifyTextParams,
+  le as classifyFileParams,
+  de as classifyPluginParams,
+  pe as classifyTextParams,
   nr as collectDependentStructNames,
-  le as collectStructsByKinds,
+  fe as collectStructsByKinds,
   Cr as compilePluginAsArraySchema,
-  pe as convertPluginCommandSchema,
-  zr as convertPluginsJSToJSON,
-  de as convertStructSchema,
-  fe as createClassifiedStructMap,
+  ge as convertPluginCommandSchema,
+  Wr as convertPluginsJSToJSON,
+  Pe as convertStructSchema,
+  ye as createClassifiedStructMap,
   B as createDeepJSONParserHandlers,
-  ge as createStructMap,
-  Gr as filterPluginParamByText,
-  Qr as filterPluginSchemaByFileParam,
-  Pe as filterPluginSchemaByFn,
-  Ur as filterPluginSchemaByNumberParam,
-  S as filterPluginSchemaByParam,
-  Xr as filterPluginSchemaByVariableParam,
-  be as filterPluginSchemaStringParams,
-  ye as filterStructParamsByFn,
-  he as hasNumberValueParam,
-  Ae as hasScalarAttr,
+  be as createStructMap,
+  Xr as filterPluginParamByText,
+  ee as filterPluginSchemaByFileParam,
+  he as filterPluginSchemaByFn,
+  Qr as filterPluginSchemaByNumberParam,
+  A as filterPluginSchemaByParam,
+  re as filterPluginSchemaByVariableParam,
+  Se as filterPluginSchemaStringParams,
+  Ae as filterStructParamsByFn,
+  ve as hasNumberValueParam,
+  Oe as hasScalarAttr,
   cr as hasStructAttr,
   mr as hasTextAttr,
-  Se as isArrayAttr,
-  ve as isArrayParam,
-  Oe as isArrayParamEx,
-  ee as isErrorStructParam,
+  xe as isArrayAttr,
+  Ne as isArrayParam,
+  Ce as isArrayParamEx,
+  te as isErrorStructParam,
   ir as isFileAttr,
-  xe as isNumberArrayParam,
+  ke as isNumberArrayParam,
   or as isNumberAttr,
-  Ne as isNumberValueParam,
-  Ce as isNumberValueParamEx,
-  re as isRmmzDataKind,
-  ke as isScalarParam,
-  Be as isStringArrayParam,
-  je as isStringValueParam,
-  we as isStructArrayAttr,
-  Te as isStructArrayParam,
-  _e as isStructAttr,
-  Ee as isStructParam,
+  Be as isNumberValueParam,
+  je as isNumberValueParamEx,
+  ae as isRmmzDataKind,
+  we as isScalarParam,
+  Te as isStringArrayParam,
+  _e as isStringValueParam,
+  De as isStructArrayAttr,
+  Ee as isStructArrayParam,
+  Fe as isStructAttr,
+  Je as isStructParam,
   sr as isVariableAttr,
-  Er as lookupKind,
-  te as omitPluginParam,
-  Fe as paramHasText,
+  Dr as lookupKind,
+  ce as omitPluginParam,
+  Le as paramHasText,
   tr as parseDeepJSON,
-  De as parseDeepRecord,
-  qr as parsePlugin,
-  V as parsePluginByLocale,
-  ae as parsePluginParamRecord2,
-  se as pluginSourceToArraySchema,
-  ne as pluginSourceToJSON,
+  $e as parseDeepRecord,
+  Ur as parsePlugin,
+  I as parsePluginByLocale,
+  zr as parsePluginParamRecord,
+  ne as parsePluginParamRecord2,
+  oe as pluginSourceToArraySchema,
+  me as pluginSourceToJSON,
   wr as rebuildCommands,
-  Le as stringifyDeepJSON,
-  Je as stringifyDeepRecord,
-  Ie as structDependencies,
-  Ve as toArrayPluginParam,
-  $e as toObjectPluginParams,
-  We as toObjectPluginParamsOld,
-  Fr as validatePluginJS
+  Ie as stringifyDeepJSON,
+  Re as stringifyDeepRecord,
+  se as stringifyPluginsJS,
+  Ve as structDependencies,
+  Me as toArrayPluginParam,
+  We as toObjectPluginParams,
+  ze as toObjectPluginParamsOld,
+  Er as validatePluginJS
 };
