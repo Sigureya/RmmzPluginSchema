@@ -1,5 +1,5 @@
-import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
+  DeepJSONValue,
   PluginCommandData,
   PluginParamsObject,
   PluginParamsRecord,
@@ -9,6 +9,8 @@ import {
   stringifyDeepRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginCommandPathMap, PluginParamPathData } from "./types";
+
+type DeepJSONObject = Record<string, DeepJSONValue>;
 
 export const replaceRuntimePluginCommand = (
   command: PluginCommandData,
@@ -58,17 +60,13 @@ export const replacePluginParams = (
 };
 
 export const replacePluginValue = (
-  params: Record<string, JSONValue>,
+  params: DeepJSONObject,
   paths: readonly (readonly string[])[],
   replace: (value: string) => string | undefined,
-): Record<string, JSONValue> => {
-  return paths.reduce<Record<string, JSONValue>>((parameters, path) => {
+): DeepJSONObject => {
+  return paths.reduce<DeepJSONObject>((parameters, path) => {
     const replaced = replacePath(parameters, path, replace);
-    if (
-      replaced !== null &&
-      typeof replaced === "object" &&
-      !Array.isArray(replaced)
-    ) {
+    if (isDeepJSONObject(replaced)) {
       return replaced;
     }
     return parameters;
@@ -77,15 +75,22 @@ export const replacePluginValue = (
 
 type ReplaceFn = (value: string) => string | undefined;
 
-const replaceLeaf = (value: JSONValue, replace: ReplaceFn): JSONValue => {
+const isDeepJSONObject = (value: DeepJSONValue): value is DeepJSONObject => {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+};
+
+const replaceLeaf = (
+  value: DeepJSONValue,
+  replace: ReplaceFn,
+): DeepJSONValue => {
   return typeof value === "string" ? (replace(value) ?? value) : value;
 };
 
 const replacePath = (
-  value: JSONValue,
+  value: DeepJSONValue,
   path: ReadonlyArray<string>,
   replace: ReplaceFn,
-): JSONValue => {
+): DeepJSONValue => {
   if (path.length === 0) {
     return value;
   }
@@ -106,7 +111,7 @@ const replacePath = (
     return next.every((item, index) => item === value[index]) ? value : next;
   }
 
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+  if (!isDeepJSONObject(value)) {
     return value;
   }
 
