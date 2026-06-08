@@ -1,30 +1,30 @@
-const R = "target", U = "plugindesc", V = "author", X = "help", Y = "url", Z = "kind", z = "type", tt = "param", at = "desc", rt = "text", st = "parent", et = "default", nt = "on", it = "off", ct = "max", mt = "min", ut = "decimals", ot = "dir", pt = "option", lt = "value", dt = "arg", ft = "base", yt = "orderAfter", gt = "orderBefore", ht = "struct", bt = (t) => {
+const R = "target", U = "plugindesc", V = "author", X = "help", Y = "url", Z = "kind", tt = "type", at = "param", st = "desc", rt = "text", et = "parent", nt = "default", it = "on", ct = "off", mt = "max", ut = "min", ot = "decimals", pt = "dir", lt = "option", dt = "value", ft = "arg", yt = "base", gt = "orderAfter", ht = "orderBefore", bt = "struct", kt = (t) => {
   const a = JSON.parse(t);
-  return Array.isArray(a) ? a.map(f) : typeof a == "object" && a !== null ? O(a) : a;
-}, kt = (t) => O(t), O = (t) => Object.fromEntries(Object.entries(t).map(([a, r]) => [a, f(r)])), f = (t) => {
+  return Array.isArray(a) ? a.map(f) : x(a) ? O(a) : a;
+}, St = (t) => O(t), O = (t) => Object.fromEntries(Object.keys(t).map((a) => [a, f(t[a])])), x = (t) => typeof t == "object" && t !== null && !Array.isArray(t), f = (t) => {
   if (typeof t != "string") return t;
   try {
     const a = JSON.parse(t);
-    return Array.isArray(a) ? a.map(f) : typeof a == "object" && a !== null ? Object.fromEntries(Object.entries(a).map(([r, s]) => [r, f(s)])) : a;
+    return Array.isArray(a) ? a.map(f) : x(a) ? Object.fromEntries(Object.keys(a).map((s) => [s, f(a[s])])) : a;
   } catch {
     return t;
   }
-}, St = (t) => x(t), Ot = (t) => JSON.stringify(x(t)), d = (t) => typeof t == "object" && t !== null && !Array.isArray(t), x = (t) => Array.isArray(t) ? T(t) : d(t) ? y(t) : {}, y = (t) => d(t) ? Object.fromEntries(Object.entries(t).map(([a, r]) => {
-  if (Array.isArray(r)) {
-    const s = r.map((e) => d(e) ? JSON.stringify(y(e)) : String(e));
-    return [a, JSON.stringify(s)];
+}, Ot = (t) => w(t), xt = (t) => JSON.stringify(w(t)), d = (t) => typeof t == "object" && t !== null && !Array.isArray(t), w = (t) => Array.isArray(t) ? E(t) : d(t) ? y(t) : {}, y = (t) => d(t) ? Object.fromEntries(Object.entries(t).map(([a, s]) => {
+  if (Array.isArray(s)) {
+    const r = s.map((e) => d(e) ? JSON.stringify(y(e)) : String(e));
+    return [a, JSON.stringify(r)];
   }
-  return d(r) ? [a, JSON.stringify(y(r))] : [a, String(r)];
-})) : {}, T = (t) => t.map((a) => typeof a == "object" && a !== null ? JSON.stringify(y(a)) : String(a)), g = (t) => t.kind.endsWith("[]"), E = (t) => g(t.attr), xt = (t, a) => !!g(t) && t.kind === `${a}[]`, w = (t) => t.kind !== "struct" && !g(t), h = (t) => t.kind === "struct", l = (t) => h(t.attr) || j(t.attr), wt = (t) => h(t.attr), jt = (t) => w(t.attr), j = (t) => t.kind === "struct[]", J = (t) => t.attr.kind === "struct[]", At = (t) => {
+  return d(s) ? [a, JSON.stringify(y(s))] : [a, String(s)];
+})) : {}, E = (t) => t.map((a) => typeof a == "object" && a !== null ? JSON.stringify(y(a)) : String(a)), g = (t) => t.kind.endsWith("[]"), J = (t) => g(t.attr), wt = (t, a) => !!g(t) && t.kind === `${a}[]`, A = (t) => t.kind !== "struct" && !g(t), h = (t) => t.kind === "struct", l = (t) => h(t.attr) || j(t.attr), At = (t) => h(t.attr), jt = (t) => A(t.attr), j = (t) => t.kind === "struct[]", M = (t) => t.attr.kind === "struct[]", Nt = (t) => {
   var a;
   return ((a = p[t.kind]) == null ? void 0 : a.hasText) === !0;
 }, S = (t) => {
   var a;
   return ((a = p[t.attr.kind]) == null ? void 0 : a.hasText) === !0;
-}, Nt = (t) => p[t.kind].type === "string", M = (t) => w(t) && _(t), _ = (t) => p[t.kind].type === "number", vt = (t) => g(t) ? K(t) : M(t), K = (t) => p[t.kind.replace("[]", "")].type === "number", Tt = (t) => {
+}, vt = (t) => p[t.kind].type === "string", _ = (t) => A(t) && K(t), K = (t) => p[t.kind].type === "number", Tt = (t) => g(t) ? $(t) : _(t), $ = (t) => p[t.kind.replace("[]", "")].type === "number", Et = (t) => {
   var a;
   return ((a = p[t.attr.kind]) == null ? void 0 : a.type) === "number";
-}, Et = (t) => p[t.kind.replace("[]", "")].type === "string", Jt = (t) => t.attr.kind === "variable" || t.attr.kind === "variable[]", Mt = (t) => t.attr.kind === "file" || t.attr.kind === "file[]", o = {
+}, Jt = (t) => p[t.kind.replace("[]", "")].type === "string", Mt = (t) => t.attr.kind === "variable" || t.attr.kind === "variable[]", _t = (t) => t.attr.kind === "file" || t.attr.kind === "file[]", o = {
   type: "string",
   hasText: !0
 }, u = { type: "number", hasText: !1 }, m = { type: "number", hasText: !1 }, p = {
@@ -68,154 +68,154 @@ const R = "target", U = "plugindesc", V = "author", X = "help", Y = "url", Z = "
   "switch[]": m,
   "variable[]": m,
   "number[]": m
-}, $ = (t, a) => {
-  const r = function(s) {
-    return Object.fromEntries(s.map((e) => [e.struct, e.params.filter(l)]));
+}, B = (t, a) => {
+  const s = function(r) {
+    return Object.fromEntries(r.map((e) => [e.struct, e.params.filter(l)]));
   }(t);
-  return function(s, e, i) {
-    return s.reduce((n) => {
+  return function(r, e, i) {
+    return r.reduce((n) => {
       if (!n.changed) return n;
-      const c = s.filter((k) => !n.names.has(k) && e[k].some((v) => n.names.has(v.attr.struct)));
+      const c = r.filter((k) => !n.names.has(k) && e[k].some((T) => n.names.has(T.attr.struct)));
       return c.length === 0 ? { names: n.names, changed: !1 } : { names: /* @__PURE__ */ new Set([...n.names, ...c]), changed: !0 };
     }, {
       names: i,
       changed: !0
     }).names;
-  }(Object.keys(r), r, new Set(a));
+  }(Object.keys(s), s, new Set(a));
 };
-function B(t) {
+function W(t) {
   return b(t, (a) => !0, (a) => !0);
 }
-const _t = (t) => b(t, (a) => a.attr.kind === "file", (a) => a.attr.kind === "file[]"), Kt = (t) => b(t, (a) => S(a), (a) => S(a)), b = (t, a, r) => {
-  const s = [], e = [], i = [], n = [];
+const Kt = (t) => b(t, (a) => a.attr.kind === "file", (a) => a.attr.kind === "file[]"), $t = (t) => b(t, (a) => S(a), (a) => S(a)), b = (t, a, s) => {
+  const r = [], e = [], i = [], n = [];
   return t.forEach((c) => {
-    if (h(c.attr)) s.push({ name: c.name, attr: c.attr });
-    else if (J(c)) e.push(c);
-    else if (E(c)) {
-      if (r(c)) return void n.push(c);
+    if (h(c.attr)) r.push({ name: c.name, attr: c.attr });
+    else if (M(c)) e.push(c);
+    else if (J(c)) {
+      if (s(c)) return void n.push(c);
     } else a(c) && i.push(c);
   }), {
-    structs: s,
+    structs: r,
     structArrays: e,
     scalars: i,
     scalarArrays: n
   };
 };
-function A(t) {
-  const a = t.map((r) => [r.name, r.attr]);
+function N(t) {
+  const a = t.map((s) => [s.name, s.attr]);
   return Object.fromEntries(a);
 }
-function $t(t) {
-  const a = t.map((r) => [r.name, r.attr]);
+function Bt(t) {
+  const a = t.map((s) => [s.name, s.attr]);
   return Object.fromEntries(a);
 }
-const Bt = (t) => Object.entries(t).map(([a, r]) => ({ name: a, attr: r })), Wt = (t) => ({ struct: t.struct, params: A(t.params) }), qt = (t) => ({ ...W(t), command: t.command, args: A(t.args) }), W = (t) => ({
+const Wt = (t) => Object.entries(t).map(([a, s]) => ({ name: a, attr: s })), qt = (t) => ({ struct: t.struct, params: N(t.params) }), zt = (t) => ({ ...q(t), command: t.command, args: N(t.args) }), q = (t) => ({
   ...t.text ? { text: t.text } : {},
   ...t.desc ? { desc: t.desc } : {}
-}), N = (t, a, r) => {
-  const s = a.get(t);
-  return s ? s.filter((e) => ((i, n) => !(!h(i) && !j(i) || !i.struct || n.has(i.struct)))(e, r)).flatMap((e) => {
+}), v = (t, a, s) => {
+  const r = a.get(t);
+  return r ? r.filter((e) => ((i, n) => !(!h(i) && !j(i) || !i.struct || n.has(i.struct)))(e, s)).flatMap((e) => {
     const i = e.struct;
-    return r.add(i), [i, ...N(i, a, r)];
+    return s.add(i), [i, ...v(i, a, s)];
   }) : [];
-}, q = (t, a) => N(t, a, /* @__PURE__ */ new Set()), Ct = (t) => new Map(t.map((a) => [a.struct, B(a.params)])), C = (t) => new Map(t.map((a) => [a.struct, a.params.map((r) => r.attr)])), Dt = (t, a) => {
-  const r = new Set(a), s = new Set(a.map((n) => `${n}[]`)), e = t.filter((n) => D(n, r, s)), i = C(e);
+}, z = (t, a) => v(t, a, /* @__PURE__ */ new Set()), Ct = (t) => new Map(t.map((a) => [a.struct, W(a.params)])), C = (t) => new Map(t.map((a) => [a.struct, a.params.map((s) => s.attr)])), Dt = (t, a) => {
+  const s = new Set(a), r = new Set(a.map((n) => `${n}[]`)), e = t.filter((n) => D(n, s, r)), i = C(e);
   return {
-    targetArrayKinds: s,
-    targetKinds: r,
+    targetArrayKinds: r,
+    targetKinds: s,
     matchedStructs: new Set(e.map((n) => n.struct)),
-    nestedStructs: new Set(t.flatMap((n) => q(n.struct, i)))
+    nestedStructs: new Set(t.flatMap((n) => z(n.struct, i)))
   };
-}, D = (t, a, r) => t.params.some((s) => a.has(s.attr.kind) || r.has(s.attr.kind)), Ft = (t) => F(t, (a) => a.kind === "string" || a.kind === "string[]" || a.kind === "combo" || a.kind === "any");
+}, D = (t, a, s) => t.params.some((r) => a.has(r.attr.kind) || s.has(r.attr.kind)), Ft = (t) => F(t, (a) => a.kind === "string" || a.kind === "string[]" || a.kind === "combo" || a.kind === "any");
 function F(t, a) {
-  const r = (e, i) => a(e, i), s = H(t.structs, r);
+  const s = (e, i) => a(e, i), r = H(t.structs, s);
   return {
-    params: t.params.filter((e) => l(e) ? s.structName.has(e.attr.struct) : r(e.attr, e.name)),
-    structs: s.structs,
-    commands: G(s.structName, t.commands, r)
+    params: t.params.filter((e) => l(e) ? r.structName.has(e.attr.struct) : s(e.attr, e.name)),
+    structs: r.structs,
+    commands: G(r.structName, t.commands, s)
   };
 }
-const G = (t, a, r) => a.map((s) => ({
-  command: s.command,
-  ...s.desc ? { desc: s.desc } : {},
-  ...s.text ? { text: s.text } : {},
-  args: s.args.filter((e) => l(e) ? t.has(e.attr.struct) : r(e.attr, e.name))
-})).filter((s) => s.args.length > 0);
+const G = (t, a, s) => a.map((r) => ({
+  command: r.command,
+  ...r.desc ? { desc: r.desc } : {},
+  ...r.text ? { text: r.text } : {},
+  args: r.args.filter((e) => l(e) ? t.has(e.attr.struct) : s(e.attr, e.name))
+})).filter((r) => r.args.length > 0);
 function H(t, a) {
-  return I(t, (r) => a(r.attr, r.name));
+  return I(t, (s) => a(s.attr, s.name));
 }
 const I = (t, a) => {
-  const r = L(t, a), s = P(t, r), e = $(t, s), i = Q(t, r, e);
+  const s = L(t, a), r = P(t, s), e = B(t, r), i = Q(t, s, e);
   return { structName: new Set(i.map((n) => n.struct)), structs: i };
-}, L = (t, a) => new Set(t.flatMap((r) => r.params.filter((s) => a(s) && !l(s)))), P = (t, a) => new Set(t.filter((r) => r.params.some((s) => !l(s) && a.has(s))).map((r) => r.struct)), Q = (t, a, r) => t.map((s) => ({
-  struct: s.struct,
-  params: s.params.filter((e) => l(e) ? r.has(e.attr.struct) : a.has(e))
-})).filter((s) => s.params.length > 0);
+}, L = (t, a) => new Set(t.flatMap((s) => s.params.filter((r) => a(r) && !l(r)))), P = (t, a) => new Set(t.filter((s) => s.params.some((r) => !l(r) && a.has(r))).map((s) => s.struct)), Q = (t, a, s) => t.map((r) => ({
+  struct: r.struct,
+  params: r.params.filter((e) => l(e) ? s.has(e.attr.struct) : a.has(e))
+})).filter((r) => r.params.length > 0);
 export {
   rt as $,
-  Et as A,
-  Nt as B,
-  J as C,
+  Jt as A,
+  vt as B,
+  M as C,
   j as D,
-  wt as E,
+  At as E,
   h as F,
-  Jt as G,
-  At as H,
-  bt as I,
-  Ot as J,
-  St as K,
-  q as L,
-  Bt as M,
-  $t as N,
-  A as O,
-  z as P,
-  pt as Q,
-  lt as R,
+  Mt as G,
+  Nt as H,
+  kt as I,
+  xt as J,
+  Ot as K,
+  z as L,
+  Wt as M,
+  Bt as N,
+  N as O,
+  tt as P,
+  lt as Q,
+  dt as R,
   R as S,
-  yt as T,
-  gt as U,
-  ft as V,
+  gt as T,
+  ht as U,
+  yt as V,
   Y as W,
   U as X,
   V as Y,
   X as Z,
-  tt as _,
-  B as a,
-  dt as a0,
-  ot as a1,
-  ut as a2,
-  ct as a3,
-  mt as a4,
-  it as a5,
-  nt as a6,
-  et as a7,
-  st as a8,
-  ht as a9,
+  at as _,
+  W as a,
+  ft as a0,
+  pt as a1,
+  ot as a2,
+  mt as a3,
+  ut as a4,
+  ct as a5,
+  it as a6,
+  nt as a7,
+  et as a8,
+  bt as a9,
   Z as aa,
-  at as ab,
-  Kt as b,
-  _t as c,
-  $ as d,
+  st as ab,
+  $t as b,
+  Kt as c,
+  B as d,
   Dt as e,
-  qt as f,
-  Wt as g,
+  zt as f,
+  qt as g,
   Ct as h,
   C as i,
   F as j,
   Ft as k,
   H as l,
-  vt as m,
+  Tt as m,
   jt as n,
   l as o,
-  kt as p,
+  St as p,
   S as q,
-  E as r,
+  J as r,
   g as s,
-  xt as t,
-  Mt as u,
-  K as v,
-  Tt as w,
-  M as x,
-  _ as y,
-  w as z
+  wt as t,
+  _t as u,
+  $ as v,
+  Et as w,
+  _ as x,
+  K as y,
+  A as z
 };
