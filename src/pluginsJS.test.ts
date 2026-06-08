@@ -13,7 +13,7 @@ import {
   compilePluginAsArraySchema,
   parseDeepJSON,
   parsePluginByLocale,
-  parsePluginParamRecord2,
+  parsePluginParamRecord,
 } from "./rmmz";
 
 const createDeepJSONParserHandlersX =
@@ -88,7 +88,7 @@ describe("PluginExtractionPipeline", () => {
   test("loads plugins.js and builds schema from mock plugin", async () => {
     const root = resolve(process.cwd(), "src/mockPlugins");
     const pluginsJS = await readFile(resolve(root, "plugins.js"), "utf-8");
-    const pluginList = parsePluginParamRecord2(pluginsJS, READ_PLUGIN_MESSAGES);
+    const pluginList = parsePluginParamRecord(pluginsJS, READ_PLUGIN_MESSAGES);
 
     expect(pluginList.complete).toBe(true);
     expect(pluginList.invalidPlugins).toBe(0);
