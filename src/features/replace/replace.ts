@@ -1,10 +1,14 @@
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin";
+import type {
+  PluginCommandData,
+  PluginParamsObject,
+  PluginParamsRecord,
+} from "@RmmzPluginSchema/rmmz/plugin";
 import {
   parseDeepRecord,
   stringifyDeepRecord,
 } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginCommandPathMap } from "./types";
+import type { PluginCommandPathMap, PluginParamPathData } from "./types";
 
 export const replaceRuntimePluginCommand = (
   command: PluginCommandData,
@@ -32,6 +36,24 @@ export const replaceRuntimePluginCommand = (
       command.parameters[2],
       stringifyDeepRecord(replacedArgs as {}),
     ],
+  };
+};
+
+export const replacePluginParams = (
+  plugin: PluginParamsObject,
+  map: PluginParamPathData,
+  replace: (value: string) => string | undefined,
+): PluginParamsRecord => {
+  const parameters = replacePluginValue(
+    plugin.parameters,
+    map.paramsPath,
+    replace,
+  );
+  return {
+    name: plugin.name,
+    status: plugin.status,
+    description: plugin.description,
+    parameters: stringifyDeepRecord(parameters as {}),
   };
 };
 

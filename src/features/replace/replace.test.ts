@@ -1,6 +1,11 @@
 import { describe, expect, test, vi } from "vitest";
 import type { JSONValue } from "@RmmzPluginSchema/libs/jsonPath";
-import { replacePluginValue } from "./replace";
+import {
+  stringifyDeepRecord,
+  type PluginParamsObject,
+  type PluginParamsRecord,
+} from "@RmmzPluginSchema/rmmz/plugin";
+import { replacePluginValue, replacePluginParams } from "./replace";
 
 const OLD_TEXT_A = "oldTextA";
 const NEW_TEXT_A = "newTextA";
@@ -30,28 +35,59 @@ interface TestCase {
 
 const runTestCase = (testCase: TestCase) => {
   describe(testCase.name, () => {
-    test("replaceParamV4", () => {
-      const result = replacePluginValue(
-        testCase.input,
-        testCase.paths,
-        (value) => {
+    describe("replacePluginValue", () => {
+      test("replaceParamV4", () => {
+        const result = replacePluginValue(
+          testCase.input,
+          testCase.paths,
+          (value) => {
+            return dic.get(value);
+          },
+        );
+        expect(result).toEqual(testCase.expected);
+      });
+      test("replaceParamV4", () => {
+        const fn = vi.fn((value: string) => {
           return dic.get(value);
-        },
-      );
-      expect(result).toEqual(testCase.expected);
+        });
+        replacePluginValue(testCase.input, testCase.paths, fn);
+        expect(fn).not.toHaveBeenCalledWith(IGNORE_TEXT);
+        testCase.oldValues.forEach((oldValue) => {
+          expect(fn).toHaveBeenCalledWith(oldValue);
+        });
+        expect(fn).toHaveBeenCalledTimes(
+          testCase.numCalls ?? testCase.oldValues.length,
+        );
+      });
     });
-    test("replaceParamV4", () => {
-      const fn = vi.fn((value: string) => {
-        return dic.get(value);
+    describe("replacePluginParams", () => {
+      test("replacePluginParams", () => {
+        const fn = vi.fn((value: string) => {
+          return dic.get(value);
+        });
+        const plugin: PluginParamsObject = {
+          name: "TestPlugin",
+          status: true,
+          description: "A test plugin",
+          parameters: testCase.input,
+        };
+        const expectedPlugin: PluginParamsRecord = {
+          name: "TestPlugin",
+          status: true,
+          description: "A test plugin",
+          parameters: stringifyDeepRecord(testCase.expected as {}),
+        };
+        const result = replacePluginParams(
+          plugin,
+          {
+            pluginName: "TestPlugin",
+            paramsPath: testCase.paths,
+          },
+          fn,
+        );
+        expect(fn).not.toHaveBeenCalledWith(IGNORE_TEXT);
+        expect(result).toEqual(expectedPlugin);
       });
-      replacePluginValue(testCase.input, testCase.paths, fn);
-      expect(fn).not.toHaveBeenCalledWith(IGNORE_TEXT);
-      testCase.oldValues.forEach((oldValue) => {
-        expect(fn).toHaveBeenCalledWith(oldValue);
-      });
-      expect(fn).toHaveBeenCalledTimes(
-        testCase.numCalls ?? testCase.oldValues.length,
-      );
     });
   });
 };
