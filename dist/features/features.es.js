@@ -1,12 +1,12 @@
-import { N as aa, E as ra, C as ta, r as ea, A as sa, v as na, h as $, p as B, P as k, Q as D, R as ma, S as oa, T as ca, U as ua, V as la, W as ia, X as da, Y as pa, j as fa, K as I } from "../shared/structMap.es.js";
-const ga = (a, r) => {
+import { N as ra, E as ta, C as ea, r as sa, A as na, v as ma, h as $, p as B, P as k, Q as D, R as oa, S as ca, T as ua, U as la, V as ia, W as da, X as pa, Y as fa, j as ga, K as I } from "../shared/structMap.es.js";
+const ha = (a, r) => {
   if (a.length !== 0)
     return `${r}[${a.map((t) => `"${t.name}"`).join(",")}]`;
-}, ha = (a, r) => a.map((t) => ({ path: `${r}["${t.name}"][*]`, param: t })), V = {
+}, ya = (a, r) => a.map((t) => ({ path: `${r}["${t.name}"][*]`, param: t })), V = {
   undefinedStruct: "undefined_struct",
   cyclicStruct: "cyclic_struct"
 };
-function ya(a, r, t) {
+function Pa(a, r, t) {
   if (a.frames.length === 0) return a;
   const e = a.frames[a.frames.length - 1], s = a.frames.slice(0, -1);
   if (e.ancestry.includes(e.schemaName)) return { frames: s, items: a.items, errs: [...a.errs, { code: t.cyclicStruct, path: e.basePath }] };
@@ -28,10 +28,10 @@ function ya(a, r, t) {
     const c = function(u, { path: l, structName: d }) {
       return {
         category: "struct",
-        objectSchema: aa(u.scalars),
+        objectSchema: ra(u.scalars),
         name: d,
-        scalarArrays: ha(u.scalarArrays, l),
-        scalarsPath: u.scalars.length > 0 ? ga(u.scalars, l) : void 0
+        scalarArrays: ya(u.scalarArrays, l),
+        scalarsPath: u.scalars.length > 0 ? ha(u.scalars, l) : void 0
       };
     }(n, { path: e.basePath, structName: e.schemaName });
     return s.push(...m), {
@@ -47,10 +47,10 @@ function F(a, r, t, e) {
     schemaName: a,
     basePath: r,
     ancestry: []
-  }] }, n = Math.max(1, 3 * t.size + 5), m = Array.from({ length: n }).reduce((c) => c.frames.length === 0 ? c : ya(c, t, e), s);
+  }] }, n = Math.max(1, 3 * t.size + 5), m = Array.from({ length: n }).reduce((c) => c.frames.length === 0 ? c : Pa(c, t, e), s);
   return { items: m.items, errors: m.errs };
 }
-const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"][*]`, t, e), ur = (a, r, t, e = V) => F(a, r, t, e), x = (a, r, t, e) => ra(t) ? K(a, t, e) : ta(t) ? ba(a, t, e) : ea(t) ? xa(a, r, t) : Aa(a, r, t), xa = (a, r, t) => ({
+const Na = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), xa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"][*]`, t, e), lr = (a, r, t, e = V) => F(a, r, t, e), x = (a, r, t, e) => ta(t) ? K(a, t, e) : ea(t) ? va(a, t, e) : sa(t) ? Aa(a, r, t) : ba(a, r, t), Aa = (a, r, t) => ({
   rootCategory: a,
   rootName: r,
   scalars: { name: "", objectSchema: {}, scalarsPath: void 0, scalarArrays: [{ path: `$["${t.name}"][*]`, param: t }] },
@@ -59,28 +59,28 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
     items: [],
     errors: []
   }
-}), Aa = (a, r, t) => ({ rootCategory: a, rootName: r, scalars: { name: t.attr.kind, objectSchema: { [t.name]: t.attr }, scalarsPath: `$["${t.name}"]`, scalarArrays: [] }, structArrays: {
+}), ba = (a, r, t) => ({ rootCategory: a, rootName: r, scalars: { name: t.attr.kind, objectSchema: { [t.name]: t.attr }, scalarsPath: `$["${t.name}"]`, scalarArrays: [] }, structArrays: {
   items: [],
   errors: []
-}, structs: { items: [], errors: [] } }), lr = (a, r, t) => K(a, r, t), K = (a, r, t) => ({
+}, structs: { items: [], errors: [] } }), ir = (a, r, t) => K(a, r, t), K = (a, r, t) => ({
   rootName: r.name,
   rootCategory: a,
   scalars: void 0,
   structArrays: { items: [], errors: [] },
-  structs: Pa(r, "$", t)
-}), ba = (a, r, t) => ({
-  structArrays: Na(r, "$", t),
+  structs: Na(r, "$", t)
+}), va = (a, r, t) => ({
+  structArrays: xa(r, "$", t),
   rootName: r.name,
   rootCategory: a,
   scalars: void 0,
   structs: { items: [], errors: [] }
-}), va = (a, r, t, e) => r.filter((s) => typeof s == "number").map((s) => ({
+}), $a = (a, r, t, e) => r.filter((s) => typeof s == "number").map((s) => ({
   rootName: a.rootName,
   rootType: a.rootCategory,
   value: s,
   structName: t,
   param: e
-})), $a = (a, r, t, e) => r.filter((s) => typeof s == "string").map((s) => ({ rootName: a.rootName, rootType: a.rootCategory, value: s, structName: t, param: e })), Sa = (a, r, t, e, s) => {
+})), Sa = (a, r, t, e) => r.filter((s) => typeof s == "string").map((s) => ({ rootName: a.rootName, rootType: a.rootCategory, value: s, structName: t, param: e })), ka = (a, r, t, e, s) => {
   if (typeof t == "object" || t === null) return null;
   const n = e[e.length - 1];
   if (typeof n == "number") return null;
@@ -92,20 +92,20 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
     value: t,
     param: { name: n, attr: m }
   } : null;
-}, O = (a, r) => r.map((t) => ka(a, t)).flat(3), ka = (a, r) => [r.top ? C(r, a, r.top, "") : [], r.structs.map((t) => C(r, a, t)), r.structArrays.map((t) => C(r, a, t))], C = (a, r, t, e = t.bundleName) => {
-  const s = t.scalar ? ((m, c, u, l, d) => l.pathSegments(u).map(({ value: i, segments: p }) => Sa(m, c, i, p, d)).filter((i) => i !== null))(a, e, r, t.scalar.jsonPathJS, t.scalar.record) : [], n = t.arrays.map((m) => ((c, u, l, d) => {
+}, O = (a, r) => r.map((t) => Ca(a, t)).flat(3), Ca = (a, r) => [r.top ? C(r, a, r.top, "") : [], r.structs.map((t) => C(r, a, t)), r.structArrays.map((t) => C(r, a, t))], C = (a, r, t, e = t.bundleName) => {
+  const s = t.scalar ? ((m, c, u, l, d) => l.pathSegments(u).map(({ value: i, segments: p }) => ka(m, c, i, p, d)).filter((i) => i !== null))(a, e, r, t.scalar.jsonPathJS, t.scalar.record) : [], n = t.arrays.map((m) => ((c, u, l, d) => {
     const i = d.jsonPathJS.find(l);
     if (!Array.isArray(i)) return [];
     const p = d.schema.attr;
-    return sa(p) ? $a(c, i, u, d.schema) : na(p) ? va(c, i, u, d.schema) : [];
+    return na(p) ? Sa(c, i, u, d.schema) : ma(p) ? $a(c, i, u, d.schema) : [];
   })(a, e, r, m));
   return [s, n].flat(2);
 }, A = (a, r) => {
-  const t = Ca(a, { createReader: (e) => r(e), errorAtPath() {
+  const t = Ea(a, { createReader: (e) => r(e), errorAtPath() {
   } });
   if (t.errors.length > 0) throw t.errors[0].error;
   return t.extractor;
-}, Ca = (a, r) => {
+}, Ea = (a, r) => {
   const t = [], e = a.scalars ? E(a.scalars, "scalar", r, t) : void 0, s = a.structs.items.map((m) => E(m, "struct", r, t)), n = a.structArrays.items.map((m) => E(m, "structArray", r, t));
   return { extractor: {
     rootCategory: a.rootCategory,
@@ -115,13 +115,13 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
     structArrays: n
   }, errors: t };
 }, E = (a, r, t, e) => {
-  const s = Ea(a.scalarArrays, a.name, r, t, e);
+  const s = Ma(a.scalarArrays, a.name, r, t, e);
   return a.scalarsPath ? {
     bundleName: a.name,
     arrays: s,
-    scalar: Ma(a.scalarsPath, a.objectSchema, r, t, e)
+    scalar: ja(a.scalarsPath, a.objectSchema, r, t, e)
   } : { bundleName: a.name, arrays: s };
-}, Ea = (a, r, t, e, s) => a.flatMap((n) => {
+}, Ma = (a, r, t, e, s) => a.flatMap((n) => {
   try {
     return [{
       jsonPathJS: e.createReader(n.path),
@@ -131,7 +131,7 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   } catch (m) {
     return s.push({ path: n.path, valType: t, error: m, handledInfo: e.errorAtPath(n.path, t, m) }), [];
   }
-}), Ma = (a, r, t, e, s) => {
+}), ja = (a, r, t, e, s) => {
   try {
     return {
       jsonPathJS: e.createReader(a),
@@ -145,42 +145,42 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   commandName: r.command,
   desc: r.desc ?? "",
   text: r.text ?? "",
-  extractors: ja(r, t, e)
-}), ja = (a, r, t) => a.args.map((e) => {
+  extractors: Ta(r, t, e)
+}), Ta = (a, r, t) => a.args.map((e) => {
   const s = x("args", a.command, e, r);
   return A(s, t);
 }), W = (a, r) => ({
   pluginName: r.pluginName,
   commandName: r.commandName,
   args: O(a, r.extractors)
-}), ir = (a, r, t) => {
+}), dr = (a, r, t) => {
   const e = t.get(r);
   if (e) return W(a, e);
-}, dr = (a, r) => new Map(a.flatMap((t) => Ta(t, r))), Ta = (a, r) => {
+}, pr = (a, r) => new Map(a.flatMap((t) => Va(t, r))), Va = (a, r) => {
   const t = $(a.schema.structs);
   return a.schema.commands.map((e) => [`${a.pluginName}:${e.command}`, _(a.pluginName, e, t, r)]);
-}, pr = (a, r) => {
-  const t = a.flatMap((e) => Va(e, r));
+}, fr = (a, r) => {
+  const t = a.flatMap((e) => Fa(e, r));
   return new Map(t);
-}, Va = (a, r) => {
+}, Fa = (a, r) => {
   const t = $(a.schema.structs);
   return z(a.pluginName, a.schema.commands, t, r);
-}, fr = (a, r, t) => {
+}, gr = (a, r, t) => {
   const e = $(r.structs);
-  return { pluginName: a, params: Fa(r, e, t), commands: z(a, r.commands, e, t) };
-}, Fa = (a, r, t) => a.params.map((e) => {
+  return { pluginName: a, params: Ja(r, e, t), commands: z(a, r.commands, e, t) };
+}, Ja = (a, r, t) => a.params.map((e) => {
   const s = x("param", e.name, e, r);
   return A(s, t);
-}), z = (a, r, t, e) => r.map((s) => [L(a, s.command), _(a, s, t, e)]), L = (a, r) => `${a}:${r}`, gr = (a, r, t, e = B) => {
+}), z = (a, r, t, e) => r.map((s) => [L(a, s.command), _(a, s, t, e)]), L = (a, r) => `${a}:${r}`, hr = (a, r, t, e = B) => {
   const s = { command: a, pluginName: a.parameters[0], commandName: a.parameters[1] }, n = L(a.parameters[0], a.parameters[1]), m = r.get(n);
   if (!m) return M(a, t.commandNotFoundError(s));
   try {
     const c = e(a.parameters[3]);
-    return Ja(c, m, s, t);
+    return Ra(c, m, s, t);
   } catch (c) {
     return M(a, t.commandParseError(s, c));
   }
-}, Ja = (a, r, t, e) => {
+}, Ra = (a, r, t, e) => {
   try {
     return W(a, r);
   } catch (s) {
@@ -191,7 +191,7 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   commandName: a.parameters[1],
   args: [],
   error: r
-}), hr = (a) => a.rootType === "args", yr = (a) => a.rootType === "param", Pr = (a, r, t, e) => {
+}), yr = (a) => a.rootType === "args", Pr = (a) => a.rootType === "param", Nr = (a, r, t, e) => {
   const s = { pluginName: a.name, record: a };
   try {
     const n = t(a.parameters);
@@ -204,25 +204,25 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   } catch (n) {
     return { pluginName: s.pluginName, errorKind: "parseError", errorInfo: e.pluginParamsParseError(s, n), params: [] };
   }
-}, Nr = (a, r, t) => ({
+}, xr = (a, r, t) => ({
   pluginName: a.pluginName,
   extractors: a.schema.params.map((e) => {
     const s = x("param", "plugin", e, r);
     return A(s, t);
   })
-}), xr = (a) => {
+}), Ar = (a) => {
   const r = a.flatMap((t) => t.extractorEntries);
   return new Map(r);
-}, Ar = (a, r, t, e, s) => {
+}, br = (a, r, t, e, s) => {
   const n = $(r.structs);
-  return { pluginName: a, commands: Ra(a, r.commands, n, t, s), params: wa(a, r.params, n, t, e) };
-}, Ra = (a, r, t, e, s) => r.reduce((n, m) => {
+  return { pluginName: a, commands: wa(a, r.commands, n, t, s), params: Ba(a, r.params, n, t, e) };
+}, wa = (a, r, t, e, s) => r.reduce((n, m) => {
   const c = ((u, l, d, i, p) => {
     const y = [], g = l.args.flatMap((P) => {
       const f = x("args", l.command, P, d);
-      y.push(...((h, S, N, q, G) => {
-        const H = { pluginName: h, commandName: S, argName: N };
-        return q.map((Z) => G.commandStructPathError(H, Z));
+      y.push(...((h, S, N, G, H) => {
+        const Z = { pluginName: h, commandName: S, argName: N };
+        return G.map((aa) => H.commandStructPathError(Z, aa));
       })(u, l.command, P.name, [...f.structs.errors, ...f.structArrays.errors], p));
       try {
         return [A(f, i)];
@@ -242,7 +242,7 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
 }, {
   extractors: [],
   errors: []
-}), wa = (a, r, t, e, s) => r.reduce((n, m) => {
+}), Ba = (a, r, t, e, s) => r.reduce((n, m) => {
   const c = ((u, l, d, i, p) => {
     const y = { pluginName: u, paramName: l.name }, g = x("param", "plugin", l, d), P = ((f, h, S) => h.map((N) => ({
       code: "paramStructPathError",
@@ -273,9 +273,9 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   const t = a[r];
   return t === void 0 ? void 0 : o(r, String(t));
 }, Q = (a, r, t) => {
-  const e = o(r, a.name), s = Ba(a.attr), n = Da(a.attr, t);
+  const e = o(r, a.name), s = Da(a.attr), n = Ia(a.attr, t);
   return n ? { name: e, base: s, default: n.default, attr: n.attr.filter((m) => m !== void 0) } : { name: e, base: s, default: void 0, attr: [] };
-}, Ba = (a) => {
+}, Da = (a) => {
   return {
     kind: (r = a, r.kind === "struct" ? o(k, `struct<${r.struct}>`) : r.kind === "struct[]" ? o(k, `struct<${r.struct}>[]`) : o(k, r.kind)),
     desc: a.desc ? o("desc", a.desc) : void 0,
@@ -283,86 +283,86 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
     parent: a.parent ? o("parent", a.parent) : void 0
   };
   var r;
-}, Da = (a, r) => a.kind === "number" ? _a(a) : a.kind === "number[]" ? Wa(a, r) : a.kind === "file[]" ? Ua(a, r) : a.kind === "struct[]" ? Ga(a, r) : a.kind === "string[]" || a.kind === "multiline_string[]" ? za(a, r) : a.kind === "select" ? Xa(a) : a.kind === "combo" ? Ya(a) : a.kind === "file" ? Qa(a) : a.kind === "struct" ? qa(a, r) : a.kind === "boolean" ? Ia(a) : a.kind === "string" || a.kind === "any" || a.kind === "multiline_string" ? La(a) : typeof a.default == "number" ? Ka(a) : Oa(a, r), U = (a) => a === void 0 ? void 0 : o("default", a.toString()), Ia = (a) => ({
+}, Ia = (a, r) => a.kind === "number" ? Wa(a) : a.kind === "number[]" ? za(a, r) : a.kind === "file[]" ? Xa(a, r) : a.kind === "struct[]" ? Ha(a, r) : a.kind === "string[]" || a.kind === "multiline_string[]" ? La(a, r) : a.kind === "select" ? Ya(a) : a.kind === "combo" ? qa(a) : a.kind === "file" ? Ua(a) : a.kind === "struct" ? Ga(a, r) : a.kind === "boolean" ? Ka(a) : a.kind === "string" || a.kind === "any" || a.kind === "multiline_string" ? Qa(a) : typeof a.default == "number" ? Oa(a) : _a(a, r), U = (a) => a === void 0 ? void 0 : o("default", a.toString()), Ka = (a) => ({
   attr: v.boolean.map((r) => b(a, r)),
   default: o("default", a.default ? "true" : "false")
-}), Ka = (a) => ({ attr: [], default: U(a.default) }), Oa = (a, r) => {
+}), Oa = (a) => ({ attr: [], default: U(a.default) }), _a = (a, r) => {
   const t = r.numberArray(a.default);
   return {
     attr: [],
     default: o("default", t)
   };
-}, _a = (a) => ({ attr: v.number.map((r) => b(a, r)), default: U(a.default) }), Wa = (a, r) => {
+}, Wa = (a) => ({ attr: v.number.map((r) => b(a, r)), default: U(a.default) }), za = (a, r) => {
   const t = r.numberArray(a.default);
   return {
     attr: v.number.map((e) => b(a, e)),
     default: o("default", t)
   };
-}, za = (a, r) => {
+}, La = (a, r) => {
   const t = r.stringArray(a.default);
   return { attr: [], default: o("default", t) };
-}, La = (a) => ({
+}, Qa = (a) => ({
   attr: [],
   default: o("default", a.default)
-}), Qa = (a) => ({ attr: v.file.map((r) => b(a, r)), default: o("default", a.default) }), Ua = (a, r) => {
+}), Ua = (a) => ({ attr: v.file.map((r) => b(a, r)), default: o("default", a.default) }), Xa = (a, r) => {
   const t = r.stringArray(a.default);
   return {
     attr: v.file.map((e) => b(a, e)),
     default: o("default", t)
   };
-}, Xa = (a) => {
-  return { attr: (r = a, r.options.flatMap((t) => [o(D, t.option), o(ma, t.value)])), default: o("default", a.default) };
-  var r;
 }, Ya = (a) => {
+  return { attr: (r = a, r.options.flatMap((t) => [o(D, t.option), o(oa, t.value)])), default: o("default", a.default) };
+  var r;
+}, qa = (a) => {
   return { attr: (r = a, r.options.map((t) => o(D, t))), default: o("default", a.default) };
   var r;
-}, qa = (a, r) => {
+}, Ga = (a, r) => {
   if (!a.default) return { attr: [], default: void 0 };
   const t = r.struct(a.default);
   return { attr: [], default: o("default", t) };
-}, Ga = (a, r) => {
+}, Ha = (a, r) => {
   if (!a.default) return { attr: [], default: o("default", "[]") };
   const t = r.structArray(a.default);
   return {
     attr: [],
     default: o("default", t)
   };
-}, v = { number: ["min", "max", "decimals"], file: ["dir"], boolean: ["on", "off"] }, Ha = (a, r, t) => ({
+}, v = { number: ["min", "max", "decimals"], file: ["dir"], boolean: ["on", "off"] }, Za = (a, r, t) => ({
   params: X(r.params, t),
-  structs: r.structs.map((e) => Za(e, a, t)),
-  commands: r.commands.map((e) => ar(e, t))
-}), X = (a, r) => a.map((t) => Q(t, "param", r)), Za = (a, r, t) => ({ locale: r, struct: a.struct, params: X(a.params, t) }), ar = (a, r) => ({
+  structs: r.structs.map((e) => ar(e, a, t)),
+  commands: r.commands.map((e) => rr(e, t))
+}), X = (a, r) => a.map((t) => Q(t, "param", r)), ar = (a, r, t) => ({ locale: r, struct: a.struct, params: X(a.params, t) }), rr = (a, r) => ({
   desc: a.desc ? o("desc", a.desc) : void 0,
   text: a.text ? o("text", a.text) : void 0,
   command: o("command", a.command),
   args: a.args.map((t) => Q(t, "arg", r))
-}), rr = (a) => {
+}), tr = (a) => {
   const r = a.params.flatMap(J).filter((t) => t !== void 0);
   return [`/*~struct~${a.struct}:${a.locale ?? ""}`, ...r, "*/"];
-}, tr = (a) => {
-  const r = [a.target, a.meta.author, a.meta.pluginDesc, a.meta.url, "", ...a.dependencies.base, ...a.dependencies.orderBefore, ...a.dependencies.orderAfter, (t = a.dependencies, t.base.length > 0 || t.orderBefore.length > 0 || t.orderAfter.length > 0 ? "" : void 0), ...a.schema.commands.flatMap(er), ...a.schema.params.flatMap(J)].filter((e) => e !== void 0);
+}, er = (a) => {
+  const r = [a.target, a.meta.author, a.meta.pluginDesc, a.meta.url, "", ...a.dependencies.base, ...a.dependencies.orderBefore, ...a.dependencies.orderAfter, (t = a.dependencies, t.base.length > 0 || t.orderBefore.length > 0 || t.orderAfter.length > 0 ? "" : void 0), ...a.schema.commands.flatMap(sr), ...a.schema.params.flatMap(J)].filter((e) => e !== void 0);
   var t;
   return [`/*:${a.locale ?? ""}`, ...r, "*/"];
-}, er = (a) => [a.command, a.text, a.desc, ...a.args.flatMap(J)], J = (a) => [a.name, a.base.kind, a.base.desc, a.base.text, a.base.parent, ...a.attr, a.default, ""], br = (a) => [...a.body, ...a.structs.flatMap((r) => r)].join(`
-`), vr = (a, r) => {
-  const t = sr(a, r);
-  return { body: tr(t), structs: t.schema.structs.map(rr) };
-}, sr = (a, r) => {
+}, sr = (a) => [a.command, a.text, a.desc, ...a.args.flatMap(J)], J = (a) => [a.name, a.base.kind, a.base.desc, a.base.text, a.base.parent, ...a.attr, a.default, ""], vr = (a) => [...a.body, ...a.structs.flatMap((r) => r)].join(`
+`), $r = (a, r) => {
+  const t = nr(a, r);
+  return { body: er(t), structs: t.schema.structs.map(tr) };
+}, nr = (a, r) => {
   const t = a.locale ?? "";
   return {
     locale: t,
-    schema: Ha(t, a.schema, r),
-    target: o(oa, a.target),
-    meta: mr(a.meta),
-    dependencies: nr(a.dependencies)
+    schema: Za(t, a.schema, r),
+    target: o(ca, a.target),
+    meta: or(a.meta),
+    dependencies: mr(a.dependencies)
   };
-}, nr = (a) => ({ base: a.base.map((r) => o(la, r)), orderBefore: a.orderBefore.map((r) => o(ua, r)), orderAfter: a.orderAfter.map((r) => o(ca, r)) }), mr = (a) => {
+}, mr = (a) => ({ base: a.base.map((r) => o(ia, r)), orderBefore: a.orderBefore.map((r) => o(la, r)), orderAfter: a.orderAfter.map((r) => o(ua, r)) }), or = (a) => {
   const r = a.author, t = a.plugindesc, e = a.url;
-  return { author: r ? o(pa, r) : void 0, pluginDesc: t ? o(da, t) : void 0, url: e ? o(ia, e) : void 0 };
-}, $r = ({ schema: a, pluginName: r }, t) => {
-  const e = fa(a, (s, n) => s.kind === "any" ? t(s, n) : s.kind === "string" || s.kind === "string[]");
-  return or(r, e);
-}, or = (a, r) => {
+  return { author: r ? o(fa, r) : void 0, pluginDesc: t ? o(pa, t) : void 0, url: e ? o(da, e) : void 0 };
+}, Sr = ({ schema: a, pluginName: r }, t) => {
+  const e = ga(a, (s, n) => s.kind === "any" ? t(s, n) : s.kind === "string" || s.kind === "string[]");
+  return cr(r, e);
+}, cr = (a, r) => {
   const t = new Map(r.structs.map((e) => [e.struct, e]));
   return {
     pluginName: a,
@@ -375,7 +375,7 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   if (s === void 0) return [r];
   const n = [...e, t];
   return s.params.flatMap((m) => j(a, [...r, m.name], m.attr, n));
-}, Sr = (a, r, t) => {
+}, kr = (a, r, t) => {
   const e = `${a.parameters[0]}:${a.parameters[1]}`, s = r.get(e);
   if (!s) return a;
   const n = B(a.parameters[3]), m = Y(n, s.argsPath, t);
@@ -384,7 +384,7 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
     indent: a.indent,
     parameters: [a.parameters[0], a.parameters[1], a.parameters[2], I(m)]
   };
-}, kr = (a, r, t) => {
+}, Cr = (a, r, t) => {
   const e = Y(a.parameters, r.paramsPath, t);
   return {
     name: a.name,
@@ -394,8 +394,8 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
   };
 }, Y = (a, r, t) => r.reduce((e, s) => {
   const n = T(e, s, t);
-  return n === null || typeof n != "object" || Array.isArray(n) ? e : n;
-}, a), w = (a, r) => typeof a == "string" ? r(a) ?? a : a, T = (a, r, t) => {
+  return q(n) ? n : e;
+}, a), q = (a) => a !== null && typeof a == "object" && !Array.isArray(a), w = (a, r) => typeof a == "string" ? r(a) ?? a : a, T = (a, r, t) => {
   if (r.length === 0) return a;
   const [e, ...s] = r;
   if (e === "[]") {
@@ -403,44 +403,44 @@ const Pa = (a, r, t, e = V) => F(a.attr.struct, `${r}["${a.name}"]`, t, e), Na =
     const c = a.map((u) => s.length === 0 ? w(u, t) : T(u, s, t));
     return c.every((u, l) => u === a[l]) ? a : c;
   }
-  if (a === null || typeof a != "object" || Array.isArray(a) || !(e in a)) return a;
+  if (!q(a) || !(e in a)) return a;
   const n = a[e], m = s.length === 0 ? w(n, t) : T(n, s, t);
   return m === n ? a : Object.fromEntries(Object.entries(a).map(([c, u]) => [c, c === e ? m : u]));
 };
 export {
-  Ra as buildCommandExtractors,
-  wa as buildParamExtractors,
-  Ar as buildPluginValueExtractor,
-  dr as compileCommandExtractorsFromPlugins,
+  wa as buildCommandExtractors,
+  Ba as buildParamExtractors,
+  br as buildPluginValueExtractor,
+  pr as compileCommandExtractorsFromPlugins,
   _ as compilePluginCommandExtractor,
-  Ta as compilePluginCommandPairs,
-  Nr as compilePluginParamExtractor,
-  Va as createPluginCommandExtractor,
-  pr as createPluginCommandExtractorMap,
-  or as createPluginParamDictionary,
-  fr as createPluginValueExtractor,
+  Va as compilePluginCommandPairs,
+  xr as compilePluginParamExtractor,
+  Fa as createPluginCommandExtractor,
+  fr as createPluginCommandExtractorMap,
+  cr as createPluginParamDictionary,
+  gr as createPluginValueExtractor,
   x as createPluginValuesPath,
-  Aa as createPrimiteveParamPath,
-  lr as createStructParamPath,
-  $r as createTextParamDictionary,
+  ba as createPrimiteveParamPath,
+  ir as createStructParamPath,
+  Sr as createTextParamDictionary,
   O as extractAllPluginValues,
-  gr as extractArgsFromPluginCommand,
-  ir as extractCommandArgsByKey,
+  hr as extractArgsFromPluginCommand,
+  dr as extractCommandArgsByKey,
   W as extractPluginCommandArgs,
-  Pr as extractPluginParamFromRecord,
-  sr as generatePluginAnnotation,
-  vr as generatePluginAnnotationLines,
-  br as generatePluginAnnotationText,
-  Na as getPathFromStructArraySchema,
-  Pa as getPathFromStructParam,
-  ur as getPathFromStructSchema,
-  hr as isCommandArgValue,
-  yr as ispluginParamValue,
-  ha as makeScalarArrayPath,
-  ga as makeScalarValuesPath,
-  xr as mergeCommandMap,
+  Nr as extractPluginParamFromRecord,
+  nr as generatePluginAnnotation,
+  $r as generatePluginAnnotationLines,
+  vr as generatePluginAnnotationText,
+  xa as getPathFromStructArraySchema,
+  Na as getPathFromStructParam,
+  lr as getPathFromStructSchema,
+  yr as isCommandArgValue,
+  Pr as ispluginParamValue,
+  ya as makeScalarArrayPath,
+  ha as makeScalarValuesPath,
+  Ar as mergeCommandMap,
   L as pluginComamndName,
-  kr as replacePluginParams,
+  Cr as replacePluginParams,
   Y as replacePluginValue,
-  Sr as replaceRuntimePluginCommand
+  kr as replaceRuntimePluginCommand
 };
