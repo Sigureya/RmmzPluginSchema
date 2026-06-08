@@ -34,7 +34,7 @@ export const replaceRuntimePluginCommand = (
       command.parameters[0],
       command.parameters[1],
       command.parameters[2],
-      stringifyDeepRecord(replacedArgs as {}),
+      stringifyDeepRecord(replacedArgs),
     ],
   };
 };
@@ -53,7 +53,7 @@ export const replacePluginParams = (
     name: plugin.name,
     status: plugin.status,
     description: plugin.description,
-    parameters: stringifyDeepRecord(parameters as {}),
+    parameters: stringifyDeepRecord(parameters),
   };
 };
 

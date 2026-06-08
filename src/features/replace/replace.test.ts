@@ -75,7 +75,7 @@ const runTestCase = (testCase: TestCase) => {
           name: "TestPlugin",
           status: true,
           description: "A test plugin",
-          parameters: stringifyDeepRecord(testCase.expected as {}),
+          parameters: stringifyDeepRecord(testCase.expected),
         };
         const result = replacePluginParams(
           plugin,

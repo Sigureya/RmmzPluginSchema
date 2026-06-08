@@ -1,5 +1,13 @@
-export const stringifyDeepRecord = <T>(
-  obj: Record<keyof T, string | object | boolean | number>
+export type DeepJSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | DeepJSONValue[]
+  | { [key: string]: DeepJSONValue };
+
+export const stringifyDeepRecord = <T extends object>(
+  obj: T,
 ): Record<keyof T, string> => {
   return fn(obj) as Record<keyof T, string>;
 };
@@ -32,7 +40,7 @@ const toStringRecord = (obj: unknown): Record<string, string> => {
         const arr = v.map((item) =>
           isPlainObject(item)
             ? JSON.stringify(toStringRecord(item))
-            : String(item)
+            : String(item),
         );
         return [k, JSON.stringify(arr)];
       }
@@ -42,7 +50,7 @@ const toStringRecord = (obj: unknown): Record<string, string> => {
       }
       // プリミティブ値はstring化
       return [k, String(v)];
-    })
+    }),
   );
 };
 
@@ -50,6 +58,6 @@ const toStringArray = (arr: unknown[]): string[] => {
   return arr.map((v) =>
     typeof v === "object" && v !== null
       ? JSON.stringify(toStringRecord(v))
-      : String(v)
+      : String(v),
   );
 };
