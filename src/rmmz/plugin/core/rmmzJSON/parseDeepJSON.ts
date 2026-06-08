@@ -5,22 +5,26 @@ export const parseDeepJSON = (json: string): JSONValue => {
   if (Array.isArray(parsed)) {
     return parsed.map(parseDeepValue);
   }
-  if (typeof parsed === "object" && parsed !== null) {
+  if (isJSONRecord(parsed)) {
     return parseUnknownRecord(parsed);
   }
   return parsed;
 };
 
 export const parseDeepRecord = (
-  record: Record<string, string>
+  record: Record<string, string>,
 ): Record<string, JSONValue> => {
   return parseUnknownRecord(record);
 };
 
 const parseUnknownRecord = (record: Record<string, JSONValue>) => {
   return Object.fromEntries(
-    Object.entries(record).map(([k, v]) => [k, parseDeepValue(v)])
+    Object.keys(record).map((key) => [key, parseDeepValue(record[key])]),
   );
+};
+
+const isJSONRecord = (value: JSONValue): value is Record<string, JSONValue> => {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 };
 
 const parseDeepValue = (value: JSONValue): JSONValue => {
@@ -34,12 +38,9 @@ const parseDeepValue = (value: JSONValue): JSONValue => {
       return parsed.map(parseDeepValue);
     }
     // オブジェクトの場合、各プロパティを再帰的にparseDeepValue
-    if (typeof parsed === "object" && parsed !== null) {
+    if (isJSONRecord(parsed)) {
       return Object.fromEntries(
-        Object.entries(parsed).map(([k, v]) => [
-          k,
-          parseDeepValue(v as JSONValue),
-        ])
+        Object.keys(parsed).map((key) => [key, parseDeepValue(parsed[key])]),
       );
     }
     return parsed;
