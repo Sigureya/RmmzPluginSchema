@@ -1,5 +1,6 @@
-import type { PluginReplacePathData } from "./features";
+import type { PluginCommandPathMap, PluginReplacePathData } from "./features";
 import { createPluginParamDictionary, replacePluginValue } from "./features";
+import { createPluginCommandMap } from "./features/replace/build";
 import type {
   DeepJSONValue,
   PluginParamsObject,
@@ -49,4 +50,10 @@ export const buildRuntimeData = (
     parameters: stringifyDeepRecord(newParams),
     status: true,
   };
+};
+
+export const createPluginCommandMapFromManifestData = (
+  data: ReadonlyArray<PluginManifestData>,
+): PluginCommandPathMap => {
+  return createPluginCommandMap(data);
 };
