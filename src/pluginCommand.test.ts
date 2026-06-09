@@ -53,66 +53,65 @@ const createCommandHandlers = (): PluginCommandExtractErrorHandlers => {
   };
 };
 
-const createExtractor = (): CommandArgExtractors => {
-  return {
-    pluginName: "MockPlugin",
-    commandName: "cmd",
-    desc: "",
-    text: "",
-    extractors: [
-      {
-        rootCategory: "args",
-        rootName: "cmd",
-        structs: [],
-        structArrays: [],
-        top: {
-          bundleName: "number",
-          arrays: [],
-          scalar: {
-            jsonPathJS: new JSONPathJS('$["value"]'),
-            record: {
-              value: {
-                kind: "number",
-                default: 0,
-              },
-            },
-          },
-        },
-      },
-      {
-        rootCategory: "args",
-        rootName: "cmd",
-        structs: [],
-        structArrays: [],
-        top: {
-          bundleName: "string",
-          arrays: [],
-          scalar: {
-            jsonPathJS: new JSONPathJS('$["note"]'),
-            record: {
-              note: {
-                kind: "string",
-                default: "",
-              },
-            },
-          },
-        },
-      },
-    ],
-  };
-};
-
-const createPipelineResult = (): PluginCommandExtractorSource => {
-  return {
-    plugins: [
-      {
-        commandExtractors: [createExtractor()],
-      },
-    ],
-  };
-};
-
 describe("extract", () => {
+  const createExtractor = (): CommandArgExtractors => {
+    return {
+      pluginName: "MockPlugin",
+      commandName: "cmd",
+      desc: "",
+      text: "",
+      extractors: [
+        {
+          rootCategory: "args",
+          rootName: "cmd",
+          structs: [],
+          structArrays: [],
+          top: {
+            bundleName: "number",
+            arrays: [],
+            scalar: {
+              jsonPathJS: new JSONPathJS('$["value"]'),
+              record: {
+                value: {
+                  kind: "number",
+                  default: 0,
+                },
+              },
+            },
+          },
+        },
+        {
+          rootCategory: "args",
+          rootName: "cmd",
+          structs: [],
+          structArrays: [],
+          top: {
+            bundleName: "string",
+            arrays: [],
+            scalar: {
+              jsonPathJS: new JSONPathJS('$["note"]'),
+              record: {
+                note: {
+                  kind: "string",
+                  default: "",
+                },
+              },
+            },
+          },
+        },
+      ],
+    };
+  };
+
+  const createPipelineResult = (): PluginCommandExtractorSource => {
+    return {
+      plugins: [
+        {
+          commandExtractors: [createExtractor()],
+        },
+      ],
+    };
+  };
   test("createCommandExtractorMapFromPipeline", () => {
     const map = createCommandExtractorMapFromPipeline(createPipelineResult());
     expect(map.has("MockPlugin:cmd")).toBe(true);
@@ -443,6 +442,33 @@ describe("replace pipeline", () => {
           "cmd",
           "",
           { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
+        ],
+      };
+      const fn = vi.fn(findNewText);
+      const result = replaceRuntimePluginCommand(command, pluginCommandMap, fn);
+      expect(result).toEqual(expectedCommand);
+      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    });
+    test("string[]", () => {
+      const command: PluginCommandData = {
+        code: 357,
+        indent: 0,
+        parameters: [
+          "MockPlugin",
+          "RandomMessage",
+          "",
+          { message: JSON.stringify([MOCK_OLD_TEXT, MOCK_IGNOE_TEXT]) },
+        ],
+      };
+      const expectedCommand: PluginCommandData = {
+        code: 357,
+        indent: 0,
+        parameters: [
+          "MockPlugin",
+          "RandomMessage",
+          "",
+          { message: JSON.stringify([MOCK_NEW_TEXT, MOCK_IGNOE_TEXT]) },
         ],
       };
       const fn = vi.fn(findNewText);
