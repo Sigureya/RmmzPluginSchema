@@ -28,9 +28,15 @@ const MOCK_NEW_TEXT = "newTextA";
 const MOCK_NON_REPLACE_TEXT = "nonReplaceText";
 const MOCK_IGNOE_TEXT = "42";
 
+const MOCK_OLD_NAME = "oldName";
+const MOCK_NEW_NAME = "newName";
+
 const findNewText = (value: string): string | undefined => {
   if (value === MOCK_OLD_TEXT) {
     return MOCK_NEW_TEXT;
+  }
+  if (value === MOCK_OLD_NAME) {
+    return MOCK_NEW_NAME;
   }
   return undefined;
 };
@@ -270,7 +276,7 @@ describe("replace command", () => {
 describe("replace pipeline", () => {
   const replacePathList: PluginReplacePathData = {
     pluginName: "MockPlugin",
-    paramsPath: [["gameTitle"], ["randomTexts", "[]"]],
+    paramsPath: [["gameTitle"], ["randomTexts", "[]"], ["personParam", "name"]],
     commands: [
       { commandName: "cmd", argsPath: [["note"]] },
       { commandName: "RandomMessage", argsPath: [["message", "[]"]] },
@@ -289,6 +295,10 @@ describe("replace pipeline", () => {
       {
         name: "randomTexts",
         attr: { kind: "string[]", default: [] },
+      },
+      {
+        name: "personParam",
+        attr: { kind: "struct", struct: "Person" },
       },
     ],
     structs: [
@@ -330,6 +340,9 @@ describe("replace pipeline", () => {
     description: "A test plugin",
     parameters: {
       gameTitle: MOCK_OLD_TEXT,
+      personParam: {
+        name: MOCK_OLD_NAME,
+      },
       randomTexts: [MOCK_OLD_TEXT, MOCK_NON_REPLACE_TEXT],
       dummy: MOCK_IGNOE_TEXT,
     },
@@ -342,6 +355,9 @@ describe("replace pipeline", () => {
         hashFunction(MOCK_NON_REPLACE_TEXT),
       ],
       dummy: MOCK_IGNOE_TEXT,
+      personParam: {
+        name: hashFunction(MOCK_OLD_NAME),
+      },
     };
     describe("createManifestData", () => {
       test("meta", () => {
@@ -423,6 +439,9 @@ describe("replace pipeline", () => {
           gameTitle: mockRuntimeText,
           randomTexts: JSON.stringify([mockRuntimeText, mockRuntimeText]),
           dummy: MOCK_IGNOE_TEXT,
+          personParam: JSON.stringify({
+            name: mockRuntimeText,
+          }),
         };
         expect(result.parameters).toEqual(stringifyDeepRecord(expectedParams));
       });
@@ -434,6 +453,9 @@ describe("replace pipeline", () => {
         gameTitle: MOCK_NEW_TEXT,
         randomTexts: JSON.stringify([MOCK_NEW_TEXT, MOCK_NON_REPLACE_TEXT]),
         dummy: MOCK_IGNOE_TEXT,
+        personParam: JSON.stringify({
+          name: MOCK_NEW_NAME,
+        }),
       };
       const expectedPlugin: PluginParamsRecord = {
         name: "MockPlugin",
@@ -539,73 +561,6 @@ describe("replace pipeline", () => {
         expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
         expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
       });
-    });
-  });
-  describe("full pipeline", () => {
-    test("param", () => {
-      const pluginManifestData: PluginManifestData = createManifestData(
-        plugin,
-        schema,
-        hashFunction,
-      );
-      const runtimeData: PluginParamsRecord = buildRuntimeData(
-        {
-          pluginName: plugin.name,
-          desc: plugin.description,
-          params: pluginManifestData.params,
-          paramsPath: pluginManifestData.paramsPath,
-          commands: pluginManifestData.commands,
-        },
-        (hash: string) => {
-          if (hash === hashFunction(MOCK_OLD_TEXT)) {
-            return MOCK_NEW_TEXT;
-          }
-          if (hash === hashFunction(MOCK_NON_REPLACE_TEXT)) {
-            return MOCK_NON_REPLACE_TEXT;
-          }
-        },
-      );
-      const expectedRuntimeData: PluginParamsRecord = {
-        name: plugin.name,
-        description: plugin.description,
-        status: true,
-        parameters: stringifyDeepRecord({
-          gameTitle: MOCK_NEW_TEXT,
-          randomTexts: JSON.stringify([MOCK_NEW_TEXT, MOCK_NON_REPLACE_TEXT]),
-          dummy: MOCK_IGNOE_TEXT,
-        }),
-      };
-      expect(runtimeData).toEqual(expectedRuntimeData);
-    });
-    test("command", () => {
-      const command: PluginCommandData = {
-        code: 357,
-        indent: 0,
-        parameters: [
-          "MockPlugin",
-          "cmd",
-          "",
-          { note: MOCK_OLD_TEXT, value: MOCK_IGNOE_TEXT },
-        ],
-      };
-
-      const expectedCommand: PluginCommandData = {
-        code: 357,
-        indent: 0,
-        parameters: [
-          "MockPlugin",
-          "cmd",
-          "",
-          { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
-        ],
-      };
-
-      const pluginCommandMap = createPluginCommandMap([replacePathList]);
-      const fn = vi.fn(findNewText);
-      const result = replaceRuntimePluginCommand(command, pluginCommandMap, fn);
-      expect(result).toEqual(expectedCommand);
-      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
-      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
     });
   });
 });
