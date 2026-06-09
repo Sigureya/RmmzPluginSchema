@@ -577,5 +577,35 @@ describe("replace pipeline", () => {
       };
       expect(runtimeData).toEqual(expectedRuntimeData);
     });
+    test("command", () => {
+      const command: PluginCommandData = {
+        code: 357,
+        indent: 0,
+        parameters: [
+          "MockPlugin",
+          "cmd",
+          "",
+          { note: MOCK_OLD_TEXT, value: MOCK_IGNOE_TEXT },
+        ],
+      };
+
+      const expectedCommand: PluginCommandData = {
+        code: 357,
+        indent: 0,
+        parameters: [
+          "MockPlugin",
+          "cmd",
+          "",
+          { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
+        ],
+      };
+
+      const pluginCommandMap = createPluginCommandMap([replacePathList]);
+      const fn = vi.fn(findNewText);
+      const result = replaceRuntimePluginCommand(command, pluginCommandMap, fn);
+      expect(result).toEqual(expectedCommand);
+      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    });
   });
 });
