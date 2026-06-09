@@ -1,15 +1,15 @@
 import { describe, expect, test, vi } from "vitest";
+import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
+import type { PluginCommandExtractorSource } from "../../../types";
 import {
   createCommandExtractorMapFromPipeline,
   extractPluginCommandWithExtractor,
-} from "./pluginCommand";
-import type { PluginCommandData } from "./rmmz";
-import type { PluginCommandExtractorSource } from "./types";
+} from "./commandBuild";
 import type {
-  CommandArgExtractors,
   PluginCommandExtractErrorHandlers,
-} from "./index";
+  CommandArgExtractors,
+} from "./extractor/types";
 
 const createCommandHandlers = (): PluginCommandExtractErrorHandlers => {
   return {
@@ -28,65 +28,65 @@ const createCommandHandlers = (): PluginCommandExtractErrorHandlers => {
   };
 };
 
-describe("extract", () => {
-  const createExtractor = (): CommandArgExtractors => {
-    return {
-      pluginName: "MockPlugin",
-      commandName: "cmd",
-      desc: "",
-      text: "",
-      extractors: [
-        {
-          rootCategory: "args",
-          rootName: "cmd",
-          structs: [],
-          structArrays: [],
-          top: {
-            bundleName: "number",
-            arrays: [],
-            scalar: {
-              jsonPathJS: new JSONPathJS('$["value"]'),
-              record: {
-                value: {
-                  kind: "number",
-                  default: 0,
-                },
+const createExtractor = (): CommandArgExtractors => {
+  return {
+    pluginName: "MockPlugin",
+    commandName: "cmd",
+    desc: "",
+    text: "",
+    extractors: [
+      {
+        rootCategory: "args",
+        rootName: "cmd",
+        structs: [],
+        structArrays: [],
+        top: {
+          bundleName: "number",
+          arrays: [],
+          scalar: {
+            jsonPathJS: new JSONPathJS('$["value"]'),
+            record: {
+              value: {
+                kind: "number",
+                default: 0,
               },
             },
           },
         },
-        {
-          rootCategory: "args",
-          rootName: "cmd",
-          structs: [],
-          structArrays: [],
-          top: {
-            bundleName: "string",
-            arrays: [],
-            scalar: {
-              jsonPathJS: new JSONPathJS('$["note"]'),
-              record: {
-                note: {
-                  kind: "string",
-                  default: "",
-                },
+      },
+      {
+        rootCategory: "args",
+        rootName: "cmd",
+        structs: [],
+        structArrays: [],
+        top: {
+          bundleName: "string",
+          arrays: [],
+          scalar: {
+            jsonPathJS: new JSONPathJS('$["note"]'),
+            record: {
+              note: {
+                kind: "string",
+                default: "",
               },
             },
           },
         },
-      ],
-    };
+      },
+    ],
   };
+};
 
-  const createPipelineResult = (): PluginCommandExtractorSource => {
-    return {
-      plugins: [
-        {
-          commandExtractors: [createExtractor()],
-        },
-      ],
-    };
+const createPipelineResult = (): PluginCommandExtractorSource => {
+  return {
+    plugins: [
+      {
+        commandExtractors: [createExtractor()],
+      },
+    ],
   };
+};
+describe("extract", () => {
   test("createCommandExtractorMapFromPipeline", () => {
     const map = createCommandExtractorMapFromPipeline(createPipelineResult());
     expect(map.has("MockPlugin:cmd")).toBe(true);
