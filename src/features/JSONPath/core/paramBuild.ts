@@ -15,7 +15,7 @@ import type {
 } from "./extractor/types";
 import { compileJSONPathSchema } from "./pathToMemo";
 
-interface BuildSingleParamResult {
+export interface BuildSingleParamResult {
   extractor: PluginValuesExtractorBundle;
   errors: PluginErrorStruct[];
 }
