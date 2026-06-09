@@ -1,7 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 import { JSONPathJS } from "jsonpath-js";
 import { replaceRuntimePluginCommand } from "./features/replace";
-import type { PluginReplacePathData } from "./features/replace";
+import type {
+  PluginCommandPathMap,
+  PluginReplacePathData,
+} from "./features/replace";
 import { createPluginCommandMap } from "./features/replace/build";
 import {
   createCommandExtractorMapFromPipeline,
@@ -213,7 +216,7 @@ describe("createPluginCommandMap", () => {
 
 describe("replacePluginParams", () => {
   test("flow: build map -> replaceRuntimePluginCommand -> extractPluginCommandWithExtractor", () => {
-    const replaceMap = createPluginCommandMap([
+    const replaceMap: PluginCommandPathMap = createPluginCommandMap([
       {
         pluginName: "MockPlugin",
         paramsPath: [],
