@@ -8,7 +8,7 @@ import {
 import { createPluginCommandMap } from "./features/replace/build";
 import type { JSONValue } from "./libs";
 import type { PluginManifestData } from "./manifest";
-import { createManifestData } from "./manifest";
+import { buildRuntimeData, createManifestData } from "./manifest";
 import type {
   PluginSchemaArray,
   PrimitiveParam,
@@ -17,7 +17,11 @@ import type {
   PluginParamsRecord,
   PluginTextSchema,
 } from "./rmmz";
-import { filterPluginSchemaByFn, filterPluginSchemaStringParams } from "./rmmz";
+import {
+  filterPluginSchemaByFn,
+  filterPluginSchemaStringParams,
+  stringifyDeepRecord,
+} from "./rmmz";
 
 const MOCK_OLD_TEXT = "oldTextA";
 const MOCK_NEW_TEXT = "newTextA";
@@ -331,43 +335,97 @@ describe("replace pipeline", () => {
     },
   };
   describe("manifest", () => {
-    test("meta", () => {
-      const manifest: PluginManifestData = createManifestData(
-        plugin,
-        schema,
-        hashFunction,
-      );
-      expect(manifest.pluginName).toEqual(plugin.name);
-      expect(manifest.desc).toEqual(plugin.description);
+    const manifestParams: Record<string, JSONValue> = {
+      gameTitle: hashFunction(MOCK_OLD_TEXT),
+      randomTexts: [
+        hashFunction(MOCK_OLD_TEXT),
+        hashFunction(MOCK_NON_REPLACE_TEXT),
+      ],
+      dummy: MOCK_IGNOE_TEXT,
+    };
+    describe("createManifestData", () => {
+      test("meta", () => {
+        const manifest: PluginManifestData = createManifestData(
+          plugin,
+          schema,
+          hashFunction,
+        );
+        expect(manifest.pluginName).toEqual(plugin.name);
+        expect(manifest.desc).toEqual(plugin.description);
+      });
+      test("paths", () => {
+        const manifest: PluginManifestData = createManifestData(
+          plugin,
+          schema,
+          hashFunction,
+        );
+        expect(manifest.commands).toEqual(replacePathList.commands);
+        expect(manifest.paramsPath).toEqual(replacePathList.paramsPath);
+      });
+      test("params", () => {
+        const fn = vi.fn(hashFunction);
+        const manifest: PluginManifestData = createManifestData(
+          plugin,
+          schema,
+          fn,
+        );
+        expect(manifest.params).toEqual(manifestParams);
+        expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+        expect(fn).toHaveBeenCalledWith(MOCK_NON_REPLACE_TEXT);
+        expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+      });
     });
-    test("paths", () => {
-      const manifest: PluginManifestData = createManifestData(
-        plugin,
-        schema,
-        hashFunction,
-      );
-      expect(manifest.commands).toEqual(replacePathList.commands);
-      expect(manifest.paramsPath).toEqual(replacePathList.paramsPath);
-    });
-    test("params", () => {
-      const fn = vi.fn(hashFunction);
-      const manifest: PluginManifestData = createManifestData(
-        plugin,
-        schema,
-        fn,
-      );
-      const expectedParams: Record<string, JSONValue> = {
-        gameTitle: hashFunction(MOCK_OLD_TEXT),
-        randomTexts: [
-          hashFunction(MOCK_OLD_TEXT),
-          hashFunction(MOCK_NON_REPLACE_TEXT),
-        ],
-        dummy: MOCK_IGNOE_TEXT,
-      };
-      expect(manifest.params).toEqual(expectedParams);
-      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
-      expect(fn).toHaveBeenCalledWith(MOCK_NON_REPLACE_TEXT);
-      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    describe("buildRuntimeData", () => {
+      test("basic", () => {
+        const result: PluginParamsRecord = buildRuntimeData(
+          {
+            pluginName: plugin.name,
+            desc: plugin.description,
+            params: manifestParams,
+            paramsPath: replacePathList.paramsPath,
+            commands: replacePathList.commands,
+          },
+          () => "",
+        );
+        expect(result.name).toEqual(plugin.name);
+        expect(result.description).toEqual(plugin.description);
+        expect(result.status).toBe(true);
+      });
+      test("call", () => {
+        const fn = vi.fn(() => "");
+        buildRuntimeData(
+          {
+            pluginName: plugin.name,
+            desc: plugin.description,
+            params: manifestParams,
+            paramsPath: replacePathList.paramsPath,
+            commands: replacePathList.commands,
+          },
+          fn,
+        );
+        expect(fn).toHaveBeenCalledWith(hashFunction(MOCK_OLD_TEXT));
+        expect(fn).toHaveBeenCalledWith(hashFunction(MOCK_NON_REPLACE_TEXT));
+        expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+      });
+      test("params", () => {
+        const mockRuntimeText = "runtimeTextA";
+        const result: PluginParamsRecord = buildRuntimeData(
+          {
+            pluginName: plugin.name,
+            desc: plugin.description,
+            params: manifestParams,
+            paramsPath: replacePathList.paramsPath,
+            commands: replacePathList.commands,
+          },
+          () => mockRuntimeText,
+        );
+        const expectedParams: Record<string, string> = {
+          gameTitle: mockRuntimeText,
+          randomTexts: JSON.stringify([mockRuntimeText, mockRuntimeText]),
+          dummy: MOCK_IGNOE_TEXT,
+        };
+        expect(result.parameters).toEqual(stringifyDeepRecord(expectedParams));
+      });
     });
   });
   describe("params", () => {
@@ -481,6 +539,43 @@ describe("replace pipeline", () => {
         expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
         expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
       });
+    });
+  });
+  describe("full pipeline", () => {
+    test("param", () => {
+      const pluginManifestData: PluginManifestData = createManifestData(
+        plugin,
+        schema,
+        hashFunction,
+      );
+      const runtimeData: PluginParamsRecord = buildRuntimeData(
+        {
+          pluginName: plugin.name,
+          desc: plugin.description,
+          params: pluginManifestData.params,
+          paramsPath: pluginManifestData.paramsPath,
+          commands: pluginManifestData.commands,
+        },
+        (hash: string) => {
+          if (hash === hashFunction(MOCK_OLD_TEXT)) {
+            return MOCK_NEW_TEXT;
+          }
+          if (hash === hashFunction(MOCK_NON_REPLACE_TEXT)) {
+            return MOCK_NON_REPLACE_TEXT;
+          }
+        },
+      );
+      const expectedRuntimeData: PluginParamsRecord = {
+        name: plugin.name,
+        description: plugin.description,
+        status: true,
+        parameters: stringifyDeepRecord({
+          gameTitle: MOCK_NEW_TEXT,
+          randomTexts: JSON.stringify([MOCK_NEW_TEXT, MOCK_NON_REPLACE_TEXT]),
+          dummy: MOCK_IGNOE_TEXT,
+        }),
+      };
+      expect(runtimeData).toEqual(expectedRuntimeData);
     });
   });
 });
