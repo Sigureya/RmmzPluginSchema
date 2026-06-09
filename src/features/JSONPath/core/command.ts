@@ -61,7 +61,9 @@ export const extractPluginCommandArgs = (
     args: extractAllPluginValues(value, extractor.extractors),
   };
 };
-
+/**
+ * @deprecated
+ */
 export const extractCommandArgsByKey = (
   value: Record<string, JSONValue>,
   key: CommandMapKey,

@@ -1,14 +1,65 @@
-import type { JSONPathReader } from "@RmmzPluginSchema/libs/jsonPath";
 import type {
+  JSONPathReader,
+  JSONValue,
+} from "@RmmzPluginSchema/libs/jsonPath";
+import type {
+  PluginCommandData,
   ClassifiedPluginParams,
   PluginCommandSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
+import { extractArgsFromPluginCommand } from "./command2";
 import type { StructPathError } from "./createPath/types";
 import type { CommandBuildErrorHandlers } from "./createPath/types/handlers";
 import { createPluginValuesPath } from "./createPath/valuePath";
-import type { CommandArgExtractors } from "./extractor/types";
+import type {
+  CommandArgExtractors,
+  CommandExtractError,
+  CommandMapKey,
+  PluginCommandExtractErrorHandlers,
+  PluginCommandExtractorSource,
+  PluginExtractedValue,
+} from "./extractor/types";
 import type { ErrorStruct } from "./extractor/types/error";
 import { compileJSONPathSchema } from "./pathToMemo";
+
+export interface PluginCommandExtractionOutput {
+  pluginName: string;
+  commandName: string;
+  args: PluginExtractedValue[];
+  error?: CommandExtractError;
+}
+
+export const createCommandExtractorMapFromPipeline = (
+  input: PluginCommandExtractorSource,
+): Map<CommandMapKey, CommandArgExtractors> => {
+  const entries = input.plugins.flatMap((plugin) =>
+    plugin.commandExtractors.map(
+      (extractor): [CommandMapKey, CommandArgExtractors] => [
+        `${extractor.pluginName}:${extractor.commandName}`,
+        extractor,
+      ],
+    ),
+  );
+  return new Map(entries);
+};
+
+export const extractPluginCommandWithExtractor = (
+  command: PluginCommandData,
+  map: ReadonlyMap<CommandMapKey, CommandArgExtractors>,
+  handlers: PluginCommandExtractErrorHandlers,
+  parseFn: (
+    record: Record<string, string>,
+  ) => Record<string, JSONValue> = parseDeepRecord,
+): PluginCommandExtractionOutput => {
+  const result = extractArgsFromPluginCommand(command, map, handlers, parseFn);
+  return {
+    pluginName: result.pluginName,
+    commandName: result.commandName,
+    args: result.args,
+    error: result.error,
+  };
+};
 
 const collectPathErrors = (
   pluginName: string,
