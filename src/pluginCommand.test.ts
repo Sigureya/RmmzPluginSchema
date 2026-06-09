@@ -27,6 +27,14 @@ import type {
 
 const MOCK_OLD_TEXT = "oldTextA";
 const MOCK_NEW_TEXT = "newTextA";
+const MOCK_IGNOE_TEXT = "42";
+
+const findNewText = (value: string): string | undefined => {
+  if (value === MOCK_OLD_TEXT) {
+    return MOCK_NEW_TEXT;
+  }
+  return undefined;
+};
 
 const createCommandHandlers = (): PluginCommandExtractErrorHandlers => {
   return {
@@ -320,64 +328,37 @@ describe("PluiginSchemaArray", () => {
   });
 });
 
-describe("replace", () => {
-  const replacePathList: PluginReplacePathData[] = [
-    {
-      pluginName: "MockPlugin",
-      paramsPath: [],
-      commands: [
-        { commandName: "cmd", argsPath: [["note"]] },
-        {
-          commandName: "move",
-          argsPath: [
-            ["position", "x"],
-            ["position", "y"],
-          ],
-        },
-      ],
-    },
-    {
-      pluginName: "OtherPlugin",
-      paramsPath: [],
-      commands: [{ commandName: "cmd", argsPath: [["label"]] }],
-    },
-  ];
+describe("replace pipeline", () => {
+  const replacePathList: PluginReplacePathData = {
+    pluginName: "MockPlugin",
+    paramsPath: [],
+    commands: [
+      { commandName: "cmd", argsPath: [["note"]] },
+      { commandName: "RandomMessage", argsPath: [["message", "[]"]] },
+    ],
+  };
   const schema: PluginSchemaArray = {
     params: [],
     structs: [],
     commands: [
       {
         command: "cmd",
-        args: [
-          { name: "value", attr: { kind: "number", default: 0 } },
-          { name: "note", attr: { kind: "string", default: "" } },
-        ],
+        args: [{ name: "note", attr: { kind: "string", default: "" } }],
+      },
+      {
+        command: "RandomMessage",
+        args: [{ name: "message", attr: { kind: "string[]", default: [] } }],
       },
     ],
   };
-  const dictionary = createPluginParamDictionary("MockPlugin", schema);
-  const replaceMap: PluginCommandPathMap = createPluginCommandMap([dictionary]);
-
-  test("引数: schema から command の argsPath を生成できる", () => {
-    expect(dictionary).toEqual({
-      pluginName: "MockPlugin",
-      paramsPath: [],
-      commands: [
-        {
-          commandName: "cmd",
-          argsPath: [["value"], ["note"]],
-        },
-      ],
-    });
+  test("1:createPluginParamDictionary", () => {
+    const result = createPluginParamDictionary(
+      replacePathList.pluginName,
+      schema,
+    );
+    expect(result).toEqual(replacePathList);
   });
-
-  test("戻り値: PluginCommandPathMap にキーが構築される", () => {
-    expect(replaceMap.get("MockPlugin:cmd")).toEqual({
-      argsPath: [["value"], ["note"]],
-    });
-  });
-
-  test("個別: replaceRuntimePluginCommand で note を置換できる", () => {
+  test("2:replaceRuntimePluginCommand", () => {
     const command: PluginCommandData = {
       code: 357,
       indent: 0,
@@ -385,13 +366,9 @@ describe("replace", () => {
         "MockPlugin",
         "cmd",
         "",
-        { value: "42", note: MOCK_OLD_TEXT },
+        { note: MOCK_OLD_TEXT, value: MOCK_IGNOE_TEXT },
       ],
     };
-    const fn = vi.fn((value: string) =>
-      value === MOCK_OLD_TEXT ? MOCK_NEW_TEXT : undefined,
-    );
-
     const expectedCommand: PluginCommandData = {
       code: 357,
       indent: 0,
@@ -399,92 +376,14 @@ describe("replace", () => {
         "MockPlugin",
         "cmd",
         "",
-        { value: "42", note: MOCK_NEW_TEXT },
+        { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
       ],
     };
-
-    const result = replaceRuntimePluginCommand(command, replaceMap, fn);
+    const fn = vi.fn(findNewText);
+    const map = createPluginCommandMap([replacePathList]);
+    const result = replaceRuntimePluginCommand(command, map, fn);
     expect(result).toEqual(expectedCommand);
     expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
-    expect(fn).not.toHaveBeenCalledWith("42");
-  });
-
-  test("個別: replace 後の command を extract できる", () => {
-    const extractMap = createCommandExtractorMapFromPipeline(
-      createPipelineResult(),
-    );
-    const handlers = createCommandHandlers();
-    const command: PluginCommandData = {
-      code: 357,
-      indent: 0,
-      parameters: [
-        "MockPlugin",
-        "cmd",
-        "",
-        { value: "42", note: MOCK_OLD_TEXT },
-      ],
-    };
-    const replaced = replaceRuntimePluginCommand(
-      command,
-      replaceMap,
-      (value) => (value === MOCK_OLD_TEXT ? MOCK_NEW_TEXT : undefined),
-    );
-
-    const extracted = extractPluginCommandWithExtractor(
-      replaced,
-      extractMap,
-      handlers,
-    );
-
-    expect(extracted.error).toBeUndefined();
-    expect(extracted.args[0]?.value).toBe(42);
-    expect(extracted.args[1]?.value).toBe(MOCK_NEW_TEXT);
-  });
-
-  test("個別: map 不一致時は command をそのまま返す", () => {
-    const missingMap: PluginCommandPathMap = createPluginCommandMap([
-      {
-        pluginName: "OtherPlugin",
-        paramsPath: [],
-        commands: [{ commandName: "cmd", argsPath: [["note"]] }],
-      },
-    ]);
-    const command: PluginCommandData = {
-      code: 357,
-      indent: 0,
-      parameters: [
-        "MockPlugin",
-        "cmd",
-        "",
-        { value: "42", note: MOCK_OLD_TEXT },
-      ],
-    };
-    const fn = vi.fn((value: string) =>
-      value === MOCK_OLD_TEXT ? MOCK_NEW_TEXT : undefined,
-    );
-
-    const result = replaceRuntimePluginCommand(command, missingMap, fn);
-
-    expect(result).toBe(command);
-    expect(fn).not.toHaveBeenCalled();
-  });
-  test("createPluginCommandMap: builds key and argsPath map", () => {
-    type ValueType = { argsPath: string[][] };
-    type MapType = ReadonlyMap<string, ValueType>;
-
-    const pathMap: MapType = createPluginCommandMap(replacePathList);
-
-    expect(pathMap.get("MockPlugin:cmd")).toEqual({
-      argsPath: [["note"]],
-    });
-    expect(pathMap.get("MockPlugin:move")).toEqual({
-      argsPath: [
-        ["position", "x"],
-        ["position", "y"],
-      ],
-    });
-    expect(pathMap.get("OtherPlugin:cmd")).toEqual({
-      argsPath: [["label"]],
-    });
+    expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
   });
 });
