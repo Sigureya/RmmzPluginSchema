@@ -6,6 +6,7 @@ import type {
   PluginExtractedValue,
   CommandArgExtractors,
   ParamBuildErrorHandlers,
+  PluginCommandExtractorSource,
 } from "./features";
 import type { MessageOfparsePluginParamRecordEx } from "./fileio";
 import type { JSONValue, JSONPathReader } from "./libs";
@@ -64,14 +65,6 @@ export interface PluginExtractionItemResult<E> {
   params: PluginExtractedValue[];
   commandExtractors: CommandArgExtractors[];
   errors: PluginExtractionError<E>[];
-}
-
-export interface PluginCommandExtractorSourceItem {
-  commandExtractors: CommandArgExtractors[];
-}
-
-export interface PluginCommandExtractorSource {
-  plugins: PluginCommandExtractorSourceItem[];
 }
 
 export interface PluginParamSourceItem {

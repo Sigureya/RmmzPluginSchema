@@ -8,7 +8,6 @@ import type {
   PluginCommandSchemaArray,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { parseDeepRecord } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginCommandExtractorSource } from "../../../types";
 import { extractArgsFromPluginCommand } from "./command2";
 import type { StructPathError } from "./createPath/types";
 import type { CommandBuildErrorHandlers } from "./createPath/types/handlers";
@@ -18,6 +17,7 @@ import type {
   CommandExtractError,
   CommandMapKey,
   PluginCommandExtractErrorHandlers,
+  PluginCommandExtractorSource,
   PluginExtractedValue,
 } from "./extractor/types";
 import type { ErrorStruct } from "./extractor/types/error";

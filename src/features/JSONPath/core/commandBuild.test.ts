@@ -1,7 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import type { PluginCommandData } from "@RmmzPluginSchema/rmmz/plugin";
 import { JSONPathJS } from "jsonpath-js";
-import type { PluginCommandExtractorSource } from "../../../types";
 import {
   createCommandExtractorMapFromPipeline,
   extractPluginCommandWithExtractor,
@@ -9,6 +8,7 @@ import {
 import type {
   PluginCommandExtractErrorHandlers,
   CommandArgExtractors,
+  PluginCommandExtractorSource,
 } from "./extractor/types";
 
 const createCommandHandlers = (): PluginCommandExtractErrorHandlers => {
