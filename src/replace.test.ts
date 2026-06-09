@@ -2,6 +2,7 @@ import { describe, test, expect, vi } from "vitest";
 import type { PluginReplacePathData, PluginCommandPathMap } from "./features";
 import {
   createPluginParamDictionary,
+  replacePluginParams,
   replaceRuntimePluginCommand,
 } from "./features";
 import { createPluginCommandMap } from "./features/replace/build";
@@ -9,6 +10,8 @@ import type {
   PluginSchemaArray,
   PrimitiveParam,
   PluginCommandData,
+  PluginParamsObject,
+  PluginParamsRecord,
 } from "./rmmz";
 import { filterPluginSchemaByFn, filterPluginSchemaStringParams } from "./rmmz";
 
@@ -302,6 +305,44 @@ describe("replace pipeline", () => {
       },
     ],
   };
+  test("createPluginParamDictionary", () => {
+    const result: PluginReplacePathData = createPluginParamDictionary(
+      replacePathList.pluginName,
+      schema,
+    );
+    expect(result).toEqual(replacePathList);
+  });
+  describe("params", () => {
+    const plugin: PluginParamsObject = {
+      name: "MockPlugin",
+      status: true,
+      description: "A test plugin",
+      parameters: {
+        gameTitle: MOCK_OLD_TEXT,
+        randomTexts: [MOCK_OLD_TEXT, MOCK_NON_REPLACE_TEXT],
+        dummy: MOCK_IGNOE_TEXT,
+      },
+    };
+    test("replacePluginParams", () => {
+      const params: PluginParamsRecord["parameters"] = {
+        gameTitle: MOCK_NEW_TEXT,
+        randomTexts: JSON.stringify([MOCK_NEW_TEXT, MOCK_NON_REPLACE_TEXT]),
+        dummy: MOCK_IGNOE_TEXT,
+      };
+      const expectedPlugin: PluginParamsRecord = {
+        name: "MockPlugin",
+        status: true,
+        description: "A test plugin",
+        parameters: params,
+      };
+      const fn = vi.fn(findNewText);
+      const result = replacePluginParams(plugin, replacePathList, fn);
+      expect(result).toEqual(expectedPlugin);
+      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+      expect(fn).toHaveBeenCalledWith(MOCK_NON_REPLACE_TEXT);
+      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    });
+  });
   describe("command", () => {
     const pluginCommandMap: PluginCommandPathMap = new Map([
       [
@@ -313,18 +354,11 @@ describe("replace pipeline", () => {
       ["MockPlugin:cmd", { argsPath: [["note"]] }],
       ["MockPlugin:AddPerson", { argsPath: [["person", "name"]] }],
     ]);
-    test("1:createPluginParamDictionary", () => {
-      const result = createPluginParamDictionary(
-        replacePathList.pluginName,
-        schema,
-      );
-      expect(result).toEqual(replacePathList);
-    });
-    test("2:createPluginCommandMap", () => {
+    test("1:createPluginCommandMap", () => {
       const map = createPluginCommandMap([replacePathList]);
       expect(map).toEqual(pluginCommandMap);
     });
-    describe("3:replaceRuntimePluginCommand", () => {
+    describe("2:replaceRuntimePluginCommand", () => {
       test("string", () => {
         const command: PluginCommandData = {
           code: 357,
