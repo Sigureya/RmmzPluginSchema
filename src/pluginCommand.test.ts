@@ -27,6 +27,7 @@ import type {
 
 const MOCK_OLD_TEXT = "oldTextA";
 const MOCK_NEW_TEXT = "newTextA";
+const MOCK_NON_REPLACE_TEXT = "nonReplaceText";
 const MOCK_IGNOE_TEXT = "42";
 
 const findNewText = (value: string): string | undefined => {
@@ -376,6 +377,28 @@ describe("replace", () => {
     expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
     expect(fn).toHaveBeenCalledTimes(1);
   });
+  test("text not found", () => {
+    const notFoundCommand: PluginCommandData = {
+      code: 357,
+      indent: 0,
+      parameters: [
+        "MockPlugin",
+        "PathOk",
+        "",
+        { note: MOCK_NON_REPLACE_TEXT, value: MOCK_IGNOE_TEXT },
+      ],
+    };
+    const fn = vi.fn(findNewText);
+    const result = replaceRuntimePluginCommand(
+      notFoundCommand,
+      new Map([["MockPlugin:PathOk", { argsPath: [["note"]] }]]),
+      fn,
+    );
+    expect(result).toEqual(notFoundCommand);
+    expect(fn).toHaveBeenCalledWith(MOCK_NON_REPLACE_TEXT);
+    expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("replace pipeline", () => {
@@ -458,7 +481,13 @@ describe("replace pipeline", () => {
           "MockPlugin",
           "RandomMessage",
           "",
-          { message: JSON.stringify([MOCK_OLD_TEXT, MOCK_IGNOE_TEXT]) },
+          {
+            message: JSON.stringify([
+              MOCK_OLD_TEXT,
+              MOCK_IGNOE_TEXT,
+              MOCK_NON_REPLACE_TEXT,
+            ]),
+          },
         ],
       };
       const expectedCommand: PluginCommandData = {
@@ -468,7 +497,13 @@ describe("replace pipeline", () => {
           "MockPlugin",
           "RandomMessage",
           "",
-          { message: JSON.stringify([MOCK_NEW_TEXT, MOCK_IGNOE_TEXT]) },
+          {
+            message: JSON.stringify([
+              MOCK_NEW_TEXT,
+              MOCK_IGNOE_TEXT,
+              MOCK_NON_REPLACE_TEXT,
+            ]),
+          },
         ],
       };
       const fn = vi.fn(findNewText);
