@@ -1,5 +1,6 @@
 export * from './command';
 export * from './command2';
+export * from './commandBuild';
 export * from './createPath';
 export type * from './extractor/types';
 export * from './extractor/value';
