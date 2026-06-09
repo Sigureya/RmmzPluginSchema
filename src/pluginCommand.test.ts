@@ -328,6 +328,57 @@ describe("PluiginSchemaArray", () => {
   });
 });
 
+describe("replace", () => {
+  const command: PluginCommandData = {
+    code: 357,
+    indent: 0,
+    parameters: [
+      "MockPlugin",
+      "NoPath",
+      "",
+      { note: MOCK_OLD_TEXT, value: MOCK_IGNOE_TEXT },
+    ],
+  };
+  test("command not found", () => {
+    const fn = vi.fn(findNewText);
+    const result = replaceRuntimePluginCommand(command, new Map(), fn);
+    expect(result).toEqual(command);
+    expect(fn).not.toHaveBeenCalled();
+  });
+  test("command found but no paths", () => {
+    const fn = vi.fn(findNewText);
+    const result = replaceRuntimePluginCommand(
+      command,
+      new Map([["MockPlugin:NoPath", { argsPath: [] }]]),
+      fn,
+    );
+    expect(result).toEqual(command);
+    expect(fn).not.toHaveBeenCalled();
+  });
+  test("command found with paths", () => {
+    const expectedCommand: PluginCommandData = {
+      code: 357,
+      indent: 0,
+      parameters: [
+        "MockPlugin",
+        "NoPath",
+        "",
+        { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
+      ],
+    };
+    const fn = vi.fn(findNewText);
+    const result = replaceRuntimePluginCommand(
+      command,
+      new Map([["MockPlugin:NoPath", { argsPath: [["note"]] }]]),
+      fn,
+    );
+    expect(result).toEqual(expectedCommand);
+    expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+    expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("replace pipeline", () => {
   const replacePathList: PluginReplacePathData = {
     pluginName: "MockPlugin",
@@ -351,6 +402,16 @@ describe("replace pipeline", () => {
       },
     ],
   };
+
+  const pluginCommandMap: PluginCommandPathMap = new Map([
+    [
+      "MockPlugin:RandomMessage",
+      {
+        argsPath: [["message", "[]"]],
+      },
+    ],
+    ["MockPlugin:cmd", { argsPath: [["note"]] }],
+  ]);
   test("1:createPluginParamDictionary", () => {
     const result = createPluginParamDictionary(
       replacePathList.pluginName,
@@ -358,32 +419,37 @@ describe("replace pipeline", () => {
     );
     expect(result).toEqual(replacePathList);
   });
-  test("2:replaceRuntimePluginCommand", () => {
-    const command: PluginCommandData = {
-      code: 357,
-      indent: 0,
-      parameters: [
-        "MockPlugin",
-        "cmd",
-        "",
-        { note: MOCK_OLD_TEXT, value: MOCK_IGNOE_TEXT },
-      ],
-    };
-    const expectedCommand: PluginCommandData = {
-      code: 357,
-      indent: 0,
-      parameters: [
-        "MockPlugin",
-        "cmd",
-        "",
-        { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
-      ],
-    };
-    const fn = vi.fn(findNewText);
+  test("2:createPluginCommandMap", () => {
     const map = createPluginCommandMap([replacePathList]);
-    const result = replaceRuntimePluginCommand(command, map, fn);
-    expect(result).toEqual(expectedCommand);
-    expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
-    expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    expect(map).toEqual(pluginCommandMap);
+  });
+  describe("3:replaceRuntimePluginCommand", () => {
+    test("string", () => {
+      const command: PluginCommandData = {
+        code: 357,
+        indent: 0,
+        parameters: [
+          "MockPlugin",
+          "cmd",
+          "",
+          { note: MOCK_OLD_TEXT, value: MOCK_IGNOE_TEXT },
+        ],
+      };
+      const expectedCommand: PluginCommandData = {
+        code: 357,
+        indent: 0,
+        parameters: [
+          "MockPlugin",
+          "cmd",
+          "",
+          { note: MOCK_NEW_TEXT, value: MOCK_IGNOE_TEXT },
+        ],
+      };
+      const fn = vi.fn(findNewText);
+      const result = replaceRuntimePluginCommand(command, pluginCommandMap, fn);
+      expect(result).toEqual(expectedCommand);
+      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    });
   });
 });
