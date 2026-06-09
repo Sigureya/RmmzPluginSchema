@@ -6,12 +6,16 @@ import {
   replaceRuntimePluginCommand,
 } from "./features";
 import { createPluginCommandMap } from "./features/replace/build";
+import type { JSONValue } from "./libs";
+import type { PluginManifestData } from "./manifest";
+import { createManifestData } from "./manifest";
 import type {
   PluginSchemaArray,
   PrimitiveParam,
   PluginCommandData,
   PluginParamsObject,
   PluginParamsRecord,
+  PluginTextSchema,
 } from "./rmmz";
 import { filterPluginSchemaByFn, filterPluginSchemaStringParams } from "./rmmz";
 
@@ -25,6 +29,10 @@ const findNewText = (value: string): string | undefined => {
     return MOCK_NEW_TEXT;
   }
   return undefined;
+};
+
+const hashFunction = (str: string): string => {
+  return `hashed_${str}`;
 };
 
 describe("PluiginSchemaArray", () => {
@@ -268,7 +276,7 @@ describe("replace pipeline", () => {
       },
     ],
   };
-  const schema: PluginSchemaArray = {
+  const schema: PluginTextSchema = {
     params: [
       {
         name: "gameTitle",
@@ -312,17 +320,57 @@ describe("replace pipeline", () => {
     );
     expect(result).toEqual(replacePathList);
   });
-  describe("params", () => {
-    const plugin: PluginParamsObject = {
-      name: "MockPlugin",
-      status: true,
-      description: "A test plugin",
-      parameters: {
-        gameTitle: MOCK_OLD_TEXT,
-        randomTexts: [MOCK_OLD_TEXT, MOCK_NON_REPLACE_TEXT],
+  const plugin: PluginParamsObject = {
+    name: "MockPlugin",
+    status: true,
+    description: "A test plugin",
+    parameters: {
+      gameTitle: MOCK_OLD_TEXT,
+      randomTexts: [MOCK_OLD_TEXT, MOCK_NON_REPLACE_TEXT],
+      dummy: MOCK_IGNOE_TEXT,
+    },
+  };
+  describe("manifest", () => {
+    test("meta", () => {
+      const manifest: PluginManifestData = createManifestData(
+        plugin,
+        schema,
+        hashFunction,
+      );
+      expect(manifest.pluginName).toEqual(plugin.name);
+      expect(manifest.desc).toEqual(plugin.description);
+    });
+    test("paths", () => {
+      const manifest: PluginManifestData = createManifestData(
+        plugin,
+        schema,
+        hashFunction,
+      );
+      expect(manifest.commands).toEqual(replacePathList.commands);
+      expect(manifest.paramsPath).toEqual(replacePathList.paramsPath);
+    });
+    test("params", () => {
+      const fn = vi.fn(hashFunction);
+      const manifest: PluginManifestData = createManifestData(
+        plugin,
+        schema,
+        fn,
+      );
+      const expectedParams: Record<string, JSONValue> = {
+        gameTitle: hashFunction(MOCK_OLD_TEXT),
+        randomTexts: [
+          hashFunction(MOCK_OLD_TEXT),
+          hashFunction(MOCK_NON_REPLACE_TEXT),
+        ],
         dummy: MOCK_IGNOE_TEXT,
-      },
-    };
+      };
+      expect(manifest.params).toEqual(expectedParams);
+      expect(fn).toHaveBeenCalledWith(MOCK_OLD_TEXT);
+      expect(fn).toHaveBeenCalledWith(MOCK_NON_REPLACE_TEXT);
+      expect(fn).not.toHaveBeenCalledWith(MOCK_IGNOE_TEXT);
+    });
+  });
+  describe("params", () => {
     test("replacePluginParams", () => {
       const params: PluginParamsRecord["parameters"] = {
         gameTitle: MOCK_NEW_TEXT,
