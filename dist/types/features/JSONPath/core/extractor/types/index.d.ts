@@ -3,6 +3,7 @@ export * from './bundle';
 export * from './command';
 export * from './error';
 export * from './extractor';
+export * from './hoge';
 export * from './param';
 export * from './result';
 export * from './scalar';

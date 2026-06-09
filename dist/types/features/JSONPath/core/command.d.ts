@@ -3,6 +3,9 @@ import { PluginSchema, PluginCommandSchemaArray, ClassifiedPluginParams } from '
 import { CommandArgExtractors, CommandExtractResult, CommandMapKey, CommandExtractorEntry } from './extractor/types';
 export declare const compilePluginCommandExtractor: (pluginName: string, schema: PluginCommandSchemaArray, structMap: ReadonlyMap<string, ClassifiedPluginParams>, factoryFn: (path: string) => JSONPathReader) => CommandArgExtractors;
 export declare const extractPluginCommandArgs: (value: Record<string, JSONValue>, extractor: CommandArgExtractors) => CommandExtractResult;
+/**
+ * @deprecated
+ */
 export declare const extractCommandArgsByKey: (value: Record<string, JSONValue>, key: CommandMapKey, map: ReadonlyMap<CommandMapKey, CommandArgExtractors>) => CommandExtractResult | undefined;
 /**
  * @deprecated
