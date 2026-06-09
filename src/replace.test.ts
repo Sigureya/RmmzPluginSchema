@@ -255,15 +255,33 @@ describe("replace command", () => {
 describe("replace pipeline", () => {
   const replacePathList: PluginReplacePathData = {
     pluginName: "MockPlugin",
-    paramsPath: [],
+    paramsPath: [["gameTitle"], ["randomTexts", "[]"]],
     commands: [
       { commandName: "cmd", argsPath: [["note"]] },
       { commandName: "RandomMessage", argsPath: [["message", "[]"]] },
+      {
+        commandName: "AddPerson",
+        argsPath: [["person", "name"]],
+      },
     ],
   };
   const schema: PluginSchemaArray = {
-    params: [],
-    structs: [],
+    params: [
+      {
+        name: "gameTitle",
+        attr: { kind: "string", default: "" },
+      },
+      {
+        name: "randomTexts",
+        attr: { kind: "string[]", default: [] },
+      },
+    ],
+    structs: [
+      {
+        struct: "Person",
+        params: [{ name: "name", attr: { kind: "string", default: "" } }],
+      },
+    ],
     commands: [
       {
         command: "cmd",
@@ -272,6 +290,15 @@ describe("replace pipeline", () => {
       {
         command: "RandomMessage",
         args: [{ name: "message", attr: { kind: "string[]", default: [] } }],
+      },
+      {
+        command: "AddPerson",
+        args: [
+          {
+            name: "person",
+            attr: { kind: "struct", struct: "Person" },
+          },
+        ],
       },
     ],
   };
@@ -284,6 +311,7 @@ describe("replace pipeline", () => {
         },
       ],
       ["MockPlugin:cmd", { argsPath: [["note"]] }],
+      ["MockPlugin:AddPerson", { argsPath: [["person", "name"]] }],
     ]);
     test("1:createPluginParamDictionary", () => {
       const result = createPluginParamDictionary(
