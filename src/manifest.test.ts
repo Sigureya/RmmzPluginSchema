@@ -20,6 +20,7 @@ import type {
 import {
   filterPluginSchemaByFn,
   filterPluginSchemaStringParams,
+  stringifyDeepJSON,
   stringifyDeepRecord,
 } from "./rmmz";
 
@@ -276,7 +277,12 @@ describe("replace command", () => {
 describe("replace pipeline", () => {
   const replacePathList: PluginReplacePathData = {
     pluginName: "MockPlugin",
-    paramsPath: [["gameTitle"], ["randomTexts", "[]"], ["personParam", "name"]],
+    paramsPath: [
+      ["gameTitle"],
+      ["randomTexts", "[]"],
+      ["personParam", "name"],
+      ["personList", "[]", "name"],
+    ],
     commands: [
       { commandName: "cmd", argsPath: [["note"]] },
       { commandName: "RandomMessage", argsPath: [["message", "[]"]] },
@@ -299,6 +305,10 @@ describe("replace pipeline", () => {
       {
         name: "personParam",
         attr: { kind: "struct", struct: "Person" },
+      },
+      {
+        name: "personList",
+        attr: { kind: "struct[]", struct: "Person" },
       },
     ],
     structs: [
@@ -345,6 +355,14 @@ describe("replace pipeline", () => {
       },
       randomTexts: [MOCK_OLD_TEXT, MOCK_NON_REPLACE_TEXT],
       dummy: MOCK_IGNOE_TEXT,
+      personList: [
+        {
+          name: MOCK_OLD_NAME,
+        },
+        {
+          name: MOCK_NON_REPLACE_TEXT,
+        },
+      ],
     },
   };
   describe("manifest", () => {
@@ -358,6 +376,10 @@ describe("replace pipeline", () => {
       personParam: {
         name: hashFunction(MOCK_OLD_NAME),
       },
+      personList: [
+        { name: hashFunction(MOCK_OLD_NAME) },
+        { name: hashFunction(MOCK_NON_REPLACE_TEXT) },
+      ],
     };
     describe("createManifestData", () => {
       test("meta", () => {
@@ -442,6 +464,10 @@ describe("replace pipeline", () => {
           personParam: JSON.stringify({
             name: mockRuntimeText,
           }),
+          personList: stringifyDeepJSON([
+            { name: mockRuntimeText },
+            { name: mockRuntimeText },
+          ]),
         };
         expect(result.parameters).toEqual(stringifyDeepRecord(expectedParams));
       });
@@ -456,6 +482,10 @@ describe("replace pipeline", () => {
         personParam: JSON.stringify({
           name: MOCK_NEW_NAME,
         }),
+        personList: stringifyDeepJSON([
+          { name: MOCK_NEW_NAME },
+          { name: MOCK_NON_REPLACE_TEXT },
+        ]),
       };
       const expectedPlugin: PluginParamsRecord = {
         name: "MockPlugin",
