@@ -1,6 +1,9 @@
 import { describe, expect, test, vi } from "vitest";
 import { JSONPathJS } from "jsonpath-js";
-import { replaceRuntimePluginCommand } from "./features/replace";
+import {
+  createPluginParamDictionary,
+  replaceRuntimePluginCommand,
+} from "./features/replace";
 import type {
   PluginCommandPathMap,
   PluginReplacePathData,
@@ -10,7 +13,7 @@ import {
   createCommandExtractorMapFromPipeline,
   extractPluginCommandWithExtractor,
 } from "./pluginCommand";
-import type { PluginCommandData } from "./rmmz";
+import type { PluginCommandData, PluginSchemaArray } from "./rmmz";
 import type { PluginCommandExtractorSource } from "./types";
 import type {
   CommandArgExtractors,
@@ -162,38 +165,91 @@ describe("pluginCommand", () => {
     expect(result.args[1]?.value).toBe("memo");
   });
 });
+const replacePathList: PluginReplacePathData[] = [
+  {
+    pluginName: "MockPlugin",
+    paramsPath: [],
+    commands: [
+      {
+        commandName: "cmd",
+        argsPath: [["note"]],
+      },
+      {
+        commandName: "move",
+        argsPath: [
+          ["position", "x"],
+          ["position", "y"],
+        ],
+      },
+    ],
+  },
+  {
+    pluginName: "OtherPlugin",
+    paramsPath: [],
+    commands: [
+      {
+        commandName: "cmd",
+        argsPath: [["label"]],
+      },
+    ],
+  },
+];
 
+describe("createPluginParamDictionary", () => {
+  test("pipeline: dictionary -> command map -> replace -> extract", () => {
+    const schema: PluginSchemaArray = {
+      params: [],
+      structs: [],
+      commands: [
+        {
+          command: "cmd",
+          args: [
+            { name: "value", attr: { kind: "number", default: 0 } },
+            { name: "note", attr: { kind: "string", default: "" } },
+          ],
+        },
+      ],
+    };
+
+    const dictionary = createPluginParamDictionary("MockPlugin", schema);
+    const replaceMap = createPluginCommandMap([dictionary]);
+    const extractMap = createCommandExtractorMapFromPipeline(
+      createPipelineResult(),
+    );
+    const handlers = createCommandHandlers();
+    const command: PluginCommandData = {
+      code: 357,
+      indent: 0,
+      parameters: [
+        "MockPlugin",
+        "cmd",
+        "",
+        { value: "42", note: MOCK_OLD_TEXT },
+      ],
+    };
+
+    const replaced = replaceRuntimePluginCommand(
+      command,
+      replaceMap,
+      (value) => (value === MOCK_OLD_TEXT ? MOCK_NEW_TEXT : undefined),
+    );
+    const extracted = extractPluginCommandWithExtractor(
+      replaced,
+      extractMap,
+      handlers,
+    );
+
+    expect(replaced.parameters[3]).toEqual({
+      value: "42",
+      note: MOCK_NEW_TEXT,
+    });
+    expect(extracted.error).toBeUndefined();
+    expect(extracted.args[0]?.value).toBe(42);
+    expect(extracted.args[1]?.value).toBe(MOCK_NEW_TEXT);
+  });
+});
 describe("createPluginCommandMap", () => {
   test("createPluginCommandMap: builds key and argsPath map", () => {
-    const replacePathList: PluginReplacePathData[] = [
-      {
-        pluginName: "MockPlugin",
-        paramsPath: [],
-        commands: [
-          {
-            commandName: "cmd",
-            argsPath: [["note"]],
-          },
-          {
-            commandName: "move",
-            argsPath: [
-              ["position", "x"],
-              ["position", "y"],
-            ],
-          },
-        ],
-      },
-      {
-        pluginName: "OtherPlugin",
-        paramsPath: [],
-        commands: [
-          {
-            commandName: "cmd",
-            argsPath: [["label"]],
-          },
-        ],
-      },
-    ];
     type ValueType = { argsPath: string[][] };
     type MapType = ReadonlyMap<string, ValueType>;
 
@@ -214,7 +270,7 @@ describe("createPluginCommandMap", () => {
   });
 });
 
-describe("replacePluginParams", () => {
+describe("replaceRuntimePluginCommand", () => {
   test("flow: build map -> replaceRuntimePluginCommand -> extractPluginCommandWithExtractor", () => {
     const replaceMap: PluginCommandPathMap = createPluginCommandMap([
       {
@@ -260,5 +316,33 @@ describe("replacePluginParams", () => {
     expect(result).toEqual(expected);
     expect(fn).toHaveBeenCalledWith("oldTextA");
     expect(fn).not.toHaveBeenCalledWith("42");
+  });
+
+  test("returns original command when map key is missing", () => {
+    const replaceMap: PluginCommandPathMap = createPluginCommandMap([
+      {
+        pluginName: "OtherPlugin",
+        paramsPath: [],
+        commands: [{ commandName: "cmd", argsPath: [["note"]] }],
+      },
+    ]);
+    const command: PluginCommandData = {
+      code: 357,
+      indent: 0,
+      parameters: [
+        "MockPlugin",
+        "cmd",
+        "",
+        { value: "42", note: MOCK_OLD_TEXT },
+      ],
+    };
+
+    const fn = vi.fn((value: string) =>
+      value === MOCK_OLD_TEXT ? MOCK_NEW_TEXT : undefined,
+    );
+    const result = replaceRuntimePluginCommand(command, replaceMap, fn);
+
+    expect(result).toBe(command);
+    expect(fn).not.toHaveBeenCalled();
   });
 });
