@@ -8,7 +8,11 @@ import {
 import { createPluginCommandMap } from "./features/replace/build";
 import type { JSONValue } from "./libs";
 import type { PluginManifestData } from "./manifest";
-import { buildRuntimeData, createManifestData } from "./manifest";
+import {
+  buildRuntimeData,
+  createManifestData,
+  createPluginCommandMapFromManifestData,
+} from "./manifest";
 import type {
   PluginSchemaArray,
   PrimitiveParam,
@@ -513,9 +517,24 @@ describe("replace pipeline", () => {
       ["MockPlugin:AddPerson", { argsPath: [["person", "name"]] }],
     ]);
     test("1:createPluginCommandMap", () => {
-      const map = createPluginCommandMap([replacePathList]);
+      const map: PluginCommandPathMap = createPluginCommandMap([
+        replacePathList,
+      ]);
       expect(map).toEqual(pluginCommandMap);
     });
+    test("1-ex:createPluginCommandMap", () => {
+      const map: PluginCommandPathMap = createPluginCommandMapFromManifestData([
+        {
+          pluginName: plugin.name,
+          desc: plugin.description,
+          paramsPath: replacePathList.paramsPath,
+          commands: replacePathList.commands,
+          params: {},
+        },
+      ]);
+      expect(map).toEqual(pluginCommandMap);
+    });
+
     describe("2:replaceRuntimePluginCommand", () => {
       test("string", () => {
         const command: PluginCommandData = {
