@@ -1,4 +1,5 @@
 export * from './core';
+export * from './manager';
 export * from './pluginsJS';
 export * from './types';
 export type { ClassifiedPluginParams, ClassifiedPluginParamsEx, } from './core/params/types/classifyTypes';
