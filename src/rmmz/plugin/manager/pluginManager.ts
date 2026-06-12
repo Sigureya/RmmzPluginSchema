@@ -2,7 +2,7 @@
 export interface PluginManagerTemplate<
   PluginName extends string,
   CommandName extends string,
-  CommandArgs extends object,
+  CommandArgs extends Record<string, unknown>,
 > {
   registerCommand: (
     name: PluginName,
