@@ -4,7 +4,7 @@ import type { PluginInput } from "@RmmzPluginSchema/rmmz/index";
 import { pluginSourceToArraySchema } from "@RmmzPluginSchema/rmmz/index";
 import type { PluginStructTokens } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import { parsePluginByLocale } from "@RmmzPluginSchema/rmmz/plugin/core/parse/parse";
-import { generatePluginAnnotation } from "./generator";
+import { generatePluginAnnotationTokens } from "./generator";
 import {
   generateStructTokenBlock,
   generatePluginBodyTokenBlock,
@@ -112,7 +112,7 @@ describe("plugin annotation <-> token roundtrip", () => {
       };
       const schema = pluginSourceToArraySchema(input);
       const handlers = createHandlers();
-      const result: PluginAnnotationTokens = generatePluginAnnotation(
+      const result: PluginAnnotationTokens = generatePluginAnnotationTokens(
         schema,
         handlers,
       );
