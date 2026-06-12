@@ -25,29 +25,36 @@ import type {
   PluginDependencyAnnotations,
   PluginMetaAnnotation,
   StructTokenBlock,
+  PluginBodyBlockToken,
 } from "./types";
 
 export const generatePluginAnnotationText = (
-  lines: PluginAnnotationLines,
+  plugin: PluginSchema,
+  handlers: SchemaStringifyHandlers,
 ): string => {
-  return [
-    ...lines.body,
-    ...lines.structs.flatMap((struct: StructTokenBlock): string[] => struct),
-  ].join("\n");
+  const tokens: PluginAnnotationTokens = generatePluginAnnotationTokens(
+    plugin,
+    handlers,
+  );
+  const body: PluginBodyBlockToken = generatePluginBodyTokenBlock(tokens);
+  const structs: StructTokenBlock[] = tokens.schema.structs.map(
+    generateStructTokenBlock,
+  );
+  return [...body, ...structs.flat()].join("\n");
 };
 
 export const generatePluginAnnotationLines = (
   plugin: PluginSchema,
   handlers: SchemaStringifyHandlers,
 ): PluginAnnotationLines => {
-  const tokens = generatePluginAnnotation(plugin, handlers);
+  const tokens = generatePluginAnnotationTokens(plugin, handlers);
   return {
     body: generatePluginBodyTokenBlock(tokens) satisfies string[],
     structs: tokens.schema.structs.map(generateStructTokenBlock),
   };
 };
 
-export const generatePluginAnnotation = (
+export const generatePluginAnnotationTokens = (
   plugin: PluginSchema,
   handlers: SchemaStringifyHandlers,
 ): PluginAnnotationTokens => {
