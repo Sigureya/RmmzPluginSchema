@@ -2,6 +2,7 @@ import type {
   PluginMetaKeywords,
   PluginSchema,
 } from "@RmmzPluginSchema/rmmz/plugin";
+import { stringifyDeepJSON } from "@RmmzPluginSchema/rmmz/plugin";
 import type { PluginDependencies } from "@RmmzPluginSchema/rmmz/plugin/core/parse";
 import {
   KEYWORD_AUTHOR,
@@ -28,9 +29,26 @@ import type {
   PluginBodyBlockToken,
 } from "./types";
 
+export const createDeepStringifyHandlers = (): SchemaStringifyHandlers => {
+  return {
+    structArray: (value: readonly object[]): string => {
+      return stringifyDeepJSON(value);
+    },
+    struct: (value: object): string => {
+      return stringifyDeepJSON(value);
+    },
+    numberArray: (value: readonly number[]): string => {
+      return stringifyDeepJSON(value);
+    },
+    stringArray: (value: readonly string[]): string => {
+      return JSON.stringify(value);
+    },
+  };
+};
+
 export const generatePluginAnnotationText = (
   plugin: PluginSchema,
-  handlers: SchemaStringifyHandlers,
+  handlers: SchemaStringifyHandlers = createDeepStringifyHandlers(),
 ): string => {
   const tokens: PluginAnnotationTokens = generatePluginAnnotationTokens(
     plugin,
@@ -45,7 +63,7 @@ export const generatePluginAnnotationText = (
 
 export const generatePluginAnnotationLines = (
   plugin: PluginSchema,
-  handlers: SchemaStringifyHandlers,
+  handlers: SchemaStringifyHandlers = createDeepStringifyHandlers(),
 ): PluginAnnotationLines => {
   const tokens = generatePluginAnnotationTokens(plugin, handlers);
   return {
@@ -56,7 +74,7 @@ export const generatePluginAnnotationLines = (
 
 export const generatePluginAnnotationTokens = (
   plugin: PluginSchema,
-  handlers: SchemaStringifyHandlers,
+  handlers: SchemaStringifyHandlers = createDeepStringifyHandlers(),
 ): PluginAnnotationTokens => {
   const local = plugin.locale ?? "";
   return {
