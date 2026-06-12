@@ -16,6 +16,9 @@ import type {
   RpgSwitchParam,
   RpgVariableArrayParam,
   NumberArrayParam,
+  RpgDataIdArrayParam,
+  SystemDataIdParam,
+  SystemDataIdArrayParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import type { JSONSchemaType } from "ajv";
 
@@ -281,7 +284,7 @@ const anyStringParamSchema = {
 } as const satisfies JSONSchemaType<AnyStringParam>;
 
 // SystemDataId パラメータ（スキーマ名は動的）
-const systemDataIdParamSchema = {
+const rpgDataIdParamSchema = {
   type: "object" as const,
   properties: {
     kind: {
@@ -308,6 +311,71 @@ const systemDataIdParamSchema = {
   additionalProperties: false,
 } as const satisfies JSONSchemaType<RpgDataIdParam>;
 
+const rpgDataIdArrayParamSchema = {
+  type: "object" as const,
+  properties: {
+    kind: {
+      enum: [
+        "actor[]",
+        "armor[]",
+        "class[]",
+        "enemy[]",
+        "item[]",
+        "skill[]",
+        "state[]",
+        "troop[]",
+        "weapon[]",
+        "common_event[]",
+      ] as const,
+      type: "string",
+    },
+    default: {
+      type: "array" as const,
+      items: { type: "number" },
+    },
+    desc: { type: "string", nullable: true },
+    text: { type: "string", nullable: true },
+    parent: { type: "string", nullable: true },
+  },
+  required: ["kind", "default"],
+  additionalProperties: false,
+} as const satisfies JSONSchemaType<RpgDataIdArrayParam>;
+
+const systemDataIdParamSchema = {
+  type: "object" as const,
+  properties: {
+    kind: {
+      enum: ["switch", "variable"] as const,
+      type: "string",
+    },
+    default: { type: "number" },
+    desc: { type: "string", nullable: true },
+    text: { type: "string", nullable: true },
+    parent: { type: "string", nullable: true },
+  },
+  required: ["kind", "default"],
+  additionalProperties: false,
+} as const satisfies JSONSchemaType<SystemDataIdParam>;
+
+const systemDataIdArrayParamSchema = {
+  type: "object" as const,
+  properties: {
+    kind: {
+      enum: ["switch[]", "variable[]"] as const,
+      type: "string",
+    },
+    default: {
+      type: "array" as const,
+      items: { type: "number" },
+    },
+    desc: { type: "string", nullable: true },
+    text: { type: "string", nullable: true },
+    parent: { type: "string", nullable: true },
+  },
+  required: ["kind", "default"],
+  additionalProperties: false,
+} as const satisfies JSONSchemaType<SystemDataIdArrayParam>;
+
 /**
  * PrimitiveParam の anyOf スキーマ
  * discriminator パターンで kind フィールドで型を区別
@@ -327,10 +395,13 @@ const primitiveParamSchema = {
     variableArrayParamSchema,
     switchParamSchema,
     switchArrayParamSchema,
-    systemDataIdParamSchema,
+    rpgDataIdParamSchema,
     structRefParamSchema,
     structArrayRefParamSchema,
     anyStringParamSchema,
+    systemDataIdArrayParamSchema,
+    systemDataIdParamSchema,
+    rpgDataIdArrayParamSchema,
   ],
   discriminator: {
     propertyName: "kind",
@@ -352,8 +423,8 @@ export {
   variableArrayParamSchema,
   switchParamSchema,
   switchArrayParamSchema,
+  rpgDataIdParamSchema,
+  rpgDataIdArrayParamSchema,
   systemDataIdParamSchema,
-  structRefParamSchema,
-  structArrayRefParamSchema,
-  anyStringParamSchema,
+  systemDataIdArrayParamSchema,
 };
