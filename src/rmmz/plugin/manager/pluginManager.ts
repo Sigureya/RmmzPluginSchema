@@ -7,7 +7,7 @@ export interface PluginManagerTemplate<
   registerCommand: (
     name: PluginName,
     commandName: CommandName,
-    args: CommandArgs,
+    fn: (this: unknown, args: CommandArgs) => void,
   ) => void;
 
   callCommand(
