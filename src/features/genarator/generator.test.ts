@@ -249,6 +249,14 @@ describe("generatePluginAnnotationLines", () => {
       expect(handlers.parseObjectArray).not.toHaveBeenCalled();
       expect(handlers.parseStringArray).not.toHaveBeenCalled();
     });
+    test("default hanlders", () => {
+      const result: PluginSchema = pluginSourceToArraySchema({
+        source: joinLines(tokenLines),
+        pluginName: "PersonPlugin",
+        locale: "",
+      });
+      expect(result).toEqual(schema);
+    });
     test("deepJSON", () => {
       const handlers = createDeepJSONParseHandlerMock();
       const result: PluginSchema = pluginSourceToArraySchema(
