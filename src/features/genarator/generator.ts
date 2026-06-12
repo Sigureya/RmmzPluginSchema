@@ -32,7 +32,7 @@ export const generatePluginAnnotationText = (
   plugin: PluginSchema,
   handlers: SchemaStringifyHandlers,
 ): string => {
-  const tokens: PluginAnnotationTokens = generatePluginAnnotation(
+  const tokens: PluginAnnotationTokens = generatePluginAnnotationTokens(
     plugin,
     handlers,
   );
@@ -47,14 +47,14 @@ export const generatePluginAnnotationLines = (
   plugin: PluginSchema,
   handlers: SchemaStringifyHandlers,
 ): PluginAnnotationLines => {
-  const tokens = generatePluginAnnotation(plugin, handlers);
+  const tokens = generatePluginAnnotationTokens(plugin, handlers);
   return {
     body: generatePluginBodyTokenBlock(tokens) satisfies string[],
     structs: tokens.schema.structs.map(generateStructTokenBlock),
   };
 };
 
-export const generatePluginAnnotation = (
+export const generatePluginAnnotationTokens = (
   plugin: PluginSchema,
   handlers: SchemaStringifyHandlers,
 ): PluginAnnotationTokens => {
