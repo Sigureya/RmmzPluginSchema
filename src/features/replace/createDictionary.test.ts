@@ -1,7 +1,53 @@
 import { describe, expect, test } from "vitest";
 import type { PluginSchemaArray } from "@RmmzPluginSchema/rmmz/plugin";
-import { createPluginParamDictionary } from "./createDictionary";
+import {
+  createPluginCommandMap,
+  createPluginParamDictionary,
+} from "./createDictionary";
 import type { PluginReplacePathData } from "./types";
+
+describe("createPluginCommandMap", () => {
+  test("sample", () => {
+    const pluginList: ReadonlyArray<PluginReplacePathData> = [
+      {
+        pluginName: "PluginA",
+        paramsPath: [["param1"], ["param2", "[]"]],
+        commands: [
+          {
+            commandName: "command1",
+            argsPath: [["arg1"], ["arg2", "[]"]],
+          },
+        ],
+      },
+      {
+        pluginName: "PluginB",
+        commands: [
+          {
+            commandName: "command2",
+            argsPath: [["message"]],
+          },
+        ],
+        paramsPath: [],
+      },
+      {
+        pluginName: "EmptyPlugin",
+        paramsPath: [["param3"]],
+        commands: [],
+      },
+    ];
+    const expected = new Map([
+      [
+        "PluginA:command1",
+        {
+          argsPath: [["arg1"], ["arg2", "[]"]],
+        },
+      ],
+      ["PluginB:command2", { argsPath: [["message"]] }],
+    ]);
+    const result = createPluginCommandMap(pluginList);
+    expect(result).toEqual(expected);
+  });
+});
 
 describe("createDictionary", () => {
   test("collects primitive param paths", () => {
