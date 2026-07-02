@@ -1,11 +1,11 @@
 import { describe, test, expect, vi } from "vitest";
 import type { PluginReplacePathData, PluginCommandPathMap } from "./features";
 import {
+  createPluginCommandMap,
   createPluginParamDictionary,
   replacePluginParams,
   replaceRuntimePluginCommand,
 } from "./features";
-import { createPluginCommandMap } from "./features/replace/build";
 import type { JSONValue } from "./libs";
 import type { PluginManifestData } from "./manifest";
 import {
