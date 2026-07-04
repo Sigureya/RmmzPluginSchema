@@ -6,14 +6,24 @@ import type {
   PluginScalarParam,
   PluginCommandSchemaArray,
   PluginStructSchemaArray,
+  PluginParam,
 } from "./params";
 import type { PluginDependencies } from "./parse";
+
+export interface PluginCommandMinimumSchemaOld {
+  pluginName: string;
+  schema: {
+    commands: PluginCommandSchemaArray[];
+    structs: PluginStructSchemaArray[];
+  };
+}
 
 export interface PluginCommandMinimumSchema {
   pluginName: string;
   schema: {
     commands: PluginCommandSchemaArray[];
     structs: PluginStructSchemaArray[];
+    params: PluginParam[];
   };
 }
 
