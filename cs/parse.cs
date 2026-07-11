@@ -1,4 +1,4 @@
-using System.Text.RegularExpressions;
+
 namespace RpgTypes{
 
     public sealed class ParsedPlugin
@@ -44,7 +44,7 @@ namespace RpgTypes{
 
         public string? Decimals { get; set; }
     }
-    public readonly struct PluginDependencies
+    public readonly class PluginDependencies
     {
         public List<string> Base { get; } = [];
 
@@ -83,6 +83,52 @@ namespace RpgTypes{
 
         public required string Value { get; init; }
     }
+    public sealed class PluginMeta
+    {
+        public string? Author { get; set; }
+
+        public string? PluginDescription { get; set; }
+
+        public string? Url { get; set; }
+    }
+    public sealed class PluginCommandToken
+    {
+        public required string Command { get; init; }
+
+        public string? Text { get; set; }
+
+        public string? Desc { get; set; }
+
+        public List<PluginParamToken> Args { get; } = [];
+    }
+
+    public sealed class PluginParamToken
+    {
+        public required string Name { get; init; }
+
+        public PluginParamAttribute Attr { get; } = new();
+
+        public List<OptionItem> Options { get; } = [];
+    }
+    public sealed class PluginStructToken
+    {
+        public required string Name { get; init; }
+
+        public List<PluginParamToken> Params { get; } = [];
+    }
+    public sealed class ParseState
+    {
+        public List<PluginParamTokens> Params { get; } = [];
+        public List<PluginCommandTokens> Commands { get; } = [];
+
+        public PluginParamTokens? CurrentParam;
+        public PluginCommandTokens? CurrentCommand;
+        public OptionsState? CurrentOption;
+
+        public PluginMeta Meta = new();
+        public PluginDependencies Dependencies = new();
+    }
+
     public sealed class PluginParser
     {
         private readonly ParseState _state = new();
@@ -153,8 +199,9 @@ namespace RpgTypes{
             Match match = Regex.Match(trimmed, @"^@(\S+)\s*(.*)$");
 
             if (!match.Success)
+            {
                 return;
-
+            }
             string tag = match.Groups[1].Value;
             string value = match.Groups[2].Value.Trim();
 
@@ -168,7 +215,7 @@ namespace RpgTypes{
             FlushCurrentItem();
 
             if (_state.Params.Any(x => x.Name == name))
-                return;
+            { return; }
 
             _state.CurrentContext = "param";
 
@@ -183,8 +230,9 @@ namespace RpgTypes{
             FlushCurrentItem();
 
             if (_state.Commands.Any(x => x.Command == name))
+            {
                 return;
-
+            }
             _state.CurrentCommand = new PluginCommandToken
             {
                 Command = name
@@ -256,10 +304,10 @@ namespace RpgTypes{
                 return;
             }
 
-            // if (_state.CurrentCommand != null)
-            // {
-            //     _state.CurrentCommand.Desc = value;
-            // }
+            if (_state.CurrentCommand != null)
+            {
+                _state.CurrentCommand.Desc = value;
+            }
         }
         private void FlushCurrentItem()
         {
@@ -270,15 +318,18 @@ namespace RpgTypes{
         private void AddParamField(Action<PluginParamAttribute> setter)
         {
             if (_state.CurrentParam == null)
-                {       return;}
+            {      
+                return;
+            }
 
             setter(_state.CurrentParam.Attr);
         }
         private void FlushCommand()
         {
             if (_state.CurrentCommand == null)
+            {
                 return;
-
+            }
             if (_state.CurrentParam != null)
             {
                 _state.CurrentCommand.Args.Add(_state.CurrentParam);
@@ -293,12 +344,82 @@ namespace RpgTypes{
         private void FlushParam()
         {
             if (_state.CurrentParam == null)
-            {    return;}
+            {
+                return;
+            }
 
             _state.Params.Add(_state.CurrentParam);
 
             _state.CurrentParam = null;
             _state.CurrentContext = null;
+        }
+        private void HandleBase(string value)
+        {
+            _state.Dependencies.Base.Add(value);
+        }
+
+        private void HandleOrderBefore(string value)
+        {
+            _state.Dependencies.OrderBefore.Add(value);
+        }
+
+        private void HandleOrderAfter(string value)
+        {
+            _state.Dependencies.OrderAfter.Add(value);
+        }
+        private void HandleOption(string option)
+        {
+            if (_state.CurrentParam == null)
+                return;
+
+            _state.CurrentOption ??= new OptionsState();
+
+            if (_state.CurrentOption.CurrentOption != null)
+            {
+                _state.CurrentOption.Items.Add(new OptionItem
+                {
+                    Option = _state.CurrentOption.CurrentOption,
+                    Value = _state.CurrentOption.CurrentOption
+                });
+            }
+
+            _state.CurrentOption.CurrentOption = option;
+        }
+        private void HandleValue(string value)
+        {
+            if (_state.CurrentOption?.CurrentOption == null)
+                return;
+
+            _state.CurrentOption.Items.Add(new OptionItem
+            {
+                Option = _state.CurrentOption.CurrentOption,
+                Value = value
+            });
+
+            _state.CurrentOption.CurrentOption = null;
+        }
+
+        private void FlushOptions()
+        {
+            if (_state.CurrentParam == null ||
+                _state.CurrentOption == null)
+                return;
+
+            if (_state.CurrentOption.CurrentOption != null)
+            {
+                _state.CurrentOption.Items.Add(new OptionItem
+                {
+                    Option = _state.CurrentOption.CurrentOption,
+                    Value = _state.CurrentOption.CurrentOption
+                });
+            }
+
+            if (_state.CurrentParam.Attr.Kind is "select" or "combo")
+            {
+                _state.CurrentParam.Options.AddRange(_state.CurrentOption.Items);
+            }
+
+            _state.CurrentOption = null;
         }
     }
 }
