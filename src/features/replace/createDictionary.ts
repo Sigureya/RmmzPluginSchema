@@ -1,6 +1,6 @@
 import type {
   AnyStringParam,
-  PluginSchema,
+  PluginCommandMinimumSchema,
   PluginSchemaArray,
   PluginStructSchemaArray,
   PrimitiveParam,
@@ -34,7 +34,7 @@ const createPluginCommandPath = (
 };
 
 export const createTextParamDictionary = (
-  { schema, pluginName }: Pick<PluginSchema, "schema" | "pluginName">,
+  { schema, pluginName }: PluginCommandMinimumSchema,
   anyFn: (anyParam: AnyStringParam, name: string) => boolean,
 ): PluginReplacePathData => {
   const newSchema: PluginSchemaArray = filterPluginSchemaByFn(
