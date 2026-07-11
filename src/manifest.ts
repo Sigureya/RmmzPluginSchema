@@ -1,6 +1,9 @@
 import type { PluginCommandPathMap, PluginReplacePathData } from "./features";
-import { createPluginParamDictionary, replacePluginValue } from "./features";
-import { createPluginCommandMap } from "./features/replace/build";
+import {
+  createPluginCommandMap,
+  createPluginParamDictionary,
+  replacePluginValue,
+} from "./features";
 import type {
   DeepJSONValue,
   PluginParamsObject,

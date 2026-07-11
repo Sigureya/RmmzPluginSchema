@@ -1,15 +1,40 @@
 import type {
   AnyStringParam,
-  PluginSchema,
+  PluginCommandMinimumSchema,
   PluginSchemaArray,
   PluginStructSchemaArray,
   PrimitiveParam,
 } from "@RmmzPluginSchema/rmmz/plugin";
 import { filterPluginSchemaByFn } from "@RmmzPluginSchema/rmmz/plugin";
-import type { PluginReplacePathData } from "./types";
+import type {
+  PluginCommandPathData,
+  PluginCommandPathMap,
+  PluginReplacePathData,
+} from "./types";
+
+export const createPluginCommandMap = (
+  pluginList: ReadonlyArray<PluginReplacePathData>,
+): PluginCommandPathMap => {
+  return new Map(
+    pluginList.flatMap((plugin) => createPluginCommandPath(plugin)),
+  );
+};
+
+const createPluginCommandPath = (
+  plugin: PluginReplacePathData,
+): [string, Pick<PluginCommandPathData, "argsPath">][] => {
+  return plugin.commands.map(
+    (c): [string, Pick<PluginCommandPathData, "argsPath">] => {
+      return [
+        `${plugin.pluginName}:${c.commandName}`,
+        { argsPath: c.argsPath },
+      ];
+    },
+  );
+};
 
 export const createTextParamDictionary = (
-  { schema, pluginName }: Pick<PluginSchema, "schema" | "pluginName">,
+  { schema, pluginName }: PluginCommandMinimumSchema,
   anyFn: (anyParam: AnyStringParam, name: string) => boolean,
 ): PluginReplacePathData => {
   const newSchema: PluginSchemaArray = filterPluginSchemaByFn(
