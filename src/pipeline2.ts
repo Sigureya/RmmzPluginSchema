@@ -1,9 +1,15 @@
+import type { PluginCommandPathData, PluginReplacePathData } from "./features";
 import type {
   MessageOfparsePluginParamRecordEx,
   PluginReadResult,
+  PluginFileReader,
 } from "./fileio";
-import { READ_PLUGIN_MESSAGES, type PluginFileReader } from "./fileio";
-import type { PluginCommandData, ResultOfparsePluginParamRecord } from "./rmmz";
+import { READ_PLUGIN_MESSAGES } from "./fileio";
+import type {
+  PluginCommandData,
+  PluginSchemaArray,
+  ResultOfparsePluginParamRecord,
+} from "./rmmz";
 import type {
   PluginExtractionHandlers,
   PluginExtractionOptions,
@@ -22,6 +28,46 @@ const runPluginExtractionPipeline2 = async <E>(
   const messages = options.messages ?? READ_PLUGIN_MESSAGES;
 
   const commandMap = Map.groupBy(command, (c): string => c.parameters[0]);
+};
+
+const joinX = (plugin: string, command: string) => {
+  return `${plugin}:${command}`;
+};
+
+const ggrr = (pluginList: PluginReplacePathData[]) => {
+  const map = createCommandMap2(pluginList);
+};
+
+const pluginCommanddRRR = (
+  command: PluginCommandData,
+
+  map: ReadonlyMap<string, PluginCommandPathData>,
+) => {
+  const key = joinX(command.parameters[0], command.parameters[1]);
+  const commandPathData = map.get(key);
+  if (!commandPathData) {
+    return command;
+  }
+};
+
+const createCommandMap2 = (
+  pluginList: PluginReplacePathData[],
+): Map<string, PluginCommandPathData> => {
+  const items = pluginList.flatMap((plugin) =>
+    plugin.commands.map((command): [string, PluginCommandPathData] => [
+      joinX(plugin.pluginName, command.commandName),
+      command,
+    ]),
+  );
+  return new Map(items);
+};
+const ppxx = (
+  plugin: PluginReplacePathData,
+  commnands: readonly PluginCommandData[],
+  fn: (text: string) => boolean,
+) => {
+  // まずstructを絞り込む
+  //    createTextParamDictionary
 };
 
 const xxxx = (
