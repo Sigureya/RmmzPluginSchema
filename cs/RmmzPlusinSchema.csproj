@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="**\*.cs" />
+    <Compile Include="**\*.rmmz" />
   </ItemGroup>
 </Project>
