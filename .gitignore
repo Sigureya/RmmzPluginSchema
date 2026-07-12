@@ -3,7 +3,7 @@ ref/**/*.*
 /node_modules
 game/
 dummy/
-
+*.sln
 
 coverage/
 *.tsbuildinfo
